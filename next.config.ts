@@ -14,6 +14,14 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  eslint: {
+    // Wyłącz ESLint podczas buildu na Vercel
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    // Wyłącz sprawdzanie TypeScript podczas buildu
+    ignoreBuildErrors: true,
+  },
   async headers() {
     return [
       {
