@@ -1,0 +1,221 @@
+<!--
+TYTUŁ EMAILA (Subject): Zaproszenie do FindSomeone
+-->
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaproszenie do FindSomeone</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #FAF8F3;
+            line-height: 1.6;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #FAF8F3;
+            padding: 40px 20px;
+        }
+        .email-content {
+            background-color: #FFFFFF;
+            border-radius: 24px;
+            padding: 48px 40px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+        .logo-svg {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+        }
+        .logo-text-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+        .logo-brand {
+            font-size: 24px;
+            font-weight: 700;
+            color: #000000;
+            line-height: 1;
+            margin: 0;
+        }
+        .logo-tagline {
+            font-size: 11px;
+            color: rgba(0, 0, 0, 0.6);
+            line-height: 1;
+            margin-top: 4px;
+        }
+        h1 {
+            color: #000000;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            text-align: center;
+        }
+        p {
+            color: #666666;
+            font-size: 16px;
+            margin: 0 0 24px 0;
+            text-align: center;
+        }
+        .cta-button {
+            display: inline-block;
+            background-color: #C44E35;
+            color: #FFFFFF !important;
+            text-decoration: none;
+            padding: 16px 48px;
+            border-radius: 100px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 24px 0;
+            text-align: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .cta-button:hover {
+            background-color: #A63E2A;
+        }
+        .button-container {
+            text-align: center;
+            margin: 32px 0;
+        }
+        .alternative-link {
+            background-color: #F5F1E8;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 24px 0;
+            word-break: break-all;
+        }
+        .alternative-link p {
+            font-size: 14px;
+            margin: 0 0 8px 0;
+            color: #666666;
+            text-align: left;
+        }
+        .alternative-link a {
+            color: #C44E35;
+            font-size: 13px;
+            word-break: break-all;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 32px;
+            padding-top: 0;
+        }
+        .footer p {
+            font-size: 14px;
+            color: #999999;
+            margin: 8px 0;
+        }
+        .footer a {
+            color: #C44E35;
+            text-decoration: none;
+        }
+        .divider {
+            height: 1px;
+            background-color: #E5E5E5;
+            margin: 32px 0;
+        }
+        .info-box {
+            background-color: #F5F1E8;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+        .info-box h2 {
+            font-size: 18px;
+            color: #000000;
+            margin: 0 0 12px 0;
+            text-align: left;
+        }
+        .info-box ul {
+            margin: 0;
+            padding-left: 20px;
+            text-align: left;
+        }
+        .info-box li {
+            color: #666666;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-content">
+            <!-- Logo -->
+            <div class="logo">
+                <a href="{{ .SiteURL }}" class="logo-container">
+                    <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="32" cy="28" r="11" fill="#1A1A1A"/>
+                        <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#1A1A1A"/>
+                        <circle cx="68" cy="28" r="11" fill="#C44E35"/>
+                        <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#C44E35"/>
+                    </svg>
+                    <div class="logo-text-wrapper">
+                        <span class="logo-brand">FindSomeone</span>
+                        <span class="logo-tagline">Łączymy ludzi lokalnie</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Header -->
+            <h1>Zostałeś zaproszony!</h1>
+
+            <!-- Main content -->
+            <p>Otrzymałeś zaproszenie do dołączenia do platformy FindSomeone - miejsca, gdzie łatwo znajdziesz i zaoferujesz usługi lokalnie.</p>
+
+            <!-- Info box -->
+            <div class="info-box">
+                <h2>Co możesz robić na FindSomeone?</h2>
+                <ul>
+                    <li>Szukać specjalistów i usług w Twojej okolicy</li>
+                    <li>Publikować własne ogłoszenia</li>
+                    <li>Nawiązywać bezpośredni kontakt</li>
+                    <li>Zarządzać swoimi usługami</li>
+                </ul>
+            </div>
+
+            <!-- CTA Button -->
+            <div class="button-container">
+                <a href="{{ .ConfirmationURL }}" class="cta-button">Akceptuj zaproszenie</a>
+            </div>
+
+            <!-- Alternative link -->
+            <div class="alternative-link">
+                <p><strong>Link nie działa?</strong></p>
+                <p>Skopiuj i wklej poniższy adres do przeglądarki:</p>
+                <a href="{{ .ConfirmationURL }}">{{ .ConfirmationURL }}</a>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>To zaproszenie jest ważne przez 24 godziny.</p>
+                <p style="font-size: 13px; color: #999999; margin: 12px 0;">To jest automatyczna wiadomość. Nie odpowiadaj na tego maila.</p>
+                <p>© 2025 FindSomeone. Wszystkie prawa zastrzeżone.</p>
+                <p>
+                    <a href="{{ .SiteURL }}/privacy">Polityka prywatności</a> •
+                    <a href="{{ .SiteURL }}/terms">Regulamin</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

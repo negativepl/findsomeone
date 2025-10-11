@@ -1,0 +1,62 @@
+-- Insert Polish cities data
+-- Total: 49 cities, 20 popular cities
+-- Data includes major cities from all 16 voivodeships
+
+INSERT INTO public.cities (name, slug, voivodeship, population, latitude, longitude, popular)
+VALUES
+  ('Warszawa', 'warszawa', 'Mazowieckie', 1793579, 52.2297, 21.0122, true),
+  ('Radom', 'radom', 'Mazowieckie', 210532, NULL, NULL, true),
+  ('Płock', 'plock', 'Mazowieckie', 117128, NULL, NULL, false),
+  ('Siedlce', 'siedlce', 'Mazowieckie', 77990, NULL, NULL, false),
+  ('Ostrołęka', 'ostroleka', 'Mazowieckie', 51012, NULL, NULL, false),
+  ('Kraków', 'krakow', 'Małopolskie', 779115, 50.0647, 19.945, true),
+  ('Tarnów', 'tarnow', 'Małopolskie', 106278, NULL, NULL, false),
+  ('Nowy Sącz', 'nowy-sacz', 'Małopolskie', 83116, NULL, NULL, false),
+  ('Katowice', 'katowice', 'Śląskie', 292774, 50.2649, 19.0238, true),
+  ('Częstochowa', 'czestochowa', 'Śląskie', 217530, NULL, NULL, true),
+  ('Sosnowiec', 'sosnowiec', 'Śląskie', 197586, NULL, NULL, false),
+  ('Gliwice', 'gliwice', 'Śląskie', 175102, NULL, NULL, false),
+  ('Zabrze', 'zabrze', 'Śląskie', 169756, NULL, NULL, false),
+  ('Bielsko-Biała', 'bielsko-biala', 'Śląskie', 168319, NULL, NULL, false),
+  ('Bytom', 'bytom', 'Śląskie', 160624, NULL, NULL, false),
+  ('Ruda Śląska', 'ruda-slaska', 'Śląskie', 135303, NULL, NULL, false),
+  ('Rybnik', 'rybnik', 'Śląskie', 135327, NULL, NULL, false),
+  ('Tychy', 'tychy', 'Śląskie', 127831, NULL, NULL, false),
+  ('Wrocław', 'wroclaw', 'Dolnośląskie', 641928, 51.1079, 17.0385, true),
+  ('Wałbrzych', 'walbrzych', 'Dolnośląskie', 110140, NULL, NULL, false),
+  ('Legnica', 'legnica', 'Dolnośląskie', 99350, NULL, NULL, false),
+  ('Poznań', 'poznan', 'Wielkopolskie', 529410, 52.4064, 16.9252, true),
+  ('Kalisz', 'kalisz', 'Wielkopolskie', 99106, NULL, NULL, false),
+  ('Konin', 'konin', 'Wielkopolskie', 72420, NULL, NULL, false),
+  ('Szczecin', 'szczecin', 'Zachodniopomorskie', 396168, 53.4285, 14.5528, true),
+  ('Koszalin', 'koszalin', 'Zachodniopomorskie', 107680, NULL, NULL, false),
+  ('Stargard', 'stargard', 'Zachodniopomorskie', 67293, NULL, NULL, false),
+  ('Lublin', 'lublin', 'Lubelskie', 337944, 51.2465, 22.5684, true),
+  ('Chełm', 'chelm', 'Lubelskie', 61895, NULL, NULL, false),
+  ('Zamość', 'zamosc', 'Lubelskie', 62397, NULL, NULL, false),
+  ('Rzeszów', 'rzeszow', 'Podkarpackie', 196208, 50.0412, 21.9991, true),
+  ('Przemyśl', 'przemysl', 'Podkarpackie', 60442, NULL, NULL, false),
+  ('Stalowa Wola', 'stalowa-wola', 'Podkarpackie', 59388, NULL, NULL, false),
+  ('Łódź', 'lodz', 'Łódzkie', 670642, 51.7592, 19.456, true),
+  ('Piotrków Trybunalski', 'piotrkow-trybunalski', 'Łódzkie', 71252, NULL, NULL, false),
+  ('Bydgoszcz', 'bydgoszcz', 'Kujawsko-Pomorskie', 344091, 53.1235, 18.0084, true),
+  ('Toruń', 'torun', 'Kujawsko-Pomorskie', 196935, NULL, NULL, true),
+  ('Włocławek', 'wloclawek', 'Kujawsko-Pomorskie', 106928, NULL, NULL, false),
+  ('Gdańsk', 'gdansk', 'Pomorskie', 470907, 54.352, 18.6466, true),
+  ('Gdynia', 'gdynia', 'Pomorskie', 243918, NULL, NULL, true),
+  ('Słupsk', 'slupsk', 'Pomorskie', 90879, NULL, NULL, false),
+  ('Olsztyn', 'olsztyn', 'Warmińsko-Mazurskie', 171249, 53.7784, 20.4801, true),
+  ('Elbląg', 'elblag', 'Warmińsko-Mazurskie', 119317, NULL, NULL, false),
+  ('Gorzów Wielkopolski', 'gorzow-wielkopolski', 'Lubuskie', 122762, NULL, NULL, false),
+  ('Zielona Góra', 'zielona-gora', 'Lubuskie', 140297, NULL, NULL, true),
+  ('Białystok', 'bialystok', 'Podlaskie', 296958, 53.1325, 23.1688, true),
+  ('Suwałki', 'suwalki', 'Podlaskie', 69317, NULL, NULL, false),
+  ('Kielce', 'kielce', 'Świętokrzyskie', 192468, 50.8661, 20.6286, true),
+  ('Opole', 'opole', 'Opolskie', 127839, 50.6751, 17.9213, true)
+ON CONFLICT (slug) DO UPDATE SET
+  population = EXCLUDED.population,
+  latitude = EXCLUDED.latitude,
+  longitude = EXCLUDED.longitude,
+  popular = EXCLUDED.popular;
+
+
