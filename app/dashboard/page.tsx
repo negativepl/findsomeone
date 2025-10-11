@@ -71,7 +71,7 @@ export default async function DashboardPage({
   // Fetch all categories for filters
   const { data: categories } = await supabase
     .from('categories')
-    .select('id, name, slug')
+    .select('id, name, slug, icon, parent_id')
     .order('name')
 
   // Use FULL-TEXT SEARCH if there's a search query
@@ -271,9 +271,18 @@ export default async function DashboardPage({
     posts = fetchedPosts || []
   }
 
-  // Calculate counts for tabs from current page results
-  const seekingCount = posts.filter(p => p.type === 'seeking').length
-  const offeringCount = posts.filter(p => p.type === 'offering').length
+  // Calculate counts for tabs from ALL active posts (not just current page)
+  const { count: seekingCount } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'active')
+    .eq('type', 'seeking')
+
+  const { count: offeringCount } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'active')
+    .eq('type', 'offering')
 
   // Calculate total pages
   const totalPages = Math.ceil(totalCount / itemsPerPage)
@@ -295,7 +304,7 @@ export default async function DashboardPage({
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-10">
-        <div className="mb-10">
+        <div className="mb-8">
           <h2 className="text-4xl font-bold mb-3 text-black">
             {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Najnowsze ogłoszenia'}
           </h2>
@@ -311,13 +320,6 @@ export default async function DashboardPage({
               'Przeglądaj aktualne oferty i zapytania w Twojej okolicy'
             )}
           </p>
-          {(searchQuery || cityQuery || categoryQuery) && (
-            <Link href="/dashboard" className="inline-block mt-4">
-              <Button variant="outline" className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5">
-                ← Wyczyść filtry
-              </Button>
-            </Link>
-          )}
         </div>
 
         {/* Tabs */}
@@ -334,24 +336,30 @@ export default async function DashboardPage({
           <LiveSearchBar initialSearch={searchQuery} initialCity={cityQuery} />
         </div>
 
-        {/* Filters */}
-        <SearchFilters categories={categories} />
+        {/* Two Column Layout: Sidebar + Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+          {/* Left Sidebar - Filters */}
+          <aside className="lg:sticky lg:top-6 lg:self-start z-40">
+            <SearchFilters categories={categories} />
+          </aside>
 
-        {/* Compact Filters with Range Display and Controls */}
-        {totalCount > 0 && (
-          <DashboardFilters
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-            totalCount={totalCount}
-          />
-        )}
+          {/* Right Content - Posts */}
+          <div className="space-y-6">
+            {/* Compact Filters with Range Display and Controls */}
+            {totalCount > 0 && (
+              <DashboardFilters
+                currentPage={currentPage}
+                itemsPerPage={itemsPerPage}
+                totalCount={totalCount}
+              />
+            )}
 
-        {/* Posts Grid */}
-        <div className={`grid md:grid-cols-2 gap-6 ${
-          itemsPerPage >= 24 ? 'lg:grid-cols-6' :
-          itemsPerPage >= 12 ? 'lg:grid-cols-4' :
-          'lg:grid-cols-3'
-        }`}>
+            {/* Posts Grid */}
+            <div className={`grid gap-6 ${
+              itemsPerPage >= 24 ? 'md:grid-cols-2 lg:grid-cols-4' :
+              itemsPerPage >= 12 ? 'md:grid-cols-2 lg:grid-cols-3' :
+              'md:grid-cols-1 lg:grid-cols-2'
+            }`}>
           {posts && posts.length > 0 ? (
             posts.map((post: Post) => (
               <Link key={post.id} href={`/dashboard/posts/${post.id}`} className="block h-full">
@@ -507,14 +515,16 @@ export default async function DashboardPage({
           )}
         </div>
 
-        {/* Pagination */}
-        {posts && posts.length > 0 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={totalCount}
-          />
-        )}
+            {/* Pagination */}
+            {posts && posts.length > 0 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalCount}
+              />
+            )}
+          </div>
+        </div>
       </main>
 
       <Footer />

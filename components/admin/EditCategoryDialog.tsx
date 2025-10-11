@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -12,13 +12,23 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { createClient } from '@/lib/supabase/client'
+import { IconPicker } from './IconPicker'
 
 interface Category {
   id: string
   name: string
   slug: string
   description: string | null
+  icon: string | null
+  parent_id: string | null
 }
 
 interface EditCategoryDialogProps {
@@ -29,11 +39,30 @@ interface EditCategoryDialogProps {
 
 export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategoryDialogProps) {
   const [loading, setLoading] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
   const [formData, setFormData] = useState({
     name: category.name,
     slug: category.slug,
     description: category.description || '',
+    icon: category.icon || 'more-horizontal',
+    parent_id: category.parent_id || '',
   })
+
+  useEffect(() => {
+    // Fetch categories for parent selection (excluding current and its children)
+    const fetchCategories = async () => {
+      const supabase = createClient()
+      const { data } = await supabase
+        .from('categories')
+        .select('id, name')
+        .is('parent_id', null)
+        .neq('id', category.id)
+        .order('name')
+
+      setCategories(data || [])
+    }
+    fetchCategories()
+  }, [category.id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -41,9 +70,17 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
 
     const supabase = createClient()
 
+    const dataToUpdate = {
+      name: formData.name,
+      slug: formData.slug,
+      description: formData.description || null,
+      icon: formData.icon || null,
+      parent_id: formData.parent_id || null,
+    }
+
     const { data, error } = await supabase
       .from('categories')
-      .update(formData)
+      .update(dataToUpdate)
       .eq('id', category.id)
       .select()
       .single()
@@ -90,6 +127,31 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
               required
               className="rounded-xl"
             />
+          </div>
+
+          <IconPicker
+            value={formData.icon}
+            onChange={(icon) => setFormData({ ...formData, icon })}
+          />
+
+          <div className="space-y-2">
+            <Label htmlFor="edit-parent">Kategoria nadrzędna (opcjonalnie)</Label>
+            <Select
+              value={formData.parent_id || 'none'}
+              onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
+            >
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="Brak - kategoria główna" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Brak - kategoria główna</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-2">

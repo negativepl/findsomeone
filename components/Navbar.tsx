@@ -4,6 +4,7 @@ import { LogoWithText } from '@/components/Logo'
 import { UserMenu } from '@/components/UserMenu'
 import { MessagesIcon } from '@/components/MessagesIcon'
 import { FavoritesIcon } from '@/components/FavoritesIcon'
+import { MobileNavIcons } from '@/components/MobileNavIcons'
 import { User } from '@supabase/supabase-js'
 import { getUserRole } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -31,9 +32,9 @@ export async function Navbar({ user, showAddButton = true }: NavbarProps) {
 
   return (
     <header className="border-b border-black/5 bg-white rounded-b-3xl">
-      <div className="container mx-auto px-4 md:px-6 py-4 md:py-5 flex justify-between items-center">
+      <div className="container mx-auto px-4 md:px-6 py-3 md:py-5 flex justify-between items-center">
         <Link href="/">
-          <LogoWithText className="scale-90 md:scale-100" />
+          <LogoWithText />
         </Link>
 
         {/* Desktop Navigation */}
@@ -67,12 +68,25 @@ export async function Navbar({ user, showAddButton = true }: NavbarProps) {
           )}
         </nav>
 
-        {/* Mobile Navigation - Avatar with Dropdown */}
-        {user && (
-          <div className="md:hidden">
-            <UserMenu user={user} profile={profile} isAdmin={isAdmin} />
-          </div>
-        )}
+        {/* Mobile Navigation - Icons with Avatar or Login */}
+        <div className="md:hidden flex items-center gap-1.5">
+          {/* Mobile Nav Icons (Search, Messages, Favorites) */}
+          <MobileNavIcons user={user} />
+
+          {user ? (
+            /* User Menu Avatar */
+            <div className="transform scale-[0.85] origin-center">
+              <UserMenu user={user} profile={profile} isAdmin={isAdmin} />
+            </div>
+          ) : (
+            /* Login button for non-authenticated users */
+            <Link href="/login">
+              <Button variant="ghost" className="h-8 rounded-full hover:bg-black/5 text-xs px-3 py-1">
+                Zaloguj
+              </Button>
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   )

@@ -12,18 +12,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
 
-const CATEGORIES = [
-  { id: 'hydraulika', name: 'Hydraulika' },
-  { id: 'elektryka', name: 'Elektryka' },
-  { id: 'sprzatanie', name: 'Sprzątanie' },
-  { id: 'budowa-remont', name: 'Budowa i remont' },
-  { id: 'ogrody', name: 'Ogrody' },
-  { id: 'transport', name: 'Transport' },
-  { id: 'it-komputery', name: 'IT i komputery' },
-  { id: 'nauka-korepetycje', name: 'Nauka i korepetycje' },
-  { id: 'opieka', name: 'Opieka' },
-  { id: 'inne', name: 'Inne' },
-]
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
 
 export function NewPostClient() {
   const router = useRouter()
@@ -38,6 +31,7 @@ export function NewPostClient() {
     score: number
     reasons: string[]
   } | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
 
   const [formData, setFormData] = useState({
     title: '',
@@ -54,12 +48,22 @@ export function NewPostClient() {
   const [images, setImages] = useState<string[]>([])
   const [userId, setUserId] = useState<string>('')
 
-  // Get user ID on mount
+  // Get user ID and categories on mount
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) setUserId(user.id)
     })
-  }, [])
+
+    // Fetch categories from database
+    supabase
+      .from('categories')
+      .select('id, name, slug')
+      .is('parent_id', null) // Only main categories, no subcategories
+      .order('name')
+      .then(({ data }) => {
+        if (data) setCategories(data)
+      })
+  }, [supabase])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -178,8 +182,8 @@ export function NewPostClient() {
                     <SelectValue placeholder="Wybierz kategorię" />
                   </SelectTrigger>
                   <SelectContent>
-                    {CATEGORIES.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.slug}>
                         {cat.name}
                       </SelectItem>
                     ))}

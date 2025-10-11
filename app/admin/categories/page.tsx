@@ -6,6 +6,7 @@ import { Footer } from '@/components/Footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { CategoryList } from '@/components/admin/CategoryList'
 import { AddCategoryDialog } from '@/components/admin/AddCategoryDialog'
+import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -17,6 +18,8 @@ interface Category {
   name: string
   slug: string
   description: string | null
+  icon: string | null
+  parent_id: string | null
   created_at: string
 }
 
@@ -44,6 +47,14 @@ export default async function CategoriesAdminPage() {
       <NavbarWithHide user={user} showAddButton={false} />
 
       <main className="container mx-auto px-6 py-10">
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: 'Panel admina', href: '/admin' },
+            { label: 'Kategorie' },
+          ]}
+        />
+
         {/* Header */}
         <div className="mb-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

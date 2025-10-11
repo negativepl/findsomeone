@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -12,18 +12,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
 
-const CATEGORIES = [
-  { id: 'hydraulika', name: 'Hydraulika' },
-  { id: 'elektryka', name: 'Elektryka' },
-  { id: 'sprzatanie', name: 'Sprzątanie' },
-  { id: 'budowa-remont', name: 'Budowa i remont' },
-  { id: 'ogrody', name: 'Ogrody' },
-  { id: 'transport', name: 'Transport' },
-  { id: 'it-komputery', name: 'IT i komputery' },
-  { id: 'nauka-korepetycje', name: 'Nauka i korepetycje' },
-  { id: 'opieka', name: 'Opieka' },
-  { id: 'inne', name: 'Inne' },
-]
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
 
 interface Post {
   id: string
@@ -54,6 +47,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
 
   const [formData, setFormData] = useState({
     title: post.title,
@@ -68,6 +62,18 @@ export function EditPostClient({ post }: EditPostClientProps) {
   })
 
   const [images, setImages] = useState<string[]>(post.images || [])
+
+  // Fetch categories on mount
+  useEffect(() => {
+    supabase
+      .from('categories')
+      .select('id, name, slug')
+      .is('parent_id', null)
+      .order('name')
+      .then(({ data }) => {
+        if (data) setCategories(data)
+      })
+  }, [supabase])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -169,8 +175,8 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     <SelectValue placeholder="Wybierz kategorię" />
                   </SelectTrigger>
                   <SelectContent>
-                    {CATEGORIES.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
+                    {categories.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.slug}>
                         {cat.name}
                       </SelectItem>
                     ))}

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -13,18 +13,51 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { IconPicker } from './IconPicker'
+
+interface Category {
+  id: string
+  name: string
+}
 
 export function AddCategoryDialog() {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
     description: '',
+    icon: 'more-horizontal',
+    parent_id: '',
   })
+
+  useEffect(() => {
+    if (open) {
+      // Fetch categories for parent selection
+      const fetchCategories = async () => {
+        const supabase = createClient()
+        const { data } = await supabase
+          .from('categories')
+          .select('id, name')
+          .is('parent_id', null)
+          .order('name')
+
+        setCategories(data || [])
+      }
+      fetchCategories()
+    }
+  }, [open])
 
   const generateSlug = (name: string) => {
     return name
@@ -50,15 +83,23 @@ export function AddCategoryDialog() {
 
     const supabase = createClient()
 
+    const dataToInsert = {
+      name: formData.name,
+      slug: formData.slug,
+      description: formData.description || null,
+      icon: formData.icon || null,
+      parent_id: formData.parent_id || null,
+    }
+
     const { error } = await supabase
       .from('categories')
-      .insert([formData])
+      .insert([dataToInsert])
 
     if (error) {
       console.error('Error adding category:', error)
       alert('Błąd podczas dodawania kategorii: ' + error.message)
     } else {
-      setFormData({ name: '', slug: '', description: '' })
+      setFormData({ name: '', slug: '', description: '', icon: 'more-horizontal', parent_id: '' })
       setOpen(false)
       router.refresh()
     }
@@ -105,6 +146,34 @@ export function AddCategoryDialog() {
             />
             <p className="text-xs text-black/60">
               Slug jest generowany automatycznie, ale możesz go edytować
+            </p>
+          </div>
+
+          <IconPicker
+            value={formData.icon}
+            onChange={(icon) => setFormData({ ...formData, icon })}
+          />
+
+          <div className="space-y-2">
+            <Label htmlFor="parent">Kategoria nadrzędna (opcjonalnie)</Label>
+            <Select
+              value={formData.parent_id || 'none'}
+              onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
+            >
+              <SelectTrigger className="rounded-xl">
+                <SelectValue placeholder="Brak - kategoria główna" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Brak - kategoria główna</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-black/60">
+              Zostaw puste dla kategorii głównej lub wybierz kategorię nadrzędną
             </p>
           </div>
 

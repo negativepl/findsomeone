@@ -38,7 +38,9 @@ interface Post {
   price_min: number | null
   price_max: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | null
-  status: 'active' | 'closed' | 'completed'
+  status: 'active' | 'pending' | 'closed' | 'completed'
+  moderation_status: 'pending' | 'checking' | 'approved' | 'rejected' | 'flagged'
+  moderation_reason: string | null
   created_at: string
   views: number
   images: string[] | null
@@ -51,7 +53,7 @@ interface MyListingsClientProps {
   posts: Post[]
 }
 
-type FilterTab = 'all' | 'active' | 'closed' | 'completed'
+type FilterTab = 'all' | 'active' | 'rejected' | 'closed' | 'completed'
 
 export function MyListingsClient({ posts }: MyListingsClientProps) {
   const [activeTab, setActiveTab] = useState<FilterTab>('all')
@@ -62,11 +64,17 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
 
   const filteredPosts = posts.filter(post => {
     if (activeTab === 'all') return true
+    if (activeTab === 'rejected') {
+      return post.moderation_status === 'rejected'
+    }
     return post.status === activeTab
   })
 
   const getTabCount = (tab: FilterTab) => {
     if (tab === 'all') return posts.length
+    if (tab === 'rejected') {
+      return posts.filter(p => p.moderation_status === 'rejected').length
+    }
     return posts.filter(p => p.status === tab).length
   }
 
@@ -122,11 +130,11 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
               <span className="ml-2 text-xs opacity-60">({getTabCount('active')})</span>
             </TabsTrigger>
             <TabsTrigger
-              value="closed"
-              className="rounded-full data-[state=active]:bg-black data-[state=active]:text-white transition-all"
+              value="rejected"
+              className="rounded-full data-[state=active]:bg-red-600 data-[state=active]:text-white transition-all"
             >
-              Nieaktywne
-              <span className="ml-2 text-xs opacity-60">({getTabCount('closed')})</span>
+              Odrzucone
+              <span className="ml-2 text-xs opacity-60">({getTabCount('rejected')})</span>
             </TabsTrigger>
             <TabsTrigger
               value="completed"
@@ -180,20 +188,37 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
                         <Badge
                           variant="outline"
                           className={`rounded-full text-xs ${
-                            post.status === 'active'
+                            post.moderation_status === 'rejected'
+                              ? 'border-red-500 text-red-600 bg-red-50'
+                              : post.status === 'active'
                               ? 'border-green-500 text-green-600 bg-green-50'
                               : post.status === 'completed'
                               ? 'border-blue-500 text-blue-600 bg-blue-50'
                               : 'border-black/10 text-black/60'
                           }`}
                         >
-                          {post.status === 'active' ? '✓ Aktywne' : post.status === 'completed' ? 'Zakończone' : 'Nieaktywne'}
+                          {post.moderation_status === 'rejected'
+                            ? '✗ Odrzucone'
+                            : post.status === 'active'
+                            ? '✓ Aktywne'
+                            : post.status === 'completed'
+                            ? 'Zakończone'
+                            : 'Nieaktywne'}
                         </Badge>
                       </div>
 
                       <h3 className="text-xl font-bold text-black mb-3 group-hover:text-[#C44E35] transition-colors">
                         {post.title}
                       </h3>
+
+                      {/* Rejection reason */}
+                      {post.moderation_status === 'rejected' && post.moderation_reason && (
+                        <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-xl">
+                          <p className="text-sm text-red-800">
+                            <span className="font-semibold">Powód odrzucenia:</span> {post.moderation_reason}
+                          </p>
+                        </div>
+                      )}
 
                       {/* Meta info */}
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-black/60">
@@ -360,6 +385,7 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
                   ? 'Nie masz jeszcze żadnych ogłoszeń'
                   : `Nie masz ogłoszeń w kategorii "${
                       activeTab === 'active' ? 'Aktywne' :
+                      activeTab === 'rejected' ? 'Odrzucone' :
                       activeTab === 'closed' ? 'Nieaktywne' : 'Zakończone'
                     }"`
                 }
