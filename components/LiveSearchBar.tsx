@@ -124,13 +124,18 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
             setIsCityDropdownOpen(false)
           }
         } catch (error) {
-          console.error('Geocoding error:', error)
+          // Silently handle geocoding errors
           setUserLocation({ city: null, loading: false })
         }
       },
       (error) => {
-        console.error('Geolocation error:', error)
+        // Silently handle geolocation errors (user denied, unavailable, etc.)
         setUserLocation({ city: null, loading: false })
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 300000 // Cache position for 5 minutes
       }
     )
   }, [])
