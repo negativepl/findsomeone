@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 
 interface ScrollArrowsProps {
@@ -8,10 +8,41 @@ interface ScrollArrowsProps {
 }
 
 export function ScrollArrows({ containerId }: ScrollArrowsProps) {
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(false)
+
+  const checkScroll = () => {
+    const container = document.getElementById(containerId)
+    if (container) {
+      setCanScrollLeft(container.scrollLeft > 0)
+      setCanScrollRight(
+        container.scrollLeft < container.scrollWidth - container.clientWidth - 1
+      )
+    }
+  }
+
+  useEffect(() => {
+    const container = document.getElementById(containerId)
+    if (container) {
+      // Check initial state
+      checkScroll()
+
+      // Add scroll listener
+      container.addEventListener('scroll', checkScroll)
+
+      // Add resize listener to recheck on window resize
+      window.addEventListener('resize', checkScroll)
+
+      return () => {
+        container.removeEventListener('scroll', checkScroll)
+        window.removeEventListener('resize', checkScroll)
+      }
+    }
+  }, [containerId])
+
   const scrollLeft = () => {
     const container = document.getElementById(containerId)
     if (container) {
-      // Scroll by the width of the visible container
       const scrollAmount = container.clientWidth
       container.scrollBy({ left: -scrollAmount, behavior: 'smooth' })
     }
@@ -20,19 +51,20 @@ export function ScrollArrows({ containerId }: ScrollArrowsProps) {
   const scrollRight = () => {
     const container = document.getElementById(containerId)
     if (container) {
-      // Scroll by the width of the visible container
       const scrollAmount = container.clientWidth
       container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
     }
   }
 
   return (
-    <div className="hidden md:flex gap-2">
+    <>
       <Button
         variant="outline"
         size="icon"
         onClick={scrollLeft}
-        className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-10 w-10"
+        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-white bg-white/90 backdrop-blur-sm shadow-lg h-12 w-12 transition-all duration-300 ${
+          canScrollLeft ? 'opacity-0 group-hover/section:opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
         aria-label="Przewiń w lewo"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -43,13 +75,15 @@ export function ScrollArrows({ containerId }: ScrollArrowsProps) {
         variant="outline"
         size="icon"
         onClick={scrollRight}
-        className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-10 w-10"
+        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-white bg-white/90 backdrop-blur-sm shadow-lg h-12 w-12 transition-all duration-300 ${
+          canScrollRight ? 'opacity-0 group-hover/section:opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
         aria-label="Przewiń w prawo"
       >
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </Button>
-    </div>
+    </>
   )
 }

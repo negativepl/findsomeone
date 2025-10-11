@@ -294,25 +294,25 @@ export default async function DashboardPage({
                       {post.city}{post.district && `, ${post.district}`}
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
                         {post.profiles?.avatar_url ? (
                           <Image
                             src={post.profiles.avatar_url}
                             alt={post.profiles.full_name || 'User'}
-                            width={36}
-                            height={36}
-                            className="rounded-full"
+                            width={32}
+                            height={32}
+                            className="rounded-full flex-shrink-0"
                           />
                         ) : (
-                          <div className="w-9 h-9 rounded-full bg-black/10 flex items-center justify-center">
-                            <span className="text-sm font-semibold text-black">
+                          <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
+                            <span className="text-xs font-semibold text-black">
                               {post.profiles?.full_name?.charAt(0) || 'U'}
                             </span>
                           </div>
                         )}
-                        <div>
-                          <p className="text-sm font-semibold text-black">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-semibold text-black truncate">
                             {post.profiles?.full_name || 'Anonymous'}
                           </p>
                           {post.profiles?.rating && post.profiles.rating > 0 && (
@@ -325,8 +325,8 @@ export default async function DashboardPage({
 
                       {/* Price */}
                       {(post.price_min || post.price_max) ? (
-                        <div className="text-right">
-                          <p className="text-lg font-bold text-black">
+                        <div className="text-right flex-shrink-0">
+                          <p className="text-base font-bold text-black whitespace-nowrap">
                             {post.price_min && post.price_max
                               ? `${post.price_min}-${post.price_max} zł`
                               : post.price_min
@@ -334,7 +334,7 @@ export default async function DashboardPage({
                               : `${post.price_max} zł`}
                           </p>
                           {post.price_type && (
-                            <p className="text-xs text-black/60">
+                            <p className="text-xs text-black/60 whitespace-nowrap">
                               {post.price_type === 'hourly'
                                 ? 'za godzinę'
                                 : post.price_type === 'fixed'
@@ -345,8 +345,8 @@ export default async function DashboardPage({
                         </div>
                       ) : (
                         post.price_type === 'negotiable' && (
-                          <div className="text-right">
-                            <p className="text-sm text-black/60">Do negocjacji</p>
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-sm text-black/60 whitespace-nowrap">Do negocjacji</p>
                           </div>
                         )
                       )}

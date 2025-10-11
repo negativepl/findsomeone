@@ -174,33 +174,24 @@ create or replace function get_autocomplete_suggestions(
 returns table(suggestion text, match_count bigint) as $$
 begin
   return query
-  -- Extract common phrases from titles that match the prefix
+  -- Extract common phrases from titles ONLY (not descriptions) to avoid junk
   with matching_posts as (
     select
       strip_html_tags(title) as clean_title,
-      strip_html_tags(description) as clean_description,
       ts_rank(search_vector, websearch_to_tsquery('simple', search_prefix)) as rank
     from posts
     where
       status = 'active'
-      and (
-        title ilike '%' || search_prefix || '%'
-        or description ilike '%' || search_prefix || '%'
-      )
+      and title ilike '%' || search_prefix || '%'
     order by rank desc
     limit 50
   ),
-  -- Extract words and phrases
+  -- Extract words from titles only
   phrases as (
     select
       unnest(string_to_array(lower(clean_title), ' ')) as word
     from matching_posts
     where clean_title is not null
-    union all
-    select
-      unnest(string_to_array(lower(clean_description), ' ')) as word
-    from matching_posts
-    where clean_description is not null
   ),
   -- Filter relevant words (remove empty, short, and HTML artifacts)
   relevant_words as (
@@ -212,6 +203,8 @@ begin
       and trim(word) like lower(search_prefix) || '%'
       and trim(word) !~ '[<>]'  -- No angle brackets
       and trim(word) !~ '^&'     -- No HTML entities
+      and trim(word) !~ '^-'     -- No leading dash
+      and trim(word) !~ '-$'     -- No trailing dash
   )
   select
     clean_word as suggestion,

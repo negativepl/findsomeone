@@ -196,21 +196,14 @@ export async function GET(request: NextRequest) {
 
   const categories = Array.from(categoryMap.values()).slice(0, 3)
 
-  // 3. Search through actual posts for relevant phrases
-  const { data: posts } = await supabase
-    .from('posts')
-    .select('title, description')
-    .or(`title.ilike.%${query}%,description.ilike.%${query}%`)
-    .eq('status', 'active')
-    .limit(10)
-
   // Build intelligent suggestions from REAL data
   const suggestions: Array<{
     text: string
     type: 'category' | 'combo' | 'pattern' | 'popular' | 'trending' | 'post'
   }> = []
 
-  // 1. Add autocomplete from actual post content (MOST IMPORTANT!)
+  // 1. Add autocomplete from actual post TITLES only (MOST IMPORTANT!)
+  // The database function now only returns words from titles, not descriptions
   if (autocompleteSuggestions && autocompleteSuggestions.length > 0) {
     autocompleteSuggestions.forEach((item: any) => {
       if (item.suggestion && item.suggestion.length >= 3) {
@@ -222,33 +215,7 @@ export async function GET(request: NextRequest) {
     })
   }
 
-  // 2. Extract common phrases from post titles
-  if (posts && posts.length > 0) {
-    const phrases = new Set<string>()
-    posts.forEach((post: any) => {
-      // Extract relevant phrases from title
-      const titleWords = post.title.toLowerCase().split(' ')
-      const descWords = post.description.toLowerCase().split(' ')
-
-      // Find phrases containing the query
-      for (let i = 0; i < titleWords.length - 1; i++) {
-        const phrase = titleWords.slice(i, i + 3).join(' ')
-        if (phrase.includes(lowerQuery) && phrase.length <= 50) {
-          phrases.add(phrase)
-        }
-      }
-    })
-
-    // Add unique phrases as suggestions
-    Array.from(phrases).slice(0, 5).forEach(phrase => {
-      suggestions.push({
-        text: phrase,
-        type: 'post',
-      })
-    })
-  }
-
-  // 3. Add matching categories
+  // 2. Add matching categories
   categories?.forEach(cat => {
     suggestions.push({
       text: cat.name,
@@ -256,7 +223,7 @@ export async function GET(request: NextRequest) {
     })
   })
 
-  // 4. Add category-based suggestions if we have categories
+  // 3. Add category-based suggestions if we have categories
   if (categories && categories.length > 0 && query.length >= 3) {
     const mainCat = categories[0].name
     const topCities = ['Warszawa', 'Kraków', 'Wrocław']
@@ -278,7 +245,7 @@ export async function GET(request: NextRequest) {
     })
   }
 
-  // 5. Add matching popular searches from database
+  // 4. Add matching popular searches from database
   const { data: dbPopularSearches } = await supabase
     .from('search_queries')
     .select('query')

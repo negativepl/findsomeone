@@ -79,7 +79,10 @@ export default async function Home() {
         </h2>
         <p className="text-xl text-black/60 mb-10 max-w-2xl mx-auto leading-relaxed">
           Szukasz hydraulika, elektryka czy pomocy w sprzątaniu?
-          A może sam oferujesz usługi? FindSomeone łączy ludzi lokalnie.
+          A może sam oferujesz usługi?{' '}
+          <span className="font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent">
+            W FindSomeone łączymy ludzi lokalnie.
+          </span>
         </p>
 
         {/* Search Bar */}
@@ -88,14 +91,14 @@ export default async function Home() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0">
-          <Link href={user ? "/dashboard/posts/new" : "/signup"} className="w-full md:w-auto">
-            <Button size="lg" className="w-full md:w-auto text-lg px-12 py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all min-h-[56px] md:min-w-[200px]">
-              Dodaj ogłoszenie
-            </Button>
-          </Link>
           <Link href="/dashboard" className="w-full md:w-auto">
             <Button size="lg" variant="outline" className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all min-h-[56px] md:min-w-[200px]">
               Przeglądaj wszystkie
+            </Button>
+          </Link>
+          <Link href={user ? "/dashboard/posts/new" : "/signup"} className="w-full md:w-auto">
+            <Button size="lg" className="w-full md:w-auto text-lg px-12 py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all min-h-[56px] md:min-w-[200px]">
+              Dodaj ogłoszenie
             </Button>
           </Link>
         </div>
@@ -185,15 +188,15 @@ export default async function Home() {
           {[
             {
               name: 'Hydraulika',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
             },
             {
               name: 'Elektryka',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M17 19a1 1 0 0 1-1-1v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a1 1 0 0 1-1 1z"/><path d="M17 21v-2"/><path d="M19 14V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V10"/><path d="M21 21v-2"/><path d="M3 5V3"/><path d="M4 10a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a2 2 0 0 1-2 2z"/><path d="M7 5V3"/></svg>
             },
             {
               name: 'Sprzątanie',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="m16 22-1-4"/><path d="M19 13.99a1 1 0 0 0 1-1V12a2 2 0 0 0-2-2h-3a1 1 0 0 1-1-1V4a2 2 0 0 0-4 0v5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2v.99a1 1 0 0 0 1 1"/><path d="M5 14h14l1.973 6.767A1 1 0 0 1 20 22H4a1 1 0 0 1-.973-1.233z"/><path d="m8 22 1-4"/></svg>
             },
             {
               name: 'Budowa',
@@ -201,11 +204,11 @@ export default async function Home() {
             },
             {
               name: 'Ogrody',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12"/><path d="M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"/><path d="M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"/></svg>
             },
             {
               name: 'Transport',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
             },
             {
               name: 'IT',
@@ -248,15 +251,15 @@ export default async function Home() {
           {[
             {
               name: 'Hydraulika',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg>
             },
             {
               name: 'Elektryka',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M17 19a1 1 0 0 1-1-1v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a1 1 0 0 1-1 1z"/><path d="M17 21v-2"/><path d="M19 14V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V10"/><path d="M21 21v-2"/><path d="M3 5V3"/><path d="M4 10a2 2 0 0 1-2-2V6a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2a2 2 0 0 1-2 2z"/><path d="M7 5V3"/></svg>
             },
             {
               name: 'Sprzątanie',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="m16 22-1-4"/><path d="M19 13.99a1 1 0 0 0 1-1V12a2 2 0 0 0-2-2h-3a1 1 0 0 1-1-1V4a2 2 0 0 0-4 0v5a1 1 0 0 1-1 1H6a2 2 0 0 0-2 2v.99a1 1 0 0 0 1 1"/><path d="M5 14h14l1.973 6.767A1 1 0 0 1 20 22H4a1 1 0 0 1-.973-1.233z"/><path d="m8 22 1-4"/></svg>
             },
             {
               name: 'Budowa',
@@ -264,11 +267,11 @@ export default async function Home() {
             },
             {
               name: 'Ogrody',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12"/><path d="M12 22c4.2 0 7-1.667 7-5-4.2 0-7 1.667-7 5Z"/><path d="M12 22c-4.2 0-7-1.667-7-5 4.2 0 7 1.667 7 5Z"/></svg>
             },
             {
               name: 'Transport',
-              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+              icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"/><circle cx="17" cy="18" r="2"/><circle cx="7" cy="18" r="2"/></svg>
             },
             {
               name: 'IT',
@@ -305,24 +308,27 @@ export default async function Home() {
       {/* Seeking Posts Section */}
       {seekingPosts && seekingPosts.length > 0 && (
         <section className="container mx-auto px-6 py-12 md:py-14">
-          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm">
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
             <div className="flex items-center justify-between mb-8 md:mb-12">
               <div>
                 <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">Szukają pomocy</h3>
                 <p className="text-lg text-black/60">Sprawdź kto potrzebuje Twoich usług</p>
               </div>
-              <div className="hidden md:flex items-center gap-4">
+              <div className="hidden md:block">
                 <Link href="/dashboard?type=seeking">
                   <Button variant="outline" className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5">
                     Zobacz wszystkie
                   </Button>
                 </Link>
-                <ScrollArrows containerId="seeking-posts-scroll" />
               </div>
             </div>
 
             {/* Horizontal Scroll for all devices */}
-            <div id="seeking-posts-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
+            <div className="relative">
+              <div className="hidden md:block">
+                <ScrollArrows containerId="seeking-posts-scroll" />
+              </div>
+              <div id="seeking-posts-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
               <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {seekingPosts.map((post: any) => (
                 <Link
@@ -380,25 +386,25 @@ export default async function Home() {
                         {post.city}{post.district && `, ${post.district}`}
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
                           {post.profiles?.avatar_url ? (
                             <Image
                               src={post.profiles.avatar_url}
                               alt={post.profiles.full_name || 'User'}
-                              width={36}
-                              height={36}
-                              className="rounded-full"
+                              width={32}
+                              height={32}
+                              className="rounded-full flex-shrink-0"
                             />
                           ) : (
-                            <div className="w-9 h-9 rounded-full bg-black/10 flex items-center justify-center">
-                              <span className="text-sm font-semibold text-black">
+                            <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-semibold text-black">
                                 {post.profiles?.full_name?.charAt(0) || 'U'}
                               </span>
                             </div>
                           )}
-                          <div>
-                            <p className="text-sm font-semibold text-black">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-semibold text-black truncate">
                               {post.profiles?.full_name || 'Anonymous'}
                             </p>
                             {post.profiles?.rating && post.profiles.rating > 0 && (
@@ -411,8 +417,8 @@ export default async function Home() {
 
                         {/* Price */}
                         {(post.price_min || post.price_max) ? (
-                          <div className="text-right">
-                            <p className="text-lg font-bold text-black">
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-base font-bold text-black whitespace-nowrap">
                               {post.price_min && post.price_max
                                 ? `${post.price_min}-${post.price_max} zł`
                                 : post.price_min
@@ -420,7 +426,7 @@ export default async function Home() {
                                 : `${post.price_max} zł`}
                             </p>
                             {post.price_type && (
-                              <p className="text-xs text-black/60">
+                              <p className="text-xs text-black/60 whitespace-nowrap">
                                 {post.price_type === 'hourly'
                                   ? 'za godzinę'
                                   : post.price_type === 'fixed'
@@ -431,8 +437,8 @@ export default async function Home() {
                           </div>
                         ) : (
                           post.price_type === 'negotiable' && (
-                            <div className="text-right">
-                              <p className="text-sm text-black/60">Do negocjacji</p>
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-sm text-black/60 whitespace-nowrap">Do negocjacji</p>
                             </div>
                           )
                         )}
@@ -442,6 +448,7 @@ export default async function Home() {
                 </Link>
               ))}
               </div>
+              </div>
             </div>
           </div>
         </section>
@@ -450,24 +457,27 @@ export default async function Home() {
       {/* Offering Posts Section */}
       {offeringPosts && offeringPosts.length > 0 && (
         <section className="container mx-auto px-6 py-12 md:py-14">
-          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm">
+          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
             <div className="flex items-center justify-between mb-8 md:mb-12">
               <div>
                 <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">Oferują usługi</h3>
                 <p className="text-lg text-black/60">Znajdź specjalistów w Twojej okolicy</p>
               </div>
-              <div className="hidden md:flex items-center gap-4">
+              <div className="hidden md:block">
                 <Link href="/dashboard?type=offering">
                   <Button variant="outline" className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5">
                     Zobacz wszystkie
                   </Button>
                 </Link>
-                <ScrollArrows containerId="offering-posts-scroll" />
               </div>
             </div>
 
             {/* Horizontal Scroll for all devices */}
-            <div id="offering-posts-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
+            <div className="relative">
+              <div className="hidden md:block">
+                <ScrollArrows containerId="offering-posts-scroll" />
+              </div>
+              <div id="offering-posts-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
               <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {offeringPosts.map((post: any) => (
                 <Link
@@ -525,25 +535,25 @@ export default async function Home() {
                         {post.city}{post.district && `, ${post.district}`}
                       </div>
 
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
                           {post.profiles?.avatar_url ? (
                             <Image
                               src={post.profiles.avatar_url}
                               alt={post.profiles.full_name || 'User'}
-                              width={36}
-                              height={36}
-                              className="rounded-full"
+                              width={32}
+                              height={32}
+                              className="rounded-full flex-shrink-0"
                             />
                           ) : (
-                            <div className="w-9 h-9 rounded-full bg-black/10 flex items-center justify-center">
-                              <span className="text-sm font-semibold text-black">
+                            <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-semibold text-black">
                                 {post.profiles?.full_name?.charAt(0) || 'U'}
                               </span>
                             </div>
                           )}
-                          <div>
-                            <p className="text-sm font-semibold text-black">
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-semibold text-black truncate">
                               {post.profiles?.full_name || 'Anonymous'}
                             </p>
                             {post.profiles?.rating && post.profiles.rating > 0 && (
@@ -556,8 +566,8 @@ export default async function Home() {
 
                         {/* Price */}
                         {(post.price_min || post.price_max) ? (
-                          <div className="text-right">
-                            <p className="text-lg font-bold text-black">
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-base font-bold text-black whitespace-nowrap">
                               {post.price_min && post.price_max
                                 ? `${post.price_min}-${post.price_max} zł`
                                 : post.price_min
@@ -565,7 +575,7 @@ export default async function Home() {
                                 : `${post.price_max} zł`}
                             </p>
                             {post.price_type && (
-                              <p className="text-xs text-black/60">
+                              <p className="text-xs text-black/60 whitespace-nowrap">
                                 {post.price_type === 'hourly'
                                   ? 'za godzinę'
                                   : post.price_type === 'fixed'
@@ -576,8 +586,8 @@ export default async function Home() {
                           </div>
                         ) : (
                           post.price_type === 'negotiable' && (
-                            <div className="text-right">
-                              <p className="text-sm text-black/60">Do negocjacji</p>
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-sm text-black/60 whitespace-nowrap">Do negocjacji</p>
                             </div>
                           )
                         )}
@@ -586,6 +596,7 @@ export default async function Home() {
                   </Card>
                 </Link>
               ))}
+              </div>
               </div>
             </div>
           </div>

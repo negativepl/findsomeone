@@ -298,31 +298,31 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
     switch (type) {
       case 'category':
         return (
-          <svg className="w-4 h-4 text-black/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-black/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
         )
       case 'trending':
         return (
-          <svg className="w-4 h-4 text-[#C44E35] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-black/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
           </svg>
         )
       case 'popular':
         return (
-          <svg className="w-4 h-4 text-black/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-black/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
           </svg>
         )
       case 'post':
         return (
-          <svg className="w-4 h-4 text-[#C44E35] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-black/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
         )
       default:
         return (
-          <svg className="w-4 h-4 text-black/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-black/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         )
@@ -358,189 +358,304 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
 
             {/* Enhanced Dropdown with sections */}
             {isOpen && !isLoading && hasResults && (
-              <Card className="absolute top-full left-0 right-0 mt-[1.125rem] p-4 border-2 border-black/10 rounded-3xl bg-white shadow-lg max-h-[500px] overflow-y-auto z-50">
-
-                {/* Query correction - "Czy chodziło ci o..." */}
-                {results.queryCorrection && searchQuery && (
-                  <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl">
-                    <p className="text-xs text-blue-600 mb-2">Czy chodziło ci o:</p>
-                    <button
-                      onClick={() => {
-                        setSearchQuery(results.queryCorrection!.corrected)
-                        handleSearchChange(results.queryCorrection!.corrected)
-                      }}
-                      className="text-sm font-semibold text-blue-700 hover:text-blue-900 hover:underline"
-                    >
-                      {results.queryCorrection.corrected}
-                    </button>
+              <Card className="absolute top-full left-0 right-0 mt-[1.125rem] border-2 border-black/10 rounded-3xl bg-white shadow-lg max-h-[500px] z-50 flex flex-col overflow-hidden">
+                {/* Scrollable content */}
+                <div className="overflow-y-auto p-4 flex-1">
+                  {/* Query correction - "Czy chodziło ci o..." */}
+                  {results.queryCorrection && searchQuery && (
+                  <div className="mb-4 p-4 bg-black/5 rounded-xl border border-black/10">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-black/10 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-5 h-5 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs text-black/60 mb-2">Czy chodziło ci o:</p>
+                        <button
+                          onClick={() => {
+                            setSearchQuery(results.queryCorrection!.corrected)
+                            handleSearchChange(results.queryCorrection!.corrected)
+                          }}
+                          className="text-base font-semibold text-black hover:text-[#C44E35] transition-colors"
+                        >
+                          {results.queryCorrection.corrected}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
 
                 {/* Smart AI suggestions - show first for logged-in users */}
                 {results.smart && results.smart.length > 0 && !searchQuery && (
-                  <div className="mb-4">
-                    <p className="text-xs font-semibold text-black/40 uppercase mb-2 px-2 flex items-center gap-1">
-                      <svg className="w-3 h-3 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                      </svg>
-                      Dla Ciebie (AI)
-                    </p>
-                    {results.smart.map((item, index) => (
-                      <button
-                        key={`smart-${index}`}
-                        onClick={() => {
-                          setSearchQuery(item.text)
-                          saveRecentSearch(item.text)
-                          trackSearch(item.text, 'smart')
-                          setIsOpen(false)
-                          const params = new URLSearchParams()
-                          params.set('search', item.text)
-                          if (cityQuery) params.set('city', cityQuery)
-                          router.push(`/dashboard?${params}`)
-                        }}
-                        className="w-full text-left px-3 py-2.5 hover:bg-black/5 rounded-xl transition-colors flex items-center gap-3"
-                      >
-                        <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3 px-2">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#C44E35] to-[#B33D2A] flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                         </svg>
-                        <span className="text-sm text-black font-medium">{item.text}</span>
-                        {item.score && item.score > 75 && (
-                          <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35] text-xs px-2 py-0 ml-auto">
-                            Polecane
-                          </Badge>
-                        )}
-                      </button>
-                    ))}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-black uppercase tracking-wide">Dopasowane dla Ciebie</p>
+                        <p className="text-xs text-black/50">Na podstawie Twojej aktywności</p>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      {results.smart.map((item, index) => (
+                        <button
+                          key={`smart-${index}`}
+                          onClick={() => {
+                            setSearchQuery(item.text)
+                            saveRecentSearch(item.text)
+                            trackSearch(item.text, 'smart')
+                            setIsOpen(false)
+                            const params = new URLSearchParams()
+                            params.set('search', item.text)
+                            if (cityQuery) params.set('city', cityQuery)
+                            router.push(`/dashboard?${params}`)
+                          }}
+                          className="w-full text-left px-3 py-3 hover:bg-gradient-to-r hover:from-[#C44E35]/5 hover:to-[#B33D2A]/5 rounded-xl transition-all flex items-center gap-3 group border border-transparent hover:border-[#C44E35]/10"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C44E35]/10 to-[#B33D2A]/10 flex items-center justify-center flex-shrink-0 group-hover:from-[#C44E35]/20 group-hover:to-[#B33D2A]/20 transition-all">
+                            <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                            </svg>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="text-sm text-black font-semibold block">{item.text}</span>
+                            {item.score && (
+                              <span className="text-xs text-black/40">Dopasowanie: {item.score}%</span>
+                            )}
+                          </div>
+                          {item.score && item.score > 75 && (
+                            <Badge className="rounded-full bg-gradient-to-r from-[#C44E35] to-[#B33D2A] text-white text-xs px-2.5 py-0.5 border-0 shadow-sm">
+                              Top
+                            </Badge>
+                          )}
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                )}
+
+                {/* Separator after smart suggestions */}
+                {results.smart && results.smart.length > 0 && !searchQuery && recentSearches.length > 0 && (
+                  <div className="border-t border-black/5 my-4"></div>
                 )}
 
                 {/* Recent searches - show when no query */}
                 {recentSearches.length > 0 && !searchQuery && (
-                  <div className="mb-4">
-                    <p className="text-xs font-semibold text-black/40 uppercase mb-2 px-2">Ostatnie wyszukiwania</p>
-                    {recentSearches.map((search, index) => (
-                      <button
-                        key={`recent-${index}`}
-                        onClick={() => {
-                          setSearchQuery(search)
-                          handleSearchChange(search)
-                        }}
-                        className="w-full text-left px-3 py-2.5 hover:bg-black/5 rounded-xl transition-colors flex items-center gap-3"
-                      >
-                        <svg className="w-4 h-4 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3 px-2">
+                      <div className="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span className="text-sm text-black">{search}</span>
-                      </button>
-                    ))}
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-black uppercase tracking-wide">Ostatnie wyszukiwania</p>
+                        <p className="text-xs text-black/50">Twoja historia</p>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      {recentSearches.map((search, index) => (
+                        <button
+                          key={`recent-${index}`}
+                          onClick={() => {
+                            setSearchQuery(search)
+                            handleSearchChange(search)
+                          }}
+                          className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">
+                            <svg className="w-4 h-4 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          </div>
+                          <span className="text-sm text-black font-medium flex-1">{search}</span>
+                          <svg className="w-4 h-4 text-black/30 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                )}
+
+                {/* Separator before trending */}
+                {results.trending.length > 0 && !searchQuery && (recentSearches.length > 0 || (results.smart && results.smart.length > 0)) && (
+                  <div className="border-t border-black/5 my-4"></div>
                 )}
 
                 {/* Trending - show when no query */}
                 {results.trending.length > 0 && !searchQuery && (
-                  <div className="mb-4">
-                    <p className="text-xs font-semibold text-black/40 uppercase mb-2 px-2 flex items-center gap-1">
-                      <svg className="w-3 h-3 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                      Trendy w tym tygodniu
-                    </p>
-                    {results.trending.map((item, index) => (
-                      <button
-                        key={`trending-${index}`}
-                        onClick={() => {
-                          setSearchQuery(item.text)
-                          saveRecentSearch(item.text)
-                          trackSearch(item.text, 'trending') // Track click
-                          setIsOpen(false)
-                          const params = new URLSearchParams()
-                          params.set('search', item.text)
-                          if (cityQuery) params.set('city', cityQuery)
-                          router.push(`/dashboard?${params}`)
-                        }}
-                        className="w-full text-left px-3 py-2.5 hover:bg-black/5 rounded-xl transition-colors flex items-center gap-3"
-                      >
-                        {getSuggestionIcon('trending')}
-                        <span className="text-sm text-black font-medium">{item.text}</span>
-                      </button>
-                    ))}
+                  <div className="mb-6">
+                    <div className="flex items-center gap-2 mb-3 px-2">
+                      <div className="w-6 h-6 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-black uppercase tracking-wide">Trendy w tym tygodniu</p>
+                        <p className="text-xs text-black/50">Najczęściej wyszukiwane</p>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      {results.trending.map((item, index) => (
+                        <button
+                          key={`trending-${index}`}
+                          onClick={() => {
+                            setSearchQuery(item.text)
+                            saveRecentSearch(item.text)
+                            trackSearch(item.text, 'trending')
+                            setIsOpen(false)
+                            const params = new URLSearchParams()
+                            params.set('search', item.text)
+                            if (cityQuery) params.set('city', cityQuery)
+                            router.push(`/dashboard?${params}`)
+                          }}
+                          className="w-full text-left px-3 py-3 hover:bg-[#C44E35]/5 rounded-xl transition-all flex items-center gap-3 group"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C44E35]/20 transition-colors">
+                            <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <span className="text-sm text-black font-semibold">{item.text}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-[#C44E35] text-xs font-medium px-2 py-1 rounded-full bg-[#C44E35]/10">
+                            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M12.5 2C6.71 2 2 6.71 2 12.5S6.71 23 12.5 23 23 18.29 23 12.5 18.29 2 12.5 2zm0 2c4.69 0 8.5 3.81 8.5 8.5s-3.81 8.5-8.5 8.5S4 17.19 4 12.5 7.81 4 12.5 4zM11 7v6.414l4.293 4.293 1.414-1.414L13 12.586V7h-2z"/>
+                            </svg>
+                            #{index + 1}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
                   </div>
+                )}
+
+                {/* Separator before popular */}
+                {results.popular.length > 0 && !searchQuery && results.trending.length > 0 && (
+                  <div className="border-t border-black/5 my-4"></div>
                 )}
 
                 {/* Popular searches - show when no query */}
                 {results.popular.length > 0 && !searchQuery && (
-                  <div className="mb-2">
-                    <p className="text-xs font-semibold text-black/40 uppercase mb-2 px-2">Popularne wyszukiwania</p>
-                    {results.popular.map((item, index) => (
-                      <button
-                        key={`popular-${index}`}
-                        onClick={() => {
-                          setSearchQuery(item.text)
-                          saveRecentSearch(item.text)
-                          trackSearch(item.text, 'popular') // Track click
-                          setIsOpen(false)
-                          const params = new URLSearchParams()
-                          params.set('search', item.text)
-                          if (cityQuery) params.set('city', cityQuery)
-                          router.push(`/dashboard?${params}`)
-                        }}
-                        className="w-full text-left px-3 py-2.5 hover:bg-black/5 rounded-xl transition-colors flex items-center gap-3"
-                      >
-                        {getSuggestionIcon('popular')}
-                        <span className="text-sm text-black">{item.text}</span>
-                      </button>
-                    ))}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-3 px-2">
+                      <div className="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-black uppercase tracking-wide">Popularne wyszukiwania</p>
+                        <p className="text-xs text-black/50">W ciągu ostatniego tygodnia</p>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      {results.popular.map((item, index) => (
+                        <button
+                          key={`popular-${index}`}
+                          onClick={() => {
+                            setSearchQuery(item.text)
+                            saveRecentSearch(item.text)
+                            trackSearch(item.text, 'popular')
+                            setIsOpen(false)
+                            const params = new URLSearchParams()
+                            params.set('search', item.text)
+                            if (cityQuery) params.set('city', cityQuery)
+                            router.push(`/dashboard?${params}`)
+                          }}
+                          className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">
+                            <svg className="w-4 h-4 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                            </svg>
+                          </div>
+                          <span className="text-sm text-black font-medium flex-1">{item.text}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
 
                 {/* Search suggestions - show when typing */}
                 {results.suggestions.length > 0 && searchQuery && (
-                  <div className="mb-2">
-                    <p className="text-xs font-semibold text-black/40 uppercase mb-2 px-2">Sugestie</p>
-                    {results.suggestions.map((suggestion, index) => (
-                      <button
-                        key={`suggestion-${index}`}
-                        onClick={() => {
-                          setSearchQuery(suggestion.text)
-                          saveRecentSearch(suggestion.text)
-                          trackSearch(suggestion.text, 'suggestion') // Track click
-                          setIsOpen(false)
-                          const params = new URLSearchParams()
-                          params.set('search', suggestion.text)
-                          if (cityQuery) params.set('city', cityQuery)
-                          router.push(`/dashboard?${params}`)
-                        }}
-                        className="w-full text-left px-3 py-2.5 hover:bg-black/5 rounded-xl transition-colors flex items-center gap-3 group"
-                      >
-                        {getSuggestionIcon(suggestion.type)}
-                        <span className="text-sm text-black/70 flex-1">
-                          {highlightText(suggestion.text, searchQuery)}
-                        </span>
-                        {suggestion.type === 'trending' && (
-                          <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35] text-xs px-2 py-0">
-                            Popularne
-                          </Badge>
-                        )}
-                      </button>
-                    ))}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 mb-3 px-2">
+                      <div className="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-xs font-bold text-black uppercase tracking-wide">Sugestie</p>
+                        <p className="text-xs text-black/50">Dla: "{searchQuery}"</p>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      {results.suggestions.map((suggestion, index) => (
+                        <button
+                          key={`suggestion-${index}`}
+                          onClick={() => {
+                            setSearchQuery(suggestion.text)
+                            saveRecentSearch(suggestion.text)
+                            trackSearch(suggestion.text, 'suggestion')
+                            setIsOpen(false)
+                            const params = new URLSearchParams()
+                            params.set('search', suggestion.text)
+                            if (cityQuery) params.set('city', cityQuery)
+                            router.push(`/dashboard?${params}`)
+                          }}
+                          className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">
+                            {getSuggestionIcon(suggestion.type)}
+                          </div>
+                          <span className="text-sm text-black font-medium flex-1">
+                            {highlightText(suggestion.text, searchQuery)}
+                          </span>
+                          {suggestion.type === 'trending' && (
+                            <Badge className="rounded-full bg-[#C44E35] text-white text-xs px-2.5 py-0.5 border-0">
+                              Trend
+                            </Badge>
+                          )}
+                          <svg className="w-4 h-4 text-black/30 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
 
-                {/* See all results - show when typing */}
+                </div>
+
+                {/* Sticky button at bottom - "See all results" */}
                 {searchQuery && searchQuery.length >= 2 && (
-                  <Link
-                    href={`/dashboard?search=${encodeURIComponent(searchQuery)}${cityQuery ? `&city=${encodeURIComponent(cityQuery)}` : ''}`}
-                    onClick={() => {
-                      saveRecentSearch(searchQuery)
-                      setIsOpen(false)
-                    }}
-                    className="flex items-center justify-center gap-2 w-full text-center py-3 text-sm font-medium text-[#C44E35] hover:bg-[#C44E35]/5 rounded-xl transition-colors mt-2"
-                  >
-                    <span>Zobacz wszystkie wyniki dla "{searchQuery}"</span>
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </Link>
+                  <div className="p-4 bg-white">
+                    <Link
+                      href={`/dashboard?search=${encodeURIComponent(searchQuery)}${cityQuery ? `&city=${encodeURIComponent(cityQuery)}` : ''}`}
+                      onClick={() => {
+                        saveRecentSearch(searchQuery)
+                        setIsOpen(false)
+                      }}
+                      className="flex items-center justify-center gap-2 w-full text-center py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-[#C44E35] to-[#B33D2A] hover:from-[#B33D2A] hover:to-[#A32E1F] rounded-xl transition-all shadow-sm hover:shadow-md"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      <span>Zobacz wszystkie wyniki dla "{searchQuery}"</span>
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </Link>
+                  </div>
                 )}
               </Card>
             )}
