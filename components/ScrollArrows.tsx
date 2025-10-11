@@ -33,8 +33,9 @@ export function ScrollArrows({ containerId }: ScrollArrowsProps) {
         size="icon"
         onClick={scrollLeft}
         className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-10 w-10"
+        aria-label="Przewiń w lewo"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
         </svg>
       </Button>
@@ -43,8 +44,9 @@ export function ScrollArrows({ containerId }: ScrollArrowsProps) {
         size="icon"
         onClick={scrollRight}
         className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-10 w-10"
+        aria-label="Przewiń w prawo"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </Button>
