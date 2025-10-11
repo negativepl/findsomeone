@@ -39,6 +39,11 @@ export default async function AdminPage() {
     .from('search_synonyms')
     .select('*', { count: 'exact', head: true })
 
+  const { count: moderationCount } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact', head: true })
+    .eq('moderation_status', 'flagged')
+
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} showAddButton={false} />
@@ -116,6 +121,31 @@ export default async function AdminPage() {
               <CardContent>
                 <p className="text-black/60">
                   Zarządzaj zbanowanymi użytkownikami - przeglądaj i odblokuj dostęp
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/moderation">
+            <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full">
+              <CardHeader>
+                <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-3">
+                  <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl flex items-center gap-2">
+                  Moderacja ogłoszeń
+                  {moderationCount && moderationCount > 0 ? (
+                    <span className="text-xs font-semibold bg-[#C44E35]/10 text-[#C44E35] px-2 py-1 rounded-full">
+                      {moderationCount}
+                    </span>
+                  ) : null}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-black/60">
+                  Sprawdzaj i zatwierdzaj ogłoszenia wymagające weryfikacji
                 </p>
               </CardContent>
             </Card>

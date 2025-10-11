@@ -31,6 +31,13 @@ export function NewPostClient() {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showModerationModal, setShowModerationModal] = useState(false)
+  const [moderationStep, setModerationStep] = useState<'saving' | 'validating' | 'ai' | 'done'>('saving')
+  const [moderationResult, setModerationResult] = useState<{
+    status: string
+    score: number
+    reasons: string[]
+  } | null>(null)
 
   const [formData, setFormData] = useState({
     title: '',
@@ -58,6 +65,8 @@ export function NewPostClient() {
     e.preventDefault()
     setLoading(true)
     setError(null)
+    setShowModerationModal(true)
+    setModerationStep('saving')
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -73,7 +82,7 @@ export function NewPostClient() {
         .eq('slug', formData.category)
         .single()
 
-      const { error: insertError } = await supabase.from('posts').insert({
+      const { data: newPost, error: insertError } = await supabase.from('posts').insert({
         user_id: user.id,
         title: formData.title,
         description: formData.description,
@@ -85,16 +94,37 @@ export function NewPostClient() {
         price_max: formData.priceMax ? parseFloat(formData.priceMax) : null,
         price_type: formData.priceType,
         images: images.length > 0 ? images : null,
-        status: 'active',
-      })
+        status: 'pending',
+        moderation_status: 'checking',
+      }).select().single()
 
       if (insertError) throw insertError
+
+      setModerationStep('validating')
+
+      // Trigger moderation and wait for result
+      if (newPost) {
+        setModerationStep('ai')
+        const moderationResponse = await fetch('/api/moderate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ postId: newPost.id }),
+        })
+
+        const moderationData = await moderationResponse.json()
+        setModerationResult(moderationData)
+        setModerationStep('done')
+
+        // Wait 2 seconds to show result
+        await new Promise(resolve => setTimeout(resolve, 2000))
+      }
 
       router.push('/dashboard/my-listings')
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Wystąpił błąd')
       setLoading(false)
+      setShowModerationModal(false)
     }
   }
 
@@ -109,42 +139,72 @@ export function NewPostClient() {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Type */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
-              <Select
-                value={formData.type}
-                onValueChange={(value: 'seeking' | 'offering') =>
-                  setFormData({ ...formData, type: value })
-                }
-              >
-                <SelectTrigger className="rounded-2xl border-2 border-black/10 h-12">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="seeking">Szukam usługi</SelectItem>
-                  <SelectItem value="offering">Oferuję usługę</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Title, Category and Type in one row */}
+            <div className="grid md:grid-cols-[1fr_280px_280px] gap-4">
+              {/* Title */}
+              <div className="space-y-3">
+                <Label htmlFor="title" className="text-base font-semibold text-black">
+                  Tytuł ogłoszenia *
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="title"
+                    placeholder={
+                      formData.type === 'seeking'
+                        ? 'np. Szukam hydraulika do naprawy kranu'
+                        : 'np. Oferuję usługi hydrauliczne - naprawy, instalacje'
+                    }
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    required
+                    maxLength={80}
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-black/40">
+                    {formData.title.length}/80
+                  </span>
+                </div>
+              </div>
 
-            {/* Title */}
-            <div className="space-y-3">
-              <Label htmlFor="title" className="text-base font-semibold text-black">
-                Tytuł ogłoszenia *
-              </Label>
-              <Input
-                id="title"
-                placeholder={
-                  formData.type === 'seeking'
-                    ? 'np. Szukam hydraulika do naprawy kranu'
-                    : 'np. Oferuję usługi hydrauliczne - naprawy, instalacje'
-                }
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                required
-                className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-              />
+              {/* Category */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold text-black">Kategoria *</Label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  required
+                >
+                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                    <SelectValue placeholder="Wybierz kategorię" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIES.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Type */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value: 'seeking' | 'offering') =>
+                    setFormData({ ...formData, type: value })
+                  }
+                >
+                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="seeking">Szukam usługi</SelectItem>
+                    <SelectItem value="offering">Oferuję usługi</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {/* Description */}
@@ -170,26 +230,6 @@ export function NewPostClient() {
               userId={userId}
               maxImages={6}
             />
-
-            {/* Category */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">Kategoria (opcjonalnie)</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
-              >
-                <SelectTrigger className="rounded-2xl border-2 border-black/10 h-12">
-                  <SelectValue placeholder="Wybierz kategorię" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
 
             {/* Location */}
             <div className="grid md:grid-cols-2 gap-4">
@@ -221,9 +261,9 @@ export function NewPostClient() {
             </div>
 
             {/* Price */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <Label className="text-base font-semibold text-black">Budżet (opcjonalnie)</Label>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-[1fr_1fr_280px] gap-4">
                 <div className="space-y-3">
                   <Label htmlFor="priceMin" className="text-sm text-black/60">
                     Cena minimalna (zł)
@@ -254,22 +294,25 @@ export function NewPostClient() {
                     className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
                   />
                 </div>
+                <div className="space-y-3">
+                  <Label className="text-sm text-black/60">Typ ceny</Label>
+                  <Select
+                    value={formData.priceType}
+                    onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
+                      setFormData({ ...formData, priceType: value })
+                    }
+                  >
+                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hourly">Za godzinę</SelectItem>
+                      <SelectItem value="fixed">Stała cena</SelectItem>
+                      <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <Select
-                value={formData.priceType}
-                onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
-                  setFormData({ ...formData, priceType: value })
-                }
-              >
-                <SelectTrigger className="rounded-2xl border-2 border-black/10 h-12">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hourly">Za godzinę</SelectItem>
-                  <SelectItem value="fixed">Stała cena</SelectItem>
-                  <SelectItem value="negotiable">Do negocjacji</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             {error && (
@@ -278,27 +321,141 @@ export function NewPostClient() {
               </div>
             )}
 
-            <div className="flex flex-col md:flex-row gap-3 pt-4">
-              <Link href="/dashboard" className="flex-1">
+            {/* Footer with buttons */}
+            <div className="mt-8 pt-6 border-t-2 border-black/5 rounded-b-3xl">
+              <div className="flex flex-col md:flex-row gap-3 md:justify-end">
+                <Link href="/dashboard">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full md:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 px-6 text-sm"
+                  >
+                    Anuluj
+                  </Button>
+                </Link>
                 <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-12 text-base"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full md:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
                 >
-                  Anuluj
+                  {loading ? 'Dodawanie...' : 'Opublikuj ogłoszenie'}
                 </Button>
-              </Link>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12 text-base font-semibold"
-              >
-                {loading ? 'Dodawanie...' : 'Opublikuj ogłoszenie'}
-              </Button>
+              </div>
             </div>
           </form>
         </CardContent>
       </Card>
+
+      {/* Moderation Modal */}
+      {showModerationModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+            {moderationStep !== 'done' ? (
+              <>
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg className="w-8 h-8 text-[#C44E35] animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                  </div>
+                  <h3 className="text-2xl font-bold text-black mb-2">
+                    Sprawdzanie ogłoszenia
+                  </h3>
+                  <p className="text-black/60">
+                    Proszę czekać, weryfikujemy treść...
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3">
+                    {moderationStep === 'saving' ? (
+                      <div className="w-5 h-5 border-2 border-[#C44E35] border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    <span className="text-black">Zapisywanie ogłoszenia</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    {moderationStep === 'validating' ? (
+                      <div className="w-5 h-5 border-2 border-[#C44E35] border-t-transparent rounded-full animate-spin"></div>
+                    ) : moderationStep === 'saving' ? (
+                      <div className="w-5 h-5 border-2 border-black/20 rounded-full"></div>
+                    ) : (
+                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    <span className="text-black">Walidacja podstawowa</span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    {moderationStep === 'ai' ? (
+                      <div className="w-5 h-5 border-2 border-[#C44E35] border-t-transparent rounded-full animate-spin"></div>
+                    ) : moderationStep === 'saving' || moderationStep === 'validating' ? (
+                      <div className="w-5 h-5 border-2 border-black/20 rounded-full"></div>
+                    ) : (
+                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                    <span className="text-black">Analiza AI</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                {moderationResult?.status === 'approved' ? (
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Ogłoszenie zatwierdzone!
+                    </h3>
+                    <p className="text-black/60">
+                      Twoje ogłoszenie jest aktywne i widoczne dla wszystkich użytkowników.
+                    </p>
+                  </div>
+                ) : moderationResult?.status === 'flagged' ? (
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Wymaga weryfikacji
+                    </h3>
+                    <p className="text-black/60">
+                      Twoje ogłoszenie zostanie sprawdzone przez moderatora w ciągu 24 godzin.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                      <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Ogłoszenie odrzucone
+                    </h3>
+                    <p className="text-black/60">
+                      Twoje ogłoszenie nie spełnia wymogów i zostało odrzucone.
+                    </p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   )
 }

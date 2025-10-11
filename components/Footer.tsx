@@ -21,7 +21,7 @@ export function Footer() {
               <LogoWithText />
             </Link>
             <p className="text-sm text-black/60 mt-4 leading-relaxed">
-              Łączymy ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi.
+              Znajdź specjalistów w Twojej okolicy lub zareklamuj swoje usługi. Wszystko w jednym miejscu.
             </p>
           </div>
 

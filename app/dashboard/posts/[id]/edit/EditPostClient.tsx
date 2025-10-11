@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
 
@@ -121,56 +121,81 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
   return (
     <main className="container mx-auto px-6 py-10">
-      {/* Header */}
-      <div className="mb-10">
-        <h2 className="text-4xl font-bold text-black mb-3">Edytuj ogłoszenie</h2>
-        <p className="text-lg text-black/60">
-          Zaktualizuj informacje w swoim ogłoszeniu
-        </p>
-      </div>
-
       <Card className="border-0 rounded-3xl bg-white">
         <CardHeader className="pb-6">
-          <CardTitle className="text-2xl font-bold text-black">Formularz edycji</CardTitle>
+          <CardTitle className="text-3xl font-bold text-black">Formularz edycji</CardTitle>
+          <CardDescription className="text-base text-black/60">
+            Zaktualizuj informacje w swoim ogłoszeniu
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Type */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
-              <Select
-                value={formData.type}
-                onValueChange={(value: 'seeking' | 'offering') =>
-                  setFormData({ ...formData, type: value })
-                }
-              >
-                <SelectTrigger className="rounded-2xl border-2 border-black/10 h-12">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="seeking">Szukam usługi</SelectItem>
-                  <SelectItem value="offering">Oferuję usługę</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Title, Category and Type in one row */}
+            <div className="grid md:grid-cols-[1fr_280px_280px] gap-4">
+              {/* Title */}
+              <div className="space-y-3">
+                <Label htmlFor="title" className="text-base font-semibold text-black">
+                  Tytuł ogłoszenia *
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="title"
+                    placeholder={
+                      formData.type === 'seeking'
+                        ? 'np. Szukam hydraulika do naprawy kranu'
+                        : 'np. Oferuję usługi hydrauliczne - naprawy, instalacje'
+                    }
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    required
+                    maxLength={80}
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-black/40">
+                    {formData.title.length}/80
+                  </span>
+                </div>
+              </div>
 
-            {/* Title */}
-            <div className="space-y-3">
-              <Label htmlFor="title" className="text-base font-semibold text-black">
-                Tytuł ogłoszenia *
-              </Label>
-              <Input
-                id="title"
-                placeholder={
-                  formData.type === 'seeking'
-                    ? 'np. Szukam hydraulika do naprawy kranu'
-                    : 'np. Oferuję usługi hydrauliczne - naprawy, instalacje'
-                }
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                required
-                className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-              />
+              {/* Category */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold text-black">Kategoria *</Label>
+                <Select
+                  value={formData.category}
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  required
+                >
+                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                    <SelectValue placeholder="Wybierz kategorię" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {CATEGORIES.map((cat) => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        {cat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Type */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
+                <Select
+                  value={formData.type}
+                  onValueChange={(value: 'seeking' | 'offering') =>
+                    setFormData({ ...formData, type: value })
+                  }
+                >
+                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="seeking">Szukam usługi</SelectItem>
+                    <SelectItem value="offering">Oferuję usługi</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             {/* Description */}
@@ -197,26 +222,6 @@ export function EditPostClient({ post }: EditPostClientProps) {
               postId={post.id}
               maxImages={6}
             />
-
-            {/* Category */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">Kategoria (opcjonalnie)</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(value) => setFormData({ ...formData, category: value })}
-              >
-                <SelectTrigger className="rounded-2xl border-2 border-black/10 h-12">
-                  <SelectValue placeholder="Wybierz kategorię" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
 
             {/* Location */}
             <div className="grid md:grid-cols-2 gap-4">
@@ -248,9 +253,9 @@ export function EditPostClient({ post }: EditPostClientProps) {
             </div>
 
             {/* Price */}
-            <div className="space-y-4">
+            <div className="space-y-3">
               <Label className="text-base font-semibold text-black">Budżet (opcjonalnie)</Label>
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid md:grid-cols-[1fr_1fr_280px] gap-4">
                 <div className="space-y-3">
                   <Label htmlFor="priceMin" className="text-sm text-black/60">
                     Cena minimalna (zł)
@@ -281,22 +286,25 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
                   />
                 </div>
+                <div className="space-y-3">
+                  <Label className="text-sm text-black/60">Typ ceny</Label>
+                  <Select
+                    value={formData.priceType}
+                    onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
+                      setFormData({ ...formData, priceType: value })
+                    }
+                  >
+                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="hourly">Za godzinę</SelectItem>
+                      <SelectItem value="fixed">Stała cena</SelectItem>
+                      <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
-              <Select
-                value={formData.priceType}
-                onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
-                  setFormData({ ...formData, priceType: value })
-                }
-              >
-                <SelectTrigger className="rounded-2xl border-2 border-black/10 h-12">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hourly">Za godzinę</SelectItem>
-                  <SelectItem value="fixed">Stała cena</SelectItem>
-                  <SelectItem value="negotiable">Do negocjacji</SelectItem>
-                </SelectContent>
-              </Select>
             </div>
 
             {error && (
@@ -305,23 +313,26 @@ export function EditPostClient({ post }: EditPostClientProps) {
               </div>
             )}
 
-            <div className="flex flex-col md:flex-row gap-3 pt-4">
-              <Link href="/dashboard/my-listings" className="flex-1">
+            {/* Footer with buttons */}
+            <div className="mt-8 pt-6 border-t-2 border-black/5 rounded-b-3xl">
+              <div className="flex flex-col md:flex-row gap-3 md:justify-end">
+                <Link href="/dashboard/my-listings">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full md:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 px-6 text-sm"
+                  >
+                    Anuluj
+                  </Button>
+                </Link>
                 <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-12 text-base"
+                  type="submit"
+                  disabled={loading}
+                  className="w-full md:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
                 >
-                  Anuluj
+                  {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
                 </Button>
-              </Link>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12 text-base font-semibold"
-              >
-                {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
-              </Button>
+              </div>
             </div>
           </form>
         </CardContent>

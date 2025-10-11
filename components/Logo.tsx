@@ -29,7 +29,7 @@ export function LogoWithText({ className = "" }: { className?: string }) {
       <Logo className="w-10 h-10 flex-shrink-0" />
       <div className="flex flex-col -mt-1">
         <span className="text-2xl font-bold text-black leading-none">FindSomeone</span>
-        <span className="text-xs text-black/60 mt-0.5 leading-none">Łączymy ludzi lokalnie</span>
+        <span className="text-xs text-black/60 mt-0.5 leading-none text-center">Łączymy ludzi lokalnie</span>
       </div>
     </div>
   )

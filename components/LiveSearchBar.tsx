@@ -235,7 +235,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
     if (searchQuery) params.set('search', searchQuery)
     if (cityQuery) params.set('city', cityQuery)
 
-    router.push(`/dashboard${params.toString() ? `?${params}` : ''}`)
+    router.push(`/posts${params.toString() ? `?${params}` : ''}`)
   }
 
   // Click outside to close
@@ -335,7 +335,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
   return (
     <div className="relative w-full">
       <form onSubmit={handleSubmit} className="relative">
-        <div className="flex flex-col md:flex-row gap-3 bg-white rounded-3xl md:rounded-full p-4 md:p-2 border-2 border-black/10 hover:border-black/20 transition-all">
+        <div className="flex flex-col md:flex-row gap-3 bg-white rounded-3xl md:rounded-full p-4 md:p-2 border border-black/10 hover:border-black/20 transition-all">
           <div ref={dropdownRef} className="relative flex-1 flex items-center gap-3 px-2 md:px-4">
             <svg className="w-5 h-5 text-black/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -412,7 +412,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             const params = new URLSearchParams()
                             params.set('search', item.text)
                             if (cityQuery) params.set('city', cityQuery)
-                            router.push(`/dashboard?${params}`)
+                            router.push(`/posts?${params}`)
                           }}
                           className="w-full text-left px-3 py-3 hover:bg-gradient-to-r hover:from-[#C44E35]/5 hover:to-[#B33D2A]/5 rounded-xl transition-all flex items-center gap-3 group border border-transparent hover:border-[#C44E35]/10"
                         >
@@ -513,7 +513,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             const params = new URLSearchParams()
                             params.set('search', item.text)
                             if (cityQuery) params.set('city', cityQuery)
-                            router.push(`/dashboard?${params}`)
+                            router.push(`/posts?${params}`)
                           }}
                           className="w-full text-left px-3 py-3 hover:bg-[#C44E35]/5 rounded-xl transition-all flex items-center gap-3 group"
                         >
@@ -568,7 +568,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             const params = new URLSearchParams()
                             params.set('search', item.text)
                             if (cityQuery) params.set('city', cityQuery)
-                            router.push(`/dashboard?${params}`)
+                            router.push(`/posts?${params}`)
                           }}
                           className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
                         >
@@ -610,7 +610,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             const params = new URLSearchParams()
                             params.set('search', suggestion.text)
                             if (cityQuery) params.set('city', cityQuery)
-                            router.push(`/dashboard?${params}`)
+                            router.push(`/posts?${params}`)
                           }}
                           className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
                         >
@@ -640,7 +640,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                 {searchQuery && searchQuery.length >= 2 && (
                   <div className="p-4 bg-white">
                     <Link
-                      href={`/dashboard?search=${encodeURIComponent(searchQuery)}${cityQuery ? `&city=${encodeURIComponent(cityQuery)}` : ''}`}
+                      href={`/posts?search=${encodeURIComponent(searchQuery)}${cityQuery ? `&city=${encodeURIComponent(cityQuery)}` : ''}`}
                       onClick={() => {
                         saveRecentSearch(searchQuery)
                         setIsOpen(false)

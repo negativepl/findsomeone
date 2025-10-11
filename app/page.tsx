@@ -91,7 +91,7 @@ export default async function Home() {
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0">
-          <Link href="/dashboard" className="w-full md:w-auto">
+          <Link href="/posts" className="w-full md:w-auto">
             <Button size="lg" variant="outline" className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all min-h-[56px] md:min-w-[200px]">
               Przeglądaj wszystkie
             </Button>
@@ -109,20 +109,37 @@ export default async function Home() {
         <section className="container mx-auto px-6 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="bg-white rounded-3xl p-8 text-center">
-              <AnimatedCounter end={1000} suffix="+" />
-              <div className="text-sm text-black/60">Aktywnych użytkowników</div>
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <div className="text-sm font-semibold text-black/80">Szybko rosnąca społeczność</div>
             </div>
             <div className="bg-white rounded-3xl p-8 text-center">
-              <AnimatedCounter end={500} suffix="+" />
-              <div className="text-sm text-black/60">Ogłoszeń dziennie</div>
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </div>
+              <div className="text-sm font-semibold text-black/80">Nowe ogłoszenia codziennie</div>
             </div>
             <div className="bg-white rounded-3xl p-8 text-center">
-              <AnimatedCounter end={50} suffix="+" />
-              <div className="text-sm text-black/60">Miast w Polsce</div>
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div className="text-sm font-semibold text-black/80">Lokalne usługi w Polsce</div>
             </div>
             <div className="bg-white rounded-3xl p-8 text-center">
-              <AnimatedCounter end={4.8} suffix="★" decimals={1} />
-              <div className="text-sm text-black/60">Średnia ocena</div>
+              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="text-sm font-semibold text-black/80">Zaufani specjaliści</div>
             </div>
           </div>
         </section>
@@ -132,7 +149,7 @@ export default async function Home() {
       {!user && (
         <section className="container mx-auto px-6 py-12 md:py-14">
           <div className="grid md:grid-cols-3 gap-6">
-            <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all">
+            <Card className="border-0 rounded-3xl bg-white">
               <CardContent className="p-8">
                 <div className="w-14 h-14 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-5">
                   <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,7 +163,7 @@ export default async function Home() {
               </CardContent>
             </Card>
 
-            <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all">
+            <Card className="border-0 rounded-3xl bg-white">
               <CardContent className="p-8">
                 <div className="w-14 h-14 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-5">
                   <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -160,7 +177,7 @@ export default async function Home() {
               </CardContent>
             </Card>
 
-            <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all">
+            <Card className="border-0 rounded-3xl bg-white">
               <CardContent className="p-8">
                 <div className="w-14 h-14 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-5">
                   <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +246,7 @@ export default async function Home() {
           ].map((cat) => (
             <Link
               key={`mobile-${cat.name}`}
-              href={`/dashboard?category=${encodeURIComponent(cat.name.toLowerCase())}`}
+              href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
               className="flex-shrink-0"
             >
               <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer" style={{ minWidth: '160px', width: '160px' }}>
@@ -290,7 +307,7 @@ export default async function Home() {
               icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
             },
           ].map((cat) => (
-            <Link key={`desktop-${cat.name}`} href={`/dashboard?category=${encodeURIComponent(cat.name.toLowerCase())}`}>
+            <Link key={`desktop-${cat.name}`} href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}>
               <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full">
                 <CardContent className="p-6 text-center">
                   <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-3 text-[#C44E35]">
@@ -315,7 +332,7 @@ export default async function Home() {
                 <p className="text-lg text-black/60">Sprawdź kto potrzebuje Twoich usług</p>
               </div>
               <div className="hidden md:block">
-                <Link href="/dashboard?type=seeking">
+                <Link href="/posts?type=seeking">
                   <Button variant="outline" className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5">
                     Zobacz wszystkie
                   </Button>
@@ -333,7 +350,7 @@ export default async function Home() {
               {seekingPosts.map((post: any) => (
                 <Link
                   key={post.id}
-                  href={`/dashboard/posts/${post.id}`}
+                  href={`/posts/${post.id}`}
                   className="flex-shrink-0 snap-center"
                   style={{ width: '320px' }}
                 >
@@ -464,7 +481,7 @@ export default async function Home() {
                 <p className="text-lg text-black/60">Znajdź specjalistów w Twojej okolicy</p>
               </div>
               <div className="hidden md:block">
-                <Link href="/dashboard?type=offering">
+                <Link href="/posts?type=offering">
                   <Button variant="outline" className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5">
                     Zobacz wszystkie
                   </Button>
@@ -482,7 +499,7 @@ export default async function Home() {
               {offeringPosts.map((post: any) => (
                 <Link
                   key={post.id}
-                  href={`/dashboard/posts/${post.id}`}
+                  href={`/posts/${post.id}`}
                   className="flex-shrink-0 snap-center"
                   style={{ width: '320px' }}
                 >

@@ -23,7 +23,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
     content,
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4',
+        class: 'prose prose-sm sm:prose max-w-none focus:outline-none min-h-[200px] p-4',
       },
     },
     onUpdate: ({ editor }) => {

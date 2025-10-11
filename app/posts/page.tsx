@@ -11,8 +11,6 @@ import { SearchFilters } from '@/components/SearchFilters'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { DashboardTabs } from '@/components/DashboardTabs'
 import { LiveSearchBar } from '@/components/LiveSearchBar'
-import { DashboardFilters } from '@/components/DashboardFilters'
-import { Pagination } from '@/components/Pagination'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -43,16 +41,7 @@ interface Post {
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<{
-    search?: string
-    city?: string
-    category?: string
-    type?: string
-    sortBy?: string
-    order?: string
-    page?: string
-    limit?: string
-  }>
+  searchParams: Promise<{ search?: string; city?: string; category?: string; type?: string }>
 }) {
   const supabase = await createClient()
   const params = await searchParams
@@ -63,10 +52,6 @@ export default async function DashboardPage({
   const cityQuery = params.city || ''
   const categoryQuery = params.category || ''
   const typeQuery = params.type || ''
-  const sortBy = params.sortBy || 'created_at'
-  const order = params.order || 'desc'
-  const currentPage = parseInt(params.page || '1', 10)
-  const itemsPerPage = parseInt(params.limit || '12', 10)
 
   // Fetch all categories for filters
   const { data: categories } = await supabase
@@ -76,14 +61,13 @@ export default async function DashboardPage({
 
   // Use FULL-TEXT SEARCH if there's a search query
   let posts: Post[] = []
-  let totalCount = 0
 
   if (searchQuery && searchQuery.trim().length >= 2) {
-    // Use our smart full-text search function with higher limit
+    // Use our smart full-text search function
     const { data: searchResults } = await supabase
       .rpc('search_posts', {
         search_query: searchQuery.trim(),
-        limit_count: 500  // Get more results for filtering and pagination
+        limit_count: 50
       })
 
     // Now apply additional filters on the results
@@ -109,7 +93,7 @@ export default async function DashboardPage({
     }
 
     // Map search results to Post format
-    let mappedPosts = filteredResults.map((result: any) => ({
+    posts = filteredResults.map((result: any) => ({
       id: result.id,
       title: result.title,
       description: result.description,
@@ -120,7 +104,6 @@ export default async function DashboardPage({
       price_max: result.price_max,
       price_type: result.price_type,
       images: result.images,
-      created_at: result.created_at,
       profiles: {
         full_name: result.user_full_name,
         avatar_url: result.user_avatar_url,
@@ -130,95 +113,8 @@ export default async function DashboardPage({
         name: result.category_name,
       } : null,
     }))
-
-    // Apply sorting
-    mappedPosts.sort((a: any, b: any) => {
-      let aVal, bVal
-
-      switch (sortBy) {
-        case 'price_min':
-          aVal = a.price_min || 0
-          bVal = b.price_min || 0
-          break
-        case 'price_max':
-          aVal = a.price_max || 0
-          bVal = b.price_max || 0
-          break
-        case 'title':
-          aVal = a.title.toLowerCase()
-          bVal = b.title.toLowerCase()
-          break
-        case 'created_at':
-        default:
-          aVal = new Date(a.created_at || 0).getTime()
-          bVal = new Date(b.created_at || 0).getTime()
-          break
-      }
-
-      if (order === 'asc') {
-        return aVal > bVal ? 1 : -1
-      } else {
-        return aVal < bVal ? 1 : -1
-      }
-    })
-
-    totalCount = mappedPosts.length
-
-    // Apply pagination
-    const startIndex = (currentPage - 1) * itemsPerPage
-    const endIndex = startIndex + itemsPerPage
-    posts = mappedPosts.slice(startIndex, endIndex)
   } else {
     // No search query - use regular filtering
-    // First get total count
-    let countQuery = supabase
-      .from('posts')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'active')
-
-    // Apply city filter
-    if (cityQuery) {
-      countQuery = countQuery.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
-    }
-
-    // Apply category filter
-    let categoryId: string | undefined
-    if (categoryQuery) {
-      // First try to find category by name
-      const { data: category } = await supabase
-        .from('categories')
-        .select('id')
-        .ilike('name', categoryQuery)
-        .single()
-
-      categoryId = category?.id
-
-      // If not found by name, try to find by synonym
-      if (!categoryId) {
-        const { data: categorySynonym } = await supabase
-          .from('category_synonyms')
-          .select('category_id')
-          .ilike('synonym', categoryQuery)
-          .limit(1)
-          .single()
-
-        categoryId = categorySynonym?.category_id
-      }
-
-      if (categoryId) {
-        countQuery = countQuery.eq('category_id', categoryId)
-      }
-    }
-
-    // Apply type filter
-    if (typeQuery) {
-      countQuery = countQuery.eq('type', typeQuery)
-    }
-
-    const { count } = await countQuery
-    totalCount = count || 0
-
-    // Now get the actual posts with pagination
     let query = supabase
       .from('posts')
       .select(`
@@ -241,8 +137,31 @@ export default async function DashboardPage({
     }
 
     // Apply category filter
-    if (categoryId) {
-      query = query.eq('category_id', categoryId)
+    if (categoryQuery) {
+      // First try to find category by name
+      const { data: category } = await supabase
+        .from('categories')
+        .select('id')
+        .ilike('name', categoryQuery)
+        .single()
+
+      let categoryId = category?.id
+
+      // If not found by name, try to find by synonym
+      if (!categoryId) {
+        const { data: categorySynonym } = await supabase
+          .from('category_synonyms')
+          .select('category_id')
+          .ilike('synonym', categoryQuery)
+          .limit(1)
+          .single()
+
+        categoryId = categorySynonym?.category_id
+      }
+
+      if (categoryId) {
+        query = query.eq('category_id', categoryId)
+      }
     }
 
     // Apply type filter
@@ -250,33 +169,17 @@ export default async function DashboardPage({
       query = query.eq('type', typeQuery)
     }
 
-    // Apply sorting
-    const ascending = order === 'asc'
-
-    // Handle sorting by different fields
-    if (sortBy === 'price_min' || sortBy === 'price_max') {
-      query = query.order(sortBy, { ascending, nullsFirst: false })
-    } else if (sortBy === 'title') {
-      query = query.order('title', { ascending })
-    } else {
-      query = query.order('created_at', { ascending })
-    }
-
-    // Apply pagination
-    const startIndex = (currentPage - 1) * itemsPerPage
-    query = query.range(startIndex, startIndex + itemsPerPage - 1)
-
     const { data: fetchedPosts } = await query
+      .order('created_at', { ascending: false })
+      .limit(50)
 
     posts = fetchedPosts || []
   }
 
-  // Calculate counts for tabs from current page results
+  // Calculate counts for tabs from current results
+  const totalCount = posts.length
   const seekingCount = posts.filter(p => p.type === 'seeking').length
   const offeringCount = posts.filter(p => p.type === 'offering').length
-
-  // Calculate total pages
-  const totalPages = Math.ceil(totalCount / itemsPerPage)
 
   // Fetch user favorites if logged in
   let userFavorites: string[] = []
@@ -337,24 +240,11 @@ export default async function DashboardPage({
         {/* Filters */}
         <SearchFilters categories={categories} />
 
-        {/* Compact Filters with Range Display and Controls */}
-        {totalCount > 0 && (
-          <DashboardFilters
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-            totalCount={totalCount}
-          />
-        )}
-
         {/* Posts Grid */}
-        <div className={`grid md:grid-cols-2 gap-6 ${
-          itemsPerPage >= 24 ? 'lg:grid-cols-6' :
-          itemsPerPage >= 12 ? 'lg:grid-cols-4' :
-          'lg:grid-cols-3'
-        }`}>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {posts && posts.length > 0 ? (
             posts.map((post: Post) => (
-              <Link key={post.id} href={`/dashboard/posts/${post.id}`} className="block h-full">
+              <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
                 <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col">
                   {/* Image */}
                   {post.images && post.images.length > 0 && (
@@ -506,15 +396,6 @@ export default async function DashboardPage({
             </div>
           )}
         </div>
-
-        {/* Pagination */}
-        {posts && posts.length > 0 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            totalItems={totalCount}
-          />
-        )}
       </main>
 
       <Footer />
