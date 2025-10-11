@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
@@ -15,8 +15,32 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [verifying, setVerifying] = useState(true)
   const router = useRouter()
+  const searchParams = useSearchParams()
   const supabase = createClient()
+
+  useEffect(() => {
+    const verifyToken = async () => {
+      const token = searchParams.get('token')
+      const type = searchParams.get('type')
+
+      if (token && type === 'recovery') {
+        const { error } = await supabase.auth.verifyOtp({
+          token_hash: token,
+          type: 'recovery',
+        })
+
+        if (error) {
+          setError('Link wygasł lub jest nieprawidłowy. Spróbuj ponownie zresetować hasło.')
+        }
+      }
+
+      setVerifying(false)
+    }
+
+    verifyToken()
+  }, [searchParams, supabase.auth])
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -49,6 +73,21 @@ export default function ResetPasswordPage() {
         router.push('/dashboard')
       }, 2000)
     }
+  }
+
+  if (verifying) {
+    return (
+      <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6">
+        <Card className="w-full max-w-md border-0 rounded-3xl bg-white shadow-lg">
+          <CardHeader className="text-center pb-8">
+            <CardTitle className="text-2xl font-bold text-black">Weryfikacja...</CardTitle>
+            <CardDescription className="text-base text-black/60 mt-2">
+              Sprawdzamy Twój link resetowania hasła...
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      </div>
+    )
   }
 
   if (success) {

@@ -172,14 +172,14 @@ TYTUŁ EMAILA (Subject): Potwierdź zmianę adresu email - FindSomeone
 
             <!-- CTA Button -->
             <div class="button-container">
-                <a href="{{ .ConfirmationURL }}" class="cta-button">Potwierdź nowy email</a>
+                <a href="{{ .SiteURL }}/auth/callback?token={{ .TokenHash }}&type=email_change" class="cta-button">Potwierdź nowy email</a>
             </div>
 
             <!-- Alternative link -->
             <div class="alternative-link">
                 <p><strong>Link nie działa?</strong></p>
                 <p>Skopiuj i wklej poniższy adres do przeglądarki:</p>
-                <a href="{{ .ConfirmationURL }}">{{ .ConfirmationURL }}</a>
+                <a href="{{ .SiteURL }}/auth/callback?token={{ .TokenHash }}&type=email_change">{{ .SiteURL }}/auth/callback?token={{ .TokenHash }}&type=email_change</a>
             </div>
 
             <!-- Security notice -->

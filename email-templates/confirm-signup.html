@@ -172,14 +172,14 @@ TYTUŁ EMAILA (Subject): Potwierdź swoje konto - FindSomeone
 
             <!-- CTA Button -->
             <div class="button-container">
-                <a href="{{ .ConfirmationURL }}" class="cta-button">Potwierdź adres email</a>
+                <a href="{{ .SiteURL }}/auth/callback?token={{ .TokenHash }}&type=signup" class="cta-button">Potwierdź adres email</a>
             </div>
 
             <!-- Alternative link -->
             <div class="alternative-link">
                 <p><strong>Link nie działa?</strong></p>
                 <p>Skopiuj i wklej poniższy adres do przeglądarki:</p>
-                <a href="{{ .ConfirmationURL }}">{{ .ConfirmationURL }}</a>
+                <a href="{{ .SiteURL }}/auth/callback?token={{ .TokenHash }}&type=signup">{{ .SiteURL }}/auth/callback?token={{ .TokenHash }}&type=signup</a>
             </div>
 
             <!-- Security notice -->
