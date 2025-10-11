@@ -148,7 +148,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   {profile?.avatar_url ? (
                     <img
                       src={profile.avatar_url}
-                      alt={profile.full_name || 'User'}
+                      alt=""
                       className="w-32 h-32 rounded-full object-cover"
                     />
                   ) : (

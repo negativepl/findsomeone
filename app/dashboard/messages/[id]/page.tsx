@@ -101,7 +101,7 @@ export default async function ConversationPage({
               {otherUser.avatar_url ? (
                 <img
                   src={otherUser.avatar_url}
-                  alt={otherUser.full_name || 'User'}
+                  alt=""
                   className="w-12 h-12 rounded-full object-cover"
                 />
               ) : (

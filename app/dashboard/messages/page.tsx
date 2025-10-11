@@ -175,7 +175,7 @@ export default async function MessagesPage() {
                           {conversation.other_user.avatar_url ? (
                             <img
                               src={conversation.other_user.avatar_url}
-                              alt={conversation.other_user.full_name || 'User'}
+                              alt=""
                               className="w-14 h-14 rounded-full object-cover"
                             />
                           ) : (
