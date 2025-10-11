@@ -29,7 +29,9 @@ export function Footer() {
           <div>
             <button
               onClick={() => toggleSection('product')}
-              className="flex items-center justify-between w-full md:cursor-default"
+              className="flex items-center justify-between w-full md:cursor-default py-2"
+              aria-label="Rozwiń sekcję Produkt"
+              aria-expanded={openSection === 'product'}
             >
               <h4 className="font-semibold text-black mb-2 md:mb-4">Produkt</h4>
               <svg
@@ -39,6 +41,7 @@ export function Footer() {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -48,10 +51,10 @@ export function Footer() {
                 openSection === 'product' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
               }`}
             >
-              <li><Link href="/dashboard" className="hover:text-black transition-colors">Przeglądaj ogłoszenia</Link></li>
-              <li><Link href="/signup" className="hover:text-black transition-colors">Zarejestruj się</Link></li>
-              <li><Link href="/login" className="hover:text-black transition-colors">Zaloguj się</Link></li>
-              <li><Link href="/how-it-works" className="hover:text-black transition-colors">Jak to działa</Link></li>
+              <li><Link href="/dashboard" className="hover:text-black transition-colors inline-block py-2">Przeglądaj ogłoszenia</Link></li>
+              <li><Link href="/signup" className="hover:text-black transition-colors inline-block py-2">Zarejestruj się</Link></li>
+              <li><Link href="/login" className="hover:text-black transition-colors inline-block py-2">Zaloguj się</Link></li>
+              <li><Link href="/how-it-works" className="hover:text-black transition-colors inline-block py-2">Jak to działa</Link></li>
             </ul>
           </div>
 
@@ -59,7 +62,9 @@ export function Footer() {
           <div>
             <button
               onClick={() => toggleSection('categories')}
-              className="flex items-center justify-between w-full md:cursor-default"
+              className="flex items-center justify-between w-full md:cursor-default py-2"
+              aria-label="Rozwiń sekcję Kategorie"
+              aria-expanded={openSection === 'categories'}
             >
               <h4 className="font-semibold text-black mb-2 md:mb-4">Kategorie</h4>
               <svg
@@ -69,6 +74,7 @@ export function Footer() {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -78,10 +84,10 @@ export function Footer() {
                 openSection === 'categories' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
               }`}
             >
-              <li><Link href="/dashboard?category=hydraulika" className="hover:text-black transition-colors">Hydraulika</Link></li>
-              <li><Link href="/dashboard?category=elektryka" className="hover:text-black transition-colors">Elektryka</Link></li>
-              <li><Link href="/dashboard?category=sprzątanie" className="hover:text-black transition-colors">Sprzątanie</Link></li>
-              <li><Link href="/dashboard" className="hover:text-black transition-colors">Zobacz wszystkie</Link></li>
+              <li><Link href="/dashboard?category=hydraulika" className="hover:text-black transition-colors inline-block py-2">Hydraulika</Link></li>
+              <li><Link href="/dashboard?category=elektryka" className="hover:text-black transition-colors inline-block py-2">Elektryka</Link></li>
+              <li><Link href="/dashboard?category=sprzątanie" className="hover:text-black transition-colors inline-block py-2">Sprzątanie</Link></li>
+              <li><Link href="/dashboard" className="hover:text-black transition-colors inline-block py-2">Zobacz wszystkie</Link></li>
             </ul>
           </div>
 
@@ -89,7 +95,9 @@ export function Footer() {
           <div>
             <button
               onClick={() => toggleSection('company')}
-              className="flex items-center justify-between w-full md:cursor-default"
+              className="flex items-center justify-between w-full md:cursor-default py-2"
+              aria-label="Rozwiń sekcję Firma"
+              aria-expanded={openSection === 'company'}
             >
               <h4 className="font-semibold text-black mb-2 md:mb-4">Firma</h4>
               <svg
@@ -99,6 +107,7 @@ export function Footer() {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -108,10 +117,10 @@ export function Footer() {
                 openSection === 'company' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
               }`}
             >
-              <li><Link href="/about" className="hover:text-black transition-colors">O nas</Link></li>
-              <li><Link href="/terms" className="hover:text-black transition-colors">Regulamin</Link></li>
-              <li><Link href="/privacy" className="hover:text-black transition-colors">Polityka prywatności</Link></li>
-              <li><Link href="/contact" className="hover:text-black transition-colors">Kontakt</Link></li>
+              <li><Link href="/about" className="hover:text-black transition-colors inline-block py-2">O nas</Link></li>
+              <li><Link href="/terms" className="hover:text-black transition-colors inline-block py-2">Regulamin</Link></li>
+              <li><Link href="/privacy" className="hover:text-black transition-colors inline-block py-2">Polityka prywatności</Link></li>
+              <li><Link href="/contact" className="hover:text-black transition-colors inline-block py-2">Kontakt</Link></li>
             </ul>
           </div>
         </div>
