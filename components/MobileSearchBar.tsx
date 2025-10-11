@@ -98,21 +98,21 @@ export function MobileSearchBar({ isOpen, onClose }: MobileSearchBarProps) {
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Search input */}
             <div className="flex items-center gap-2 px-4 py-3 bg-[#FAF8F3] rounded-2xl">
-              <Search className="w-4 h-4 text-black/40 flex-shrink-0" />
+              <Search className="w-5 h-5 text-black/40 flex-shrink-0" />
               <input
                 ref={searchInputRef}
                 type="text"
                 placeholder="Czego szukasz?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 outline-none text-sm text-black placeholder:text-black/40 bg-transparent"
+                className="flex-1 outline-none text-base text-black placeholder:text-black/40 bg-transparent"
                 autoComplete="off"
               />
             </div>
 
             {/* City input */}
             <div className="flex items-center gap-2 px-4 py-3 bg-[#FAF8F3] rounded-2xl">
-              <svg className="w-4 h-4 text-black/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 text-black/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -121,7 +121,7 @@ export function MobileSearchBar({ isOpen, onClose }: MobileSearchBarProps) {
                 placeholder="Miasto"
                 value={cityQuery}
                 onChange={(e) => setCityQuery(e.target.value)}
-                className="flex-1 outline-none text-sm text-black placeholder:text-black/40 bg-transparent"
+                className="flex-1 outline-none text-base text-black placeholder:text-black/40 bg-transparent"
                 autoComplete="off"
               />
             </div>
@@ -129,7 +129,7 @@ export function MobileSearchBar({ isOpen, onClose }: MobileSearchBarProps) {
             {/* Search button */}
             <button
               type="submit"
-              className="w-full rounded-2xl bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-6 py-3 font-medium transition-colors text-sm"
+              className="w-full rounded-2xl bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-6 py-3 font-medium transition-colors text-base"
             >
               Szukaj
             </button>
