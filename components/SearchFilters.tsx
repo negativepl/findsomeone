@@ -119,6 +119,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           <div className="mb-4">
             <button
               onClick={() => updateFilter('category', category.name.toLowerCase())}
+              data-navigate="true"
               className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border border-black/10 hover:bg-[#F5F1E8] transition-colors"
             >
               <CategoryIcon iconName={category.icon} className="w-6 h-6 text-black/60" />
@@ -134,6 +135,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                 <button
                   key={subcategory.id}
                   onClick={() => updateFilter('category', subcategory.name.toLowerCase())}
+                  data-navigate="true"
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
                     isSelected
                       ? 'bg-[#C44E35] text-white'
@@ -159,6 +161,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
         {/* All categories button */}
         <button
           onClick={() => updateFilter('category', '')}
+          data-navigate="true"
           className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
             !currentCategory
               ? 'bg-[#C44E35] text-white'
@@ -185,6 +188,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                     updateFilter('category', mainCategory.name.toLowerCase())
                   }
                 }}
+                {...(!hasSubcategories && { 'data-navigate': 'true' })}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
                   isMainSelected
                     ? 'bg-[#C44E35] text-white'
@@ -218,6 +222,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
             {/* All categories badge */}
             <button
               onClick={() => updateFilter('category', '')}
+              data-navigate="true"
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all mb-2 ${
                 !currentCategory
                   ? 'bg-[#C44E35] text-white'
@@ -249,6 +254,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                       <button
                         onClick={() => updateFilter('category', mainCategory.name.toLowerCase())}
                         onMouseEnter={() => hasSubcategories && setExpandedCategories(new Set([mainCategory.id]))}
+                        data-navigate="true"
                         className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors relative ${
                           isMainSelected
                             ? 'bg-[#C44E35] text-white rounded-2xl'
@@ -288,6 +294,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                               <button
                                 key={subcategory.id}
                                 onClick={() => updateFilter('category', subcategory.name.toLowerCase())}
+                                data-navigate="true"
                                 className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl text-left transition-colors ${
                                   isSubSelected
                                     ? 'bg-[#C44E35] text-white'
@@ -357,6 +364,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
+              data-navigate="true"
               className="text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium"
             >
               Wyczyść wszystkie filtry
@@ -375,6 +383,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           {hasActiveFilters && (
             <button
               onClick={clearFilters}
+              data-navigate="true"
               className="text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium"
             >
               Wyczyść
