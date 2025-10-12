@@ -4,7 +4,6 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
@@ -565,7 +564,6 @@ export default async function PostsPage({
       <Footer />
 
       {/* Mobile Dock */}
-      <MobileDockWrapper user={user} />
     </div>
   )
 }

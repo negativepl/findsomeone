@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { PresenceIndicator } from '@/components/PresenceIndicator'
 import { Card } from '@/components/ui/card'
 import Link from 'next/link'
@@ -290,7 +289,6 @@ export default async function MessagesPage() {
       </main>
 
       <Footer />
-      <MobileDockWrapper user={user} />
     </div>
   )
 }

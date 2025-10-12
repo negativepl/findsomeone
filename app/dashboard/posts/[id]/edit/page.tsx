@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect, notFound } from 'next/navigation'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { EditPostClient } from './EditPostClient'
 import { Metadata } from 'next'
 
@@ -44,7 +43,6 @@ export default async function EditPostPage({ params }: { params: { id: string } 
         <EditPostClient post={post} />
       </div>
       <Footer />
-      <MobileDockWrapper user={user} />
     </div>
   )
 }

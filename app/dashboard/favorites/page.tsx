@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { Metadata } from 'next'
@@ -40,7 +39,6 @@ export default async function FavoritesPage() {
       <Footer />
 
       {/* Mobile Dock */}
-      <MobileDockWrapper user={user} />
     </div>
   )
 }

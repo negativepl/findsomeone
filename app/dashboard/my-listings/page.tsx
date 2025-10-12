@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { Metadata } from 'next'
 import { MyListingsClient } from './MyListingsClient'
 
@@ -54,7 +53,6 @@ export default async function MyListingsPage() {
       <Footer />
 
       {/* Mobile Dock */}
-      <MobileDockWrapper user={user} />
     </div>
   )
 }

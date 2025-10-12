@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -247,7 +246,6 @@ export default async function PrivacyPage() {
       </main>
 
       <Footer />
-      <MobileDockWrapper user={user} />
     </div>
   )
 }

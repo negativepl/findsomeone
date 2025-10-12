@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { User } from '@supabase/supabase-js'
 import { createBrowserClient } from '@supabase/ssr'
@@ -33,7 +34,7 @@ const getDockItems = (isLoggedIn: boolean) => {
         title: 'Dodaj',
         href: '/dashboard/posts/new',
         icon: (
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
         ),
@@ -217,9 +218,14 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
   const [isClosing, setIsClosing] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
   const isLoggedIn = !!user
   const dockItems = getDockItems(isLoggedIn)
   const menuItems = getMenuItems(isLoggedIn, isAdmin)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   // Pobierz inicjały użytkownika
   const getInitials = () => {
@@ -236,6 +242,28 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
   const getUserName = () => {
     return profile?.full_name || user?.user_metadata?.full_name || user?.email || 'Użytkownik'
   }
+
+  // Calculate active index for indicator animation
+  const getActiveIndex = () => {
+    // If menu is open, show indicator under Menu button (highest priority)
+    if (menuOpen) {
+      return dockItems.findIndex(item => item.isMenu)
+    }
+
+    // Check if current path is in dock items
+    const dockIndex = dockItems.findIndex(item => item.href === pathname)
+    if (dockIndex !== -1) return dockIndex
+
+    // Check if current path is in menu items - show indicator under Menu button
+    const isInMenu = menuItems.some(item => item.href === pathname)
+    if (isInMenu) {
+      return dockItems.findIndex(item => item.isMenu)
+    }
+
+    return -1
+  }
+
+  const activeIndex = getActiveIndex()
 
   useEffect(() => {
     if (menuOpen && !isClosing) {
@@ -271,7 +299,7 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
           {/* Backdrop */}
           <div
             className={cn(
-              "md:hidden fixed inset-0 bg-black/50 z-40",
+              "md:hidden fixed inset-0 bg-black/50 z-10",
               isClosing ? "animate-out fade-out duration-300" : "animate-in fade-in duration-200"
             )}
             onClick={handleClose}
@@ -280,7 +308,7 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
           {/* Menu panel */}
           <div
             className={cn(
-              "md:hidden fixed left-0 right-0 bg-white rounded-t-3xl z-50 max-h-[80vh] overflow-hidden",
+              "md:hidden fixed left-0 right-0 bg-white rounded-t-3xl z-20 max-h-[80vh] overflow-hidden",
               isClosing ? "animate-out slide-out-to-bottom duration-300" : "animate-in slide-in-from-bottom duration-400"
             )}
             style={{
@@ -364,35 +392,54 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
       )}
 
       {/* Bottom dock */}
-      <div
+      <motion.div
+        initial={false}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
         className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-black/5 rounded-t-3xl"
+        style={{
+          WebkitTransform: 'translateZ(0)',
+          transform: 'translateZ(0)'
+        }}
       >
-        <div className="relative flex items-start justify-around px-4 pt-3 pb-2">
+        <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
+          {/* Animated indicator background */}
+          <div
+            className="absolute bg-brand rounded-xl"
+            style={{
+              height: '36px',
+              width: '36px',
+              top: '12px',
+              zIndex: 0,
+              left: activeIndex !== -1
+                ? `calc((100% - 32px) / ${dockItems.length} * ${activeIndex} + 16px + (100% - 32px) / ${dockItems.length} / 2 - 18px)`
+                : '0px',
+              transition: 'left 0.4s cubic-bezier(0.34, 1.25, 0.35, 1), opacity 0.2s',
+              opacity: isMounted && activeIndex !== -1 ? 1 : 0,
+            }}
+          />
           {dockItems.map((item, index) => {
             const isActive = pathname === item.href
 
             if (item.isMenu) {
+              const isMenuButtonActive = menuOpen
+              const isOnMenuPage = menuItems.some(menuItem => menuItem.href === pathname)
+              // Menu button is white when: menuOpen OR on menu page
+              const shouldBeWhite = isMenuButtonActive || isOnMenuPage
+
               return (
                 <button
                   key="menu"
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex flex-col items-center justify-center gap-1.5 flex-1 relative"
+                  className="flex flex-col items-center justify-center gap-3 flex-1 relative z-10 py-2"
                 >
                   <div className={cn(
-                    "relative z-10 w-10 h-10 flex items-center justify-center transition-colors",
-                    menuOpen && "text-white"
+                    "transition-colors",
+                    shouldBeWhite ? 'text-white' : 'text-black/60'
                   )}>
-                    {menuOpen && (
-                      <div className="absolute inset-0 bg-brand rounded-xl -z-10" />
-                    )}
-                    <div className={cn(
-                      "transition-colors",
-                      menuOpen ? 'text-white' : 'text-black/60'
-                    )}>
-                      {item.icon}
-                    </div>
+                    {item.icon}
                   </div>
-                  <span className="text-xs text-black/60">{item.title}</span>
+                  <span className="text-xs leading-none text-black/60">{item.title}</span>
                 </button>
               )
             }
@@ -402,23 +449,15 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex flex-col items-center justify-center gap-1.5 flex-1 relative"
+                  className="flex flex-col items-center justify-center gap-3 flex-1 relative z-10 py-2"
                 >
                   <div className={cn(
-                    "relative z-10 w-10 h-10 flex items-center justify-center transition-colors",
-                    isActive && "text-white"
+                    "transition-colors",
+                    isActive && !menuOpen ? 'text-white' : 'text-black/60'
                   )}>
-                    {isActive && (
-                      <div className="absolute inset-0 bg-brand rounded-xl -z-10 transition-opacity duration-200" />
-                    )}
-                    <div className={cn(
-                      "transition-colors",
-                      isActive ? 'text-white' : 'text-black/60'
-                    )}>
-                      {item.icon}
-                    </div>
+                    {item.icon}
                   </div>
-                  <span className="text-xs text-black/60">{item.title}</span>
+                  <span className="text-xs leading-none text-black/60">{item.title}</span>
                 </Link>
               )
             }
@@ -427,28 +466,20 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center justify-center gap-1.5 flex-1 relative"
+                className="flex flex-col items-center justify-center gap-3 flex-1 relative z-10 py-2"
               >
                 <div className={cn(
-                  "relative z-10 w-10 h-10 flex items-center justify-center transition-colors",
-                  isActive && !menuOpen && "text-white"
+                  "transition-colors",
+                  isActive && !menuOpen ? 'text-white' : 'text-black/60'
                 )}>
-                  {isActive && !menuOpen && (
-                    <div className="absolute inset-0 bg-brand rounded-xl -z-10 transition-opacity duration-200" />
-                  )}
-                  <div className={cn(
-                    "transition-colors",
-                    isActive && !menuOpen ? 'text-white' : 'text-black/60'
-                  )}>
-                    {item.icon}
-                  </div>
+                  {item.icon}
                 </div>
-                <span className="text-xs text-black/60">{item.title}</span>
+                <span className="text-xs leading-none text-black/60">{item.title}</span>
               </Link>
             )
           })}
         </div>
-      </div>
+      </motion.div>
     </>
   )
 }

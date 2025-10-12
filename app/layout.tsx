@@ -5,6 +5,8 @@ import { Providers } from "./providers";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import TopLoader from "@/components/TopLoader";
+import { MobileDockWrapper } from "@/components/MobileDockWrapper";
+import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
 
 const geistSans = Geist({
@@ -26,11 +28,16 @@ export const metadata: Metadata = {
   keywords: ["usługi lokalne", "specjaliści", "ogłoszenia", "hydraulik", "elektryk", "sprzątanie"],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   return (
     <html lang="en">
       <body
@@ -39,7 +46,10 @@ export default function RootLayout({
         <Suspense fallback={null}>
           <TopLoader />
         </Suspense>
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <MobileDockWrapper user={user} />
+        </Providers>
         <SpeedInsights />
         <Analytics />
       </body>

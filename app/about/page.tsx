@@ -1,6 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { Metadata } from 'next'
 import { AboutPageClient } from './AboutPageClient'
 
@@ -17,7 +16,6 @@ export default async function AboutPage() {
     <div className="relative h-screen overflow-hidden">
       <NavbarWithHide user={user} />
       <AboutPageClient />
-      <MobileDockWrapper user={user} />
     </div>
   )
 }

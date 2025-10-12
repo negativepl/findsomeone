@@ -2,7 +2,6 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { PresenceIndicator } from '@/components/PresenceIndicator'
 import { Metadata } from 'next'
 import { ChatWindow } from './ChatWindow'
@@ -134,7 +133,6 @@ export default async function ConversationPage({
       />
 
       <Footer />
-      <MobileDockWrapper user={user} />
     </div>
   )
 }

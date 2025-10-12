@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { Card, CardContent } from '@/components/ui/card'
 import { Metadata } from 'next'
 import Link from 'next/link'
@@ -137,7 +136,6 @@ export default async function HowItWorksPage() {
       </main>
 
       <Footer />
-      <MobileDockWrapper user={user} />
     </div>
   )
 }
