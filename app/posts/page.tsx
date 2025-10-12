@@ -445,7 +445,7 @@ export default async function PostsPage({
                   )}
                 </p>
                 {searchQuery || cityQuery || categoryQuery ? (
-                  <Link href="/dashboard">
+                  <Link href="/posts">
                     <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
                       Wyczyść filtry
                     </Button>

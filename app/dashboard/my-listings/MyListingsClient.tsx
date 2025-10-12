@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { deletePost, updatePostStatus } from './actions'
 import { useRouter } from 'next/navigation'
-import { Edit2, Pause, CheckCircle, Play, Trash2, MapPin, Clock, Eye } from 'lucide-react'
+import { Edit2, Pause, CheckCircle, Play, Trash2, MapPin, Clock, Eye, Phone } from 'lucide-react'
 
 interface Post {
   id: string
@@ -43,6 +43,7 @@ interface Post {
   moderation_reason: string | null
   created_at: string
   views: number
+  phone_clicks: number
   images: string[] | null
   categories: {
     name: string
@@ -206,6 +207,11 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
                         <div className="flex items-center gap-1.5">
                           <Eye className="w-4 h-4 flex-shrink-0" />
                           <span>{post.views} wyświetleń</span>
+                        </div>
+                        <span className="text-black/30">•</span>
+                        <div className="flex items-center gap-1.5">
+                          <Phone className="w-4 h-4 flex-shrink-0" />
+                          <span>{post.phone_clicks || 0} kliknięć tel.</span>
                         </div>
                         <span className="text-black/30">•</span>
                         <div className="flex items-center gap-1.5">

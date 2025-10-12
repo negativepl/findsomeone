@@ -12,6 +12,7 @@ import { ViewCounter } from './ViewCounter'
 import { SendMessageModal } from '@/components/SendMessageModal'
 import { ReviewModalWrapper } from './ReviewModalWrapper'
 import { PhoneNumber } from './PhoneNumber'
+import { DistanceCard } from './DistanceCard'
 
 export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -113,6 +114,32 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
     isFavorite = !!favoriteData
   }
+
+  // Fetch other posts from the same author
+  const { data: otherPosts } = await supabase
+    .from('posts')
+    .select(`
+      id,
+      title,
+      type,
+      city,
+      district,
+      price_min,
+      price_max,
+      price_type,
+      images,
+      views,
+      created_at,
+      categories (
+        name
+      )
+    `)
+    .eq('user_id', post.user_id)
+    .eq('status', 'active')
+    .eq('is_deleted', false)
+    .neq('id', id)
+    .order('created_at', { ascending: false })
+    .limit(3)
 
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
@@ -254,9 +281,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
           </div>
 
           {/* Right Column - Author Info & Contact */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
             {/* Author Card */}
-            <Card className="border-0 rounded-3xl bg-white sticky top-24">
+            <Card className="border-0 rounded-3xl bg-white shadow-sm">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="relative">
@@ -298,7 +325,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
 
                 {/* Member Since Info */}
-                <div className="mb-10 pb-6 border-b border-black/5">
+                <div className="mb-6 pb-6 border-b border-black/5">
                   <div className="flex items-center gap-2 text-sm text-black/60">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -344,7 +371,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     />
                     {/* Phone number if available */}
                     {post.profiles?.phone && (
-                      <PhoneNumber phone={post.profiles.phone} />
+                      <PhoneNumber phone={post.profiles.phone} postId={post.id} />
                     )}
                     {/* Show review button if post is completed and user hasn't reviewed yet */}
                     {post.status === 'completed' && !hasReviewed && (
@@ -362,9 +389,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     </Button>
                   </Link>
                 ) : (
-                  <div className="space-y-3 pt-2">
-                    <div className="bg-black/5 rounded-2xl p-4 text-center">
-                      <p className="text-sm text-black/60">To Twoje ogłoszenie</p>
+                  <div className="space-y-3">
+                    <div className="bg-black/5 rounded-full py-3 text-center">
+                      <p className="text-base text-black/60">To Twoje ogłoszenie</p>
                     </div>
                     <Link href={`/dashboard/posts/${post.id}/edit`}>
                       <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 py-6 text-lg">
@@ -375,6 +402,81 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 )}
               </CardContent>
             </Card>
+
+            {/* Distance Card - Only for logged in users */}
+            {user && user.id !== post.user_id && (
+              <DistanceCard postCity={post.city} postDistrict={post.district} />
+            )}
+
+            {/* Other Posts from Author */}
+            {otherPosts && otherPosts.length > 0 && (
+              <Card className="border-0 rounded-3xl bg-white shadow-sm">
+                <CardContent className="p-6">
+                  <h4 className="text-lg font-bold text-black mb-4">
+                    Inne ogłoszenia użytkownika
+                  </h4>
+                  <div className="space-y-4">
+                    {otherPosts.map((otherPost: any, index: number) => (
+                      <div key={otherPost.id}>
+                        {index > 0 && <div className="h-px bg-black/10 my-4" />}
+                        <Link href={`/posts/${otherPost.id}`}>
+                          <div className="group p-4 rounded-2xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer min-h-[90px]">
+                          <div className="flex gap-3">
+                            {/* Thumbnail */}
+                            {otherPost.images && otherPost.images.length > 0 && (
+                              <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-black/10 flex-shrink-0">
+                                <Image
+                                  src={otherPost.images[0]}
+                                  alt={otherPost.title}
+                                  fill
+                                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                />
+                              </div>
+                            )}
+
+                            {/* Content */}
+                            <div className="flex-1 min-w-0 flex flex-col justify-between">
+                              <div>
+                                <div className="flex items-start gap-2 mb-2">
+                                  <Badge
+                                    className={`rounded-full px-2 py-0.5 text-xs ${
+                                      otherPost.type === 'seeking'
+                                        ? 'bg-[#C44E35] text-white border-0'
+                                        : 'bg-black text-white border-0'
+                                    }`}
+                                  >
+                                    {otherPost.type === 'seeking' ? 'Szukam' : 'Oferuję'}
+                                  </Badge>
+                                </div>
+                                <h5 className="text-sm font-semibold text-black mb-2 line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
+                                  {otherPost.title}
+                                </h5>
+                              </div>
+                              <div className="flex items-center gap-2 text-xs text-black/60">
+                                <span>{otherPost.city}</span>
+                                {(otherPost.price_min || otherPost.price_max) && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="font-semibold text-black">
+                                      {otherPost.price_min && otherPost.price_max
+                                        ? `${otherPost.price_min}-${otherPost.price_max} zł`
+                                        : otherPost.price_min
+                                        ? `${otherPost.price_min} zł`
+                                        : `${otherPost.price_max} zł`}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </main>

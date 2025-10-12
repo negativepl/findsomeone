@@ -19,14 +19,15 @@ export default async function MyListingsPage() {
     redirect('/login')
   }
 
-  // Fetch user's posts
+  // Fetch user's posts with phone_clicks
   const { data: posts } = await supabase
     .from('posts')
     .select(`
       *,
       categories (
         name
-      )
+      ),
+      phone_clicks
     `)
     .eq('user_id', user.id)
     .eq('is_deleted', false)
