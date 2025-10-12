@@ -396,11 +396,10 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
         initial={false}
         animate={{ y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-black/5 rounded-t-3xl supports-[backdrop-filter]:bg-white/90"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-black/5 rounded-t-3xl"
         style={{
           WebkitTransform: 'translateZ(0)',
           transform: 'translateZ(0)',
-          WebkitBackdropFilter: 'blur(12px)',
         }}
       >
         <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
