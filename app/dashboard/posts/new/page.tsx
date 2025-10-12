@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { MobileDock } from '@/components/MobileDock'
+import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { NewPostClient } from './NewPostClient'
 import { Metadata } from 'next'
 
@@ -23,7 +23,7 @@ export default async function NewPostPage() {
       <NavbarWithHide user={user} />
       <NewPostClient />
       <Footer />
-      <MobileDock />
+      <MobileDockWrapper user={user} />
     </div>
   )
 }

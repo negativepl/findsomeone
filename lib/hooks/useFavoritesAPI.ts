@@ -4,7 +4,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 // Add to favorites via API
 export function useAddFavoriteAPI() {
-  const queryClient = useQueryClient()
+  let queryClient
+  try {
+    queryClient = useQueryClient()
+  } catch (error) {
+    // QueryClient not available, mutations will still work but won't invalidate queries
+    queryClient = null
+  }
 
   return useMutation({
     mutationFn: async (postId: string) => {
@@ -28,21 +34,31 @@ export function useAddFavoriteAPI() {
     },
     onMutate: async (postId) => {
       // Optimistic update - add immediately to UI
-      await queryClient.cancelQueries({ queryKey: ['favorites'] })
+      if (queryClient) {
+        await queryClient.cancelQueries({ queryKey: ['favorites'] })
+      }
 
       // We don't know the userId here, so we'll just invalidate after success
       return { postId }
     },
     onSuccess: () => {
       // Invalidate all favorites queries to refetch
-      queryClient.invalidateQueries({ queryKey: ['favorites'] })
+      if (queryClient) {
+        queryClient.invalidateQueries({ queryKey: ['favorites'] })
+      }
     },
   })
 }
 
 // Remove from favorites via API
 export function useRemoveFavoriteAPI() {
-  const queryClient = useQueryClient()
+  let queryClient
+  try {
+    queryClient = useQueryClient()
+  } catch (error) {
+    // QueryClient not available, mutations will still work but won't invalidate queries
+    queryClient = null
+  }
 
   return useMutation({
     mutationFn: async (postId: string) => {
@@ -66,13 +82,17 @@ export function useRemoveFavoriteAPI() {
     },
     onMutate: async (postId) => {
       // Optimistic update - remove immediately from UI
-      await queryClient.cancelQueries({ queryKey: ['favorites'] })
+      if (queryClient) {
+        await queryClient.cancelQueries({ queryKey: ['favorites'] })
+      }
 
       return { postId }
     },
     onSuccess: () => {
       // Invalidate all favorites queries to refetch
-      queryClient.invalidateQueries({ queryKey: ['favorites'] })
+      if (queryClient) {
+        queryClient.invalidateQueries({ queryKey: ['favorites'] })
+      }
     },
   })
 }

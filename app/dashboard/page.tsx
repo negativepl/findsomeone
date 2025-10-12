@@ -4,11 +4,11 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MobileDock } from '@/components/MobileDock'
+import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { SearchFilters } from '@/components/SearchFilters'
-import { FavoriteButton } from '@/components/FavoriteButton'
+import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
 import { DashboardTabs } from '@/components/DashboardTabs'
 import { DashboardFilters } from '@/components/DashboardFilters'
 import { Pagination } from '@/components/Pagination'
@@ -368,7 +368,7 @@ export default async function DashboardPage({
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                       <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-all">
-                        <FavoriteButton
+                        <FavoriteButtonWrapper
                           postId={post.id}
                           initialIsFavorite={userFavorites.includes(post.id)}
                         />
@@ -524,7 +524,7 @@ export default async function DashboardPage({
       <Footer />
 
       {/* Mobile Dock */}
-      <MobileDock />
+      <MobileDockWrapper user={user} />
     </div>
   )
 }

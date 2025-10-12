@@ -130,17 +130,6 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             </Link>
 
             <Link
-              href="/dashboard/messages"
-              className="flex items-center gap-3 px-4 py-2 hover:bg-black/5 transition-colors"
-              onClick={() => setIsOpen(false)}
-            >
-              <svg className="w-5 h-5 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-                <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/>
-              </svg>
-              <span className="text-black">Wiadomości</span>
-            </Link>
-
-            <Link
               href="/dashboard/profile"
               className="flex items-center gap-3 px-4 py-2 hover:bg-black/5 transition-colors"
               onClick={() => setIsOpen(false)}

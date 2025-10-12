@@ -13,7 +13,8 @@ import { SendMessageModal } from '@/components/SendMessageModal'
 import { ReviewModalWrapper } from './ReviewModalWrapper'
 import { PhoneNumber } from './PhoneNumber'
 
-export default async function PostDetailPage({ params }: { params: { id: string } }) {
+export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -38,7 +39,7 @@ export default async function PostDetailPage({ params }: { params: { id: string 
         slug
       )
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .single()
 
   if (!post) {
@@ -94,7 +95,7 @@ export default async function PostDetailPage({ params }: { params: { id: string 
       .select('id')
       .eq('reviewer_id', user.id)
       .eq('reviewed_id', post.user_id)
-      .eq('post_id', params.id)
+      .eq('post_id', id)
       .single()
 
     hasReviewed = !!existingReview
@@ -107,7 +108,7 @@ export default async function PostDetailPage({ params }: { params: { id: string 
       .from('favorites')
       .select('id')
       .eq('user_id', user.id)
-      .eq('post_id', params.id)
+      .eq('post_id', id)
       .single()
 
     isFavorite = !!favoriteData

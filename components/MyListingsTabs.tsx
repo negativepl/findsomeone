@@ -18,17 +18,17 @@ export function MyListingsTabs({
   onTabChange,
 }: MyListingsTabsProps) {
   return (
-    <div className="flex gap-2 border-b-2 border-black/10">
+    <div className="flex gap-0.5 md:gap-2 border-b-2 border-black/10 overflow-x-auto scrollbar-hide">
       <button
         onClick={() => onTabChange('all')}
-        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+        className={`flex items-center gap-1 md:gap-3 px-2 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-xs md:text-base whitespace-nowrap ${
           activeTab === 'all'
             ? 'text-[#C44E35]'
             : 'text-black/60 hover:text-black'
         }`}
       >
         <span>Wszystkie</span>
-        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
           activeTab === 'all'
             ? 'bg-[#C44E35] text-white'
             : 'bg-black/10 text-black/60'
@@ -42,14 +42,14 @@ export function MyListingsTabs({
 
       <button
         onClick={() => onTabChange('active')}
-        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+        className={`flex items-center gap-1 md:gap-3 px-2 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-xs md:text-base whitespace-nowrap ${
           activeTab === 'active'
             ? 'text-[#C44E35]'
             : 'text-black/60 hover:text-black'
         }`}
       >
         <span>Aktywne</span>
-        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
           activeTab === 'active'
             ? 'bg-[#C44E35] text-white'
             : 'bg-black/10 text-black/60'
@@ -63,14 +63,14 @@ export function MyListingsTabs({
 
       <button
         onClick={() => onTabChange('rejected')}
-        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+        className={`flex items-center gap-1 md:gap-3 px-2 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-xs md:text-base whitespace-nowrap ${
           activeTab === 'rejected'
             ? 'text-[#C44E35]'
             : 'text-black/60 hover:text-black'
         }`}
       >
         <span>Odrzucone</span>
-        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
           activeTab === 'rejected'
             ? 'bg-[#C44E35] text-white'
             : 'bg-black/10 text-black/60'
@@ -84,14 +84,14 @@ export function MyListingsTabs({
 
       <button
         onClick={() => onTabChange('completed')}
-        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+        className={`flex items-center gap-1 md:gap-3 px-2 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-xs md:text-base whitespace-nowrap ${
           activeTab === 'completed'
             ? 'text-[#C44E35]'
             : 'text-black/60 hover:text-black'
         }`}
       >
         <span>Zakończone</span>
-        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
           activeTab === 'completed'
             ? 'bg-[#C44E35] text-white'
             : 'bg-black/10 text-black/60'

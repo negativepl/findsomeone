@@ -72,24 +72,10 @@ export async function Navbar({ user, showAddButton = true }: NavbarProps) {
           )}
         </nav>
 
-        {/* Mobile Navigation - Icons with Avatar or Login */}
+        {/* Mobile Navigation - Icons only */}
         <div className="md:hidden flex items-center gap-1.5">
           {/* Mobile Nav Icons (Search, Messages, Favorites) */}
           <MobileNavIcons user={user} />
-
-          {user ? (
-            /* User Menu Avatar */
-            <div className="transform scale-[0.85] origin-center">
-              <UserMenu user={user} profile={profile} isAdmin={isAdmin} />
-            </div>
-          ) : (
-            /* Login button for non-authenticated users */
-            <Link href="/login">
-              <Button variant="ghost" className="h-8 rounded-full hover:bg-black/5 text-xs px-3 py-1">
-                Zaloguj
-              </Button>
-            </Link>
-          )}
         </div>
       </div>
     </header>

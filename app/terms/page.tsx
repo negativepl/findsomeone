@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { MobileDock } from '@/components/MobileDock'
+import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -95,7 +95,7 @@ export default async function TermsPage() {
       </main>
 
       <Footer />
-      <MobileDock />
+      <MobileDockWrapper user={user} />
     </div>
   )
 }

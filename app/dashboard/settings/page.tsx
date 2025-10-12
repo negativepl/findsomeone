@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { MobileDock } from '@/components/MobileDock'
+import { MobileDockWrapper } from '@/components/MobileDockWrapper'
 import { Metadata } from 'next'
 import { ChangePasswordDialog } from './ChangePasswordDialog'
 import { ChangeEmailDialog } from './ChangeEmailDialog'
@@ -182,7 +182,7 @@ export default async function SettingsPage() {
       </main>
 
       <Footer />
-      <MobileDock />
+      <MobileDockWrapper user={user} />
     </div>
   )
 }

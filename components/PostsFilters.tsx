@@ -37,45 +37,39 @@ export function PostsFilters({ currentSort, itemsPerPage, startItem, endItem, to
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white rounded-2xl px-6 py-4 border border-black/10">
+    <div className="flex flex-row items-center justify-between gap-2">
       {/* Left side - Range display */}
-      <div className="text-sm text-black/60">
-        Wyświetlanie {startItem} - {endItem} z {totalCount} element{totalCount === 1 ? '' : totalCount < 5 ? 'y' : 'ów'}
+      <div className="text-xs sm:text-sm text-black/60 whitespace-nowrap">
+        {startItem} - {endItem} z {totalCount}
       </div>
 
       {/* Right side - Controls */}
-      <div className="flex items-center gap-3 flex-wrap">
-        {/* Items per page */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-black/60">Na stronie:</span>
-          <Select value={String(itemsPerPage)} onValueChange={handleLimitChange}>
-            <SelectTrigger className="w-[70px] rounded-xl border-black/10 h-10 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="8">8</SelectItem>
-              <SelectItem value="12">12</SelectItem>
-              <SelectItem value="24">24</SelectItem>
-              <SelectItem value="48">48</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+      <div className="flex items-center gap-2">
+        {/* Items per page - just number */}
+        <Select value={String(itemsPerPage)} onValueChange={handleLimitChange}>
+          <SelectTrigger className="w-auto rounded-xl border-black/10 h-9 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20 px-2.5 gap-1 justify-start">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="8">8</SelectItem>
+            <SelectItem value="12">12</SelectItem>
+            <SelectItem value="24">24</SelectItem>
+            <SelectItem value="48">48</SelectItem>
+          </SelectContent>
+        </Select>
 
-        {/* Sort */}
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-black/60">Sortuj:</span>
-          <Select value={currentSort} onValueChange={handleSortChange}>
-            <SelectTrigger className="w-[180px] rounded-xl border-black/10 h-10 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="newest">Najnowsze najpierw</SelectItem>
-              <SelectItem value="oldest">Najstarsze najpierw</SelectItem>
-              <SelectItem value="price_asc">Cena: rosnąco</SelectItem>
-              <SelectItem value="price_desc">Cena: malejąco</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+        {/* Sort - always shows "Sortuj według" */}
+        <Select value={currentSort} onValueChange={handleSortChange}>
+          <SelectTrigger className="w-auto rounded-xl border-black/10 h-9 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20 px-2.5 gap-1 justify-start">
+            <span className="text-sm">Sortuj według</span>
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="newest">Najnowsze najpierw</SelectItem>
+            <SelectItem value="oldest">Najstarsze najpierw</SelectItem>
+            <SelectItem value="price_asc">Cena: rosnąco</SelectItem>
+            <SelectItem value="price_desc">Cena: malejąco</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
     </div>
   )

@@ -35,17 +35,17 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
   }
 
   return (
-    <div className="flex gap-2 border-b-2 border-black/10">
+    <div className="flex gap-1 md:gap-2 border-b-2 border-black/10">
       <button
         onClick={() => handleTabChange('all')}
-        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+        className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
           currentType === 'all'
             ? 'text-[#C44E35]'
             : 'text-black/60 hover:text-black'
         }`}
       >
         <span>Wszystkie</span>
-        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
           currentType === 'all'
             ? 'bg-[#C44E35] text-white'
             : 'bg-black/10 text-black/60'
@@ -59,14 +59,14 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
 
       <button
         onClick={() => handleTabChange('seeking')}
-        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+        className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
           currentType === 'seeking'
             ? 'text-[#C44E35]'
             : 'text-black/60 hover:text-black'
         }`}
       >
         <span>Szukam</span>
-        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
           currentType === 'seeking'
             ? 'bg-[#C44E35] text-white'
             : 'bg-black/10 text-black/60'
@@ -80,14 +80,14 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
 
       <button
         onClick={() => handleTabChange('offering')}
-        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+        className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
           currentType === 'offering'
             ? 'text-[#C44E35]'
             : 'text-black/60 hover:text-black'
         }`}
       >
         <span>Oferuję</span>
-        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
           currentType === 'offering'
             ? 'bg-[#C44E35] text-white'
             : 'bg-black/10 text-black/60'

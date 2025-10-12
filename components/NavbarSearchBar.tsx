@@ -396,7 +396,7 @@ export function NavbarSearchBar() {
   return (
     <div className="relative hidden md:flex flex-1 max-w-2xl gap-2 items-center">
       <div ref={dropdownRef} className="relative flex-1">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} suppressHydrationWarning>
           <div className="relative flex items-center bg-[#FAF8F3] rounded-full px-5 h-10 transition-colors">
             <Search className="w-5 h-5 text-black/40 mr-3 flex-shrink-0" />
             <input
@@ -408,6 +408,7 @@ export function NavbarSearchBar() {
               onFocus={handleSearchFocus}
               className="flex-1 outline-none text-sm text-black placeholder:text-black/40 bg-transparent"
               autoComplete="off"
+              suppressHydrationWarning
             />
             {isLoading && (
               <div className="w-4 h-4 border-2 border-black/20 border-t-black/60 rounded-full animate-spin ml-2" />
