@@ -1,37 +1,27 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
+import { useUnreadCount } from '@/lib/hooks/useMessages'
+import { useQueryClient } from '@tanstack/react-query'
 
 interface MessagesIconProps {
   user: User | null
 }
 
 export function MessagesIcon({ user }: MessagesIconProps) {
-  const [unreadCount, setUnreadCount] = useState(0)
+  const { data: unreadCount = 0 } = useUnreadCount(user?.id)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
     if (!user) return
 
     const supabase = createClient()
 
-    // Fetch initial count
-    const fetchUnreadCount = async () => {
-      const { count } = await supabase
-        .from('messages')
-        .select('*', { count: 'exact', head: true })
-        .eq('receiver_id', user.id)
-        .eq('read', false)
-
-      setUnreadCount(count || 0)
-    }
-
-    fetchUnreadCount()
-
-    // Subscribe to real-time changes
+    // Subscribe to real-time changes for instant updates
     const channel = supabase
       .channel('unread-messages')
       .on(
@@ -43,8 +33,8 @@ export function MessagesIcon({ user }: MessagesIconProps) {
           filter: `receiver_id=eq.${user.id}`,
         },
         () => {
-          // New message received, increment count
-          setUnreadCount((prev) => prev + 1)
+          // New message received - invalidate to refetch count
+          queryClient.invalidateQueries({ queryKey: ['messages', 'unread', user.id] })
         }
       )
       .on(
@@ -55,18 +45,11 @@ export function MessagesIcon({ user }: MessagesIconProps) {
           table: 'messages',
           filter: `receiver_id=eq.${user.id}`,
         },
-        async (payload) => {
-          // Message marked as read - refetch count to be sure
+        (payload) => {
+          // Message marked as read - invalidate to refetch count
           const updatedMsg = payload.new as any
           if (updatedMsg.read && updatedMsg.receiver_id === user.id) {
-            // Refetch the actual count to ensure accuracy
-            const { count } = await supabase
-              .from('messages')
-              .select('*', { count: 'exact', head: true })
-              .eq('receiver_id', user.id)
-              .eq('read', false)
-
-            setUnreadCount(count || 0)
+            queryClient.invalidateQueries({ queryKey: ['messages', 'unread', user.id] })
           }
         }
       )
@@ -75,7 +58,7 @@ export function MessagesIcon({ user }: MessagesIconProps) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [user?.id])
+  }, [user?.id, queryClient])
 
   if (!user) {
     return null

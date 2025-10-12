@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { useToggleFavoriteAPI } from '@/lib/hooks/useFavoritesAPI'
 
 interface FavoriteButtonProps {
   postId: string
@@ -18,70 +19,39 @@ export function FavoriteButton({
   className = ''
 }: FavoriteButtonProps) {
   const [isFavorite, setIsFavorite] = useState(initialIsFavorite)
-  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const { toggleFavorite, isLoading } = useToggleFavoriteAPI()
 
-  const toggleFavorite = async (e: React.MouseEvent) => {
+  const handleToggle = async (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
-    setIsLoading(true)
+    // Optimistic update - UI changes immediately!
+    const previousState = isFavorite
+    setIsFavorite(!isFavorite)
 
     try {
-      if (isFavorite) {
-        // Remove from favorites
-        const response = await fetch('/api/favorites', {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ postId }),
-        })
+      await toggleFavorite(postId, isFavorite)
 
-        if (response.status === 401) {
-          router.push('/login')
-          return
-        }
+      // Show success toast
+      toast.success(isFavorite ? 'Usunięto z ulubionych' : 'Dodano do ulubionych')
+    } catch (error: any) {
+      // Rollback on error
+      setIsFavorite(previousState)
 
-        if (response.ok) {
-          setIsFavorite(false)
-          toast.success('Usunięto z ulubionych')
-        } else {
-          toast.error('Nie udało się usunąć z ulubionych')
-        }
-      } else {
-        // Add to favorites
-        const response = await fetch('/api/favorites', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ postId }),
-        })
-
-        if (response.status === 401) {
-          router.push('/login')
-          return
-        }
-
-        if (response.ok) {
-          setIsFavorite(true)
-          toast.success('Dodano do ulubionych')
-        } else {
-          toast.error('Nie udało się dodać do ulubionych')
-        }
+      if (error.message === 'UNAUTHORIZED') {
+        router.push('/login')
+        return
       }
-    } catch (error) {
+
       console.error('Error toggling favorite:', error)
       toast.error('Wystąpił błąd. Spróbuj ponownie.')
-    } finally {
-      setIsLoading(false)
     }
   }
 
   return (
     <button
-      onClick={toggleFavorite}
+      onClick={handleToggle}
       disabled={isLoading}
       className={`group/fav flex items-center gap-2 transition-all ${className}`}
       aria-label={isFavorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}

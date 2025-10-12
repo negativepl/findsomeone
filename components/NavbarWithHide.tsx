@@ -8,7 +8,7 @@ interface NavbarWithHideProps {
   alwaysVisible?: boolean
 }
 
-export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible = false }: NavbarWithHideProps) {
+export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible = true }: NavbarWithHideProps) {
   return (
     <>
       <NavbarWrapper alwaysVisible={alwaysVisible}>
