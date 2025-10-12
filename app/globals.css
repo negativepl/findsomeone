@@ -236,6 +236,23 @@ html {
   gap: 16px;
 }
 
+/* Safe area insets for iOS (notch, home indicator) */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.safe-area-inset-left {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.safe-area-inset-right {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
 /* NProgress loading bar styles */
 #nprogress {
   pointer-events: none;
