@@ -414,6 +414,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             if (cityQuery) params.set('city', cityQuery)
                             router.push(`/posts?${params}`)
                           }}
+                          data-navigate="true"
                           className="w-full text-left px-3 py-3 hover:bg-gradient-to-r hover:from-[#C44E35]/5 hover:to-[#B33D2A]/5 rounded-xl transition-all flex items-center gap-3 group border border-transparent hover:border-[#C44E35]/10"
                         >
                           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C44E35]/10 to-[#B33D2A]/10 flex items-center justify-center flex-shrink-0 group-hover:from-[#C44E35]/20 group-hover:to-[#B33D2A]/20 transition-all">
@@ -515,6 +516,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             if (cityQuery) params.set('city', cityQuery)
                             router.push(`/posts?${params}`)
                           }}
+                          data-navigate="true"
                           className="w-full text-left px-3 py-3 hover:bg-[#C44E35]/5 rounded-xl transition-all flex items-center gap-3 group"
                         >
                           <div className="w-8 h-8 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C44E35]/20 transition-colors">
@@ -570,6 +572,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             if (cityQuery) params.set('city', cityQuery)
                             router.push(`/posts?${params}`)
                           }}
+                          data-navigate="true"
                           className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
                         >
                           <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">
@@ -612,6 +615,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             if (cityQuery) params.set('city', cityQuery)
                             router.push(`/posts?${params}`)
                           }}
+                          data-navigate="true"
                           className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
                         >
                           <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">

@@ -453,6 +453,7 @@ export function NavbarSearchBar() {
                           key={`recent-${index}`}
                           type="button"
                           onClick={() => handleSuggestionClick(search)}
+                          data-navigate="true"
                           className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 group ${
                             isSelected ? 'bg-black/10' : 'hover:bg-black/5'
                           }`}
@@ -481,6 +482,7 @@ export function NavbarSearchBar() {
                       setIsOpen(false)
                       router.push(`/posts?search=${encodeURIComponent(results.queryCorrection!.corrected)}`)
                     }}
+                    data-navigate="true"
                     className="text-sm font-semibold text-[#C44E35] hover:text-[#B33D2A] hover:underline transition-colors"
                   >
                     {results.queryCorrection.corrected}
@@ -518,6 +520,7 @@ export function NavbarSearchBar() {
                         key={`trending-${index}`}
                         type="button"
                         onClick={() => handleSuggestionClick(item.text)}
+                        data-navigate="true"
                         className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 group ${
                           isSelected ? 'bg-[#C44E35]/10' : 'hover:bg-[#C44E35]/5'
                         }`}
@@ -568,6 +571,7 @@ export function NavbarSearchBar() {
                         key={`suggestion-${index}`}
                         type="button"
                         onClick={() => handleSuggestionClick(suggestion.text)}
+                        data-navigate="true"
                         className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 group ${
                           isSelected ? 'bg-[#C44E35]/10' : 'hover:bg-black/5'
                         }`}

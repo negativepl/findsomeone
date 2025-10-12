@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
+import NProgress from 'nprogress'
 
 interface Category {
   id: string
@@ -117,6 +118,8 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
       if (updateError) throw updateError
 
+      // Start loading bar before navigation
+      NProgress.start()
       router.push('/dashboard/my-listings')
       router.refresh()
     } catch (err) {
