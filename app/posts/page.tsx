@@ -7,10 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { MobileDock } from '@/components/MobileDock'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { SearchFilters } from '@/components/SearchFilters'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { DashboardTabs } from '@/components/DashboardTabs'
-import { LiveSearchBar } from '@/components/LiveSearchBar'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -52,12 +50,6 @@ export default async function DashboardPage({
   const cityQuery = params.city || ''
   const categoryQuery = params.category || ''
   const typeQuery = params.type || ''
-
-  // Fetch all categories for filters
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('id, name, slug')
-    .order('name')
 
   // Use FULL-TEXT SEARCH if there's a search query
   let posts: Post[] = []
@@ -198,9 +190,9 @@ export default async function DashboardPage({
 
       {/* Main Content */}
       <main className="container mx-auto px-6 py-10">
-        <div className="mb-10">
+        <div className="mb-8">
           <h2 className="text-4xl font-bold mb-3 text-black">
-            {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Najnowsze ogłoszenia'}
+            {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Wszystkie ogłoszenia'}
           </h2>
           <p className="text-lg text-black/60">
             {searchQuery || cityQuery || categoryQuery ? (
@@ -211,34 +203,19 @@ export default async function DashboardPage({
                 {categoryQuery && <> w kategorii "{categoryQuery}"</>}
               </>
             ) : (
-              'Przeglądaj aktualne oferty i zapytania w Twojej okolicy'
+              <>Przeglądaj oferty i zapytania od użytkowników z całej Polski</>
             )}
           </p>
-          {(searchQuery || cityQuery || categoryQuery) && (
-            <Link href="/dashboard" className="inline-block mt-4">
-              <Button variant="outline" className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5">
-                ← Wyczyść filtry
-              </Button>
-            </Link>
-          )}
         </div>
 
         {/* Tabs */}
-        <div className="flex justify-center mb-8">
+        <div className="mb-8">
           <DashboardTabs
             seekingCount={seekingCount}
             offeringCount={offeringCount}
             totalCount={totalCount}
           />
         </div>
-
-        {/* Search Bar */}
-        <div className="w-full mx-auto mb-8">
-          <LiveSearchBar initialSearch={searchQuery} initialCity={cityQuery} />
-        </div>
-
-        {/* Filters */}
-        <SearchFilters categories={categories} />
 
         {/* Posts Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">

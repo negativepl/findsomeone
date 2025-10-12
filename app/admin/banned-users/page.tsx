@@ -1,8 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import { NavbarWithHide } from '@/components/NavbarWithHide'
-import { Footer } from '@/components/Footer'
-import { getUserRole } from '@/lib/admin'
 import { BannedUsersList } from '@/components/admin/BannedUsersList'
 import { Metadata } from 'next'
 
@@ -12,18 +8,6 @@ export const metadata: Metadata = {
 
 export default async function AdminBannedUsersPage() {
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
-  // Check if user is admin
-  const userRole = await getUserRole()
-  if (userRole !== 'admin') {
-    redirect('/dashboard')
-  }
 
   // Get all banned users
   const { data: bannedUsers, error: bannedError } = await supabase
@@ -57,31 +41,25 @@ export default async function AdminBannedUsersPage() {
   })) || []
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} showAddButton={false} />
-
-      <main className="container mx-auto px-6 py-10">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-black mb-3">Zbanowani użytkownicy</h1>
-            <p className="text-lg text-black/60">
-              Zarządzaj zbanowanymi użytkownikami - przeglądaj i odblokuj dostęp
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-black/60">
-              Łącznie zbanowanych
-            </p>
-            <p className="text-3xl font-bold text-red-600">
-              {transformedUsers.length}
-            </p>
-          </div>
+    <>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold text-black mb-2">Zbanowani użytkownicy</h1>
+          <p className="text-black/60">
+            Zarządzaj zbanowanymi użytkownikami - przeglądaj i odblokuj dostęp
+          </p>
         </div>
+        <div className="text-right">
+          <p className="text-sm text-black/60">
+            Łącznie zbanowanych
+          </p>
+          <p className="text-3xl font-bold text-red-600">
+            {transformedUsers.length}
+          </p>
+        </div>
+      </div>
 
-        <BannedUsersList initialUsers={transformedUsers} />
-      </main>
-
-      <Footer />
-    </div>
+      <BannedUsersList initialUsers={transformedUsers} />
+    </>
   )
 }

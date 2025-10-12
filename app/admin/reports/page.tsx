@@ -1,8 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import { NavbarWithHide } from '@/components/NavbarWithHide'
-import { Footer } from '@/components/Footer'
-import { getUserRole } from '@/lib/admin'
 import { ReportsList } from '@/components/admin/ReportsList'
 import { Metadata } from 'next'
 
@@ -13,43 +9,32 @@ export const metadata: Metadata = {
 export default async function AdminReportsPage() {
   const supabase = await createClient()
 
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
-  // Check if user is admin
-  const userRole = await getUserRole()
-  if (userRole !== 'admin') {
-    redirect('/dashboard')
-  }
-
   // Get reported messages using the function
   const { data: reports, error } = await supabase.rpc('get_reported_messages')
 
   if (error) {
     console.error('Error fetching reports:', error)
+    console.error('Error details:', JSON.stringify(error, null, 2))
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} showAddButton={false} />
+    <>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-black mb-2">Zgłoszenia wiadomości</h1>
+        <p className="text-black/60">
+          Moderacja zgłoszonych wiadomości przez użytkowników
+        </p>
+      </div>
 
-      <main className="container mx-auto px-6 py-10">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-black mb-3">Zgłoszenia wiadomości</h1>
-            <p className="text-lg text-black/60">
-              Moderacja zgłoszonych wiadomości przez użytkowników
-            </p>
-          </div>
+      {error ? (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-red-900 mb-2">Błąd ładowania zgłoszeń</h3>
+          <p className="text-red-800">{error.message || 'Nieznany błąd'}</p>
+          <pre className="mt-2 text-xs text-red-700 overflow-auto">{JSON.stringify(error, null, 2)}</pre>
         </div>
-
+      ) : (
         <ReportsList initialReports={reports || []} />
-      </main>
-
-      <Footer />
-    </div>
+      )}
+    </>
   )
 }

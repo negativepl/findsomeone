@@ -1,7 +1,6 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 interface DashboardTabsProps {
   seekingCount: number
@@ -36,30 +35,69 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
   }
 
   return (
-    <Tabs value={currentType} onValueChange={handleTabChange} className="w-full">
-      <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 h-12 bg-white border border-black/10 rounded-full p-1">
-        <TabsTrigger
-          value="all"
-          className="rounded-full data-[state=active]:bg-black data-[state=active]:text-white transition-all"
-        >
-          Wszystkie
-          <span className="ml-2 text-xs opacity-60">({totalCount})</span>
-        </TabsTrigger>
-        <TabsTrigger
-          value="seeking"
-          className="rounded-full data-[state=active]:bg-[#C44E35] data-[state=active]:text-white transition-all"
-        >
-          Szukam
-          <span className="ml-2 text-xs opacity-60">({seekingCount})</span>
-        </TabsTrigger>
-        <TabsTrigger
-          value="offering"
-          className="rounded-full data-[state=active]:bg-black data-[state=active]:text-white transition-all"
-        >
-          Oferuję
-          <span className="ml-2 text-xs opacity-60">({offeringCount})</span>
-        </TabsTrigger>
-      </TabsList>
-    </Tabs>
+    <div className="flex gap-2 border-b-2 border-black/10">
+      <button
+        onClick={() => handleTabChange('all')}
+        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+          currentType === 'all'
+            ? 'text-[#C44E35]'
+            : 'text-black/60 hover:text-black'
+        }`}
+      >
+        <span>Wszystkie</span>
+        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+          currentType === 'all'
+            ? 'bg-[#C44E35] text-white'
+            : 'bg-black/10 text-black/60'
+        }`}>
+          {totalCount}
+        </span>
+        {currentType === 'all' && (
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+        )}
+      </button>
+
+      <button
+        onClick={() => handleTabChange('seeking')}
+        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+          currentType === 'seeking'
+            ? 'text-[#C44E35]'
+            : 'text-black/60 hover:text-black'
+        }`}
+      >
+        <span>Szukam</span>
+        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+          currentType === 'seeking'
+            ? 'bg-[#C44E35] text-white'
+            : 'bg-black/10 text-black/60'
+        }`}>
+          {seekingCount}
+        </span>
+        {currentType === 'seeking' && (
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+        )}
+      </button>
+
+      <button
+        onClick={() => handleTabChange('offering')}
+        className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
+          currentType === 'offering'
+            ? 'text-[#C44E35]'
+            : 'text-black/60 hover:text-black'
+        }`}
+      >
+        <span>Oferuję</span>
+        <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
+          currentType === 'offering'
+            ? 'bg-[#C44E35] text-white'
+            : 'bg-black/10 text-black/60'
+        }`}>
+          {offeringCount}
+        </span>
+        {currentType === 'offering' && (
+          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+        )}
+      </button>
+    </div>
   )
 }

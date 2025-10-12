@@ -9,7 +9,6 @@ import { Footer } from '@/components/Footer'
 import { AnimatedCounter } from '@/components/AnimatedCounter'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { ScrollArrows } from '@/components/ScrollArrows'
-import { LiveSearchBar } from '@/components/LiveSearchBar'
 import { createClient } from '@/lib/supabase/server'
 import { CategoryIcon } from '@/lib/category-icons'
 
@@ -92,11 +91,6 @@ export default async function Home() {
             W FindSomeone łączymy ludzi lokalnie.
           </span>
         </p>
-
-        {/* Search Bar */}
-        <div className="w-full mx-auto mb-8 px-4">
-          <LiveSearchBar />
-        </div>
 
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0">
           <Link href="/posts" className="w-full md:w-auto">
@@ -225,15 +219,15 @@ export default async function Home() {
                       key={cat.id}
                       href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
                       className="flex-shrink-0 snap-center"
-                      style={{ width: '160px' }}
+                      style={{ width: '200px' }}
                     >
                       <Card className="border-0 rounded-3xl bg-[#FAF8F3] hover:bg-[#F5F1E8] transition-all cursor-pointer h-full flex flex-col shadow-sm">
-                        <CardContent className="text-center flex flex-col items-center justify-center flex-1 py-6 px-4">
-                          <div className="mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center text-[#C44E35]" style={{ width: '64px', height: '64px' }}>
-                            <CategoryIcon iconName={cat.icon} className="w-6 h-6" />
+                        <CardContent className="text-center flex flex-col items-center justify-center flex-1 py-8 px-5">
+                          <div className="mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center text-[#C44E35]" style={{ width: '80px', height: '80px' }}>
+                            <CategoryIcon iconName={cat.icon} className="w-8 h-8" />
                           </div>
-                          <div className="h-4"></div>
-                          <p className="font-semibold text-black text-base leading-tight">{cat.name}</p>
+                          <div className="h-5"></div>
+                          <p className="font-semibold text-black text-lg leading-tight">{cat.name}</p>
                         </CardContent>
                       </Card>
                     </Link>
@@ -256,7 +250,7 @@ export default async function Home() {
               </div>
               <div className="hidden md:block">
                 <Link href="/posts?type=seeking">
-                  <Button variant="outline" className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5">
+                  <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0">
                     Zobacz wszystkie
                   </Button>
                 </Link>
@@ -405,7 +399,7 @@ export default async function Home() {
               </div>
               <div className="hidden md:block">
                 <Link href="/posts?type=offering">
-                  <Button variant="outline" className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5">
+                  <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0">
                     Zobacz wszystkie
                   </Button>
                 </Link>

@@ -9,6 +9,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -114,99 +115,113 @@ export function AddCategoryDialog() {
           + Dodaj kategorię
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] rounded-3xl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Dodaj nową kategorię</DialogTitle>
-          <DialogDescription>
-            Wypełnij poniższe pola, aby dodać nową kategorię ogłoszeń
-          </DialogDescription>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nazwa kategorii *</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="np. Hydraulika"
-              required
-              className="rounded-xl"
-            />
+      <DialogContent className="sm:max-w-[900px] rounded-3xl p-0 gap-0">
+        <div className="p-6 pb-0">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">Dodaj nową kategorię</DialogTitle>
+            <DialogDescription>
+              Wypełnij poniższe pola, aby dodać nową kategorię ogłoszeń
+            </DialogDescription>
+          </DialogHeader>
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex flex-col">
+          <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
+            {/* Two column layout */}
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Left column - Form fields */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nazwa kategorii *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    placeholder="np. Hydraulika"
+                    required
+                    className="rounded-xl"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="slug">Slug (URL) *</Label>
+                  <Input
+                    id="slug"
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    placeholder="hydraulika"
+                    required
+                    className="rounded-xl"
+                  />
+                  <p className="text-xs text-black/60">
+                    Slug jest generowany automatycznie, ale możesz go edytować
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="parent">Kategoria nadrzędna (opcjonalnie)</Label>
+                  <Select
+                    value={formData.parent_id || 'none'}
+                    onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
+                  >
+                    <SelectTrigger className="rounded-xl w-full">
+                      <SelectValue placeholder="Brak - kategoria główna" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">Brak - kategoria główna</SelectItem>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-black/60">
+                    Zostaw puste dla kategorii głównej lub wybierz kategorię nadrzędną
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Opis (opcjonalnie)</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Krótki opis kategorii..."
+                    rows={4}
+                    className="rounded-xl"
+                  />
+                </div>
+              </div>
+
+              {/* Right column - Icon Picker */}
+              <div>
+                <IconPicker
+                  value={formData.icon}
+                  onChange={(icon) => setFormData({ ...formData, icon })}
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="slug">Slug (URL) *</Label>
-            <Input
-              id="slug"
-              value={formData.slug}
-              onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-              placeholder="hydraulika"
-              required
-              className="rounded-xl"
-            />
-            <p className="text-xs text-black/60">
-              Slug jest generowany automatycznie, ale możesz go edytować
-            </p>
-          </div>
-
-          <IconPicker
-            value={formData.icon}
-            onChange={(icon) => setFormData({ ...formData, icon })}
-          />
-
-          <div className="space-y-2">
-            <Label htmlFor="parent">Kategoria nadrzędna (opcjonalnie)</Label>
-            <Select
-              value={formData.parent_id || 'none'}
-              onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
-            >
-              <SelectTrigger className="rounded-xl">
-                <SelectValue placeholder="Brak - kategoria główna" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="none">Brak - kategoria główna</SelectItem>
-                {categories.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-black/60">
-              Zostaw puste dla kategorii głównej lub wybierz kategorię nadrzędną
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="description">Opis (opcjonalnie)</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              placeholder="Krótki opis kategorii..."
-              rows={3}
-              className="rounded-xl"
-            />
-          </div>
-
-          <div className="flex gap-3 pt-4">
+          <DialogFooter className="mt-0 pt-6 px-6 pb-6 border-t-2 border-black/5 rounded-b-3xl">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+              className="w-full sm:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
               disabled={loading}
             >
               Anuluj
             </Button>
             <Button
               type="submit"
-              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+              className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold"
               disabled={loading}
             >
               {loading ? 'Dodawanie...' : 'Dodaj kategorię'}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

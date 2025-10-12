@@ -5,6 +5,7 @@ import { UserMenu } from '@/components/UserMenu'
 import { MessagesIcon } from '@/components/MessagesIcon'
 import { FavoritesIcon } from '@/components/FavoritesIcon'
 import { MobileNavIcons } from '@/components/MobileNavIcons'
+import { NavbarSearchBar } from '@/components/NavbarSearchBar'
 import { User } from '@supabase/supabase-js'
 import { getUserRole } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -32,10 +33,13 @@ export async function Navbar({ user, showAddButton = true }: NavbarProps) {
 
   return (
     <header className="border-b border-black/5 bg-white rounded-b-3xl">
-      <div className="container mx-auto px-4 md:px-6 py-3 md:py-5 flex justify-between items-center">
+      <div className="container mx-auto px-4 md:px-6 py-3 md:py-5 flex justify-between items-center gap-4">
         <Link href="/">
           <LogoWithText />
         </Link>
+
+        {/* Search Bar - Desktop */}
+        <NavbarSearchBar />
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-2 lg:gap-3 items-center">

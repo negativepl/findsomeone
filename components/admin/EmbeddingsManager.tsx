@@ -57,46 +57,28 @@ export function EmbeddingsManager() {
 
       {/* Info Cards */}
       <div className="grid md:grid-cols-3 gap-4 mb-6">
-        <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20">
-          <div className="flex items-center gap-2 mb-1">
-            <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-            <h4 className="font-semibold text-sm">Model</h4>
-          </div>
-          <p className="text-lg font-bold">text-embedding-3-small</p>
+        <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
+          <h4 className="font-semibold text-sm mb-2 text-black/70">Model</h4>
+          <p className="text-lg font-bold text-black">text-embedding-3-small</p>
           <p className="text-xs text-black/60 mt-1">1536 wymiarów, $0.02/1M tokenów</p>
         </Card>
 
-        <Card className="p-4 bg-blue-50 border-blue-200">
-          <div className="flex items-center gap-2 mb-1">
-            <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h4 className="font-semibold text-sm">Funkcje</h4>
-          </div>
-          <p className="text-sm">Semantyczne wyszukiwanie</p>
+        <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
+          <h4 className="font-semibold text-sm mb-2 text-black/70">Funkcje</h4>
+          <p className="text-sm text-black">Semantyczne wyszukiwanie</p>
           <p className="text-xs text-black/60 mt-1">Znajduje podobne znaczenia</p>
         </Card>
 
-        <Card className="p-4 bg-green-50 border-green-200">
-          <div className="flex items-center gap-2 mb-1">
-            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <h4 className="font-semibold text-sm">Koszt</h4>
-          </div>
-          <p className="text-lg font-bold">~$0.01-0.05</p>
+        <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
+          <h4 className="font-semibold text-sm mb-2 text-black/70">Koszt</h4>
+          <p className="text-lg font-bold text-black">~$0.01-0.05</p>
           <p className="text-xs text-black/60 mt-1">za 100 postów</p>
         </Card>
       </div>
 
       {/* How it works */}
-      <Card className="p-4 bg-black/5 border-black/10 mb-6">
-        <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+      <Card className="p-4 bg-black/5 border-black/10 mb-6 rounded-2xl">
+        <h4 className="font-semibold text-sm mb-3 text-black/70">
           Jak to działa?
         </h4>
         <ol className="space-y-2 text-sm text-black/70">
@@ -183,23 +165,6 @@ export function EmbeddingsManager() {
         </Card>
       )}
 
-      {/* Info box */}
-      <Card className="mt-6 p-4 bg-blue-50 border-blue-200">
-        <div className="flex items-start gap-3">
-          <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <div className="text-sm text-blue-900">
-            <p className="font-semibold mb-1">💡 Kiedy uruchamiać?</p>
-            <ul className="space-y-1 text-xs">
-              <li>• Po dodaniu nowych postów (batch co kilka dni)</li>
-              <li>• Po zmianie treści postów</li>
-              <li>• Jednorazowo przy pierwszym uruchomieniu</li>
-              <li>• System przetwarza tylko posty bez embeddingów (max 100 na raz)</li>
-            </ul>
-          </div>
-        </div>
-      </Card>
     </Card>
   )
 }

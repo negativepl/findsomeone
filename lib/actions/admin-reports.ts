@@ -4,6 +4,71 @@ import { createClient } from '@/lib/supabase/server'
 import { getUserRole } from '@/lib/admin'
 import { revalidatePath } from 'next/cache'
 
+export async function logReportAccess(reportId: string, messageId: string) {
+  const supabase = await createClient()
+
+  // Get current user
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    throw new Error('Musisz być zalogowany')
+  }
+
+  // Check if user is admin
+  const userRole = await getUserRole()
+  if (userRole !== 'admin') {
+    throw new Error('Brak uprawnień')
+  }
+
+  // Log admin access to the report/message
+  await supabase.rpc('log_admin_message_access', {
+    p_admin_id: user.id,
+    p_message_id: messageId,
+    p_report_id: reportId,
+    p_reason: 'Przeglądanie szczegółów zgłoszenia'
+  })
+
+  return { success: true }
+}
+
+export async function getMessageContent(messageId: string, reportId: string) {
+  const supabase = await createClient()
+
+  // Get current user
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    throw new Error('Musisz być zalogowany')
+  }
+
+  // Check if user is admin
+  const userRole = await getUserRole()
+  if (userRole !== 'admin') {
+    throw new Error('Brak uprawnień')
+  }
+
+  // Get message content
+  const { data: message, error } = await supabase
+    .from('messages')
+    .select('content')
+    .eq('id', messageId)
+    .single()
+
+  if (error || !message) {
+    throw new Error('Nie udało się pobrać wiadomości')
+  }
+
+  // Log access
+  await supabase.rpc('log_admin_message_access', {
+    p_admin_id: user.id,
+    p_message_id: messageId,
+    p_report_id: reportId,
+    p_reason: 'Dostęp do treści zgłoszonej wiadomości'
+  })
+
+  return { content: message.content }
+}
+
 export async function updateReportStatus(
   reportId: string,
   status: 'reviewed' | 'resolved' | 'dismissed',

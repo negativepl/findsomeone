@@ -1,9 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
-import { NavbarWithHide } from '@/components/NavbarWithHide'
-import { Footer } from '@/components/Footer'
-import { getUserRole } from '@/lib/admin'
 import { AuditLogsList } from '@/components/admin/AuditLogsList'
+import { Card, CardContent } from '@/components/ui/card'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -12,18 +9,6 @@ export const metadata: Metadata = {
 
 export default async function AdminAuditLogsPage() {
   const supabase = await createClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) {
-    redirect('/login')
-  }
-
-  // Check if user is admin
-  const userRole = await getUserRole()
-  if (userRole !== 'admin') {
-    redirect('/dashboard')
-  }
 
   // Get audit logs using the function
   const { data: auditLogs, error } = await supabase.rpc('get_admin_access_logs', {
@@ -41,61 +26,87 @@ export default async function AdminAuditLogsPage() {
   const logsWithReports = auditLogs?.filter((log: any) => log.report_id !== null).length || 0
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} showAddButton={false} />
+    <>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-black mb-2">Audit Logs (RODO)</h1>
+        <p className="text-black/60">
+          Historia dostępów administratorów do wiadomości użytkowników
+        </p>
+      </div>
 
-      <main className="container mx-auto px-6 py-10">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-4xl font-bold text-black mb-3">Audit Logs</h1>
-              <p className="text-lg text-black/60">
-                Historia dostępów administratorów do wiadomości użytkowników
-              </p>
-            </div>
-          </div>
-
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-            <div className="bg-white rounded-2xl p-6 border-0">
-              <div className="text-sm text-black/60 mb-1">Łącznie logów</div>
-              <div className="text-3xl font-bold text-blue-600">{totalLogs}</div>
-            </div>
-            <div className="bg-white rounded-2xl p-6 border-0">
-              <div className="text-sm text-black/60 mb-1">Unikalnych adminów</div>
-              <div className="text-3xl font-bold text-purple-600">{uniqueAdmins}</div>
-            </div>
-            <div className="bg-white rounded-2xl p-6 border-0">
-              <div className="text-sm text-black/60 mb-1">Ze zgłoszeń</div>
-              <div className="text-3xl font-bold text-red-600">{logsWithReports}</div>
-            </div>
-          </div>
-
-          {/* RODO Information */}
-          <div className="mt-6 bg-amber-50 rounded-2xl p-6 border border-amber-200">
-            <div className="flex items-start gap-4">
-              <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+          <CardContent className="py-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
               <div>
-                <h3 className="font-semibold text-amber-900 mb-2">Wymogi RODO</h3>
-                <ul className="text-sm text-amber-800 space-y-1">
-                  <li>• Logi są przechowywane przez 2 lata zgodnie z wymogami RODO</li>
-                  <li>• Każdy dostęp administratora do wiadomości jest automatycznie rejestrowany</li>
-                  <li>• Użytkownicy mają prawo zażądać informacji o dostępach do swoich danych</li>
-                  <li>• Nieautoryzowany dostęp może skutkować karami do 20 mln EUR lub 4% obrotu</li>
-                </ul>
+                <p className="text-sm font-medium text-black/60 mb-1">Łącznie logów</p>
+                <div className="text-3xl font-bold text-black">{totalLogs}</div>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+          <CardContent className="py-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-black/60 mb-1">Unikalnych adminów</p>
+                <div className="text-3xl font-bold text-black">{uniqueAdmins}</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+          <CardContent className="py-6">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-black/60 mb-1">Ze zgłoszeń</p>
+                <div className="text-3xl font-bold text-black">{logsWithReports}</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* RODO Information */}
+      <Card className="mb-6 border-0 rounded-3xl bg-white shadow-sm">
+        <CardContent className="p-8">
+          <h3 className="font-bold text-black mb-6 text-lg">Wymogi RODO</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-black/5 rounded-2xl p-5 text-sm text-black/80 leading-relaxed">
+              Logi są przechowywane przez 2 lata zgodnie z wymogami RODO
+            </div>
+            <div className="bg-black/5 rounded-2xl p-5 text-sm text-black/80 leading-relaxed">
+              Każdy dostęp administratora do wiadomości jest automatycznie rejestrowany
+            </div>
+            <div className="bg-black/5 rounded-2xl p-5 text-sm text-black/80 leading-relaxed">
+              Użytkownicy mają prawo zażądać informacji o dostępach do swoich danych
+            </div>
+            <div className="bg-black/5 rounded-2xl p-5 text-sm text-black/80 leading-relaxed">
+              Nieautoryzowany dostęp może skutkować karami do 20 mln EUR lub 4% obrotu
+            </div>
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        <AuditLogsList initialLogs={auditLogs || []} />
-      </main>
-
-      <Footer />
-    </div>
+      <AuditLogsList initialLogs={auditLogs || []} />
+    </>
   )
 }

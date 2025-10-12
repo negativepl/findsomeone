@@ -6,7 +6,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { MyListingsTabs } from '@/components/MyListingsTabs'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -112,39 +112,15 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
   return (
     <>
       {/* Tabs */}
-      <div className="flex justify-center mb-8">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as FilterTab)} className="w-full">
-          <TabsList className="grid w-full max-w-2xl mx-auto grid-cols-4 h-12 bg-white border border-black/10 rounded-full p-1">
-            <TabsTrigger
-              value="all"
-              className="rounded-full data-[state=active]:bg-black data-[state=active]:text-white transition-all"
-            >
-              Wszystkie
-              <span className="ml-2 text-xs opacity-60">({getTabCount('all')})</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="active"
-              className="rounded-full data-[state=active]:bg-[#C44E35] data-[state=active]:text-white transition-all"
-            >
-              Aktywne
-              <span className="ml-2 text-xs opacity-60">({getTabCount('active')})</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="rejected"
-              className="rounded-full data-[state=active]:bg-red-600 data-[state=active]:text-white transition-all"
-            >
-              Odrzucone
-              <span className="ml-2 text-xs opacity-60">({getTabCount('rejected')})</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="completed"
-              className="rounded-full data-[state=active]:bg-green-600 data-[state=active]:text-white transition-all"
-            >
-              Zakończone
-              <span className="ml-2 text-xs opacity-60">({getTabCount('completed')})</span>
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
+      <div className="mb-8">
+        <MyListingsTabs
+          activeTab={activeTab}
+          allCount={getTabCount('all')}
+          activeCount={getTabCount('active')}
+          rejectedCount={getTabCount('rejected')}
+          completedCount={getTabCount('completed')}
+          onTabChange={(tab) => setActiveTab(tab)}
+        />
       </div>
 
       {/* Posts List */}

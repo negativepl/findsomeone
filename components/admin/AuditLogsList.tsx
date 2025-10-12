@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
-import { Eye, Shield, User, Calendar, FileText, AlertCircle } from 'lucide-react'
+import { Eye, Shield, User, Calendar, AlertCircle } from 'lucide-react'
 
 interface AuditLog {
   log_id: string
@@ -109,11 +109,6 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
                       )}
                     </div>
                   </div>
-
-                  {/* Arrow */}
-                  <div className="flex-shrink-0 text-black/40">
-                    <FileText className="w-6 h-6" />
-                  </div>
                 </div>
               </div>
             ))}
@@ -195,8 +190,11 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
 
               {selectedLog.report_id && (
                 <div>
-                  <label className="text-sm font-semibold text-black/70">Typ dostępu</label>
-                  <div className="mt-1 px-3 py-2 bg-red-50 rounded-2xl inline-flex items-center gap-2">
+                  <label className="text-sm font-semibold text-black/70 flex items-center gap-2 mb-2">
+                    <AlertCircle className="w-4 h-4" />
+                    Typ dostępu
+                  </label>
+                  <div className="px-3 py-2 bg-red-50 rounded-2xl inline-flex items-center gap-2">
                     <AlertCircle className="w-4 h-4 text-red-600" />
                     <span className="text-red-700 font-semibold text-sm">
                       Dostęp ze zgłoszenia użytkownika

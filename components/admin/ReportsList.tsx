@@ -1,15 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Flag, Check, X, Eye, Trash2, AlertTriangle, Ban } from 'lucide-react'
-import { updateReportStatus, deleteMessage, banUser } from '@/lib/actions/admin-reports'
+import { Flag, Check, X, Eye, Trash2, AlertTriangle, Ban, Loader2 } from 'lucide-react'
+import { updateReportStatus, deleteMessage, banUser, logReportAccess, getMessageContent } from '@/lib/actions/admin-reports'
 
 interface Report {
   report_id: string
   message_id: string
-  message_content: string
+  message_content?: string // Optional - loaded only when selected
   sender_id: string
   sender_name: string
   receiver_id: string
@@ -20,6 +20,9 @@ interface Report {
   description: string | null
   status: string
   created_at: string
+  is_read: boolean
+  first_read_at: string | null
+  first_read_by: string | null
 }
 
 interface ReportsListProps {
@@ -37,11 +40,52 @@ const REASON_LABELS: Record<string, string> = {
 export function ReportsList({ initialReports }: ReportsListProps) {
   const [reports, setReports] = useState<Report[]>(initialReports)
   const [selectedReport, setSelectedReport] = useState<Report | null>(null)
+  const [messageContent, setMessageContent] = useState<string | null>(null)
+  const [isLoadingContent, setIsLoadingContent] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [actionNotes, setActionNotes] = useState('')
   const [showConfirmDelete, setShowConfirmDelete] = useState(false)
   const [showConfirmBan, setShowConfirmBan] = useState(false)
   const [banReason, setBanReason] = useState('')
+
+  // Load message content when report is selected
+  useEffect(() => {
+    if (selectedReport) {
+      setIsLoadingContent(true)
+      setMessageContent(null)
+
+      // Load content and log access
+      Promise.all([
+        logReportAccess(selectedReport.report_id, selectedReport.message_id),
+        getMessageContent(selectedReport.message_id, selectedReport.report_id)
+      ])
+        .then(([_, contentResult]) => {
+          setMessageContent(contentResult.content)
+
+          // Mark report as read in the UI
+          if (!selectedReport.is_read) {
+            setReports(prevReports =>
+              prevReports.map(r =>
+                r.report_id === selectedReport.report_id
+                  ? { ...r, is_read: true, first_read_at: new Date().toISOString() }
+                  : r
+              )
+            )
+            // Update selectedReport to reflect the read state
+            setSelectedReport(prev =>
+              prev ? { ...prev, is_read: true, first_read_at: new Date().toISOString() } : null
+            )
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load message content:', err)
+          setMessageContent('Błąd: Nie udało się załadować treści wiadomości')
+        })
+        .finally(() => {
+          setIsLoadingContent(false)
+        })
+    }
+  }, [selectedReport?.report_id]) // Use report_id instead of full object
 
   const handleDismiss = async () => {
     if (!selectedReport) return
@@ -151,7 +195,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr_400px] gap-6">
+    <div className="grid lg:grid-cols-[1fr_550px] gap-6">
       {/* Reports List */}
       <div>
         <Card className="border-0 rounded-3xl bg-white overflow-hidden">
@@ -159,67 +203,91 @@ export function ReportsList({ initialReports }: ReportsListProps) {
             {reports.map((report) => (
               <div
                 key={report.report_id}
-                className="p-6 hover:bg-[#F5F1E8] transition-colors cursor-pointer"
+                className={`p-6 transition-colors cursor-pointer relative ${
+                  !report.is_read
+                    ? 'bg-[#C44E35]/5 hover:bg-[#C44E35]/10 border-l-4 border-l-[#C44E35]'
+                    : 'hover:bg-[#F5F1E8]'
+                }`}
                 onClick={() => setSelectedReport(report)}
               >
+                {/* Unread Badge */}
+                {!report.is_read && (
+                  <div className="absolute top-4 right-4">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#C44E35]/10 border border-[#C44E35]/30 text-[#C44E35] text-xs font-semibold shadow-sm">
+                      <Eye className="w-3.5 h-3.5" />
+                      Nieodczytane - zostanie odnotowane w systemie audit trail
+                    </span>
+                  </div>
+                )}
+
                 <div className="flex items-start gap-4">
                   {/* Icon */}
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-                      <Flag className="w-6 h-6 text-red-600" />
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
+                      !report.is_read ? 'bg-[#C44E35]/10' : 'bg-red-50'
+                    }`}>
+                      <Flag className={`w-6 h-6 ${
+                        !report.is_read ? 'text-[#C44E35]' : 'text-red-600'
+                      }`} />
                     </div>
                   </div>
 
                   {/* Content */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-4 mb-2">
-                      <div>
-                        <h3 className="text-lg font-semibold text-black">
-                          {REASON_LABELS[report.reason] || report.reason}
-                        </h3>
-                        <p className="text-sm text-black/60">
-                          Zgłoszone przez: <strong>{report.reporter_name}</strong>
+                    {/* Header with reason and date */}
+                    <div className="flex items-start justify-between gap-4 mb-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="text-xl font-bold text-black">
+                            {REASON_LABELS[report.reason] || report.reason}
+                          </h3>
+                        </div>
+                        <p className="text-sm text-black/50">
+                          {new Date(report.created_at).toLocaleDateString('pl-PL', {
+                            day: 'numeric',
+                            month: 'long',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}
                         </p>
                       </div>
-                      <span className="text-sm text-black/50 flex-shrink-0">
-                        {new Date(report.created_at).toLocaleDateString('pl-PL', {
-                          day: 'numeric',
-                          month: 'short',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </span>
                     </div>
 
-                    {/* Message Preview */}
-                    <div className="bg-black/5 rounded-2xl p-3 mb-2">
-                      <p className="text-sm text-black/70 line-clamp-2">
-                        {report.message_content}
-                      </p>
+                    {/* Info Grid */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      {/* Reporter */}
+                      <div className="bg-amber-50 rounded-lg p-3 border border-amber-100">
+                        <p className="text-xs font-medium text-amber-700 mb-1">Zgłaszający</p>
+                        <p className="text-sm font-semibold text-amber-900">{report.reporter_name}</p>
+                      </div>
+
+                      {/* ID */}
+                      <div className="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                        <p className="text-xs font-medium text-gray-600 mb-1">ID zgłoszenia</p>
+                        <p className="text-xs font-mono text-gray-900 break-all leading-relaxed">{report.report_id}</p>
+                      </div>
                     </div>
 
-                    {/* Participants */}
-                    <div className="flex items-center gap-4 text-sm text-black/60">
-                      <span>
-                        Od: <strong>{report.sender_name}</strong>
-                      </span>
-                      <span>→</span>
-                      <span>
-                        Do: <strong>{report.receiver_name}</strong>
-                      </span>
+                    {/* Conversation participants */}
+                    <div className="bg-black/5 rounded-lg p-3 mb-3">
+                      <p className="text-xs font-medium text-black/60 mb-2">Rozmowa między</p>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="font-semibold text-black">{report.sender_name}</span>
+                        <svg className="w-4 h-4 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                        <span className="font-semibold text-black">{report.receiver_name}</span>
+                      </div>
                     </div>
 
+                    {/* Description if exists */}
                     {report.description && (
-                      <p className="mt-2 text-sm text-black/70 italic">
-                        "{report.description}"
-                      </p>
+                      <div className="bg-blue-50 rounded-lg p-3 border border-blue-100">
+                        <p className="text-xs font-medium text-blue-700 mb-1">Dodatkowy opis</p>
+                        <p className="text-sm text-blue-900 italic">"{report.description}"</p>
+                      </div>
                     )}
-                  </div>
-
-                  {/* Arrow */}
-                  <div className="flex-shrink-0 text-black/40">
-                    <Eye className="w-6 h-6" />
                   </div>
                 </div>
               </div>
@@ -232,16 +300,24 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       <div className="lg:sticky lg:top-6 lg:self-start">
         {selectedReport ? (
           <Card className="border-0 rounded-3xl bg-white p-6">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
                 <Flag className="w-6 h-6 text-red-600" />
               </div>
-              <div>
+              <div className="flex-1 min-w-0">
                 <h2 className="text-xl font-bold text-black">
                   Szczegóły zgłoszenia
                 </h2>
-                <p className="text-sm text-black/60">
-                  ID: {selectedReport.report_id.slice(0, 8)}...
+              </div>
+            </div>
+
+            {/* ID */}
+            <div className="mb-6 pb-6 border-b border-black/10">
+              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                <p className="text-xs font-semibold text-gray-700 mb-1.5">ID zgłoszenia</p>
+                <p className="text-xs font-mono text-gray-900 break-all leading-relaxed">
+                  {selectedReport.report_id}
                 </p>
               </div>
             </div>
@@ -265,7 +341,14 @@ export function ReportsList({ initialReports }: ReportsListProps) {
               <div>
                 <label className="text-sm font-semibold text-black/70">Treść wiadomości</label>
                 <div className="bg-black/5 rounded-2xl p-4 mt-1">
-                  <p className="text-black">{selectedReport.message_content}</p>
+                  {isLoadingContent ? (
+                    <div className="flex items-center justify-center gap-2 py-4">
+                      <Loader2 className="w-5 h-5 animate-spin text-black/60" />
+                      <span className="text-sm text-black/60">Ładowanie treści...</span>
+                    </div>
+                  ) : (
+                    <p className="text-black">{messageContent || 'Brak treści'}</p>
+                  )}
                 </div>
               </div>
 
@@ -341,10 +424,6 @@ export function ReportsList({ initialReports }: ReportsListProps) {
                 <Ban className="w-4 h-4" />
                 Zbanuj użytkownika ({selectedReport?.sender_name})
               </button>
-
-              <p className="text-xs text-black/50 mt-2">
-                <strong>Info:</strong> Wszystkie akcje są automatycznie logowane w systemie audit trail zgodnie z RODO.
-              </p>
             </div>
 
             {/* Delete Confirmation Dialog */}

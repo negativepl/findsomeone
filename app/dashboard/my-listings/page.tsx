@@ -39,7 +39,7 @@ export default async function MyListingsPage() {
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-6 py-10 pb-20 md:pb-10">
         {/* Header */}
-        <div className="mb-10">
+        <div className="mb-8">
           <h2 className="text-4xl font-bold text-black mb-3">Moje ogłoszenia</h2>
           <p className="text-lg text-black/60">
             Zarządzaj swoimi ogłoszeniami i sprawdzaj ich status

@@ -10,7 +10,6 @@ import { Footer } from '@/components/Footer'
 import { SearchFilters } from '@/components/SearchFilters'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { DashboardTabs } from '@/components/DashboardTabs'
-import { LiveSearchBar } from '@/components/LiveSearchBar'
 import { DashboardFilters } from '@/components/DashboardFilters'
 import { Pagination } from '@/components/Pagination'
 import { Metadata } from 'next'
@@ -306,34 +305,29 @@ export default async function DashboardPage({
       <main className="container mx-auto px-6 py-10">
         <div className="mb-8">
           <h2 className="text-4xl font-bold mb-3 text-black">
-            {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Najnowsze ogłoszenia'}
+            {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Wszystkie ogłoszenia'}
           </h2>
           <p className="text-lg text-black/60">
             {searchQuery || cityQuery || categoryQuery ? (
               <>
-                Znaleziono {posts?.length || 0} {posts?.length === 1 ? 'ogłoszenie' : 'ogłoszeń'}
+                Znaleziono {totalCount} {totalCount === 1 ? 'ogłoszenie' : 'ogłoszeń'}
                 {searchQuery && <> dla "{searchQuery}"</>}
                 {cityQuery && <> w "{cityQuery}"</>}
                 {categoryQuery && <> w kategorii "{categoryQuery}"</>}
               </>
             ) : (
-              'Przeglądaj aktualne oferty i zapytania w Twojej okolicy'
+              <>Przeglądaj oferty i zapytania od użytkowników z całej Polski</>
             )}
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="flex justify-center mb-8">
+        <div className="mb-8">
           <DashboardTabs
             seekingCount={seekingCount}
             offeringCount={offeringCount}
             totalCount={totalCount}
           />
-        </div>
-
-        {/* Search Bar */}
-        <div className="w-full mx-auto mb-8">
-          <LiveSearchBar initialSearch={searchQuery} initialCity={cityQuery} />
         </div>
 
         {/* Two Column Layout: Sidebar + Main Content */}
