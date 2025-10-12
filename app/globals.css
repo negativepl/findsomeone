@@ -244,7 +244,7 @@ html {
 #nprogress .bar {
   background: oklch(0.577 0.154 27.325);
   position: fixed;
-  z-index: 9999;
+  z-index: 999999 !important;
   top: 0;
   left: 0;
   width: 100%;
