@@ -265,6 +265,9 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
 
   const activeIndex = getActiveIndex()
 
+  // Check if the active item is the special "Dodaj" button
+  const isSpecialActive = activeIndex !== -1 && dockItems[activeIndex]?.isSpecial
+
   useEffect(() => {
     if (menuOpen && !isClosing) {
       handleClose()
@@ -405,16 +408,17 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
         <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
           {/* Animated indicator background */}
           <div
-            className="absolute bg-brand rounded-xl"
+            className="absolute bg-brand transition-all"
             style={{
-              height: '36px',
-              width: '36px',
-              top: '12px',
+              height: isSpecialActive ? '44px' : '36px',
+              width: isSpecialActive ? '44px' : '36px',
+              borderRadius: isSpecialActive ? '50%' : '12px',
+              top: isSpecialActive ? '8px' : '12px',
               zIndex: 0,
               left: activeIndex !== -1
-                ? `calc((100% - 32px) / ${dockItems.length} * ${activeIndex} + 16px + (100% - 32px) / ${dockItems.length} / 2 - 18px)`
+                ? `calc((100% - 32px) / ${dockItems.length} * ${activeIndex} + 16px + (100% - 32px) / ${dockItems.length} / 2 - ${isSpecialActive ? '22px' : '18px'})`
                 : '0px',
-              transition: 'left 0.4s cubic-bezier(0.34, 1.25, 0.35, 1), opacity 0.2s',
+              transition: 'left 0.4s cubic-bezier(0.34, 1.25, 0.35, 1), opacity 0.2s, width 0.3s ease, height 0.3s ease, border-radius 0.3s ease, top 0.3s ease',
               opacity: isMounted && activeIndex !== -1 ? 1 : 0,
             }}
           />
@@ -431,7 +435,7 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
                 <button
                   key="menu"
                   onClick={() => setMenuOpen(!menuOpen)}
-                  className="flex flex-col items-center justify-center gap-3 flex-1 relative z-10 py-2"
+                  className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
                 >
                   <div className={cn(
                     "transition-colors",
@@ -449,13 +453,15 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="flex flex-col items-center justify-center gap-3 flex-1 relative z-10 py-2"
+                  className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
                 >
-                  <div className={cn(
-                    "transition-colors",
-                    isActive && !menuOpen ? 'text-white' : 'text-black/60'
-                  )}>
-                    {item.icon}
+                  <div className="relative flex items-center justify-center">
+                    {/* Pomarańczowe kółko w tle */}
+                    <div className="absolute w-11 h-11 bg-brand rounded-full shrink-0" />
+                    {/* Ikona */}
+                    <div className="relative text-white">
+                      {item.icon}
+                    </div>
                   </div>
                   <span className="text-xs leading-none text-black/60">{item.title}</span>
                 </Link>
@@ -466,7 +472,7 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
               <Link
                 key={item.href}
                 href={item.href}
-                className="flex flex-col items-center justify-center gap-3 flex-1 relative z-10 py-2"
+                className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
               >
                 <div className={cn(
                   "transition-colors",
