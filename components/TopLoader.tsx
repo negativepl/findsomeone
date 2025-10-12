@@ -25,7 +25,10 @@ export default function TopLoader() {
 
       if (link && link.href && link.target !== '_blank') {
         const url = new URL(link.href);
-        if (url.origin === window.location.origin && url.pathname !== pathname) {
+        const currentUrl = window.location.pathname + window.location.search;
+        const targetUrl = url.pathname + url.search;
+
+        if (url.origin === window.location.origin && targetUrl !== currentUrl) {
           handleRouteStart();
         }
       }
@@ -37,7 +40,7 @@ export default function TopLoader() {
       document.removeEventListener('click', handleClick);
       handleRouteDone();
     };
-  }, [pathname]);
+  }, [pathname, searchParams]);
 
   return null;
 }
