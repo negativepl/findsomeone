@@ -18,19 +18,27 @@ export default function TopLoader() {
     const handleRouteStart = () => NProgress.start();
     const handleRouteDone = () => NProgress.done();
 
-    // Intercept all link clicks
+    // Intercept all link clicks and button clicks
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       const link = target.closest('a');
+      const button = target.closest('button');
 
+      // Handle link clicks
       if (link && link.href && link.target !== '_blank') {
         const url = new URL(link.href);
-        const currentUrl = window.location.pathname + window.location.search;
-        const targetUrl = url.pathname + url.search;
+        const currentUrl = new URL(window.location.href);
 
-        if (url.origin === window.location.origin && targetUrl !== currentUrl) {
+        // Check if either pathname or search params are different
+        if (url.origin === window.location.origin &&
+            (url.pathname !== currentUrl.pathname || url.search !== currentUrl.search)) {
           handleRouteStart();
         }
+      }
+
+      // Handle button clicks (for router.push scenarios)
+      if (button && !link) {
+        handleRouteStart();
       }
     };
 
