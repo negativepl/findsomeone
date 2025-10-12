@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Logo } from '@/components/Logo'
+import './about.css'
 
 export function AboutPageClient() {
   const [currentSlide, setCurrentSlide] = useState(0)

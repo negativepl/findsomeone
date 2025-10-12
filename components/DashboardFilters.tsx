@@ -62,42 +62,47 @@ export function DashboardFilters({ currentPage, itemsPerPage, totalCount }: Dash
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white rounded-2xl px-6 py-4 border border-black/10">
       {/* Left side - Range display */}
       <div className="text-sm text-black/60">
-        Wyświetlanie <span className="font-semibold text-black">{startItem} - {endItem}</span> z{' '}
-        <span className="font-semibold text-black">{totalCount}</span> element(y)
+        Wyświetlanie {startItem} - {endItem} z {totalCount} element{totalCount === 1 ? '' : totalCount < 5 ? 'y' : 'ów'}
       </div>
 
       {/* Right side - Controls */}
       <div className="flex items-center gap-3 flex-wrap">
         {/* Items per page */}
-        <Select value={limit} onValueChange={(value) => updateFilter('limit', value)}>
-          <SelectTrigger className="w-[70px] rounded-full border-black/10 h-9 bg-white">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="8">8</SelectItem>
-            <SelectItem value="12">12</SelectItem>
-            <SelectItem value="24">24</SelectItem>
-            <SelectItem value="48">48</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-black/60">Na stronie:</span>
+          <Select value={limit} onValueChange={(value) => updateFilter('limit', value)}>
+            <SelectTrigger className="w-[70px] rounded-xl border-black/10 h-10 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="8">8</SelectItem>
+              <SelectItem value="12">12</SelectItem>
+              <SelectItem value="24">24</SelectItem>
+              <SelectItem value="48">48</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Combined Sort */}
-        <Select value={combinedSortValue} onValueChange={handleSortChange}>
-          <SelectTrigger className="w-[200px] rounded-full border-black/10 h-9 bg-white">
-            <SelectValue placeholder={getSortText()} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="created_at-desc">Najnowsze najpierw</SelectItem>
-            <SelectItem value="created_at-asc">Najstarsze najpierw</SelectItem>
-            <SelectItem value="price_min-asc">Cena rosnąco</SelectItem>
-            <SelectItem value="price_max-desc">Cena malejąco</SelectItem>
-            <SelectItem value="title-asc">Tytuł A-Z</SelectItem>
-            <SelectItem value="title-desc">Tytuł Z-A</SelectItem>
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-black/60">Sortuj:</span>
+          <Select value={combinedSortValue} onValueChange={handleSortChange}>
+            <SelectTrigger className="w-[180px] rounded-xl border-black/10 h-10 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20">
+              <SelectValue placeholder={getSortText()} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="created_at-desc">Najnowsze najpierw</SelectItem>
+              <SelectItem value="created_at-asc">Najstarsze najpierw</SelectItem>
+              <SelectItem value="price_min-asc">Cena rosnąco</SelectItem>
+              <SelectItem value="price_max-desc">Cena malejąco</SelectItem>
+              <SelectItem value="title-asc">Tytuł A-Z</SelectItem>
+              <SelectItem value="title-desc">Tytuł Z-A</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
     </div>
   )

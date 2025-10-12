@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { CategoryIcon } from '@/lib/category-icons'
 import { useState, useEffect } from 'react'
@@ -22,6 +22,7 @@ interface SearchFiltersProps {
 export function SearchFilters({ categories }: SearchFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mobileViewingCategory, setMobileViewingCategory] = useState<string | null>(null)
@@ -79,7 +80,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
       params.set('type', currentType)
     }
 
-    router.push(`/dashboard?${params.toString()}`)
+    router.push(`${pathname}?${params.toString()}`)
   }
 
   const clearFilters = () => {
@@ -88,7 +89,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     if (currentType) {
       params.set('type', currentType)
     }
-    router.push(`/dashboard${params.toString() ? `?${params.toString()}` : ''}`)
+    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ''}`)
   }
 
   const hasActiveFilters = currentCategory || currentSearch || currentCity
@@ -264,7 +265,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
 
                         {/* Dropdown indicator for categories with subcategories */}
                         {hasSubcategories && (
-                          <svg className="w-5 h-5 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className={`w-5 h-5 ${isMainSelected ? 'text-white' : 'text-black/40'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         )}

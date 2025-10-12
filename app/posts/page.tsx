@@ -9,10 +9,12 @@ import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { DashboardTabs } from '@/components/DashboardTabs'
+import { SearchFilters } from '@/components/SearchFilters'
+import { PostsFilters } from '@/components/PostsFilters'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Dashboard - Przeglądaj ogłoszenia",
+  title: "Przeglądaj ogłoszenia",
 }
 
 interface Post {
@@ -36,30 +38,40 @@ interface Post {
   } | null
 }
 
-export default async function DashboardPage({
+export default async function PostsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; city?: string; category?: string; type?: string }>
+  searchParams: Promise<{ search?: string; city?: string; category?: string; type?: string; sort?: string; page?: string; limit?: string }>
 }) {
   const supabase = await createClient()
   const params = await searchParams
 
   const { data: { user } } = await supabase.auth.getUser()
 
+  // Fetch categories for filters
+  const { data: categories } = await supabase
+    .from('categories')
+    .select('id, name, slug, icon, parent_id')
+    .order('name')
+
   const searchQuery = params.search || ''
   const cityQuery = params.city || ''
   const categoryQuery = params.category || ''
   const typeQuery = params.type || ''
+  const sortQuery = params.sort || 'newest'
+  const currentPage = parseInt(params.page || '1', 10)
+  const itemsPerPage = parseInt(params.limit || '12', 10)
 
   // Use FULL-TEXT SEARCH if there's a search query
   let posts: Post[] = []
+  let totalCount = 0
 
   if (searchQuery && searchQuery.trim().length >= 2) {
     // Use our smart full-text search function
     const { data: searchResults } = await supabase
       .rpc('search_posts', {
         search_query: searchQuery.trim(),
-        limit_count: 50
+        limit_count: 1000 // Get more results for filtering and pagination
       })
 
     // Now apply additional filters on the results
@@ -84,8 +96,29 @@ export default async function DashboardPage({
       )
     }
 
+    // Apply sorting
+    filteredResults.sort((a: any, b: any) => {
+      switch (sortQuery) {
+        case 'oldest':
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        case 'price_asc':
+          return (a.price_min || 0) - (b.price_min || 0)
+        case 'price_desc':
+          return (b.price_min || 0) - (a.price_min || 0)
+        case 'newest':
+        default:
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      }
+    })
+
+    totalCount = filteredResults.length
+
+    // Apply pagination
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const paginatedResults = filteredResults.slice(startIndex, startIndex + itemsPerPage)
+
     // Map search results to Post format
-    posts = filteredResults.map((result: any) => ({
+    posts = paginatedResults.map((result: any) => ({
       id: result.id,
       title: result.title,
       description: result.description,
@@ -107,6 +140,11 @@ export default async function DashboardPage({
     }))
   } else {
     // No search query - use regular filtering
+    let countQuery = supabase
+      .from('posts')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'active')
+
     let query = supabase
       .from('posts')
       .select(`
@@ -126,6 +164,7 @@ export default async function DashboardPage({
     // Apply city filter
     if (cityQuery) {
       query = query.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
+      countQuery = countQuery.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
     }
 
     // Apply category filter
@@ -153,25 +192,52 @@ export default async function DashboardPage({
 
       if (categoryId) {
         query = query.eq('category_id', categoryId)
+        countQuery = countQuery.eq('category_id', categoryId)
       }
     }
 
     // Apply type filter
     if (typeQuery) {
       query = query.eq('type', typeQuery)
+      countQuery = countQuery.eq('type', typeQuery)
     }
 
+    // Apply sorting
+    const sortOrder = sortQuery === 'oldest' ? { ascending: true } : { ascending: false }
+    switch (sortQuery) {
+      case 'price_asc':
+        query = query.order('price_min', { ascending: true, nullsFirst: false })
+        break
+      case 'price_desc':
+        query = query.order('price_min', { ascending: false, nullsFirst: false })
+        break
+      case 'oldest':
+      case 'newest':
+      default:
+        query = query.order('created_at', sortOrder)
+        break
+    }
+
+    // Get total count
+    const { count } = await countQuery
+    totalCount = count || 0
+
+    // Apply pagination
+    const startIndex = (currentPage - 1) * itemsPerPage
     const { data: fetchedPosts } = await query
-      .order('created_at', { ascending: false })
-      .limit(50)
+      .range(startIndex, startIndex + itemsPerPage - 1)
 
     posts = fetchedPosts || []
   }
 
-  // Calculate counts for tabs from current results
-  const totalCount = posts.length
+  // Calculate counts for tabs from all results (not just current page)
   const seekingCount = posts.filter(p => p.type === 'seeking').length
   const offeringCount = posts.filter(p => p.type === 'offering').length
+
+  // Calculate pagination values
+  const totalPages = Math.ceil(totalCount / itemsPerPage)
+  const startItem = totalCount === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1
+  const endItem = Math.min(currentPage * itemsPerPage, totalCount)
 
   // Fetch user favorites if logged in
   let userFavorites: string[] = []
@@ -217,8 +283,32 @@ export default async function DashboardPage({
           />
         </div>
 
-        {/* Posts Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Two Column Layout: Sidebar + Main Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
+          {/* Left Sidebar - Filters */}
+          <aside className="lg:sticky lg:top-24 lg:self-start z-40">
+            <SearchFilters categories={categories} />
+          </aside>
+
+          {/* Right Content - Posts */}
+          <div className="space-y-6">
+            {/* Results Info and Sort Bar */}
+            {posts && posts.length > 0 && (
+              <PostsFilters
+                currentSort={sortQuery}
+                itemsPerPage={itemsPerPage}
+                startItem={startItem}
+                endItem={endItem}
+                totalCount={totalCount}
+              />
+            )}
+
+            {/* Posts Grid */}
+            <div className={`grid gap-6 ${
+              itemsPerPage >= 24 ? 'md:grid-cols-2 lg:grid-cols-4' :
+              itemsPerPage >= 12 ? 'md:grid-cols-2 lg:grid-cols-3' :
+              'md:grid-cols-1 lg:grid-cols-2'
+            }`}>
           {posts && posts.length > 0 ? (
             posts.map((post: Post) => (
               <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
@@ -372,6 +462,103 @@ export default async function DashboardPage({
               </div>
             </div>
           )}
+            </div>
+
+            {/* Pagination */}
+            {posts && posts.length > 0 && totalPages > 1 && (
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white rounded-2xl px-6 py-4 border border-black/10">
+                <div className="text-sm text-black/60">
+                  Strona {currentPage} z {totalPages}
+                </div>
+                <div className="flex items-center gap-2">
+                  {/* Previous Button */}
+                  {currentPage > 1 ? (
+                    <Link
+                      href={`?${new URLSearchParams({
+                        ...Object.fromEntries(new URLSearchParams(searchQuery ? `search=${searchQuery}` : '')),
+                        ...(cityQuery && { city: cityQuery }),
+                        ...(categoryQuery && { category: categoryQuery }),
+                        ...(typeQuery && { type: typeQuery }),
+                        ...(sortQuery !== 'newest' && { sort: sortQuery }),
+                        ...(itemsPerPage !== 12 && { limit: String(itemsPerPage) }),
+                        page: String(currentPage - 1)
+                      }).toString()}`}
+                      className="px-4 py-2 rounded-xl border border-black/10 text-sm bg-white text-black hover:bg-[#F5F1E8] transition-colors"
+                    >
+                      Poprzednia
+                    </Link>
+                  ) : (
+                    <div className="px-4 py-2 rounded-xl border border-black/10 text-sm bg-white text-black/30 cursor-not-allowed">
+                      Poprzednia
+                    </div>
+                  )}
+
+                  {/* Page Numbers */}
+                  <div className="hidden sm:flex items-center gap-1">
+                    {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                      // Show first page, current page with context, and last page
+                      let pageNum: number
+                      if (totalPages <= 5) {
+                        pageNum = i + 1
+                      } else if (currentPage <= 3) {
+                        pageNum = i + 1
+                      } else if (currentPage >= totalPages - 2) {
+                        pageNum = totalPages - 4 + i
+                      } else {
+                        pageNum = currentPage - 2 + i
+                      }
+
+                      const isActive = pageNum === currentPage
+
+                      return (
+                        <Link
+                          key={pageNum}
+                          href={`?${new URLSearchParams({
+                            ...Object.fromEntries(new URLSearchParams(searchQuery ? `search=${searchQuery}` : '')),
+                            ...(cityQuery && { city: cityQuery }),
+                            ...(categoryQuery && { category: categoryQuery }),
+                            ...(typeQuery && { type: typeQuery }),
+                            ...(sortQuery !== 'newest' && { sort: sortQuery }),
+                            ...(itemsPerPage !== 12 && { limit: String(itemsPerPage) }),
+                            page: String(pageNum)
+                          }).toString()}`}
+                          className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm transition-colors ${
+                            isActive
+                              ? 'bg-[#C44E35] text-white'
+                              : 'border border-black/10 bg-white text-black hover:bg-[#F5F1E8]'
+                          }`}
+                        >
+                          {pageNum}
+                        </Link>
+                      )
+                    })}
+                  </div>
+
+                  {/* Next Button */}
+                  {currentPage < totalPages ? (
+                    <Link
+                      href={`?${new URLSearchParams({
+                        ...Object.fromEntries(new URLSearchParams(searchQuery ? `search=${searchQuery}` : '')),
+                        ...(cityQuery && { city: cityQuery }),
+                        ...(categoryQuery && { category: categoryQuery }),
+                        ...(typeQuery && { type: typeQuery }),
+                        ...(sortQuery !== 'newest' && { sort: sortQuery }),
+                        ...(itemsPerPage !== 12 && { limit: String(itemsPerPage) }),
+                        page: String(currentPage + 1)
+                      }).toString()}`}
+                      className="px-4 py-2 rounded-xl border border-black/10 text-sm bg-white text-black hover:bg-[#F5F1E8] transition-colors"
+                    >
+                      Następna
+                    </Link>
+                  ) : (
+                    <div className="px-4 py-2 rounded-xl border border-black/10 text-sm bg-white text-black/30 cursor-not-allowed">
+                      Następna
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </main>
 

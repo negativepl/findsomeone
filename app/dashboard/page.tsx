@@ -333,7 +333,7 @@ export default async function DashboardPage({
         {/* Two Column Layout: Sidebar + Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
           {/* Left Sidebar - Filters */}
-          <aside className="lg:sticky lg:top-6 lg:self-start z-40">
+          <aside className="lg:sticky lg:top-24 lg:self-start z-40">
             <SearchFilters categories={categories} />
           </aside>
 

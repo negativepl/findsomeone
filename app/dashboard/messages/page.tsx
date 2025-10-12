@@ -140,10 +140,10 @@ export default async function MessagesPage() {
   const totalUnread = conversations.reduce((sum, conv) => sum + conv.unread_count, 0)
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0 flex flex-col">
       <NavbarWithHide user={user} />
 
-      <main className="container mx-auto px-6 py-10">
+      <main className="container mx-auto px-6 py-10 flex-1">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-black mb-3">Wiadomości</h1>
@@ -152,7 +152,7 @@ export default async function MessagesPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
           {/* Left Column - Conversations List */}
           <div className="md:col-span-1">
             {conversations && conversations.length > 0 ? (

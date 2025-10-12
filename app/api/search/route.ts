@@ -128,33 +128,9 @@ export async function GET(request: NextRequest) {
     })
   }
 
-  // Try to correct the query if it might have typos
-  let queryCorrection = null
-  if (query.length >= 3) {
-    try {
-      const rewriteResponse = await fetch(
-        `${request.nextUrl.origin}/api/search/rewrite`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query }),
-        }
-      )
-      if (rewriteResponse.ok) {
-        const rewriteData = await rewriteResponse.json()
-        if (rewriteData.needsCorrection) {
-          queryCorrection = {
-            original: rewriteData.original,
-            corrected: rewriteData.corrected,
-            confidence: rewriteData.confidence,
-          }
-        }
-      }
-    } catch (error) {
-      // Silent fail - don't break search if rewriting fails
-      console.error('Query rewriting failed:', error)
-    }
-  }
+  // Query correction disabled for performance - was adding 1-2s delay
+  // Can be re-enabled later as separate async endpoint
+  const queryCorrection = null
 
   const lowerQuery = query.toLowerCase()
 
@@ -165,36 +141,12 @@ export async function GET(request: NextRequest) {
       limit_count: 8
     })
 
-  // 2. Search categories by name
-  const { data: categoriesByName } = await supabase
-    .from('categories')
-    .select('id, name, slug')
-    .ilike('name', `%${query}%`)
-    .limit(3)
-
-  // 3. Search categories by synonyms
-  const { data: categorySynonyms } = await supabase
-    .from('category_synonyms')
-    .select('category_id, categories(id, name, slug)')
-    .ilike('synonym', `%${query}%`)
-    .limit(3)
-
-  // Combine and deduplicate categories
-  const categoryMap = new Map<string, { id: string; name: string; slug: string }>()
-
-  // Add categories found by name
-  categoriesByName?.forEach(cat => {
-    categoryMap.set(cat.id, cat)
-  })
-
-  // Add categories found by synonyms
-  categorySynonyms?.forEach((syn: any) => {
-    if (syn.categories) {
-      categoryMap.set(syn.categories.id, syn.categories)
-    }
-  })
-
-  const categories = Array.from(categoryMap.values()).slice(0, 3)
+  // 2. Search categories with unaccent (handles "prad" → "prąd" → "Elektryka")
+  const { data: categories } = await supabase
+    .rpc('search_categories_unaccent', {
+      search_term: query,
+      limit_count: 5
+    })
 
   // Build intelligent suggestions from REAL data
   const suggestions: Array<{

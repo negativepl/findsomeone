@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
     // Wywołaj GPT-5 nano do poprawy zapytania
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
+      model: 'gpt-5-nano',
       messages: [
         {
           role: 'system',
@@ -82,7 +82,7 @@ WAŻNE:
           content: query,
         },
       ],
-      temperature: 0.3,
+      // GPT-5 nano doesn't support temperature parameter - uses default value of 1
       max_tokens: 50,
     })
 
