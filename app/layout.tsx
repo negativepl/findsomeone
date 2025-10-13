@@ -26,11 +26,12 @@ export const metadata: Metadata = {
   },
   description: "Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi - hydraulika, elektryka, sprzątanie i więcej.",
   keywords: ["usługi lokalne", "specjaliści", "ogłoszenia", "hydraulik", "elektryk", "sprzątanie"],
-  viewport: {
-    width: 'device-width',
-    initialScale: 1.0,
-    viewportFit: 'cover',
-  },
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1.0,
+  viewportFit: 'cover',
 };
 
 export default async function RootLayout({

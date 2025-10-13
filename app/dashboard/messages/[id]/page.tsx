@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
-import { Footer } from '@/components/Footer'
 import { PresenceIndicator } from '@/components/PresenceIndicator'
 import { Metadata } from 'next'
 import { ChatWindow } from './ChatWindow'
@@ -81,10 +80,10 @@ export default async function ConversationPage({
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
-      <NavbarWithHide user={user} alwaysVisible={true} />
+      <NavbarWithHide user={user} alwaysVisible={true} noRounding={true} />
 
       {/* Chat Header - Fixed */}
-      <div className="fixed top-[72px] left-0 right-0 bg-white border-b border-black/10 z-30">
+      <div className="fixed top-[72px] left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
         <div className="container mx-auto px-4 md:px-6 pt-6 pb-4">
           <div className="flex items-center gap-4">
             <Link
@@ -131,8 +130,6 @@ export default async function ConversationPage({
         currentUserId={user.id}
         otherUser={otherUser}
       />
-
-      <Footer />
     </div>
   )
 }

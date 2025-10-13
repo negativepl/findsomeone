@@ -6,13 +6,14 @@ interface NavbarWithHideProps {
   user: User | null
   showAddButton?: boolean
   alwaysVisible?: boolean
+  noRounding?: boolean
 }
 
-export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible = true }: NavbarWithHideProps) {
+export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible = true, noRounding = false }: NavbarWithHideProps) {
   return (
     <>
       <NavbarWrapper alwaysVisible={alwaysVisible}>
-        <Navbar user={user} showAddButton={showAddButton} />
+        <Navbar user={user} showAddButton={showAddButton} noRounding={noRounding} />
       </NavbarWrapper>
       <div className="h-[72px]" /> {/* Spacer for fixed navbar */}
     </>

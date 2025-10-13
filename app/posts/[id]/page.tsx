@@ -34,7 +34,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         city,
         bio,
         phone,
-        created_at
+        created_at,
+        show_phone,
+        show_messages,
+        show_profile_link
       ),
       categories (
         name,
@@ -320,6 +323,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                         userId={post.user_id}
                         rating={post.profiles.rating}
                         reviewCount={post.profiles.total_reviews}
+                        clickable={post.profiles.show_profile_link !== false}
                       />
                     )}
                   </div>
@@ -364,14 +368,17 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 {/* Contact Buttons */}
                 {user && user.id !== post.user_id ? (
                   <div className="space-y-3">
-                    <SendMessageModal
-                      postId={post.id}
-                      receiverId={post.user_id}
-                      receiverName={post.profiles?.full_name || 'użytkownika'}
-                      postTitle={post.title}
-                    />
-                    {/* Phone number if available */}
-                    {post.profiles?.phone && (
+                    {/* Show message button only if user allows it */}
+                    {post.profiles?.show_messages !== false && (
+                      <SendMessageModal
+                        postId={post.id}
+                        receiverId={post.user_id}
+                        receiverName={post.profiles?.full_name || 'użytkownika'}
+                        postTitle={post.title}
+                      />
+                    )}
+                    {/* Phone number if available and user allows showing it */}
+                    {post.profiles?.phone && post.profiles?.show_phone !== false && (
                       <PhoneNumber phone={post.profiles.phone} postId={post.id} />
                     )}
                     {/* Show review button if post is completed and user hasn't reviewed yet */}

@@ -393,6 +393,7 @@ export default async function PostsPage({
                               rating={post.profiles.rating}
                               reviewCount={post.profiles.total_reviews || 0}
                               className="text-xs"
+                              clickable={false}
                             />
                           )}
                         </div>

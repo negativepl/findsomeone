@@ -7,10 +7,12 @@ import { Footer } from '@/components/Footer'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { PhoneNumber } from '@/app/posts/[id]/PhoneNumber'
+import { UserPostsList } from './UserPostsList'
 
-export default async function ProfilePage({ params }: { params: { userId: string } }) {
+export default async function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const supabase = await createClient()
-  const { userId } = params
+  const { userId } = await params
 
   const {
     data: { user },
@@ -43,7 +45,15 @@ export default async function ProfilePage({ params }: { params: { userId: string
     .eq('reviewed_id', userId)
     .order('created_at', { ascending: false })
 
-  // Fetch user's active posts
+  // Fetch user's active posts count
+  const { count: totalActivePosts } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .eq('status', 'active')
+    .eq('is_deleted', false)
+
+  // Fetch user's active posts (limited to 6 for display)
   const { data: userPosts } = await supabase
     .from('posts')
     .select(`
@@ -54,6 +64,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
     `)
     .eq('user_id', userId)
     .eq('status', 'active')
+    .eq('is_deleted', false)
     .order('created_at', { ascending: false })
     .limit(6)
 
@@ -63,9 +74,19 @@ export default async function ProfilePage({ params }: { params: { userId: string
 
       <div className="container mx-auto px-6 py-12">
         {/* Profile Header */}
-        <Card className="border-0 rounded-3xl bg-white shadow-sm mb-8">
+        <Card className="border-0 rounded-3xl bg-white shadow-sm mb-8 overflow-hidden">
+          {/* Banner */}
+          {profile.banner_url && (
+            <div className="w-full h-32 md:h-48 lg:h-56 relative">
+              <img
+                src={profile.banner_url}
+                alt="Profile banner"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
           <CardContent className="p-8">
-            <div className="flex flex-col md:flex-row gap-6 items-start">
+            <div className="flex flex-col md:flex-row gap-6 items-center">
               {/* Avatar */}
               <div className="flex-shrink-0">
                 {profile.avatar_url ? (
@@ -87,55 +108,86 @@ export default async function ProfilePage({ params }: { params: { userId: string
 
               {/* Profile Info */}
               <div className="flex-1">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h1 className="text-3xl font-bold text-black mb-2">
-                      {profile.full_name || 'Anonim'}
-                    </h1>
-                    {profile.city && (
-                      <div className="flex items-center gap-2 text-black/60 mb-3">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        {profile.city}
-                      </div>
-                    )}
-                  </div>
+                {/* Name and Badge */}
+                <div className="flex items-center justify-between mb-2">
+                  <h1 className="text-3xl font-bold text-black">
+                    {profile.full_name || 'Anonim'}
+                  </h1>
                   {profile.verified && (
-                    <Badge className="rounded-full bg-green-100 text-green-700 border-0">
-                      Zweryfikowany
-                    </Badge>
+                    <div className="relative group">
+                      <Badge className="rounded-full bg-amber-100 text-amber-800 border-0 flex items-center gap-2 px-4 py-2 cursor-help">
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                        <span className="text-sm font-semibold">Zweryfikowany</span>
+                      </Badge>
+                      {/* Tooltip */}
+                      <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-2 bg-black text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
+                        Tożsamość użytkownika została zweryfikowana
+                        <div className="absolute left-1/2 -translate-x-1/2 -top-1 w-2 h-2 bg-black rotate-45"></div>
+                      </div>
+                    </div>
                   )}
                 </div>
 
-                {/* Rating */}
-                {profile.rating > 0 && (
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center gap-1 text-2xl">
-                      <span className="text-[#C44E35]">★</span>
-                      <span className="font-bold text-black">{profile.rating.toFixed(1)}</span>
-                    </div>
-                    <span className="text-black/60">
-                      ({profile.total_reviews} {profile.total_reviews === 1 ? 'opinia' : 'opinii'})
-                    </span>
+                {/* City */}
+                {profile.city && (
+                  <div className="flex items-center gap-2 text-black/60 mb-3">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    {profile.city}
                   </div>
                 )}
 
+                {/* Rating and Contact Buttons */}
+                <div className="flex items-center justify-between gap-4">
+                  {profile.rating > 0 && (
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-2xl">
+                        <span className="text-[#C44E35]">★</span>
+                        <span className="font-bold text-black">{profile.rating.toFixed(1)}</span>
+                      </div>
+                      <span className="text-black/60">
+                        ({profile.total_reviews} {profile.total_reviews === 1 ? 'opinia' : 'opinii'})
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Contact Buttons */}
+                  {user && (
+                    <div className="flex gap-2 items-center">
+                      {profile.phone && profile.show_phone !== false && (
+                        <div className="[&_button]:!h-[38px] [&_button]:!py-0 [&_button]:!px-4 [&_button]:!text-sm [&_button]:!leading-normal [&_button]:!min-h-0">
+                          <PhoneNumber phone={profile.phone} postId={userId} disabled={user.id === userId} />
+                        </div>
+                      )}
+                      {profile.show_messages !== false && (
+                        user.id === userId ? (
+                          <Button
+                            disabled
+                            className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 whitespace-nowrap h-[38px] py-0 px-4 text-sm leading-normal min-h-0 opacity-50 cursor-not-allowed"
+                          >
+                            Wyślij wiadomość
+                          </Button>
+                        ) : (
+                          <Link href={`/dashboard/messages?user=${userId}`}>
+                            <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 whitespace-nowrap h-[38px] py-0 px-4 text-sm leading-normal min-h-0">
+                              Wyślij wiadomość
+                            </Button>
+                          </Link>
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 {/* Bio */}
                 {profile.bio && (
-                  <p className="text-black/70 leading-relaxed mb-4">
+                  <p className="text-black/70 leading-relaxed">
                     {profile.bio}
                   </p>
-                )}
-
-                {/* Contact Button */}
-                {user && user.id !== userId && (
-                  <Link href={`/dashboard/messages?user=${userId}`}>
-                    <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0">
-                      Wyślij wiadomość
-                    </Button>
-                  </Link>
                 )}
               </div>
             </div>
@@ -215,59 +267,12 @@ export default async function ProfilePage({ params }: { params: { userId: string
             )}
           </div>
 
-          {/* Active Posts Section */}
-          <div>
-            <h2 className="text-2xl font-bold text-black mb-6">
-              Aktywne ogłoszenia ({userPosts?.length || 0})
-            </h2>
-
-            {userPosts && userPosts.length > 0 ? (
-              <div className="space-y-4">
-                {userPosts.map((post: any) => (
-                  <Link key={post.id} href={`/posts/${post.id}`}>
-                    <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all shadow-sm cursor-pointer">
-                      <CardHeader className="pb-2">
-                        <div className="flex items-start justify-between mb-1">
-                          <Badge
-                            className={`rounded-full px-3 py-1 ${
-                              post.type === 'seeking'
-                                ? 'bg-[#C44E35] text-white border-0'
-                                : 'bg-black text-white border-0'
-                            }`}
-                          >
-                            {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                          </Badge>
-                          {post.categories && (
-                            <Badge variant="outline" className="rounded-full border-black/10 text-black/60">
-                              {post.categories.name}
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-lg font-bold text-black">
-                          {post.title}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="pb-4">
-                        <div className="flex items-center gap-1 text-sm text-black/60">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg>
-                          {post.city}{post.district && `, ${post.district}`}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <Card className="border-0 rounded-3xl bg-white shadow-sm">
-                <CardContent className="p-8 text-center">
-                  <p className="text-black/60">Brak aktywnych ogłoszeń</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+          {/* Active Posts Section with Infinite Scroll */}
+          <UserPostsList
+            userId={userId}
+            initialPosts={userPosts || []}
+            totalCount={totalActivePosts || 0}
+          />
         </div>
       </div>
 

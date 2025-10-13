@@ -13,9 +13,10 @@ import { createClient } from '@/lib/supabase/server'
 interface NavbarProps {
   user: User | null
   showAddButton?: boolean
+  noRounding?: boolean
 }
 
-export async function Navbar({ user, showAddButton = true }: NavbarProps) {
+export async function Navbar({ user, showAddButton = true, noRounding = false }: NavbarProps) {
   const userRole = user ? await getUserRole() : null
   const isAdmin = userRole === 'admin'
 
@@ -32,7 +33,7 @@ export async function Navbar({ user, showAddButton = true }: NavbarProps) {
   }
 
   return (
-    <header className="border-b border-black/5 bg-white rounded-b-3xl">
+    <header className={`border-b border-black/5 bg-white ${noRounding ? '' : 'rounded-b-3xl'}`}>
       <div className="container mx-auto px-4 md:px-6 py-3 md:py-5 flex justify-between items-center gap-4">
         <Link href="/">
           <LogoWithText />

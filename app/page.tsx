@@ -349,6 +349,7 @@ export default async function Home() {
                                 rating={post.profiles.rating}
                                 reviewCount={post.profiles.total_reviews || 0}
                                 className="text-xs"
+                                clickable={false}
                               />
                             )}
                           </div>
@@ -501,6 +502,7 @@ export default async function Home() {
                                 rating={post.profiles.rating}
                                 reviewCount={post.profiles.total_reviews || 0}
                                 className="text-xs"
+                                clickable={false}
                               />
                             )}
                           </div>

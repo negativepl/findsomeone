@@ -7,12 +7,14 @@ import { Phone } from 'lucide-react'
 interface PhoneNumberProps {
   phone: string
   postId: string
+  disabled?: boolean
 }
 
-export function PhoneNumber({ phone, postId }: PhoneNumberProps) {
+export function PhoneNumber({ phone, postId, disabled = false }: PhoneNumberProps) {
   const [isRevealed, setIsRevealed] = useState(false)
 
   const handleReveal = async () => {
+    if (disabled) return
     setIsRevealed(true)
 
     // Check if this phone number was already revealed in this session/browser
@@ -69,21 +71,35 @@ export function PhoneNumber({ phone, postId }: PhoneNumberProps) {
         <Button
           onClick={handleReveal}
           variant="outline"
-          className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 py-6 text-base"
+          disabled={disabled}
+          className={`w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 py-6 text-base ${
+            disabled ? 'opacity-50 cursor-not-allowed' : ''
+          }`}
         >
           <Phone className="w-4 h-4 mr-2" />
           {maskedPhone()}
         </Button>
       ) : (
-        <a href={`tel:${phone}`}>
+        disabled ? (
           <Button
             variant="outline"
-            className="w-full rounded-full border-2 border-green-500 bg-green-50 hover:bg-green-100 text-green-700 py-6 text-base"
+            disabled
+            className="w-full rounded-full border-2 border-green-500 bg-green-50 text-green-700 py-6 text-base opacity-50 cursor-not-allowed"
           >
             <Phone className="w-4 h-4 mr-2" />
             {formatPhone(phone)}
           </Button>
-        </a>
+        ) : (
+          <a href={`tel:${phone}`}>
+            <Button
+              variant="outline"
+              className="w-full rounded-full border-2 border-green-500 bg-green-50 hover:bg-green-100 text-green-700 py-6 text-base"
+            >
+              <Phone className="w-4 h-4 mr-2" />
+              {formatPhone(phone)}
+            </Button>
+          </a>
+        )
       )}
     </div>
   )

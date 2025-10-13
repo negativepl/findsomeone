@@ -38,6 +38,7 @@ export interface Database {
           email: string
           full_name: string | null
           avatar_url: string | null
+          banner_url: string | null
           bio: string | null
           phone: string | null
           city: string | null
@@ -52,6 +53,7 @@ export interface Database {
           email: string
           full_name?: string | null
           avatar_url?: string | null
+          banner_url?: string | null
           bio?: string | null
           phone?: string | null
           city?: string | null
@@ -66,6 +68,7 @@ export interface Database {
           email?: string
           full_name?: string | null
           avatar_url?: string | null
+          banner_url?: string | null
           bio?: string | null
           phone?: string | null
           city?: string | null

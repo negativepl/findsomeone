@@ -7,8 +7,10 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
 import { User } from '@supabase/supabase-js'
 import { toast } from 'sonner'
+import Link from 'next/link'
 
 interface Profile {
   id: string
@@ -18,9 +20,13 @@ interface Profile {
   phone: string | null
   city: string | null
   avatar_url: string | null
+  banner_url: string | null
   rating: number
   total_reviews: number
   verified: boolean
+  show_phone: boolean
+  show_messages: boolean
+  show_profile_link: boolean
 }
 
 interface ProfileClientProps {
@@ -33,6 +39,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
   const [profile, setProfile] = useState<Profile>(initialProfile)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
+  const [uploadingBanner, setUploadingBanner] = useState(false)
 
   const [formData, setFormData] = useState({
     full_name: initialProfile.full_name || '',
@@ -40,6 +47,14 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
     phone: initialProfile.phone || '',
     city: initialProfile.city || '',
   })
+
+  const [privacySettings, setPrivacySettings] = useState({
+    show_phone: initialProfile.show_phone ?? true,
+    show_messages: initialProfile.show_messages ?? true,
+    show_profile_link: initialProfile.show_profile_link ?? true,
+  })
+
+  const [savingPrivacy, setSavingPrivacy] = useState(false)
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -102,6 +117,67 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
     }
   }
 
+  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files?.[0]
+      if (!file) return
+
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        toast.error('Proszę wybrać plik obrazu')
+        return
+      }
+
+      // Validate file size (max 5MB for banner)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error('Plik jest za duży. Maksymalny rozmiar to 5MB')
+        return
+      }
+
+      setUploadingBanner(true)
+
+      // Delete old banner if exists
+      if (profile.banner_url) {
+        const oldPath = profile.banner_url.split('/banners/')[1]
+        if (oldPath) {
+          await supabase.storage.from('banners').remove([oldPath])
+        }
+      }
+
+      // Upload new banner
+      const fileExt = file.name.split('.').pop()
+      const filePath = `${initialUser.id}/banner.${fileExt}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('banners')
+        .upload(filePath, file, { upsert: true })
+
+      if (uploadError) throw uploadError
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('banners')
+        .getPublicUrl(filePath)
+
+      // Update profile with new banner URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ banner_url: publicUrl })
+        .eq('id', initialUser.id)
+
+      if (updateError) throw updateError
+
+      // Update local state
+      setProfile({ ...profile, banner_url: publicUrl })
+      toast.success('Banner został zaktualizowany!')
+    } catch (error) {
+      console.error('Error uploading banner:', error)
+      toast.error('Nie udało się zaktualizować bannera')
+    } finally {
+      setUploadingBanner(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
@@ -124,6 +200,30 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
       toast.error(err instanceof Error ? err.message : 'Wystąpił błąd podczas aktualizacji profilu')
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handlePrivacySubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setSavingPrivacy(true)
+
+    try {
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          show_phone: privacySettings.show_phone,
+          show_messages: privacySettings.show_messages,
+          show_profile_link: privacySettings.show_profile_link,
+        })
+        .eq('id', initialUser.id)
+
+      if (updateError) throw updateError
+
+      toast.success('Ustawienia prywatności zostały zaktualizowane!')
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Wystąpił błąd podczas aktualizacji ustawień')
+    } finally {
+      setSavingPrivacy(false)
     }
   }
 
@@ -194,7 +294,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               <p className="text-sm text-black/60 mb-4">{initialUser?.email}</p>
 
               {/* Stats */}
-              <div className="space-y-3 text-left bg-[#FAF8F3] rounded-2xl p-4">
+              <div className="space-y-3 text-left bg-[#FAF8F3] rounded-2xl p-4 mb-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-black/60">Ocena</span>
                   <span className="font-semibold text-black flex items-center gap-1">
@@ -217,6 +317,15 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   )}
                 </div>
               </div>
+
+              {/* View Profile Button */}
+              <Link href={`/profile/${initialUser.id}`} target="_blank">
+                <Button
+                  className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+                >
+                  Zobacz swój profil
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
@@ -230,7 +339,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 Zaktualizuj swoje dane i informacje kontaktowe
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-6">
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Full Name */}
                 <div className="space-y-3">
@@ -305,14 +414,185 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   />
                 </div>
 
-                {/* Submit Button */}
+                {/* Footer with buttons */}
+                <div className="mt-8 pt-6 border-t-2 border-black/5">
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      disabled={saving}
+                      className="w-full md:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
+                    >
+                      {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+
+          {/* Profile Banner Card */}
+          <Card className="border-0 rounded-3xl bg-white mt-6">
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold text-black">Banner profilu</CardTitle>
+              <CardDescription className="text-base text-black/60">
+                Dodaj banner do swojego profilu - idealny dla firm (logo, zdjęcie lokalu, itp.)
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              {/* Banner Preview */}
+              <div className="mb-6">
+                {profile?.banner_url ? (
+                  <div className="relative w-full h-32 md:h-48 lg:h-56 rounded-2xl overflow-hidden group">
+                    <img
+                      src={profile.banner_url}
+                      alt="Profile banner"
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
+                      <label htmlFor="banner-upload" className="cursor-pointer flex flex-col items-center">
+                        <div className="bg-white rounded-full p-4 hover:bg-gray-100 transition-colors flex items-center justify-center">
+                          {uploadingBanner ? (
+                            <svg className="animate-spin w-6 h-6 text-[#C44E35]" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                            </svg>
+                          ) : (
+                            <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                          )}
+                        </div>
+                        <p className="text-white text-sm mt-2 font-semibold text-center">Zmień banner</p>
+                      </label>
+                    </div>
+                  </div>
+                ) : (
+                  <label
+                    htmlFor="banner-upload"
+                    className="flex flex-col items-center justify-center w-full h-32 md:h-48 lg:h-56 border-2 border-dashed border-black/20 rounded-2xl cursor-pointer hover:border-black/40 hover:bg-black/5 transition-all"
+                  >
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      {uploadingBanner ? (
+                        <svg className="animate-spin w-10 h-10 text-[#C44E35] mb-3" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                      ) : (
+                        <>
+                          <svg className="w-10 h-10 mb-3 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <p className="mb-2 text-sm text-black/70">
+                            <span className="font-semibold">Kliknij aby dodać banner</span>
+                          </p>
+                          <p className="text-xs text-black/50">PNG, JPG (max. 5MB)</p>
+                          <p className="text-xs text-black/50 mt-1">Zalecane: 1200x400px (lub 16:5 ratio)</p>
+                        </>
+                      )}
+                    </div>
+                  </label>
+                )}
+                <input
+                  id="banner-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBannerUpload}
+                  disabled={uploadingBanner}
+                  className="hidden"
+                />
+              </div>
+
+              {profile?.banner_url && (
                 <Button
-                  type="submit"
-                  disabled={saving}
-                  className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12 text-base font-semibold"
+                  type="button"
+                  variant="outline"
+                  onClick={async () => {
+                    if (confirm('Czy na pewno chcesz usunąć banner?')) {
+                      try {
+                        setUploadingBanner(true)
+                        const oldPath = profile.banner_url!.split('/banners/')[1]
+                        if (oldPath) {
+                          await supabase.storage.from('banners').remove([oldPath])
+                        }
+                        await supabase
+                          .from('profiles')
+                          .update({ banner_url: null })
+                          .eq('id', initialUser.id)
+                        setProfile({ ...profile, banner_url: null })
+                        toast.success('Banner został usunięty!')
+                      } catch (error) {
+                        console.error('Error removing banner:', error)
+                        toast.error('Nie udało się usunąć bannera')
+                      } finally {
+                        setUploadingBanner(false)
+                      }
+                    }
+                  }}
+                  className="w-full rounded-full border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
                 >
-                  {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
+                  Usuń banner
                 </Button>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Privacy Settings Card */}
+          <Card className="border-0 rounded-3xl bg-white mt-6">
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold text-black">Ustawienia prywatności</CardTitle>
+              <CardDescription className="text-base text-black/60">
+                Kontroluj, jakie informacje są widoczne w Twoich ogłoszeniach
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <form onSubmit={handlePrivacySubmit} className="space-y-6">
+                {/* Show Phone */}
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F3] rounded-2xl">
+                  <div className="flex-1 pr-4">
+                    <Label htmlFor="show_phone" className="text-base font-semibold text-black cursor-pointer">
+                      Pokazuj numer telefonu
+                    </Label>
+                    <p className="text-sm text-black/60 mt-1">
+                      Twój numer telefonu będzie widoczny na stronie szczegółów ogłoszenia
+                    </p>
+                  </div>
+                  <Switch
+                    id="show_phone"
+                    checked={privacySettings.show_phone}
+                    onCheckedChange={(checked) => setPrivacySettings({ ...privacySettings, show_phone: checked })}
+                  />
+                </div>
+
+                {/* Show Messages */}
+                <div className="flex items-center justify-between p-4 bg-[#FAF8F3] rounded-2xl">
+                  <div className="flex-1 pr-4">
+                    <Label htmlFor="show_messages" className="text-base font-semibold text-black cursor-pointer">
+                      Pokazuj przycisk "Wyślij wiadomość"
+                    </Label>
+                    <p className="text-sm text-black/60 mt-1">
+                      Inni użytkownicy będą mogli wysyłać do Ciebie wiadomości przez platformę
+                    </p>
+                  </div>
+                  <Switch
+                    id="show_messages"
+                    checked={privacySettings.show_messages}
+                    onCheckedChange={(checked) => setPrivacySettings({ ...privacySettings, show_messages: checked })}
+                  />
+                </div>
+
+                {/* Footer with buttons */}
+                <div className="mt-8 pt-6 border-t-2 border-black/5">
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      disabled={savingPrivacy}
+                      className="w-full md:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
+                    >
+                      {savingPrivacy ? 'Zapisywanie...' : 'Zapisz ustawienia prywatności'}
+                    </Button>
+                  </div>
+                </div>
               </form>
             </CardContent>
           </Card>

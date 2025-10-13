@@ -278,7 +278,7 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
       </div>
 
       {/* Input Container - Fixed at bottom */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-black/10 shadow-lg z-20">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-black/10 rounded-t-3xl z-20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
             {error && (
