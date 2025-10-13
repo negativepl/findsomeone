@@ -202,7 +202,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   }
 
   return (
-      <main className="container mx-auto px-4 md:px-6 py-6 md:py-16 pb-32 md:pb-16">
+      <main className="md:container md:mx-auto px-4 md:px-6 h-full md:h-auto md:py-16 flex flex-col md:block">
         {/* Page Header - Above Card - Hidden on mobile */}
         <div className="hidden md:block mb-8">
           <h1 className="text-4xl font-bold text-black mb-3">Dodaj nowe ogłoszenie</h1>
@@ -211,9 +211,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
           </p>
         </div>
 
-      <Card className="border-0 rounded-3xl bg-white">
-        <CardContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-6">
+      <Card className="border-0 md:rounded-3xl bg-white md:mx-0 -mx-4 flex-1 md:flex-none overflow-hidden mt-8 md:mt-0">
+        <CardContent className="pt-4 md:pt-6 px-0 md:px-6 h-full md:h-auto flex flex-col">
+          <form onSubmit={handleSubmit} className="space-y-6 h-full md:h-auto flex flex-col md:block">
             {/* Desktop: All fields visible */}
             <div className="hidden md:block space-y-6">
               {/* Title, Category and Type in one row */}
@@ -394,12 +394,12 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
             </div>
 
             {/* Mobile: Step-by-step */}
-            <div className="md:hidden space-y-4">
+            <div className="md:hidden flex-1 flex flex-col overflow-hidden">
               {/* Step 1: Podstawowe informacje */}
               {currentStep === 1 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-black">Typ ogłoszenia *</Label>
+                    <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
                     <Select
                       value={formData.type}
                       onValueChange={(value: 'seeking' | 'offering') =>
@@ -417,7 +417,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-black">Kategoria *</Label>
+                    <Label className="text-base font-semibold text-black">Kategoria *</Label>
                     <Select
                       value={formData.category}
                       onValueChange={(value) => setFormData({ ...formData, category: value })}
@@ -437,7 +437,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="title-mobile" className="text-sm font-semibold text-black">
+                    <Label htmlFor="title-mobile" className="text-base font-semibold text-black">
                       Tytuł ogłoszenia *
                     </Label>
                     <div className="relative">
@@ -464,32 +464,23 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 2: Opis */}
               {currentStep === 2 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-black">
-                      Opis ogłoszenia *
-                    </Label>
-                    <p className="text-xs text-black/60">
-                      {formData.type === 'seeking'
-                        ? 'Opisz czego szukasz: zakres prac, termin, wymagania'
-                        : 'Opisz co oferujesz: usługi, doświadczenie, dostępność'}
-                    </p>
-                    <RichTextEditor
-                      content={formData.description}
-                      onChange={(content) => setFormData({ ...formData, description: content })}
-                      placeholder={
-                        formData.type === 'seeking'
-                          ? 'Opisz szczegółowo czego szukasz...'
-                          : 'Opisz szczegółowo co oferujesz...'
-                      }
-                    />
-                  </div>
+                <div className="animate-in fade-in duration-300 px-3 pb-4 flex flex-col flex-1 overflow-hidden">
+                  <RichTextEditor
+                    content={formData.description}
+                    onChange={(content) => setFormData({ ...formData, description: content })}
+                    placeholder={
+                      formData.type === 'seeking'
+                        ? 'Opisz szczegółowo czego szukasz...'
+                        : 'Opisz szczegółowo co oferujesz...'
+                    }
+                    className="flex-1 flex flex-col"
+                  />
                 </div>
               )}
 
               {/* Step 3: Zdjęcia */}
               {currentStep === 3 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
                   <div>
                     <p className="text-xs text-black/60">Opcjonalnie - możesz dodać do 6 zdjęć</p>
                   </div>
@@ -505,9 +496,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 4: Lokalizacja */}
               {currentStep === 4 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
                   <div className="space-y-2">
-                    <Label htmlFor="city-mobile" className="text-sm font-semibold text-black">
+                    <Label htmlFor="city-mobile" className="text-base font-semibold text-black">
                       Miasto *
                     </Label>
                     <Input
@@ -521,7 +512,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="district-mobile" className="text-sm font-semibold text-black">
+                    <Label htmlFor="district-mobile" className="text-base font-semibold text-black">
                       Dzielnica <span className="text-black/40 font-normal">(opcjonalnie)</span>
                     </Label>
                     <Input
@@ -537,13 +528,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 5: Budżet */}
               {currentStep === 5 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
                   <div>
                     <p className="text-xs text-black/60">Opcjonalnie - możesz pominąć ten krok</p>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-black">Typ ceny</Label>
+                    <Label className="text-base font-semibold text-black">Typ ceny</Label>
                     <Select
                       value={formData.priceType}
                       onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
@@ -562,7 +553,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="priceMin-mobile" className="text-sm font-semibold text-black">
+                    <Label htmlFor="priceMin-mobile" className="text-base font-semibold text-black">
                       Cena minimalna (zł)
                     </Label>
                     <Input
@@ -578,7 +569,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="priceMax-mobile" className="text-sm font-semibold text-black">
+                    <Label htmlFor="priceMax-mobile" className="text-base font-semibold text-black">
                       Cena maksymalna (zł)
                     </Label>
                     <Input
@@ -597,66 +588,136 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 6: Podsumowanie */}
               {currentStep === 6 && (
-                <div className="space-y-4 animate-in fade-in duration-300">
+                <div className="space-y-4 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
+                  <div className="text-center mb-4">
+                    <h3 className="text-xl font-bold text-black mb-1">Sprawdź swoje ogłoszenie</h3>
+                    <p className="text-sm text-black/60">Upewnij się, że wszystko jest poprawne</p>
+                  </div>
 
-                  <div className="space-y-3 bg-black/5 rounded-2xl p-3">
+                  {/* Main content card */}
+                  <div className="bg-white border-2 border-black/10 rounded-2xl p-4 space-y-4">
+                    {/* Title - prominent with edit button */}
                     <div>
-                      <p className="text-xs text-black/60 mb-1">Typ</p>
-                      <p className="text-sm font-semibold text-black">
-                        {formData.type === 'seeking' ? 'Szukam usługi' : 'Oferuję usługi'}
-                      </p>
+                      <div className="flex items-start justify-between gap-3 mb-2">
+                        <h4 className="text-lg font-bold text-black flex-1">{formData.title}</h4>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentStep(1)}
+                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors flex-shrink-0"
+                        >
+                          Edytuj
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-black/60">
+                        <span className="font-medium">
+                          {formData.type === 'seeking' ? 'Szukam' : 'Oferuję'}
+                        </span>
+                        <span>•</span>
+                        <span>{categories.find(c => c.slug === formData.category)?.name || formData.category}</span>
+                      </div>
                     </div>
 
-                    <div>
-                      <p className="text-xs text-black/60 mb-1">Kategoria</p>
-                      <p className="text-sm font-semibold text-black">
-                        {categories.find(c => c.slug === formData.category)?.name || formData.category}
-                      </p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs text-black/60 mb-1">Tytuł</p>
-                      <p className="text-sm font-semibold text-black">{formData.title}</p>
-                    </div>
-
-                    <div>
-                      <p className="text-xs text-black/60 mb-1">Opis</p>
+                    {/* Description with edit */}
+                    <div className="border-t border-black/10 pt-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-xs font-semibold text-black/60">OPIS</p>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentStep(2)}
+                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                        >
+                          Edytuj
+                        </button>
+                      </div>
                       <div
-                        className="text-xs text-black line-clamp-2"
+                        className="text-sm text-black/80 prose prose-sm max-w-none line-clamp-3"
                         dangerouslySetInnerHTML={{ __html: formData.description }}
                       />
                     </div>
 
-                    {images.length > 0 && (
-                      <div>
-                        <p className="text-xs text-black/60 mb-1">Zdjęcia</p>
-                        <p className="text-sm font-semibold text-black">{images.length} zdjęć</p>
+                    {/* Images if present */}
+                    <div className="border-t border-black/10 pt-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-xs font-semibold text-black/60">ZDJĘCIA</p>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentStep(3)}
+                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                        >
+                          {images.length > 0 ? 'Edytuj' : 'Dodaj'}
+                        </button>
                       </div>
-                    )}
-
-                    <div>
-                      <p className="text-xs text-black/60 mb-1">Lokalizacja</p>
-                      <p className="text-sm font-semibold text-black">
-                        {formData.city}{formData.district && `, ${formData.district}`}
-                      </p>
+                      {images.length > 0 ? (
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <span className="text-sm font-medium text-black">{images.length} {images.length === 1 ? 'zdjęcie' : 'zdjęcia'}</span>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-black/40">Brak zdjęć</p>
+                      )}
                     </div>
 
-                    {(formData.priceMin || formData.priceMax) && (
-                      <div>
-                        <p className="text-xs text-black/60 mb-1">Budżet</p>
-                        <p className="text-sm font-semibold text-black">
-                          {formData.priceMin && `${formData.priceMin} zł`}
-                          {formData.priceMin && formData.priceMax && ' - '}
-                          {formData.priceMax && `${formData.priceMax} zł`}
-                          {' '}({formData.priceType === 'hourly' ? 'za godz.' : formData.priceType === 'fixed' ? 'stała' : 'negocjacje'})
-                        </p>
+                    {/* Location */}
+                    <div className="border-t border-black/10 pt-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-xs font-semibold text-black/60">LOKALIZACJA</p>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentStep(4)}
+                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                        >
+                          Edytuj
+                        </button>
                       </div>
-                    )}
+                      <div className="flex items-center gap-2">
+                        <svg className="w-5 h-5 text-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="text-sm font-medium text-black">
+                          {formData.city}{formData.district && `, ${formData.district}`}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Budget */}
+                    <div className="border-t border-black/10 pt-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <p className="text-xs font-semibold text-black/60">BUDŻET</p>
+                        <button
+                          type="button"
+                          onClick={() => setCurrentStep(5)}
+                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                        >
+                          {formData.priceMin || formData.priceMax ? 'Edytuj' : 'Dodaj'}
+                        </button>
+                      </div>
+                      {(formData.priceMin || formData.priceMax) ? (
+                        <div className="flex items-center gap-2">
+                          <svg className="w-5 h-5 text-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-sm font-medium text-black">
+                            {formData.priceMin && `${formData.priceMin} zł`}
+                            {formData.priceMin && formData.priceMax && ' - '}
+                            {formData.priceMax && `${formData.priceMax} zł`}
+                            <span className="text-black/60 ml-1">
+                              ({formData.priceType === 'hourly' ? 'za godz.' : formData.priceType === 'fixed' ? 'stała' : 'do negocjacji'})
+                            </span>
+                          </span>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-black/40">Nie określono budżetu</p>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3">
-                    <p className="text-xs text-blue-900">
-                      Ogłoszenie zostanie sprawdzone przez system moderacji przed publikacją.
+                  {/* Info message */}
+                  <div className="bg-black/5 rounded-2xl p-5 text-center border border-black/10">
+                    <p className="text-sm font-medium text-black/90 leading-relaxed">
+                      Twoje ogłoszenie zostanie automatycznie sprawdzone przez system moderacji AI przed publikacją
                     </p>
                   </div>
                 </div>
@@ -706,15 +767,26 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
         {/* Action buttons */}
         <div className="flex gap-2 px-4 py-3">
-          <Link href="/dashboard" className="flex-1">
+          {currentStep === 1 ? (
+            <Link href="/dashboard" className="flex-1">
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
+              >
+                Anuluj
+              </Button>
+            </Link>
+          ) : (
             <Button
               type="button"
+              onClick={prevStep}
               variant="outline"
-              className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
+              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
             >
-              Anuluj
+              Wstecz
             </Button>
-          </Link>
+          )}
 
           {currentStep < totalSteps ? (
             <Button

@@ -17,9 +17,11 @@ export default async function NewPostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <div className="h-screen bg-[#FAF8F3] md:min-h-screen md:h-auto overflow-hidden md:overflow-visible">
       <NewPostPageClient user={user} />
-      <Footer />
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   )
 }

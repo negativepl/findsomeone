@@ -9,9 +9,10 @@ interface RichTextEditorProps {
   content: string
   onChange: (content: string) => void
   placeholder?: string
+  className?: string
 }
 
-export function RichTextEditor({ content, onChange, placeholder }: RichTextEditorProps) {
+export function RichTextEditor({ content, onChange, placeholder, className }: RichTextEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -23,7 +24,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
     content,
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose max-w-none focus:outline-none min-h-[200px] p-4',
+        class: 'prose prose-base max-w-none focus:outline-none min-h-full p-3 md:p-4 text-base',
       },
     },
     onUpdate: ({ editor }) => {
@@ -43,9 +44,9 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
   }
 
   return (
-    <div className="border-2 border-black/10 rounded-2xl overflow-hidden focus-within:border-black/30 transition-colors">
+    <div className={`border-2 border-black/10 rounded-2xl overflow-hidden focus-within:border-black/30 transition-colors ${className || ''}`}>
       {/* Toolbar */}
-      <div className="border-b border-black/10 bg-black/5 p-1.5 md:p-2 flex md:flex-wrap gap-0.5 md:gap-1 overflow-x-auto md:overflow-x-visible scrollbar-hide snap-x snap-mandatory">
+      <div className="border-b border-black/10 bg-black/5 p-1 md:p-2 flex md:flex-wrap gap-0.5 md:gap-1 overflow-x-auto md:overflow-x-visible scrollbar-hide snap-x snap-mandatory">
         <style jsx global>{`
           .scrollbar-hide::-webkit-scrollbar {
             display: none;
@@ -59,7 +60,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
           disabled={!editor.can().chain().focus().toggleBold().run()}
-          className={`flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
+          className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('bold')
               ? 'bg-black text-white'
               : 'bg-white hover:bg-black/5 text-black'
@@ -71,7 +72,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           disabled={!editor.can().chain().focus().toggleItalic().run()}
-          className={`flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm italic font-medium transition-colors ${
+          className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm italic font-medium transition-colors ${
             editor.isActive('italic')
               ? 'bg-black text-white'
               : 'bg-white hover:bg-black/5 text-black'
@@ -83,7 +84,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
           disabled={!editor.can().chain().focus().toggleStrike().run()}
-          className={`flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm line-through font-medium transition-colors ${
+          className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm line-through font-medium transition-colors ${
             editor.isActive('strike')
               ? 'bg-black text-white'
               : 'bg-white hover:bg-black/5 text-black'
@@ -92,12 +93,12 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           S
         </button>
 
-        <div className="flex-shrink-0 w-px h-5 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
+        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
 
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          className={`flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
+          className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('heading', { level: 2 })
               ? 'bg-black text-white'
               : 'bg-white hover:bg-black/5 text-black'
@@ -108,7 +109,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          className={`flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
+          className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('heading', { level: 3 })
               ? 'bg-black text-white'
               : 'bg-white hover:bg-black/5 text-black'
@@ -117,12 +118,12 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           H3
         </button>
 
-        <div className="flex-shrink-0 w-px h-5 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
+        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
 
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
+          className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('bulletList')
               ? 'bg-black text-white'
               : 'bg-white hover:bg-black/5 text-black'
@@ -133,7 +134,7 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
+          className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('orderedList')
               ? 'bg-black text-white'
               : 'bg-white hover:bg-black/5 text-black'
@@ -142,12 +143,12 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           1. Lista
         </button>
 
-        <div className="flex-shrink-0 w-px h-5 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
+        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
 
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={`flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
+          className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('blockquote')
               ? 'bg-black text-white'
               : 'bg-white hover:bg-black/5 text-black'
@@ -156,19 +157,21 @@ export function RichTextEditor({ content, onChange, placeholder }: RichTextEdito
           " Cytat
         </button>
 
-        <div className="flex-shrink-0 w-px h-5 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
+        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
 
         <button
           type="button"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          className="flex-shrink-0 px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-xs md:text-sm bg-white hover:bg-black/5 text-black transition-colors whitespace-nowrap"
+          className="flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm bg-white hover:bg-black/5 text-black transition-colors whitespace-nowrap"
         >
           ─ Linia
         </button>
       </div>
 
       {/* Editor */}
-      <EditorContent editor={editor} className="bg-white" />
+      <div className="flex-1 overflow-auto bg-white">
+        <EditorContent editor={editor} className="h-full" />
+      </div>
     </div>
   )
 }
