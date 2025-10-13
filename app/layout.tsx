@@ -6,6 +6,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import TopLoader from "@/components/TopLoader";
 import { MobileDockWrapper } from "@/components/MobileDockWrapper";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
 
@@ -54,6 +55,13 @@ export const metadata: Metadata = {
     title: 'FindSomeone - Znajdź lokalnych specjalistów',
     description: 'Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi.',
   },
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'FindSomeone',
+  },
+  applicationName: 'FindSomeone',
 };
 
 export const viewport = {
@@ -87,6 +95,7 @@ export default async function RootLayout({
         <Providers>
           {children}
           <MobileDockWrapper user={user} />
+          <InstallPrompt />
         </Providers>
         <SpeedInsights />
         <Analytics />
