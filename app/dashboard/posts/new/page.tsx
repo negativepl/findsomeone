@@ -1,8 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { NewPostClient } from './NewPostClient'
+import { NewPostPageClient } from './NewPostPageClient'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -19,8 +18,7 @@ export default async function NewPostPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} pageTitle="Dodaj ogłoszenie" />
-      <NewPostClient />
+      <NewPostPageClient user={user} />
       <Footer />
     </div>
   )

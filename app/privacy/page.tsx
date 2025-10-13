@@ -15,7 +15,7 @@ export default async function PrivacyPage() {
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
       <NavbarWithHide user={user} pageTitle="Prywatność" />
 
-      <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">
         <div className="mb-10 hidden md:block">
           <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Polityka prywatności</h1>
           <p className="text-lg text-black/60">

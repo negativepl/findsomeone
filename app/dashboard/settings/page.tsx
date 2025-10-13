@@ -34,7 +34,7 @@ export default async function SettingsPage() {
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
       <NavbarWithHide user={user} pageTitle="Ustawienia" />
 
-      <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">
         {/* Header */}
         <div className="mb-8 hidden md:block">
           <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Ustawienia</h1>

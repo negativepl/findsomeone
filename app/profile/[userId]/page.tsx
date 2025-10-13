@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { PhoneNumber } from '@/app/posts/[id]/PhoneNumber'
 import { UserPostsList } from './UserPostsList'
+import { VerifiedBadge } from './VerifiedBadge'
 
 export default async function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const supabase = await createClient()
@@ -70,7 +71,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} />
+      <NavbarWithHide user={user} pageTitle={profile.full_name || 'Profil'} />
 
       <div className="container mx-auto px-6 py-12">
         {/* Profile Header */}
@@ -88,7 +89,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
           <CardContent className="p-4 md:p-8">
             <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center">
               {/* Avatar */}
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 relative">
                 {profile.avatar_url ? (
                   <Image
                     src={profile.avatar_url}
@@ -104,31 +105,18 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                     </span>
                   </div>
                 )}
+
+                {/* Verified badge - top right of avatar */}
+                {profile.verified && <VerifiedBadge />}
               </div>
 
               {/* Profile Info */}
               <div className="flex-1 w-full md:w-auto text-center md:text-left">
-                {/* Row 1: Name left, Badge right */}
-                <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-3 mb-3">
+                {/* Row 1: Name */}
+                <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-3 mb-3">
                   <h1 className="text-2xl md:text-3xl font-bold text-black leading-none">
                     {profile.full_name || 'Anonim'}
                   </h1>
-
-                  {profile.verified && (
-                    <div className="relative group flex justify-center items-center">
-                      <Badge className="rounded-full bg-amber-100 text-amber-800 border-0 flex items-center justify-center gap-2 px-3 py-1.5 cursor-help leading-none">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-xs md:text-sm font-semibold">Zweryfikowany</span>
-                      </Badge>
-                      {/* Tooltip */}
-                      <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 px-3 py-2 bg-black text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                        Tożsamość użytkownika została zweryfikowana
-                        <div className="absolute left-1/2 -translate-x-1/2 -top-1 w-2 h-2 bg-black rotate-45"></div>
-                      </div>
-                    </div>
-                  )}
                 </div>
 
                 {/* Row 2: City */}

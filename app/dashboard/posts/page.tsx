@@ -37,7 +37,7 @@ export default async function MyListingsPage() {
       <NavbarWithHide user={user} pageTitle="Moje ogłoszenia" />
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-6 md:py-10 pb-20 md:pb-10">
+      <main className="flex-1 container mx-auto px-4 md:px-6 py-6 md:py-16 pb-20 md:pb-10">
         {/* Header */}
         <div className="mb-8 hidden md:block">
           <h2 className="text-2xl md:text-4xl font-bold text-black mb-3">Moje ogłoszenia</h2>

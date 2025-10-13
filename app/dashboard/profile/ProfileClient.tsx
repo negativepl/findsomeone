@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { VerifiedBadge } from '@/app/profile/[userId]/VerifiedBadge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -228,7 +229,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
   }
 
   return (
-    <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
+    <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">
       {/* Header */}
       <div className="mb-8 hidden md:block">
         <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Mój profil</h1>
@@ -240,8 +241,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
       <div className="grid md:grid-cols-3 gap-6">
         {/* Left sidebar - Profile Summary */}
         <div className="md:col-span-1">
-          <Card className="border-0 rounded-3xl bg-white sticky top-24">
-            <CardContent className="p-6 text-center">
+          <Card className="border-0 rounded-3xl bg-white sticky top-24 overflow-visible">
+            <CardContent className="p-6 text-center overflow-visible">
               {/* Avatar */}
               <div className="mb-6 relative inline-block">
                 <div className="relative w-32 h-32 mx-auto">
@@ -265,6 +266,9 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       </span>
                     </div>
                   )}
+
+                  {/* Verified badge - top right of avatar */}
+                  {profile?.verified && <VerifiedBadge />}
 
                   {/* Upload button overlay */}
                   <label
@@ -314,14 +318,6 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-black/60">Opinie</span>
                   <span className="font-semibold text-black">{profile?.total_reviews || 0}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-black/60">Zweryfikowany</span>
-                  {profile?.verified ? (
-                    <span className="text-green-600 font-semibold">✓</span>
-                  ) : (
-                    <span className="text-black/40">—</span>
-                  )}
                 </div>
               </div>
 

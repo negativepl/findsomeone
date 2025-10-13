@@ -8,7 +8,6 @@ import { TypingIndicator } from '@/components/TypingIndicator'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { useTypingIndicator } from '@/lib/hooks/useTypingIndicator'
-import { useUpdatePresence } from '@/lib/hooks/usePresence'
 
 interface Message {
   id: string
@@ -45,9 +44,6 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
   const conversationId = [currentUserId, otherUser.id].sort().join('-')
   const { isOtherUserTyping, sendTypingStatus } = useTypingIndicator(conversationId, otherUser.id)
   const typingTimeoutRef = useRef<NodeJS.Timeout>()
-
-  // Update presence (mark user as online)
-  useUpdatePresence()
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })

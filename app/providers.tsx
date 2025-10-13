@@ -3,9 +3,12 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { Toaster } from 'sonner'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { PresenceManager } from '@/components/PresenceManager'
+import { createClient } from '@/lib/supabase/client'
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [userId, setUserId] = useState<string | undefined>(undefined)
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -21,8 +24,30 @@ export function Providers({ children }: { children: React.ReactNode }) {
       })
   )
 
+  // Get current user for presence tracking
+  useEffect(() => {
+    const supabase = createClient()
+
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUserId(user?.id)
+    }
+
+    getUser()
+
+    // Subscribe to auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUserId(session?.user?.id)
+    })
+
+    return () => {
+      subscription.unsubscribe()
+    }
+  }, [])
+
   return (
     <QueryClientProvider client={queryClient}>
+      <PresenceManager userId={userId} />
       {children}
       <Toaster position="top-right" richColors />
       <ReactQueryDevtools initialIsOpen={false} />

@@ -120,7 +120,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
       <NavbarWithHide user={user} />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Post Details */}
           <div className="lg:col-span-2 space-y-6">

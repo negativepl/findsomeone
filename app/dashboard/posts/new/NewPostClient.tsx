@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, createContext, useContext } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -18,7 +18,21 @@ interface Category {
   slug: string
 }
 
-export function NewPostClient() {
+interface StepContextType {
+  currentStep: number
+  totalSteps: number
+  stepTitle: string
+}
+
+const StepContext = createContext<StepContextType | null>(null)
+
+export const useStepContext = () => useContext(StepContext)
+
+interface NewPostClientProps {
+  onStepChange?: (step: number) => void
+}
+
+export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const router = useRouter()
   const supabase = createClient()
 
@@ -32,6 +46,15 @@ export function NewPostClient() {
     reasons: string[]
   } | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
+
+  // Mobile multi-step state
+  const [currentStep, setCurrentStepInternal] = useState(1)
+  const totalSteps = 6
+
+  const setCurrentStep = (step: number) => {
+    setCurrentStepInternal(step)
+    onStepChange?.(step)
+  }
 
   const [formData, setFormData] = useState({
     title: '',
@@ -64,6 +87,52 @@ export function NewPostClient() {
         if (data) setCategories(data)
       })
   }, [supabase])
+
+  // Validation for each step
+  const isStepValid = (step: number): boolean => {
+    switch (step) {
+      case 1: // Podstawowe info
+        return !!(formData.type && formData.category && formData.title.trim())
+      case 2: // Szczegóły
+        return formData.description.trim().length > 0
+      case 3: // Zdjęcia (opcjonalne, zawsze valid)
+        return true
+      case 4: // Lokalizacja
+        return !!formData.city.trim()
+      case 5: // Budżet (opcjonalny, zawsze valid)
+        return true
+      case 6: // Podsumowanie (przed submit)
+        return true
+      default:
+        return false
+    }
+  }
+
+  const nextStep = () => {
+    if (currentStep < totalSteps && isStepValid(currentStep)) {
+      setCurrentStep(currentStep + 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+
+  const getStepTitle = (step: number): string => {
+    switch (step) {
+      case 1: return 'Podstawowe informacje'
+      case 2: return 'Opis ogłoszenia'
+      case 3: return 'Zdjęcia'
+      case 4: return 'Lokalizacja'
+      case 5: return 'Budżet'
+      case 6: return 'Podsumowanie'
+      default: return ''
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -133,190 +202,465 @@ export function NewPostClient() {
   }
 
   return (
-    <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
-      <Card className="border-0 rounded-3xl bg-white">
-        <CardHeader className="pb-6 hidden md:block">
-          <CardTitle className="text-3xl font-bold text-black">Dodaj nowe ogłoszenie</CardTitle>
-          <CardDescription className="text-base text-black/60">
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-16 pb-32 md:pb-16">
+        {/* Page Header - Above Card - Hidden on mobile */}
+        <div className="hidden md:block mb-8">
+          <h1 className="text-4xl font-bold text-black mb-3">Dodaj nowe ogłoszenie</h1>
+          <p className="text-lg text-black/60">
             Wypełnij formularz aby dodać ogłoszenie o poszukiwaniu lub oferowaniu usługi
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="pt-6 md:pt-0">
+          </p>
+        </div>
+
+      <Card className="border-0 rounded-3xl bg-white">
+        <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title, Category and Type in one row */}
-            <div className="grid md:grid-cols-[1fr_280px_280px] gap-4">
-              {/* Title */}
-              <div className="space-y-3">
-                <Label htmlFor="title" className="text-base font-semibold text-black">
-                  Tytuł ogłoszenia *
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="title"
-                    placeholder={
-                      formData.type === 'seeking'
-                        ? 'np. Szukam hydraulika do naprawy kranu'
-                        : 'np. Oferuję usługi hydrauliczne - naprawy, instalacje'
-                    }
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    required
-                    maxLength={80}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-black/40">
-                    {formData.title.length}/80
-                  </span>
-                </div>
-              </div>
-
-              {/* Category */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold text-black">Kategoria *</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
-                  required
-                >
-                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
-                    <SelectValue placeholder="Wybierz kategorię" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.slug}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Type */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
-                <Select
-                  value={formData.type}
-                  onValueChange={(value: 'seeking' | 'offering') =>
-                    setFormData({ ...formData, type: value })
-                  }
-                >
-                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="seeking">Szukam usługi</SelectItem>
-                    <SelectItem value="offering">Oferuję usługi</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">
-                Opis *
-              </Label>
-              <RichTextEditor
-                content={formData.description}
-                onChange={(content) => setFormData({ ...formData, description: content })}
-                placeholder={
-                  formData.type === 'seeking'
-                    ? 'Opisz szczegółowo czego szukasz: jakie prace, kiedy, jakie wymagania...'
-                    : 'Opisz szczegółowo co oferujesz: zakres usług, doświadczenie, dostępność...'
-                }
-              />
-            </div>
-
-            {/* Images */}
-            <ImageUpload
-              images={images}
-              onImagesChange={setImages}
-              userId={userId}
-              maxImages={6}
-            />
-
-            {/* Location */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <Label htmlFor="city" className="text-base font-semibold text-black">
-                  Miasto *
-                </Label>
-                <Input
-                  id="city"
-                  placeholder="np. Warszawa"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  required
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                />
-              </div>
-              <div className="space-y-3">
-                <Label htmlFor="district" className="text-base font-semibold text-black">
-                  Dzielnica (opcjonalnie)
-                </Label>
-                <Input
-                  id="district"
-                  placeholder="np. Śródmieście"
-                  value={formData.district}
-                  onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                />
-              </div>
-            </div>
-
-            {/* Price */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">Budżet (opcjonalnie)</Label>
-              <div className="grid md:grid-cols-[1fr_1fr_280px] gap-4">
+            {/* Desktop: All fields visible */}
+            <div className="hidden md:block space-y-6">
+              {/* Title, Category and Type in one row */}
+              <div className="grid md:grid-cols-[1fr_280px_280px] gap-4">
+                {/* Title */}
                 <div className="space-y-3">
-                  <Label htmlFor="priceMin" className="text-sm text-black/60">
-                    Cena minimalna (zł)
+                  <Label htmlFor="title" className="text-base font-semibold text-black">
+                    Tytuł ogłoszenia *
                   </Label>
-                  <Input
-                    id="priceMin"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="0"
-                    value={formData.priceMin}
-                    onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
+                  <div className="relative">
+                    <Input
+                      id="title"
+                      placeholder={
+                        formData.type === 'seeking'
+                          ? 'np. Szukam hydraulika w Warszawie'
+                          : 'np. Oferuję usługi hydrauliczne'
+                      }
+                      value={formData.title}
+                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                      required
+                      maxLength={80}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-black/40 font-medium">
+                      {formData.title.length}/80
+                    </span>
+                  </div>
                 </div>
+
+                {/* Category */}
                 <div className="space-y-3">
-                  <Label htmlFor="priceMax" className="text-sm text-black/60">
-                    Cena maksymalna (zł)
-                  </Label>
-                  <Input
-                    id="priceMax"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="0"
-                    value={formData.priceMax}
-                    onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-sm text-black/60">Typ ceny</Label>
+                  <Label className="text-base font-semibold text-black">Kategoria *</Label>
                   <Select
-                    value={formData.priceType}
-                    onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
-                      setFormData({ ...formData, priceType: value })
+                    value={formData.category}
+                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    required
+                  >
+                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                      <SelectValue placeholder="Wybierz kategorię" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat.id} value={cat.slug}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Type */}
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
+                  <Select
+                    value={formData.type}
+                    onValueChange={(value: 'seeking' | 'offering') =>
+                      setFormData({ ...formData, type: value })
                     }
                   >
                     <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="hourly">Za godzinę</SelectItem>
-                      <SelectItem value="fixed">Stała cena</SelectItem>
-                      <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                      <SelectItem value="seeking">Szukam usługi</SelectItem>
+                      <SelectItem value="offering">Oferuję usługi</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
+
+              {/* Description */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold text-black">
+                  Opis *
+                </Label>
+                <RichTextEditor
+                  content={formData.description}
+                  onChange={(content) => setFormData({ ...formData, description: content })}
+                  placeholder={
+                    formData.type === 'seeking'
+                      ? 'Opisz szczegółowo czego szukasz: jakie prace, kiedy, jakie wymagania...'
+                      : 'Opisz szczegółowo co oferujesz: zakres usług, doświadczenie, dostępność...'
+                  }
+                />
+              </div>
+
+              {/* Images */}
+              <ImageUpload
+                images={images}
+                onImagesChange={setImages}
+                userId={userId}
+                maxImages={6}
+              />
+
+              {/* Location */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <Label htmlFor="city" className="text-base font-semibold text-black">
+                    Miasto *
+                  </Label>
+                  <Input
+                    id="city"
+                    placeholder="np. Warszawa"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    required
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <Label htmlFor="district" className="text-base font-semibold text-black">
+                    Dzielnica (opcjonalnie)
+                  </Label>
+                  <Input
+                    id="district"
+                    placeholder="np. Śródmieście"
+                    value={formData.district}
+                    onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  />
+                </div>
+              </div>
+
+              {/* Price */}
+              <div className="space-y-3">
+                <Label className="text-base font-semibold text-black">Budżet (opcjonalnie)</Label>
+                <div className="grid md:grid-cols-[1fr_1fr_280px] gap-4">
+                  <div className="space-y-3">
+                    <Label htmlFor="priceMin" className="text-sm text-black/60">
+                      Cena minimalna (zł)
+                    </Label>
+                    <Input
+                      id="priceMin"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0"
+                      value={formData.priceMin}
+                      onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label htmlFor="priceMax" className="text-sm text-black/60">
+                      Cena maksymalna (zł)
+                    </Label>
+                    <Input
+                      id="priceMax"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0"
+                      value={formData.priceMax}
+                      onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    />
+                  </div>
+                  <div className="space-y-3">
+                    <Label className="text-sm text-black/60">Typ ceny</Label>
+                    <Select
+                      value={formData.priceType}
+                      onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
+                        setFormData({ ...formData, priceType: value })
+                      }
+                    >
+                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hourly">Za godzinę</SelectItem>
+                        <SelectItem value="fixed">Stała cena</SelectItem>
+                        <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Mobile: Step-by-step */}
+            <div className="md:hidden space-y-4">
+              {/* Step 1: Podstawowe informacje */}
+              {currentStep === 1 && (
+                <div className="space-y-4 animate-in fade-in duration-300">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-black">Typ ogłoszenia *</Label>
+                    <Select
+                      value={formData.type}
+                      onValueChange={(value: 'seeking' | 'offering') =>
+                        setFormData({ ...formData, type: value })
+                      }
+                    >
+                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="seeking">Szukam usługi</SelectItem>
+                        <SelectItem value="offering">Oferuję usługi</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-black">Kategoria *</Label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) => setFormData({ ...formData, category: value })}
+                      required
+                    >
+                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
+                        <SelectValue placeholder="Wybierz kategorię" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.slug}>
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="title-mobile" className="text-sm font-semibold text-black">
+                      Tytuł ogłoszenia *
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="title-mobile"
+                        placeholder={
+                          formData.type === 'seeking'
+                            ? 'np. Szukam hydraulika w Warszawie'
+                            : 'np. Oferuję usługi hydrauliczne'
+                        }
+                        value={formData.title}
+                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                        required
+                        maxLength={80}
+                        className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-14 text-base"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-black/40 font-medium">
+                        {formData.title.length}/80
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 2: Opis */}
+              {currentStep === 2 && (
+                <div className="space-y-4 animate-in fade-in duration-300">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-black">
+                      Opis ogłoszenia *
+                    </Label>
+                    <p className="text-xs text-black/60">
+                      {formData.type === 'seeking'
+                        ? 'Opisz czego szukasz: zakres prac, termin, wymagania'
+                        : 'Opisz co oferujesz: usługi, doświadczenie, dostępność'}
+                    </p>
+                    <RichTextEditor
+                      content={formData.description}
+                      onChange={(content) => setFormData({ ...formData, description: content })}
+                      placeholder={
+                        formData.type === 'seeking'
+                          ? 'Opisz szczegółowo czego szukasz...'
+                          : 'Opisz szczegółowo co oferujesz...'
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Step 3: Zdjęcia */}
+              {currentStep === 3 && (
+                <div className="space-y-4 animate-in fade-in duration-300">
+                  <div>
+                    <p className="text-xs text-black/60">Opcjonalnie - możesz dodać do 6 zdjęć</p>
+                  </div>
+
+                  <ImageUpload
+                    images={images}
+                    onImagesChange={setImages}
+                    userId={userId}
+                    maxImages={6}
+                  />
+                </div>
+              )}
+
+              {/* Step 4: Lokalizacja */}
+              {currentStep === 4 && (
+                <div className="space-y-4 animate-in fade-in duration-300">
+                  <div className="space-y-2">
+                    <Label htmlFor="city-mobile" className="text-sm font-semibold text-black">
+                      Miasto *
+                    </Label>
+                    <Input
+                      id="city-mobile"
+                      placeholder="np. Warszawa"
+                      value={formData.city}
+                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                      required
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="district-mobile" className="text-sm font-semibold text-black">
+                      Dzielnica <span className="text-black/40 font-normal">(opcjonalnie)</span>
+                    </Label>
+                    <Input
+                      id="district-mobile"
+                      placeholder="np. Śródmieście"
+                      value={formData.district}
+                      onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Step 5: Budżet */}
+              {currentStep === 5 && (
+                <div className="space-y-4 animate-in fade-in duration-300">
+                  <div>
+                    <p className="text-xs text-black/60">Opcjonalnie - możesz pominąć ten krok</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label className="text-sm font-semibold text-black">Typ ceny</Label>
+                    <Select
+                      value={formData.priceType}
+                      onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
+                        setFormData({ ...formData, priceType: value })
+                      }
+                    >
+                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="hourly">Za godzinę</SelectItem>
+                        <SelectItem value="fixed">Stała cena</SelectItem>
+                        <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="priceMin-mobile" className="text-sm font-semibold text-black">
+                      Cena minimalna (zł)
+                    </Label>
+                    <Input
+                      id="priceMin-mobile"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0"
+                      value={formData.priceMin}
+                      onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="priceMax-mobile" className="text-sm font-semibold text-black">
+                      Cena maksymalna (zł)
+                    </Label>
+                    <Input
+                      id="priceMax-mobile"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0"
+                      value={formData.priceMax}
+                      onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Step 6: Podsumowanie */}
+              {currentStep === 6 && (
+                <div className="space-y-4 animate-in fade-in duration-300">
+
+                  <div className="space-y-3 bg-black/5 rounded-2xl p-3">
+                    <div>
+                      <p className="text-xs text-black/60 mb-1">Typ</p>
+                      <p className="text-sm font-semibold text-black">
+                        {formData.type === 'seeking' ? 'Szukam usługi' : 'Oferuję usługi'}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-black/60 mb-1">Kategoria</p>
+                      <p className="text-sm font-semibold text-black">
+                        {categories.find(c => c.slug === formData.category)?.name || formData.category}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-black/60 mb-1">Tytuł</p>
+                      <p className="text-sm font-semibold text-black">{formData.title}</p>
+                    </div>
+
+                    <div>
+                      <p className="text-xs text-black/60 mb-1">Opis</p>
+                      <div
+                        className="text-xs text-black line-clamp-2"
+                        dangerouslySetInnerHTML={{ __html: formData.description }}
+                      />
+                    </div>
+
+                    {images.length > 0 && (
+                      <div>
+                        <p className="text-xs text-black/60 mb-1">Zdjęcia</p>
+                        <p className="text-sm font-semibold text-black">{images.length} zdjęć</p>
+                      </div>
+                    )}
+
+                    <div>
+                      <p className="text-xs text-black/60 mb-1">Lokalizacja</p>
+                      <p className="text-sm font-semibold text-black">
+                        {formData.city}{formData.district && `, ${formData.district}`}
+                      </p>
+                    </div>
+
+                    {(formData.priceMin || formData.priceMax) && (
+                      <div>
+                        <p className="text-xs text-black/60 mb-1">Budżet</p>
+                        <p className="text-sm font-semibold text-black">
+                          {formData.priceMin && `${formData.priceMin} zł`}
+                          {formData.priceMin && formData.priceMax && ' - '}
+                          {formData.priceMax && `${formData.priceMax} zł`}
+                          {' '}({formData.priceType === 'hourly' ? 'za godz.' : formData.priceType === 'fixed' ? 'stała' : 'negocjacje'})
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="bg-blue-50 border border-blue-200 rounded-2xl p-3">
+                    <p className="text-xs text-blue-900">
+                      Ogłoszenie zostanie sprawdzone przez system moderacji przed publikacją.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
 
             {error && (
@@ -325,14 +669,14 @@ export function NewPostClient() {
               </div>
             )}
 
-            {/* Footer with buttons */}
-            <div className="mt-8 pt-6 border-t-2 border-black/5 rounded-b-3xl">
-              <div className="flex flex-col md:flex-row gap-3 md:justify-end">
+            {/* Desktop buttons */}
+            <div className="hidden md:block mt-8 pt-6 border-t-2 border-black/5">
+              <div className="flex flex-row gap-3 justify-end">
                 <Link href="/dashboard">
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full md:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 px-6 text-sm"
+                    className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>
@@ -340,7 +684,7 @@ export function NewPostClient() {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full md:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
+                  className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
                 >
                   {loading ? 'Dodawanie...' : 'Opublikuj ogłoszenie'}
                 </Button>
@@ -349,6 +693,50 @@ export function NewPostClient() {
           </form>
         </CardContent>
       </Card>
+
+      {/* Mobile: Fixed bottom action bar */}
+      <div className="md:hidden fixed bottom-[72px] left-0 right-0 bg-white border-t border-black/10 safe-area-inset-bottom z-40">
+        {/* Progress bar */}
+        <div className="h-1 bg-black/5">
+          <div
+            className="h-full bg-[#C44E35] transition-all duration-300 ease-out"
+            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          />
+        </div>
+
+        {/* Action buttons */}
+        <div className="flex gap-2 px-4 py-3">
+          <Link href="/dashboard" className="flex-1">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
+            >
+              Anuluj
+            </Button>
+          </Link>
+
+          {currentStep < totalSteps ? (
+            <Button
+              type="button"
+              onClick={nextStep}
+              disabled={!isStepValid(currentStep)}
+              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Dalej
+            </Button>
+          ) : (
+            <Button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={loading}
+              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold"
+            >
+              {loading ? 'Dodawanie...' : 'Opublikuj'}
+            </Button>
+          )}
+        </div>
+      </div>
 
       {/* Moderation Modal */}
       {showModerationModal && (
@@ -460,6 +848,8 @@ export function NewPostClient() {
           </div>
         </div>
       )}
-    </main>
+      </main>
   )
 }
+
+export { StepContext }

@@ -107,6 +107,14 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
           {/* Menu Items */}
           <div className="py-2">
             <Link
+              href="/posts"
+              className="block px-4 py-2 hover:bg-black/5 transition-colors text-black"
+              onClick={() => setIsOpen(false)}
+            >
+              Ogłoszenia
+            </Link>
+
+            <Link
               href="/dashboard"
               className="block px-4 py-2 hover:bg-black/5 transition-colors text-black"
               onClick={() => setIsOpen(false)}
