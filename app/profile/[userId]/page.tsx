@@ -86,7 +86,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
             </div>
           )}
           <CardContent className="p-4 md:p-8">
-            <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center md:items-start">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center">
               {/* Avatar */}
               <div className="flex-shrink-0">
                 {profile.avatar_url ? (
@@ -108,26 +108,15 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
 
               {/* Profile Info */}
               <div className="flex-1 w-full md:w-auto text-center md:text-left">
-                {/* Name - centered */}
-                <h1 className="text-2xl md:text-3xl font-bold text-black mb-3">
-                  {profile.full_name || 'Anonim'}
-                </h1>
-
-                {/* City and Badge - centered with badge on the right */}
-                <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
-                  {profile.city && (
-                    <div className="flex items-center gap-2 text-black/60">
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      {profile.city}
-                    </div>
-                  )}
+                {/* Row 1: Name left, Badge right */}
+                <div className="flex flex-col md:flex-row items-center justify-center md:justify-between gap-3 mb-3">
+                  <h1 className="text-2xl md:text-3xl font-bold text-black leading-none">
+                    {profile.full_name || 'Anonim'}
+                  </h1>
 
                   {profile.verified && (
-                    <div className="relative group">
-                      <Badge className="rounded-full bg-amber-100 text-amber-800 border-0 flex items-center gap-2 px-3 py-1.5 cursor-help">
+                    <div className="relative group flex justify-center items-center">
+                      <Badge className="rounded-full bg-amber-100 text-amber-800 border-0 flex items-center justify-center gap-2 px-3 py-1.5 cursor-help leading-none">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                         </svg>
@@ -142,45 +131,61 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                   )}
                 </div>
 
-                {/* Rating */}
-                {profile.rating > 0 && (
-                  <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-                    <div className="flex items-center gap-1 text-xl md:text-2xl">
-                      <span className="text-[#C44E35]">★</span>
-                      <span className="font-bold text-black">{profile.rating.toFixed(1)}</span>
+                {/* Row 2: City */}
+                <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
+                  {profile.city && (
+                    <div className="flex items-center gap-2 text-black/60">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      {profile.city}
                     </div>
-                    <span className="text-sm md:text-base text-black/60">
-                      ({profile.total_reviews} {profile.total_reviews === 1 ? 'opinia' : 'opinii'})
-                    </span>
-                  </div>
-                )}
+                  )}
+                </div>
 
-                {/* Contact Buttons */}
-                {user && (
-                  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center md:justify-start">
-                    {profile.phone && profile.show_phone !== false && (
-                      <div className="w-full sm:w-auto [&_button]:!h-10 [&_button]:!py-0 [&_button]:!px-4 [&_button]:!text-sm [&_button]:!leading-normal [&_button]:!min-h-0 [&_button]:w-full [&_button]:sm:w-auto">
-                        <PhoneNumber phone={profile.phone} postId={userId} disabled={user.id === userId} />
+                {/* Row 3: Rating left, Contact Buttons right */}
+                <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-4">
+                  {/* Rating */}
+                  {profile.rating > 0 && (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="flex items-center gap-1 text-xl md:text-2xl">
+                        <span className="text-[#C44E35]">★</span>
+                        <span className="font-bold text-black">{profile.rating.toFixed(1)}</span>
                       </div>
-                    )}
-                    {profile.show_messages !== false && (
-                      user.id === userId ? (
-                        <Button
-                          disabled
-                          className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-10 py-0 px-4 text-sm leading-normal min-h-0 opacity-50 cursor-not-allowed"
-                        >
-                          Wyślij wiadomość
-                        </Button>
-                      ) : (
-                        <Link href={`/dashboard/messages?user=${userId}`} className="w-full sm:w-auto">
-                          <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-10 py-0 px-4 text-sm leading-normal min-h-0">
+                      <span className="text-sm md:text-base text-black/60">
+                        ({profile.total_reviews} {profile.total_reviews === 1 ? 'opinia' : 'opinii'})
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Contact Buttons */}
+                  {user && (
+                    <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto md:ml-auto">
+                      {profile.phone && profile.show_phone !== false && (
+                        <div className="w-full sm:w-auto [&_button]:!h-10 [&_button]:!py-0 [&_button]:!px-4 [&_button]:!text-sm [&_button]:!leading-normal [&_button]:!min-h-0 [&_button]:w-full [&_button]:sm:w-auto">
+                          <PhoneNumber phone={profile.phone} postId={userId} disabled={user.id === userId} />
+                        </div>
+                      )}
+                      {profile.show_messages !== false && (
+                        user.id === userId ? (
+                          <Button
+                            disabled
+                            className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-10 py-0 px-4 text-sm leading-normal min-h-0 opacity-50 cursor-not-allowed"
+                          >
                             Wyślij wiadomość
                           </Button>
-                        </Link>
-                      )
-                    )}
-                  </div>
-                )}
+                        ) : (
+                          <Link href={`/dashboard/messages?user=${userId}`} className="w-full sm:w-auto">
+                            <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-10 py-0 px-4 text-sm leading-normal min-h-0">
+                              Wyślij wiadomość
+                            </Button>
+                          </Link>
+                        )
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 {/* Bio */}
                 {profile.bio && (
