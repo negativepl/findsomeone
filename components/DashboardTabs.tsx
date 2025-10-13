@@ -35,7 +35,7 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
   }
 
   return (
-    <div className="flex gap-1 md:gap-2 border-b-2 border-black/10">
+    <div className="flex gap-1 md:gap-2 border-b-2 border-black/10 justify-center">
       <button
         onClick={() => handleTabChange('all')}
         className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${

@@ -14,9 +14,10 @@ interface NavbarProps {
   user: User | null
   showAddButton?: boolean
   noRounding?: boolean
+  pageTitle?: string
 }
 
-export async function Navbar({ user, showAddButton = true, noRounding = false }: NavbarProps) {
+export async function Navbar({ user, showAddButton = true, noRounding = false, pageTitle }: NavbarProps) {
   const userRole = user ? await getUserRole() : null
   const isAdmin = userRole === 'admin'
 
@@ -34,10 +35,21 @@ export async function Navbar({ user, showAddButton = true, noRounding = false }:
 
   return (
     <header className={`border-b border-black/5 bg-white ${noRounding ? '' : 'rounded-b-3xl'}`}>
-      <div className="container mx-auto px-4 md:px-6 py-3 md:py-5 flex justify-between items-center gap-4">
-        <Link href="/">
-          <LogoWithText />
-        </Link>
+      <div className="container mx-auto px-4 md:px-6 py-4 md:py-6 flex justify-between items-center gap-4">
+        {pageTitle ? (
+          <>
+            <h1 className="text-xl font-bold text-black md:hidden">{pageTitle}</h1>
+            <div className="hidden md:block">
+              <Link href="/">
+                <LogoWithText />
+              </Link>
+            </div>
+          </>
+        ) : (
+          <Link href="/">
+            <LogoWithText />
+          </Link>
+        )}
 
         {/* Search Bar - Desktop */}
         <NavbarSearchBar />

@@ -136,13 +136,13 @@ export function AboutPageClient() {
 
   return (
     <div className="fixed inset-0 overflow-hidden">
-      {/* Slide indicator dots - TOP CENTER */}
-      <div className="fixed top-20 md:top-24 left-1/2 -translate-x-1/2 z-30 flex flex-row gap-3">
+      {/* Slide indicator dots - TOP CENTER on mobile, LEFT CENTER on desktop */}
+      <div className="fixed top-16 left-1/2 -translate-x-1/2 md:top-1/2 md:left-8 md:-translate-y-1/2 md:translate-x-0 z-30 flex flex-row md:flex-col gap-2 md:gap-3">
         {Array.from({ length: totalSlides }).map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-2.5 h-2.5 md:w-3 md:h-3 rounded-full transition-all duration-500 ${
+            className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-500 ${
               currentSlide === index
                 ? 'bg-[#C44E35] scale-125'
                 : isDarkSlide
@@ -154,11 +154,11 @@ export function AboutPageClient() {
         ))}
       </div>
 
-      {/* Navigation arrow UP - RIGHT SIDE TOP (accounting for navbar height + margin) */}
+      {/* Navigation arrow UP - adjusted for mobile */}
       <button
         onClick={prevSlide}
         disabled={currentSlide === 0}
-        className={`fixed right-4 md:right-8 top-1/3 z-30 w-10 h-10 md:w-12 md:h-12 rounded-full backdrop-blur-sm flex items-center justify-center shadow-lg transition-all duration-500 ${
+        className={`fixed right-3 md:right-8 top-[40%] md:top-1/3 z-30 w-9 h-9 md:w-12 md:h-12 rounded-full backdrop-blur-sm flex items-center justify-center shadow-lg transition-all duration-500 ${
           currentSlide === 0
             ? 'opacity-0 pointer-events-none'
             : isDarkSlide
@@ -167,16 +167,16 @@ export function AboutPageClient() {
         }`}
         aria-label="Previous slide"
       >
-        <svg className={`w-5 h-5 md:w-6 md:h-6 transition-colors duration-500 ${isDarkSlide ? 'text-white' : 'text-black'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className={`w-4 h-4 md:w-6 md:h-6 transition-colors duration-500 ${isDarkSlide ? 'text-white' : 'text-black'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
         </svg>
       </button>
 
-      {/* Navigation arrow DOWN - RIGHT SIDE BOTTOM */}
+      {/* Navigation arrow DOWN - adjusted for mobile dock */}
       <button
         onClick={nextSlide}
         disabled={currentSlide === totalSlides - 1}
-        className={`fixed right-4 md:right-8 bottom-1/3 z-30 w-10 h-10 md:w-12 md:h-12 rounded-full backdrop-blur-sm flex items-center justify-center shadow-lg transition-all duration-500 ${
+        className={`fixed right-3 md:right-8 bottom-[40%] md:bottom-1/3 z-30 w-9 h-9 md:w-12 md:h-12 rounded-full backdrop-blur-sm flex items-center justify-center shadow-lg transition-all duration-500 ${
           currentSlide === totalSlides - 1
             ? 'opacity-0 pointer-events-none'
             : isDarkSlide
@@ -198,7 +198,7 @@ export function AboutPageClient() {
         }}
       >
         {/* Slide 1 - Hero */}
-        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8]">
+        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] pt-16 pb-24 md:pt-0 md:pb-0">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-20 left-20 w-64 h-64 bg-[#C44E35]/10 rounded-full blur-3xl animate-pulse" />
             <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#F97316]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
@@ -233,7 +233,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Slide 2 - Mission */}
-        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-[#1A1A1A]" style={{ transform: 'translateY(100vh)' }}>
+        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-[#1A1A1A] pt-16 pb-24 md:pt-0 md:pb-0" style={{ transform: 'translateY(100vh)' }}>
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#C44E35] to-transparent" />
             <div className="absolute top-40 right-40 w-72 h-72 bg-[#C44E35]/20 rounded-full blur-3xl" />
@@ -262,7 +262,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Slide 3 - Values */}
-        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] py-20 md:py-0" style={{ transform: 'translateY(200vh)' }}>
+        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] pt-20 pb-28 md:py-0" style={{ transform: 'translateY(200vh)' }}>
           <div className={`relative z-10 max-w-7xl mx-auto px-4 md:px-6 w-full section-fade-up ${animatedSlides.has(2) ? 'active' : ''}`}>
             <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-black text-center mb-8 md:mb-16">
               Nasze cechy
@@ -315,7 +315,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Slide 4 - Story */}
-        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-[#1A1A1A] py-20 md:py-0" style={{ transform: 'translateY(300vh)' }}>
+        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-[#1A1A1A] pt-20 pb-28 md:py-0" style={{ transform: 'translateY(300vh)' }}>
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#C44E35] to-transparent" />
           </div>
@@ -353,7 +353,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Slide 5 - Team */}
-        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8]" style={{ transform: 'translateY(400vh)' }}>
+        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] pt-20 pb-28 md:pt-0 md:pb-0" style={{ transform: 'translateY(400vh)' }}>
           {/* Design board elements - circles, squares, triangles and lines */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-20">
             {/* Grid lines */}
@@ -434,7 +434,7 @@ export function AboutPageClient() {
         </section>
 
         {/* Slide 6 - Features & CTA */}
-        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-[#1A1A1A] py-20 md:py-0" style={{ transform: 'translateY(500vh)' }}>
+        <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-[#1A1A1A] pt-20 pb-28 md:py-0" style={{ transform: 'translateY(500vh)' }}>
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
             <div className="absolute top-20 left-20 w-96 h-96 bg-[#C44E35]/20 rounded-full blur-3xl animate-pulse" />
             <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#F97316]/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />

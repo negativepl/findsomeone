@@ -47,14 +47,14 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} />
+      <NavbarWithHide user={user} pageTitle={`Witaj, ${profile?.full_name || 'Użytkowniku'}!`} />
 
-      <main className="container mx-auto px-6 py-10">
-        <div className="mb-8">
-          <h2 className="text-4xl font-bold mb-3 text-black">
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
+        <div className="mb-8 hidden md:block">
+          <h2 className="text-2xl md:text-4xl font-bold mb-3 text-black">
             Witaj, {profile?.full_name || 'Użytkowniku'}!
           </h2>
-          <p className="text-lg text-black/60">
+          <p className="text-base md:text-lg text-black/60">
             Zarządzaj swoimi ogłoszeniami i sprawdź aktywność
           </p>
         </div>

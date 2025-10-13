@@ -98,7 +98,7 @@ export default async function Home() {
         <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0">
           <Link href="/posts" className="w-full md:w-auto">
             <Button size="lg" variant="outline" className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all min-h-[56px] md:min-w-[200px]">
-              Przeglądaj wszystkie
+              Przeglądaj ogłoszenia
             </Button>
           </Link>
           <Link href={user ? "/dashboard/posts/new" : "/signup"} className="w-full md:w-auto">

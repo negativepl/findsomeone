@@ -14,7 +14,7 @@ export default async function AboutPage() {
 
   return (
     <div className="relative h-screen overflow-hidden">
-      <NavbarWithHide user={user} />
+      <NavbarWithHide user={user} pageTitle="O nas" />
       <AboutPageClient />
     </div>
   )

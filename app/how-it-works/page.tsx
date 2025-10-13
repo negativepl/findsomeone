@@ -16,13 +16,15 @@ export default async function HowItWorksPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} />
+      <NavbarWithHide user={user} pageTitle="Jak to działa?" />
 
-      <main className="container mx-auto px-6 py-10">
-        <h1 className="text-4xl font-bold text-black mb-3">Jak to działa?</h1>
-        <p className="text-lg text-black/60 mb-10">
-          Prosty sposób na znalezienie lokalnych specjalistów
-        </p>
+      <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
+        <div className="mb-10 hidden md:block">
+          <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Jak to działa?</h1>
+          <p className="text-lg text-black/60">
+            Prosty sposób na znalezienie lokalnych specjalistów
+          </p>
+        </div>
 
         {/* Dla poszukujących */}
           <section className="mb-16">

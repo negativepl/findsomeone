@@ -80,10 +80,10 @@ export default async function ConversationPage({
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
-      <NavbarWithHide user={user} alwaysVisible={true} noRounding={true} />
+      <NavbarWithHide user={user} alwaysVisible={true} noRounding={true} pageTitle={otherUser.full_name || 'Czat'} />
 
       {/* Chat Header - Fixed */}
-      <div className="fixed top-[60px] md:top-[72px] left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
+      <div className="fixed top-[81px] left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
         <div className="container mx-auto px-2 md:px-6 py-2 md:pt-6 md:pb-4">
           <div className="flex items-center gap-2 md:gap-4">
             <Link
@@ -97,7 +97,7 @@ export default async function ConversationPage({
 
             <Link
               href={`/profile/${otherUser.id}`}
-              className="flex items-center gap-2 md:gap-3 hover:bg-black/5 rounded-2xl p-2 transition-colors flex-1 min-w-0"
+              className="flex items-center gap-2 md:gap-3 p-2 hover:bg-black/5 rounded-2xl transition-colors"
             >
               {otherUser.avatar_url ? (
                 <img
@@ -113,7 +113,7 @@ export default async function ConversationPage({
                 </div>
               )}
 
-              <div className="min-w-0 flex-1">
+              <div className="min-w-0">
                 <h2 className="text-base md:text-lg font-semibold text-black truncate">
                   {otherUser.full_name || 'Użytkownik'}
                 </h2>
@@ -125,7 +125,7 @@ export default async function ConversationPage({
       </div>
 
       {/* Spacer for fixed header (navbar height + chat header height) */}
-      <div className="h-[74px] md:h-[168px]" />
+      <div className="h-[155px] md:h-[168px]" />
 
       {/* Chat Window */}
       <ChatWindow

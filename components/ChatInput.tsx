@@ -101,7 +101,7 @@ export function ChatInput({
               }}
             />
             {/* Character count inside textarea */}
-            <div className="absolute right-4 text-xs pointer-events-none flex items-center" style={{ bottom: '11px', height: '22px' }}>
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs pointer-events-none">
               <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-orange-500' : 'text-black/40'}>
                 {characterCount} / {MAX_MESSAGE_LENGTH}
               </span>
