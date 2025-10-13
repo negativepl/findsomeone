@@ -164,6 +164,12 @@
     -webkit-user-select: auto;
     user-select: auto;
   }
+
+  /* Safari support for Sonner toast library */
+  [data-sonner-toast][data-swiped=true] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
 }
 
 /* Custom Scrollbar Styles */
