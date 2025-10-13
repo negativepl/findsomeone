@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { FavoriteButton } from '@/components/FavoriteButton'
+import { RatingDisplay } from '@/components/RatingDisplay'
 import { ViewCounter } from './ViewCounter'
 import { SendMessageModal } from '@/components/SendMessageModal'
 import { ReviewModalWrapper } from './ReviewModalWrapper'
@@ -315,11 +316,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       {post.profiles?.full_name || 'Anonymous'}
                     </h4>
                     {post.profiles?.rating > 0 && post.profiles?.total_reviews > 0 && (
-                      <div className="flex items-center gap-1 text-black/60">
-                        <span className="text-[#C44E35]">★</span>
-                        <span className="font-semibold">{post.profiles.rating.toFixed(1)}</span>
-                        <span className="text-sm">({post.profiles.total_reviews} opinii)</span>
-                      </div>
+                      <RatingDisplay
+                        userId={post.user_id}
+                        rating={post.profiles.rating}
+                        reviewCount={post.profiles.total_reviews}
+                      />
                     )}
                   </div>
                 </div>
