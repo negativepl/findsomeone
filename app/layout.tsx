@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   },
   description: "Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi - hydraulika, elektryka, sprzątanie i więcej.",
   keywords: ["usługi lokalne", "specjaliści", "ogłoszenia", "hydraulik", "elektryk", "sprzątanie"],
+  viewport: {
+    width: 'device-width',
+    initialScale: 1.0,
+    viewportFit: 'cover',
+  },
 };
 
 export default async function RootLayout({
@@ -41,8 +46,6 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-        <meta name="theme-color" content="#ffffff" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
       </head>
