@@ -45,9 +45,12 @@ export default async function DashboardPage() {
     .eq('id', user.id)
     .single()
 
+  // Extract first name only for mobile
+  const firstName = profile?.full_name?.split(' ')[0] || 'Użytkowniku'
+
   return (
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} pageTitle={`Witaj, ${profile?.full_name || 'Użytkowniku'}!`} />
+      <NavbarWithHide user={user} pageTitle={`Witaj, ${firstName}!`} />
 
       <main className="container mx-auto px-4 md:px-6 py-6 md:py-10">
         <div className="mb-8 hidden md:block">

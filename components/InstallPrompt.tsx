@@ -15,9 +15,15 @@ export function InstallPrompt() {
   const [showPrompt, setShowPrompt] = useState(false)
 
   useEffect(() => {
-    // Check if already dismissed
-    const dismissed = localStorage.getItem('pwa-install-dismissed')
-    if (dismissed) return
+    // Check if already dismissed and when
+    const dismissedData = localStorage.getItem('pwa-install-dismissed')
+    if (dismissedData) {
+      const { timestamp } = JSON.parse(dismissedData)
+      const daysSinceDismissal = (Date.now() - timestamp) / (1000 * 60 * 60 * 24)
+
+      // Only show again after 7 days
+      if (daysSinceDismissal < 7) return
+    }
 
     // Check if already installed
     if (window.matchMedia('(display-mode: standalone)').matches) {
@@ -28,8 +34,8 @@ export function InstallPrompt() {
       e.preventDefault()
       const promptEvent = e as BeforeInstallPromptEvent
       setDeferredPrompt(promptEvent)
-      // Show prompt after 5 seconds
-      setTimeout(() => setShowPrompt(true), 5000)
+      // Show prompt after 30 seconds (not 5)
+      setTimeout(() => setShowPrompt(true), 30000)
     }
 
     window.addEventListener('beforeinstallprompt', handler)
@@ -51,7 +57,10 @@ export function InstallPrompt() {
 
   const handleDismiss = () => {
     setShowPrompt(false)
-    localStorage.setItem('pwa-install-dismissed', 'true')
+    localStorage.setItem('pwa-install-dismissed', JSON.stringify({
+      timestamp: Date.now(),
+      dismissed: true
+    }))
   }
 
   if (!showPrompt || !deferredPrompt) return null

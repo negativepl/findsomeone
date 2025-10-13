@@ -19,7 +19,7 @@ export default async function NewPostPage() {
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
-      <NavbarWithHide user={user} />
+      <NavbarWithHide user={user} pageTitle="Dodaj ogłoszenie" />
       <NewPostClient />
       <Footer />
     </div>

@@ -266,7 +266,15 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
     }, 300)
   }
 
+  // Haptic feedback function
+  const triggerHaptic = () => {
+    if ('vibrate' in navigator) {
+      navigator.vibrate(10) // Short vibration (10ms)
+    }
+  }
+
   const handleSignOut = async () => {
+    triggerHaptic()
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -332,7 +340,10 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
                 )}
 
                 <button
-                  onClick={handleClose}
+                  onClick={() => {
+                    triggerHaptic()
+                    handleClose()
+                  }}
                   className="text-black/60 hover:text-black transition-colors p-2 -mr-2 rounded-full hover:bg-black/5"
                 >
                   <svg className="w-5 h-5" viewBox="0 0 20 20" stroke="currentColor" fill="none">
@@ -362,6 +373,7 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
                     <Link
                       key={`${item.href}-${index}`}
                       href={item.href}
+                      onClick={triggerHaptic}
                       className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors bg-[#F5F1E8] hover:bg-brand hover:text-white group"
                     >
                       <div className="text-black group-hover:text-white transition-colors">
@@ -420,7 +432,10 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
               return (
                 <button
                   key="menu"
-                  onClick={() => setMenuOpen(!menuOpen)}
+                  onClick={() => {
+                    triggerHaptic()
+                    setMenuOpen(!menuOpen)
+                  }}
                   className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
                 >
                   <div className={cn(
@@ -439,6 +454,7 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={triggerHaptic}
                   className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
                 >
                   <div className="relative flex items-center justify-center">
@@ -458,6 +474,7 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={triggerHaptic}
                 className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
               >
                 <div className={cn(
