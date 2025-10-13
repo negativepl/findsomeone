@@ -95,7 +95,10 @@ export default async function ConversationPage({
               </svg>
             </Link>
 
-            <div className="flex items-center gap-3 flex-1">
+            <Link
+              href={`/profile/${otherUser.id}`}
+              className="flex items-center gap-3 flex-1 hover:bg-black/5 rounded-2xl p-2 -ml-2 transition-colors"
+            >
               {otherUser.avatar_url ? (
                 <img
                   src={otherUser.avatar_url}
@@ -116,7 +119,7 @@ export default async function ConversationPage({
                 </h2>
                 <PresenceIndicator userId={otherUser.id} showText={true} size="sm" />
               </div>
-            </div>
+            </Link>
           </div>
         </div>
       </div>

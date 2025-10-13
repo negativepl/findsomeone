@@ -254,7 +254,14 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   ) : (
                     <div className="w-32 h-32 rounded-full bg-[#C44E35] flex items-center justify-center">
                       <span className="text-5xl font-semibold text-white">
-                        {formData.full_name?.charAt(0) || initialUser?.email?.charAt(0) || 'U'}
+                        {(() => {
+                          const name = formData.full_name || initialUser?.email || ''
+                          const parts = name.split(' ')
+                          if (parts.length >= 2) {
+                            return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+                          }
+                          return name.substring(0, 2).toUpperCase() || 'U'
+                        })()}
                       </span>
                     </div>
                   )}

@@ -20,8 +20,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
 
   // Pobierz inicjały użytkownika
   const getInitials = () => {
-    const email = user.email || ''
-    const name = user.user_metadata?.full_name || email
+    const name = profile?.full_name || user.user_metadata?.full_name || user.email || ''
     const parts = name.split(' ')
     if (parts.length >= 2) {
       return `${parts[0][0]}${parts[1][0]}`.toUpperCase()

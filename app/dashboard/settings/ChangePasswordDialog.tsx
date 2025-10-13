@@ -44,27 +44,32 @@ export function ChangePasswordDialog() {
           Zmień
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md border-0 rounded-3xl bg-white shadow-xl">
         <DialogHeader>
-          <DialogTitle>Zmiana hasła</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-2xl font-bold text-black">Zmiana hasła</DialogTitle>
+          <DialogDescription className="text-base text-black/60">
             Wprowadź obecne hasło i nowe hasło
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit}>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="currentPassword">Obecne hasło</Label>
+          <div className="space-y-5 py-4">
+            <div className="space-y-3">
+              <Label htmlFor="currentPassword" className="text-base font-semibold text-black">
+                Obecne hasło
+              </Label>
               <Input
                 id="currentPassword"
                 name="currentPassword"
                 type="password"
                 required
                 disabled={loading}
+                className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
               />
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="newPassword">Nowe hasło</Label>
+            <div className="space-y-3">
+              <Label htmlFor="newPassword" className="text-base font-semibold text-black">
+                Nowe hasło
+              </Label>
               <Input
                 id="newPassword"
                 name="newPassword"
@@ -72,10 +77,14 @@ export function ChangePasswordDialog() {
                 required
                 minLength={8}
                 disabled={loading}
+                className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
               />
+              <p className="text-xs text-black/50">Minimum 8 znaków</p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Potwierdź nowe hasło</Label>
+            <div className="space-y-3">
+              <Label htmlFor="confirmPassword" className="text-base font-semibold text-black">
+                Potwierdź nowe hasło
+              </Label>
               <Input
                 id="confirmPassword"
                 name="confirmPassword"
@@ -83,22 +92,30 @@ export function ChangePasswordDialog() {
                 required
                 minLength={8}
                 disabled={loading}
+                className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
               />
             </div>
           </div>
-          <DialogFooter>
+          <div className="mt-8 pt-6 border-t-2 border-black/5">
+            <DialogFooter className="gap-2 sm:gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
+              className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
             >
               Anuluj
             </Button>
-            <Button type="submit" disabled={loading}>
+            <Button
+              type="submit"
+              disabled={loading}
+              className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+            >
               {loading ? 'Zmieniam...' : 'Zmień hasło'}
             </Button>
           </DialogFooter>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

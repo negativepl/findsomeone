@@ -64,13 +64,13 @@ export function PreferencesSettings({
 
   return (
     <>
-      <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF8F3]">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-black">Język</p>
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3]">
+        <div className="flex-1 pr-4">
+          <p className="text-base font-semibold text-black mb-1">Język</p>
           <p className="text-sm text-black/60">Wybierz język aplikacji</p>
         </div>
         <Select value={language} onValueChange={handleLanguageChange} disabled={loading}>
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-36 rounded-xl">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -79,13 +79,13 @@ export function PreferencesSettings({
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF8F3]">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-black">Motyw</p>
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3]">
+        <div className="flex-1 pr-4">
+          <p className="text-base font-semibold text-black mb-1">Motyw</p>
           <p className="text-sm text-black/60">Dostosuj wygląd aplikacji</p>
         </div>
         <Select value={theme} onValueChange={handleThemeChange} disabled={loading}>
-          <SelectTrigger className="w-32">
+          <SelectTrigger className="w-36 rounded-xl">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

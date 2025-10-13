@@ -56,9 +56,9 @@ export function NotificationSettings({
 
   return (
     <>
-      <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF8F3]">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-black">Powiadomienia email</p>
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3]">
+        <div className="flex-1 pr-4">
+          <p className="text-base font-semibold text-black mb-1">Powiadomienia email</p>
           <p className="text-sm text-black/60">Otrzymuj wiadomości na email</p>
         </div>
         <Switch
@@ -67,9 +67,9 @@ export function NotificationSettings({
           disabled={isPending}
         />
       </div>
-      <div className="flex items-center justify-between p-3 rounded-xl bg-[#FAF8F3]">
-        <div className="flex-1">
-          <p className="text-sm font-medium text-black">Nowe wiadomości</p>
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3]">
+        <div className="flex-1 pr-4">
+          <p className="text-base font-semibold text-black mb-1">Nowe wiadomości</p>
           <p className="text-sm text-black/60">Powiadomienia o nowych wiadomościach</p>
         </div>
         <Switch
