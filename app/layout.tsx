@@ -20,12 +20,40 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'),
   title: {
     default: "FindSomeone - Znajdź lokalnych specjalistów",
     template: "%s | FindSomeone"
   },
   description: "Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi - hydraulika, elektryka, sprzątanie i więcej.",
-  keywords: ["usługi lokalne", "specjaliści", "ogłoszenia", "hydraulik", "elektryk", "sprzątanie"],
+  keywords: ["usługi lokalne", "specjaliści", "ogłoszenia", "hydraulik", "elektryk", "sprzątanie", "FindSomeone", "lokalne usługi Polska"],
+  authors: [{ name: "FindSomeone" }],
+  creator: "FindSomeone",
+  publisher: "FindSomeone",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'pl_PL',
+    url: '/',
+    siteName: 'FindSomeone',
+    title: 'FindSomeone - Znajdź lokalnych specjalistów',
+    description: 'Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi - hydraulika, elektryka, sprzątanie i więcej.',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FindSomeone - Znajdź lokalnych specjalistów',
+    description: 'Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi.',
+  },
 };
 
 export const viewport = {
@@ -45,7 +73,7 @@ export default async function RootLayout({
   } = await supabase.auth.getUser()
 
   return (
-    <html lang="en">
+    <html lang="pl">
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />

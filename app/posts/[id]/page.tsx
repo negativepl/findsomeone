@@ -14,6 +14,92 @@ import { SendMessageModal } from '@/components/SendMessageModal'
 import { ReviewModalWrapper } from './ReviewModalWrapper'
 import { PhoneNumber } from './PhoneNumber'
 import { DistanceCard } from './DistanceCard'
+import { Metadata } from 'next'
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params
+  const supabase = await createClient()
+
+  const { data: post } = await supabase
+    .from('posts')
+    .select(`
+      *,
+      profiles:user_id (
+        full_name
+      ),
+      categories (
+        name
+      )
+    `)
+    .eq('id', id)
+    .single()
+
+  if (!post) {
+    return {
+      title: 'Ogłoszenie nie znalezione',
+    }
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
+  const postUrl = `${baseUrl}/posts/${id}`
+
+  // Create description from post content (strip HTML and limit length)
+  const cleanDescription = post.description
+    ?.replace(/<[^>]*>/g, '')
+    .substring(0, 155) || post.title
+
+  const priceText = post.price_min && post.price_max
+    ? `${post.price_min}-${post.price_max} zł`
+    : post.price_min
+    ? `od ${post.price_min} zł`
+    : post.price_max
+    ? `do ${post.price_max} zł`
+    : 'cena do uzgodnienia'
+
+  const fullTitle = `${post.title} - ${post.city} | FindSomeone`
+  const fullDescription = `${post.type === 'seeking' ? 'Szukam' : 'Oferuję'}: ${cleanDescription}. ${priceText}. Kontakt: ${post.profiles?.full_name || 'FindSomeone'}`
+
+  return {
+    title: fullTitle,
+    description: fullDescription,
+    keywords: [
+      post.title,
+      post.categories?.name || '',
+      post.city,
+      post.district || '',
+      post.type === 'seeking' ? 'szukam' : 'oferuję',
+      'usługi lokalne',
+      'ogłoszenia',
+    ].filter(Boolean),
+    openGraph: {
+      title: fullTitle,
+      description: fullDescription,
+      url: postUrl,
+      siteName: 'FindSomeone',
+      locale: 'pl_PL',
+      type: 'article',
+      publishedTime: post.created_at,
+      modifiedTime: post.updated_at || post.created_at,
+      images: post.images && post.images.length > 0 ? [
+        {
+          url: post.images[0],
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        }
+      ] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: fullTitle,
+      description: fullDescription,
+      images: post.images && post.images.length > 0 ? [post.images[0]] : [],
+    },
+    alternates: {
+      canonical: postUrl,
+    },
+  }
+}
 
 export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -145,8 +231,59 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     .order('created_at', { ascending: false })
     .limit(3)
 
+  // Prepare JSON-LD structured data
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': post.type === 'offering' ? 'Service' : 'Demand',
+    name: post.title,
+    description: post.description?.replace(/<[^>]*>/g, '').substring(0, 200),
+    provider: {
+      '@type': 'Person',
+      name: post.profiles?.full_name || 'Anonymous',
+      ...(post.profiles?.rating && post.profiles.rating > 0 ? {
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: post.profiles.rating.toString(),
+          reviewCount: post.profiles.total_reviews || 0,
+        }
+      } : {}),
+    },
+    areaServed: {
+      '@type': 'City',
+      name: post.city,
+      ...(post.district ? { containedInPlace: post.district } : {}),
+    },
+    ...(post.price_min || post.price_max ? {
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'PLN',
+        ...(post.price_min && post.price_max ? {
+          price: `${post.price_min}-${post.price_max}`,
+        } : post.price_min ? {
+          price: post.price_min,
+        } : {
+          price: post.price_max,
+        }),
+      }
+    } : {}),
+    ...(post.images && post.images.length > 0 ? {
+      image: post.images,
+    } : {}),
+    url: `${baseUrl}/posts/${post.id}`,
+    datePosted: post.created_at,
+    ...(post.updated_at ? { dateModified: post.updated_at } : {}),
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <ViewCounter postId={post.id} userId={user?.id} postAuthorId={post.user_id} />
       <NavbarWithHide user={user} />
 

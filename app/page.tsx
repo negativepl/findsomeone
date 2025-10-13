@@ -78,8 +78,55 @@ export default async function Home() {
     userFavorites = favoritesData?.map(f => f.post_id) || []
   }
 
+  // JSON-LD structured data for homepage
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'FindSomeone',
+    description: 'Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi - hydraulika, elektryka, sprzątanie i więcej.',
+    url: baseUrl,
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: `${baseUrl}/posts?search={search_term_string}`,
+      },
+      'query-input': 'required name=search_term_string',
+    },
+  }
+
+  const organizationJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'FindSomeone',
+    url: baseUrl,
+    logo: `${baseUrl}/logo.png`,
+    description: 'Platforma łącząca ludzi lokalnie w Polsce',
+    areaServed: {
+      '@type': 'Country',
+      name: 'Polska',
+    },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer service',
+      availableLanguage: 'Polish',
+    },
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+      {/* JSON-LD structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+
       <NavbarWithHide user={user} />
 
       {/* Hero Section */}
