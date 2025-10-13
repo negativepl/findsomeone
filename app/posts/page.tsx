@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
+import { RatingDisplay } from '@/components/RatingDisplay'
 import { DashboardTabs } from '@/components/DashboardTabs'
 import { SearchFilters } from '@/components/SearchFilters'
 import { PostsFilters } from '@/components/PostsFilters'
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
 
 interface Post {
   id: string
+  user_id: string
   title: string
   description: string
   type: 'seeking' | 'offering'
@@ -31,6 +33,7 @@ interface Post {
     full_name: string | null
     avatar_url: string | null
     rating: number
+    total_reviews: number
   } | null
   categories: {
     name: string
@@ -119,6 +122,7 @@ export default async function PostsPage({
     // Map search results to Post format
     posts = paginatedResults.map((result: any) => ({
       id: result.id,
+      user_id: result.user_id,
       title: result.title,
       description: result.description,
       type: result.type,
@@ -132,6 +136,7 @@ export default async function PostsPage({
         full_name: result.user_full_name,
         avatar_url: result.user_avatar_url,
         rating: result.user_rating,
+        total_reviews: result.user_total_reviews || 0,
       },
       categories: result.category_name ? {
         name: result.category_name,
@@ -151,7 +156,8 @@ export default async function PostsPage({
         profiles:user_id (
           full_name,
           avatar_url,
-          rating
+          rating,
+          total_reviews
         ),
         categories (
           name,
@@ -382,9 +388,12 @@ export default async function PostsPage({
                             {post.profiles?.full_name || 'Anonymous'}
                           </p>
                           {post.profiles?.rating && post.profiles.rating > 0 && (
-                            <p className="text-xs text-black/60">
-                              ★ {post.profiles.rating.toFixed(1)}
-                            </p>
+                            <RatingDisplay
+                              userId={post.user_id}
+                              rating={post.profiles.rating}
+                              reviewCount={post.profiles.total_reviews || 0}
+                              className="text-xs"
+                            />
                           )}
                         </div>
                       </div>

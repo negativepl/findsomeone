@@ -8,6 +8,7 @@ import { Footer } from '@/components/Footer'
 import { AnimatedCounter } from '@/components/AnimatedCounter'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
 import { ScrollArrows } from '@/components/ScrollArrows'
+import { RatingDisplay } from '@/components/RatingDisplay'
 import { createClient } from '@/lib/supabase/server'
 import { CategoryIcon } from '@/lib/category-icons'
 
@@ -33,7 +34,8 @@ export default async function Home() {
       profiles:user_id (
         full_name,
         avatar_url,
-        rating
+        rating,
+        total_reviews
       ),
       categories (
         name
@@ -52,7 +54,8 @@ export default async function Home() {
       profiles:user_id (
         full_name,
         avatar_url,
-        rating
+        rating,
+        total_reviews
       ),
       categories (
         name
@@ -341,9 +344,12 @@ export default async function Home() {
                               {post.profiles?.full_name || 'Anonymous'}
                             </p>
                             {post.profiles?.rating && post.profiles.rating > 0 && (
-                              <p className="text-xs text-black/60">
-                                ★ {post.profiles.rating.toFixed(1)}
-                              </p>
+                              <RatingDisplay
+                                userId={post.user_id}
+                                rating={post.profiles.rating}
+                                reviewCount={post.profiles.total_reviews || 0}
+                                className="text-xs"
+                              />
                             )}
                           </div>
                         </div>
@@ -490,9 +496,12 @@ export default async function Home() {
                               {post.profiles?.full_name || 'Anonymous'}
                             </p>
                             {post.profiles?.rating && post.profiles.rating > 0 && (
-                              <p className="text-xs text-black/60">
-                                ★ {post.profiles.rating.toFixed(1)}
-                              </p>
+                              <RatingDisplay
+                                userId={post.user_id}
+                                rating={post.profiles.rating}
+                                reviewCount={post.profiles.total_reviews || 0}
+                                className="text-xs"
+                              />
                             )}
                           </div>
                         </div>
