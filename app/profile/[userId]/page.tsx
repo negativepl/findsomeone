@@ -226,8 +226,8 @@ export default async function ProfilePage({ params }: { params: { userId: string
                 {userPosts.map((post: any) => (
                   <Link key={post.id} href={`/posts/${post.id}`}>
                     <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all shadow-sm cursor-pointer">
-                      <CardHeader className="pb-4">
-                        <div className="flex items-start justify-between mb-2">
+                      <CardHeader className="pb-2">
+                        <div className="flex items-start justify-between mb-1">
                           <Badge
                             className={`rounded-full px-3 py-1 ${
                               post.type === 'seeking'
@@ -247,7 +247,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
                           {post.title}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="pb-6">
+                      <CardContent className="pb-4">
                         <div className="flex items-center gap-1 text-sm text-black/60">
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
