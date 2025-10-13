@@ -123,7 +123,7 @@ export function NewPostClient() {
         await new Promise(resolve => setTimeout(resolve, 2000))
       }
 
-      router.push('/dashboard/my-listings')
+      router.push('/dashboard/posts')
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Wystąpił błąd')

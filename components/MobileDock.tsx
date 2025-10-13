@@ -115,7 +115,7 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
   const items = [
     {
       title: 'Moje ogłoszenia',
-      href: '/dashboard/my-listings',
+      href: '/dashboard/posts',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
@@ -222,6 +222,9 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
   const isLoggedIn = !!user
   const dockItems = getDockItems(isLoggedIn)
   const menuItems = getMenuItems(isLoggedIn, isAdmin)
+
+  // Remove rounded corners on message pages
+  const isMessagePage = pathname?.includes('/dashboard/messages/')
 
   useEffect(() => {
     setIsMounted(true)
@@ -399,7 +402,10 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
         initial={false}
         animate={{ y: 0 }}
         transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-black/5 rounded-t-3xl"
+        className={cn(
+          "md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-black/5",
+          !isMessagePage && "rounded-t-3xl"
+        )}
         style={{
           WebkitTransform: 'translateZ(0)',
           transform: 'translateZ(0)',

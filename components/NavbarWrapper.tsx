@@ -10,6 +10,11 @@ interface NavbarWrapperProps {
 export function NavbarWrapper({ children, alwaysVisible = false }: NavbarWrapperProps) {
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     // If always visible, don't attach scroll listener
@@ -48,6 +53,15 @@ export function NavbarWrapper({ children, alwaysVisible = false }: NavbarWrapper
       window.removeEventListener('scroll', handleScroll)
     }
   }, [lastScrollY, alwaysVisible])
+
+  // Prevent hydration mismatch by rendering static on server
+  if (!mounted) {
+    return (
+      <div className="fixed top-0 left-0 right-0 z-50">
+        {children}
+      </div>
+    )
+  }
 
   return (
     <div

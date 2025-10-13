@@ -9,6 +9,7 @@ import { AnimatedCounter } from '@/components/AnimatedCounter'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
 import { ScrollArrows } from '@/components/ScrollArrows'
 import { RatingDisplay } from '@/components/RatingDisplay'
+import { RecentlyViewedPosts } from '@/components/RecentlyViewedPosts'
 import { createClient } from '@/lib/supabase/server'
 import { CategoryIcon } from '@/lib/category-icons'
 
@@ -240,6 +241,9 @@ export default async function Home() {
           </div>
         </section>
       )}
+
+      {/* Recently Viewed Posts Section - Client Component */}
+      <RecentlyViewedPosts userFavorites={userFavorites} userId={user?.id} />
 
       {/* Seeking Posts Section */}
       {seekingPosts && seekingPosts.length > 0 && (

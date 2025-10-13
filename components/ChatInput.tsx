@@ -76,26 +76,37 @@ export function ChatInput({
   return (
     <form onSubmit={handleSubmit} className="relative">
       <div className="py-4 space-y-2">
-        <div className="flex items-end gap-3">
-          <textarea
-            value={message}
-            onChange={(e) => handleChange(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={placeholder}
-            disabled={disabled}
-            rows={1}
-            maxLength={MAX_MESSAGE_LENGTH}
-            className="flex-1 resize-none rounded-2xl border border-black/10 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] disabled:bg-black/5 disabled:cursor-not-allowed max-h-32 overflow-y-auto"
-            style={{
-              minHeight: '44px',
-              maxHeight: '128px'
-            }}
-            onInput={(e) => {
-              const target = e.target as HTMLTextAreaElement
-              target.style.height = '44px'
-              target.style.height = Math.min(target.scrollHeight, 128) + 'px'
-            }}
-          />
+        <div className="flex items-center gap-3">
+          <div className="flex-1 relative">
+            <textarea
+              value={message}
+              onChange={(e) => handleChange(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder={placeholder}
+              disabled={disabled}
+              rows={1}
+              maxLength={MAX_MESSAGE_LENGTH}
+              className="w-full resize-none rounded-2xl border border-black/10 px-4 pr-20 text-sm focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] disabled:bg-black/5 disabled:cursor-not-allowed max-h-32 overflow-y-auto flex items-center"
+              style={{
+                minHeight: '44px',
+                maxHeight: '128px',
+                paddingTop: '11px',
+                paddingBottom: '11px',
+                lineHeight: '1.5'
+              }}
+              onInput={(e) => {
+                const target = e.target as HTMLTextAreaElement
+                target.style.height = '44px'
+                target.style.height = Math.min(target.scrollHeight, 128) + 'px'
+              }}
+            />
+            {/* Character count inside textarea */}
+            <div className="absolute right-4 text-xs pointer-events-none flex items-center" style={{ bottom: '11px', height: '22px' }}>
+              <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-orange-500' : 'text-black/40'}>
+                {characterCount} / {MAX_MESSAGE_LENGTH}
+              </span>
+            </div>
+          </div>
 
           <button
             type="submit"
@@ -118,9 +129,9 @@ export function ChatInput({
           </button>
         </div>
 
-        {/* Character count and validation */}
-        <div className="flex items-center justify-between px-1 text-xs">
-          <div className="flex items-center gap-2">
+        {/* Validation errors/warnings only */}
+        {(error || showWarning) && (
+          <div className="px-1 text-xs">
             {error && (
               <span className="text-red-500">{error}</span>
             )}
@@ -130,10 +141,7 @@ export function ChatInput({
               </span>
             )}
           </div>
-          <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-orange-500' : 'text-black/40'}>
-            {characterCount} / {MAX_MESSAGE_LENGTH}
-          </span>
-        </div>
+        )}
       </div>
     </form>
   )

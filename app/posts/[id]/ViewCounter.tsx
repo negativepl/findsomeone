@@ -12,6 +12,17 @@ interface ViewCounterProps {
 export function ViewCounter({ postId, userId, postAuthorId }: ViewCounterProps) {
   useEffect(() => {
     const incrementViews = async () => {
+      // Always store in recently viewed list for homepage display (even if we don't count the view)
+      const recentlyViewedKey = 'recently_viewed_posts'
+      const recentlyViewed = JSON.parse(localStorage.getItem(recentlyViewedKey) || '[]')
+
+      // Remove the post if it already exists
+      const filteredViewed = recentlyViewed.filter((id: string) => id !== postId)
+
+      // Add to the beginning and keep only last 6
+      const updatedViewed = [postId, ...filteredViewed].slice(0, 6)
+      localStorage.setItem(recentlyViewedKey, JSON.stringify(updatedViewed))
+
       // Don't increment views for the post author viewing their own post
       if (userId === postAuthorId) {
         return

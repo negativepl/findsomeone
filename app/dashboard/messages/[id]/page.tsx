@@ -83,12 +83,12 @@ export default async function ConversationPage({
       <NavbarWithHide user={user} alwaysVisible={true} noRounding={true} />
 
       {/* Chat Header - Fixed */}
-      <div className="fixed top-[72px] left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
-        <div className="container mx-auto px-4 md:px-6 pt-6 pb-4">
-          <div className="flex items-center gap-4">
+      <div className="fixed top-[60px] md:top-[72px] left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
+        <div className="container mx-auto px-2 md:px-6 py-2 md:pt-6 md:pb-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <Link
               href="/dashboard/messages"
-              className="flex-shrink-0 hover:bg-black/5 rounded-full p-2 -ml-2 transition-colors"
+              className="flex-shrink-0 hover:bg-black/5 rounded-full p-2 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -97,24 +97,24 @@ export default async function ConversationPage({
 
             <Link
               href={`/profile/${otherUser.id}`}
-              className="flex items-center gap-3 flex-1 hover:bg-black/5 rounded-2xl p-2 -ml-2 transition-colors"
+              className="flex items-center gap-2 md:gap-3 hover:bg-black/5 rounded-2xl p-2 transition-colors flex-1 min-w-0"
             >
               {otherUser.avatar_url ? (
                 <img
                   src={otherUser.avatar_url}
                   alt=""
-                  className="w-12 h-12 rounded-full object-cover"
+                  className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover flex-shrink-0"
                 />
               ) : (
-                <div className="w-12 h-12 rounded-full bg-[#C44E35] flex items-center justify-center">
-                  <span className="text-lg font-semibold text-white">
+                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-[#C44E35] flex items-center justify-center flex-shrink-0">
+                  <span className="text-base md:text-lg font-semibold text-white">
                     {otherUser.full_name?.charAt(0) || 'U'}
                   </span>
                 </div>
               )}
 
-              <div className="flex-1">
-                <h2 className="text-lg font-semibold text-black">
+              <div className="min-w-0 flex-1">
+                <h2 className="text-base md:text-lg font-semibold text-black truncate">
                   {otherUser.full_name || 'Użytkownik'}
                 </h2>
                 <PresenceIndicator userId={otherUser.id} showText={true} size="sm" />
@@ -124,8 +124,8 @@ export default async function ConversationPage({
         </div>
       </div>
 
-      {/* Spacer for fixed header */}
-      <div className="h-[72px]" />
+      {/* Spacer for fixed header (navbar height + chat header height) */}
+      <div className="h-[74px] md:h-[168px]" />
 
       {/* Chat Window */}
       <ChatWindow

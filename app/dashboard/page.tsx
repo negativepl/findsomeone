@@ -1,414 +1,189 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-import Image from 'next/image'
+import { redirect } from 'next/navigation'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { SearchFilters } from '@/components/SearchFilters'
-import { DashboardTabs } from '@/components/DashboardTabs'
-import { DashboardFilters } from '@/components/DashboardFilters'
-import { PostsGrid } from './PostsGrid'
-import { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: "Dashboard - Przeglądaj ogłoszenia",
+export const metadata = {
+  title: "Moje konto - Przegląd",
 }
 
-interface Post {
-  id: string
-  title: string
-  description: string
-  type: 'seeking' | 'offering'
-  city: string
-  district: string | null
-  price_min: number | null
-  price_max: number | null
-  price_type: 'hourly' | 'fixed' | 'negotiable' | null
-  images: string[] | null
-  profiles: {
-    full_name: string | null
-    avatar_url: string | null
-    rating: number
-  } | null
-  categories: {
-    name: string
-  } | null
-}
-
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    search?: string
-    city?: string
-    category?: string
-    type?: string
-    sortBy?: string
-    order?: string
-    page?: string
-    limit?: string
-  }>
-}) {
+export default async function DashboardPage() {
   const supabase = await createClient()
-  const params = await searchParams
-
   const { data: { user } } = await supabase.auth.getUser()
 
-  const searchQuery = params.search || ''
-  const cityQuery = params.city || ''
-  const categoryQuery = params.category || ''
-  const typeQuery = params.type || ''
-  const sortBy = params.sortBy || 'created_at'
-  const order = params.order || 'desc'
-  const currentPage = parseInt(params.page || '1', 10)
-  const itemsPerPage = parseInt(params.limit || '12', 10)
-
-  // Fetch all categories for filters
-  const { data: categories } = await supabase
-    .from('categories')
-    .select('id, name, slug, icon, parent_id')
-    .order('name')
-
-  // Use FULL-TEXT SEARCH if there's a search query
-  let posts: Post[] = []
-  let totalCount = 0
-
-  if (searchQuery && searchQuery.trim().length >= 2) {
-    // Use our smart full-text search function with higher limit
-    const { data: searchResults } = await supabase
-      .rpc('search_posts', {
-        search_query: searchQuery.trim(),
-        limit_count: 500  // Get more results for filtering and pagination
-      })
-
-    // Now apply additional filters on the results
-    let filteredResults = searchResults || []
-
-    if (cityQuery) {
-      filteredResults = filteredResults.filter((post: any) =>
-        post.city?.toLowerCase().includes(cityQuery.toLowerCase()) ||
-        post.district?.toLowerCase().includes(cityQuery.toLowerCase())
-      )
-    }
-
-    if (categoryQuery) {
-      filteredResults = filteredResults.filter((post: any) =>
-        post.category_name?.toLowerCase().includes(categoryQuery.toLowerCase())
-      )
-    }
-
-    if (typeQuery) {
-      filteredResults = filteredResults.filter((post: any) =>
-        post.type === typeQuery
-      )
-    }
-
-    // Map search results to Post format
-    let mappedPosts = filteredResults.map((result: any) => ({
-      id: result.id,
-      title: result.title,
-      description: result.description,
-      type: result.type,
-      city: result.city,
-      district: result.district,
-      price_min: result.price_min,
-      price_max: result.price_max,
-      price_type: result.price_type,
-      images: result.images,
-      created_at: result.created_at,
-      profiles: {
-        full_name: result.user_full_name,
-        avatar_url: result.user_avatar_url,
-        rating: result.user_rating,
-      },
-      categories: result.category_name ? {
-        name: result.category_name,
-      } : null,
-    }))
-
-    // Apply sorting
-    mappedPosts.sort((a: any, b: any) => {
-      let aVal, bVal
-
-      switch (sortBy) {
-        case 'price_min':
-          aVal = a.price_min || 0
-          bVal = b.price_min || 0
-          break
-        case 'price_max':
-          aVal = a.price_max || 0
-          bVal = b.price_max || 0
-          break
-        case 'title':
-          aVal = a.title.toLowerCase()
-          bVal = b.title.toLowerCase()
-          break
-        case 'created_at':
-        default:
-          aVal = new Date(a.created_at || 0).getTime()
-          bVal = new Date(b.created_at || 0).getTime()
-          break
-      }
-
-      if (order === 'asc') {
-        return aVal > bVal ? 1 : -1
-      } else {
-        return aVal < bVal ? 1 : -1
-      }
-    })
-
-    totalCount = mappedPosts.length
-
-    // Apply pagination
-    const startIndex = (currentPage - 1) * itemsPerPage
-    const endIndex = startIndex + itemsPerPage
-    posts = mappedPosts.slice(startIndex, endIndex)
-  } else {
-    // No search query - use regular filtering
-    // First get total count
-    let countQuery = supabase
-      .from('posts')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'active')
-
-    // Apply city filter
-    if (cityQuery) {
-      countQuery = countQuery.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
-    }
-
-    // Apply category filter
-    let categoryId: string | undefined
-    if (categoryQuery) {
-      // First try to find category by name
-      const { data: category } = await supabase
-        .from('categories')
-        .select('id')
-        .ilike('name', categoryQuery)
-        .single()
-
-      categoryId = category?.id
-
-      // If not found by name, try to find by synonym
-      if (!categoryId) {
-        const { data: categorySynonym } = await supabase
-          .from('category_synonyms')
-          .select('category_id')
-          .ilike('synonym', categoryQuery)
-          .limit(1)
-          .single()
-
-        categoryId = categorySynonym?.category_id
-      }
-
-      if (categoryId) {
-        countQuery = countQuery.eq('category_id', categoryId)
-      }
-    }
-
-    // Apply type filter
-    if (typeQuery) {
-      countQuery = countQuery.eq('type', typeQuery)
-    }
-
-    const { count } = await countQuery
-    totalCount = count || 0
-
-    // Now get the actual posts with pagination
-    let query = supabase
-      .from('posts')
-      .select(`
-        *,
-        profiles:user_id (
-          full_name,
-          avatar_url,
-          rating
-        ),
-        categories (
-          name,
-          slug
-        )
-      `)
-      .eq('status', 'active')
-
-    // Apply city filter
-    if (cityQuery) {
-      query = query.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
-    }
-
-    // Apply category filter
-    if (categoryId) {
-      query = query.eq('category_id', categoryId)
-    }
-
-    // Apply type filter
-    if (typeQuery) {
-      query = query.eq('type', typeQuery)
-    }
-
-    // Apply sorting
-    const ascending = order === 'asc'
-
-    // Handle sorting by different fields
-    if (sortBy === 'price_min' || sortBy === 'price_max') {
-      query = query.order(sortBy, { ascending, nullsFirst: false })
-    } else if (sortBy === 'title') {
-      query = query.order('title', { ascending })
-    } else {
-      query = query.order('created_at', { ascending })
-    }
-
-    // Apply pagination
-    const startIndex = (currentPage - 1) * itemsPerPage
-    query = query.range(startIndex, startIndex + itemsPerPage - 1)
-
-    const { data: fetchedPosts } = await query
-
-    posts = fetchedPosts || []
+  if (!user) {
+    redirect('/login')
   }
 
-  // Calculate counts for tabs from ALL active posts (not just current page)
-  const { count: seekingCount } = await supabase
+  // Fetch user's posts count
+  const { count: myPostsCount } = await supabase
     .from('posts')
     .select('*', { count: 'exact', head: true })
+    .eq('user_id', user.id)
     .eq('status', 'active')
-    .eq('type', 'seeking')
 
-  const { count: offeringCount } = await supabase
-    .from('posts')
+  // Fetch user's favorites count
+  const { count: favoritesCount } = await supabase
+    .from('favorites')
     .select('*', { count: 'exact', head: true })
-    .eq('status', 'active')
-    .eq('type', 'offering')
+    .eq('user_id', user.id)
 
-  // Calculate total pages
-  const totalPages = Math.ceil(totalCount / itemsPerPage)
+  // Fetch unread messages count
+  const { count: unreadMessagesCount } = await supabase
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('receiver_id', user.id)
+    .eq('is_read', false)
 
-  // Fetch user favorites if logged in
-  let userFavorites: string[] = []
-  if (user) {
-    const { data: favoritesData } = await supabase
-      .from('favorites')
-      .select('post_id')
-      .eq('user_id', user.id)
-
-    userFavorites = favoritesData?.map(f => f.post_id) || []
-  }
+  // Fetch user profile
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, rating, total_reviews')
+    .eq('id', user.id)
+    .single()
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
       <NavbarWithHide user={user} />
 
-      {/* Main Content */}
       <main className="container mx-auto px-6 py-10">
         <div className="mb-8">
           <h2 className="text-4xl font-bold mb-3 text-black">
-            {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Wszystkie ogłoszenia'}
+            Witaj, {profile?.full_name || 'Użytkowniku'}!
           </h2>
           <p className="text-lg text-black/60">
-            {searchQuery || cityQuery || categoryQuery ? (
-              <>
-                Znaleziono {totalCount} {totalCount === 1 ? 'ogłoszenie' : 'ogłoszeń'}
-                {searchQuery && <> dla "{searchQuery}"</>}
-                {cityQuery && <> w "{cityQuery}"</>}
-                {categoryQuery && <> w kategorii "{categoryQuery}"</>}
-              </>
-            ) : (
-              <>Przeglądaj oferty i zapytania od użytkowników z całej Polski</>
-            )}
+            Zarządzaj swoimi ogłoszeniami i sprawdź aktywność
           </p>
         </div>
 
-        {/* Tabs */}
-        <div className="mb-8">
-          <DashboardTabs
-            seekingCount={seekingCount}
-            offeringCount={offeringCount}
-            totalCount={totalCount}
-          />
-        </div>
-
-        {/* Two Column Layout: Sidebar + Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
-          {/* Left Sidebar - Filters */}
-          <aside className="lg:sticky lg:top-24 lg:self-start z-40">
-            <SearchFilters categories={categories} />
-          </aside>
-
-          {/* Right Content - Posts */}
-          <div className="space-y-6">
-            {/* Compact Filters with Range Display and Controls */}
-            {totalCount > 0 && (
-              <DashboardFilters
-                currentPage={currentPage}
-                itemsPerPage={itemsPerPage}
-                totalCount={totalCount}
-              />
-            )}
-
-            {/* Posts Grid with Infinite Scroll */}
-            {posts && posts.length > 0 ? (
-              <PostsGrid
-                initialPosts={posts}
-                userFavorites={userFavorites}
-                itemsPerPage={itemsPerPage}
-                totalCount={totalCount}
-                searchParams={{
-                  search: searchQuery,
-                  city: cityQuery,
-                  category: categoryQuery,
-                  type: typeQuery,
-                  sortBy,
-                  order,
-                }}
-              />
-            ) : (
-              <div className="col-span-full text-center py-20">
-                <div className="max-w-md mx-auto">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/5 flex items-center justify-center">
-                    <svg className="w-10 h-10 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      {searchQuery || cityQuery || categoryQuery || typeQuery ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                      )}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <Link href="/dashboard/posts">
+            <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between h-full">
+                  <div className="flex-1 min-h-[80px] flex flex-col justify-between">
+                    <p className="text-sm text-black/60 mb-2">Moje ogłoszenia</p>
+                    <p className="text-3xl font-bold text-black leading-none">{myPostsCount || 0}</p>
+                  </div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 ml-4">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
                     </svg>
                   </div>
-                  <p className="text-xl font-semibold text-black mb-2">
-                    {searchQuery || cityQuery || categoryQuery ? 'Nie znaleziono wyników' : 'Brak ogłoszeń'}
-                  </p>
-                  <p className="text-black/60 mb-6">
-                    {searchQuery || cityQuery || categoryQuery ? (
-                      <>Spróbuj zmienić kryteria wyszukiwania lub wyczyść filtry</>
-                    ) : (
-                      <>Bądź pierwszy i dodaj swoje ogłoszenie!</>
-                    )}
-                  </p>
-                  {searchQuery || cityQuery || categoryQuery ? (
-                    <Link href="/dashboard">
-                      <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
-                        Wyczyść filtry
-                      </Button>
-                    </Link>
-                  ) : (
-                    user && (
-                      <Link href="/dashboard/posts/new">
-                        <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
-                          Dodaj ogłoszenie
-                        </Button>
-                      </Link>
-                    )
-                  )}
                 </div>
-              </div>
-            )}
-          </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/dashboard/favorites">
+            <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between h-full">
+                  <div className="flex-1 min-h-[80px] flex flex-col justify-between">
+                    <p className="text-sm text-black/60 mb-2">Ulubione</p>
+                    <p className="text-3xl font-bold text-black leading-none">{favoritesCount || 0}</p>
+                  </div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 ml-4">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                    </svg>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/dashboard/messages">
+            <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between h-full">
+                  <div className="flex-1 min-h-[80px] flex flex-col justify-between">
+                    <p className="text-sm text-black/60 mb-2">Wiadomości</p>
+                    <p className="text-3xl font-bold text-black leading-none">{unreadMessagesCount || 0}</p>
+                  </div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 ml-4">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/dashboard/profile">
+            <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full">
+              <CardContent className="p-6">
+                <div className="flex items-start justify-between h-full">
+                  <div className="flex-1 min-h-[80px] flex flex-col justify-between">
+                    <p className="text-sm text-black/60 mb-2">Twoja ocena</p>
+                    <div>
+                      <p className="text-3xl font-bold text-black leading-none">
+                        {profile?.rating && profile.rating > 0 ? profile.rating.toFixed(1) : '-'}
+                      </p>
+                      {profile?.total_reviews && profile.total_reviews > 0 && (
+                        <p className="text-xs text-black/60 mt-1">
+                          {profile.total_reviews} {profile.total_reviews === 1 ? 'opinia' : 'opinii'}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 ml-4">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <Card className="border-0 rounded-3xl bg-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-2xl font-bold text-black">Szybkie akcje</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Link href="/dashboard/posts/new" className="block">
+                <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-14 text-base">
+                  Dodaj nowe ogłoszenie
+                </Button>
+              </Link>
+              <Link href="/posts" className="block">
+                <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-14 text-base">
+                  Przeglądaj ogłoszenia
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 rounded-3xl bg-white">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-2xl font-bold text-black">Twoje konto</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Link href="/dashboard/profile" className="block">
+                <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-14 text-base">
+                  Edytuj profil
+                </Button>
+              </Link>
+              <Link href="/dashboard/settings" className="block">
+                <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-14 text-base">
+                  Ustawienia
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
         </div>
       </main>
 
       <Footer />
-
-      {/* Mobile Dock */}
     </div>
   )
 }
