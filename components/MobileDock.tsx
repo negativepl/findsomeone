@@ -260,6 +260,8 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
 
   const handleClose = () => {
     setIsClosing(true)
+    // Emit event that menu is closing
+    window.dispatchEvent(new Event('mobileDockMenuClose'))
     setTimeout(() => {
       setMenuOpen(false)
       setIsClosing(false)
@@ -434,7 +436,14 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
                   key="menu"
                   onClick={() => {
                     triggerHaptic()
-                    setMenuOpen(!menuOpen)
+                    const newMenuState = !menuOpen
+                    setMenuOpen(newMenuState)
+                    // Emit event for menu state change
+                    if (newMenuState) {
+                      window.dispatchEvent(new Event('mobileDockMenuOpen'))
+                    } else {
+                      window.dispatchEvent(new Event('mobileDockMenuClose'))
+                    }
                   }}
                   className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
                 >

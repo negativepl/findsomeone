@@ -4,13 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 // Add to favorites via API
 export function useAddFavoriteAPI() {
-  let queryClient
-  try {
-    queryClient = useQueryClient()
-  } catch (error) {
-    // QueryClient not available, mutations will still work but won't invalidate queries
-    queryClient = null
-  }
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (postId: string) => {
@@ -34,31 +28,21 @@ export function useAddFavoriteAPI() {
     },
     onMutate: async (postId) => {
       // Optimistic update - add immediately to UI
-      if (queryClient) {
-        await queryClient.cancelQueries({ queryKey: ['favorites'] })
-      }
+      await queryClient.cancelQueries({ queryKey: ['favorites'] })
 
       // We don't know the userId here, so we'll just invalidate after success
       return { postId }
     },
     onSuccess: () => {
       // Invalidate all favorites queries to refetch
-      if (queryClient) {
-        queryClient.invalidateQueries({ queryKey: ['favorites'] })
-      }
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
     },
   })
 }
 
 // Remove from favorites via API
 export function useRemoveFavoriteAPI() {
-  let queryClient
-  try {
-    queryClient = useQueryClient()
-  } catch (error) {
-    // QueryClient not available, mutations will still work but won't invalidate queries
-    queryClient = null
-  }
+  const queryClient = useQueryClient()
 
   return useMutation({
     mutationFn: async (postId: string) => {
@@ -82,17 +66,13 @@ export function useRemoveFavoriteAPI() {
     },
     onMutate: async (postId) => {
       // Optimistic update - remove immediately from UI
-      if (queryClient) {
-        await queryClient.cancelQueries({ queryKey: ['favorites'] })
-      }
+      await queryClient.cancelQueries({ queryKey: ['favorites'] })
 
       return { postId }
     },
     onSuccess: () => {
       // Invalidate all favorites queries to refetch
-      if (queryClient) {
-        queryClient.invalidateQueries({ queryKey: ['favorites'] })
-      }
+      queryClient.invalidateQueries({ queryKey: ['favorites'] })
     },
   })
 }

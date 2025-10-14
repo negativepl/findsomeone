@@ -260,9 +260,8 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
                       <div className="flex gap-2">
                         <Link href={`/dashboard/posts/${post.id}`}>
                           <Button
-                            variant="outline"
                             size="sm"
-                            className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+                            className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
                           >
                             Zobacz
                           </Button>
@@ -280,9 +279,8 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-56 rounded-2xl border-0 shadow-lg bg-white p-2">
                             <DropdownMenuItem asChild className="rounded-xl cursor-pointer px-3 py-2.5">
-                              <Link href={`/dashboard/posts/${post.id}/edit`} className="flex items-center gap-3">
-                                <Edit2 className="w-4 h-4 text-black/60" />
-                                <span>Edytuj</span>
+                              <Link href={`/dashboard/posts/${post.id}/edit`}>
+                                Edytuj
                               </Link>
                             </DropdownMenuItem>
 
@@ -290,17 +288,15 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
                               <>
                                 <DropdownMenuItem
                                   onClick={() => handleStatusChange(post.id, 'closed')}
-                                  className="rounded-xl cursor-pointer px-3 py-2.5 flex items-center gap-3"
+                                  className="rounded-xl cursor-pointer px-3 py-2.5"
                                 >
-                                  <Pause className="w-4 h-4 text-black/60" />
-                                  <span>Dezaktywuj</span>
+                                  Dezaktywuj
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => handleStatusChange(post.id, 'completed')}
-                                  className="rounded-xl cursor-pointer px-3 py-2.5 flex items-center gap-3"
+                                  className="rounded-xl cursor-pointer px-3 py-2.5"
                                 >
-                                  <CheckCircle className="w-4 h-4 text-black/60" />
-                                  <span>Zakończ</span>
+                                  Zakończ
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -309,17 +305,15 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
                               <>
                                 <DropdownMenuItem
                                   onClick={() => handleStatusChange(post.id, 'active')}
-                                  className="rounded-xl cursor-pointer px-3 py-2.5 flex items-center gap-3"
+                                  className="rounded-xl cursor-pointer px-3 py-2.5"
                                 >
-                                  <Play className="w-4 h-4 text-black/60" />
-                                  <span>Aktywuj</span>
+                                  Aktywuj
                                 </DropdownMenuItem>
                                 <DropdownMenuItem
                                   onClick={() => handleStatusChange(post.id, 'completed')}
-                                  className="rounded-xl cursor-pointer px-3 py-2.5 flex items-center gap-3"
+                                  className="rounded-xl cursor-pointer px-3 py-2.5"
                                 >
-                                  <CheckCircle className="w-4 h-4 text-black/60" />
-                                  <span>Zakończ</span>
+                                  Zakończ
                                 </DropdownMenuItem>
                               </>
                             )}
@@ -327,10 +321,9 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
                             {post.status === 'completed' && (
                               <DropdownMenuItem
                                 onClick={() => handleStatusChange(post.id, 'active')}
-                                className="rounded-xl cursor-pointer px-3 py-2.5 flex items-center gap-3"
+                                className="rounded-xl cursor-pointer px-3 py-2.5"
                               >
-                                <Play className="w-4 h-4 text-black/60" />
-                                <span>Aktywuj ponownie</span>
+                                Aktywuj ponownie
                               </DropdownMenuItem>
                             )}
 
@@ -338,10 +331,9 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
 
                             <DropdownMenuItem
                               onClick={() => openDeleteDialog(post.id)}
-                              className="rounded-xl cursor-pointer px-3 py-2.5 flex items-center gap-3 text-red-600 focus:text-red-600 focus:bg-red-50"
+                              className="rounded-xl cursor-pointer px-3 py-2.5 text-red-600 focus:text-red-600 focus:bg-red-50"
                             >
-                              <Trash2 className="w-4 h-4" />
-                              <span>Usuń</span>
+                              Usuń
                             </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
@@ -392,35 +384,32 @@ export function MyListingsClient({ posts }: MyListingsClientProps) {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="rounded-3xl border-0 bg-white max-w-md">
-          <AlertDialogHeader className="space-y-4">
-            <div className="mx-auto w-16 h-16 rounded-full bg-red-50 flex items-center justify-center">
-              <Trash2 className="w-8 h-8 text-red-600" />
-            </div>
-            <div className="text-center space-y-2">
-              <AlertDialogTitle className="text-xl font-bold text-black">
-                Usuń ogłoszenie
-              </AlertDialogTitle>
-              <AlertDialogDescription className="text-black/60">
-                Czy na pewno chcesz usunąć to ogłoszenie? Ta akcja jest nieodwracalna.
-              </AlertDialogDescription>
-            </div>
+        <AlertDialogContent className="rounded-3xl border-0 bg-white shadow-xl sm:max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl font-bold text-black">
+              Usuń ogłoszenie
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-black/60">
+              Czy na pewno chcesz usunąć to ogłoszenie? Ta akcja jest nieodwracalna.
+            </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex-row gap-3 mt-6">
-            <AlertDialogCancel
-              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 m-0"
-              disabled={isPending}
-            >
-              Anuluj
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              className="flex-1 rounded-full bg-red-600 hover:bg-red-700 text-white border-0 m-0"
-              disabled={isPending}
-            >
-              {isPending ? 'Usuwanie...' : 'Usuń'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
+          <div className="mt-8 pt-6 border-t-2 border-black/5">
+            <AlertDialogFooter className="gap-2 sm:gap-2">
+              <AlertDialogCancel
+                className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+                disabled={isPending}
+              >
+                Anuluj
+              </AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleDelete}
+                className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+                disabled={isPending}
+              >
+                {isPending ? 'Usuwanie...' : 'Usuń'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </div>
         </AlertDialogContent>
       </AlertDialog>
     </>

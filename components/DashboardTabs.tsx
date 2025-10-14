@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 
 interface DashboardTabsProps {
   seekingCount: number
@@ -11,6 +11,7 @@ interface DashboardTabsProps {
 export function DashboardTabs({ seekingCount, offeringCount, totalCount }: DashboardTabsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   const currentType = searchParams.get('type') || 'all'
   const search = searchParams.get('search') || ''
@@ -31,13 +32,14 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
     }
 
     const queryString = params.toString()
-    router.push(`/dashboard${queryString ? `?${queryString}` : ''}`)
+    router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
   }
 
   return (
     <div className="flex gap-1 md:gap-2 border-b-2 border-black/10 justify-center md:justify-start">
       <button
         onClick={() => handleTabChange('all')}
+        data-navigate="true"
         className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
           currentType === 'all'
             ? 'text-[#C44E35]'
@@ -59,6 +61,7 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
 
       <button
         onClick={() => handleTabChange('seeking')}
+        data-navigate="true"
         className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
           currentType === 'seeking'
             ? 'text-[#C44E35]'
@@ -80,6 +83,7 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
 
       <button
         onClick={() => handleTabChange('offering')}
+        data-navigate="true"
         className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
           currentType === 'offering'
             ? 'text-[#C44E35]'

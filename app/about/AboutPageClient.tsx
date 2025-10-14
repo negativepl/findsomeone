@@ -328,10 +328,10 @@ export function AboutPageClient() {
                 </h2>
                 <div className="space-y-4 md:space-y-6 text-base md:text-xl lg:text-2xl text-white/80 leading-relaxed">
                   <p>
-                    Znalezienie zaufanego specjalisty nie powinno być trudne – a często takie właśnie jest.
+                    Znalezienie pomocy w okolicy nie powinno być trudne – a często takie właśnie jest.
                   </p>
                   <p>
-                    Wielu utalentowanych profesjonalistów gubi się w natłoku ogłoszeń i platform, które nie są zaprojektowane z myślą o lokalnych społecznościach.
+                    Wielu utalentowanych ludzi gubi się w natłoku ogłoszeń i platform, które nie są zaprojektowane z myślą o społecznościach.
                   </p>
                   <p className="text-[#F97316] font-semibold">
                     Postanowiliśmy to zmienić.

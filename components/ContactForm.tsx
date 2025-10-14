@@ -14,7 +14,8 @@ export function ContactForm({ userEmail }: ContactFormProps) {
     email: userEmail || '',
     subject: '',
     message: '',
-    category: 'general' as 'general' | 'support'
+    category: 'general' as 'general' | 'support',
+    gdprConsent: false
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -45,7 +46,8 @@ export function ContactForm({ userEmail }: ContactFormProps) {
         email: userEmail || '',
         subject: '',
         message: '',
-        category: 'general'
+        category: 'general',
+        gdprConsent: false
       })
     } catch (error) {
       console.error('Error:', error)
@@ -60,38 +62,16 @@ export function ContactForm({ userEmail }: ContactFormProps) {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
-    const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
+    const { name, value, type } = e.target
+    const checked = (e.target as HTMLInputElement).checked
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }))
   }
 
   return (
     <>
-      <div className="grid md:grid-cols-2 gap-6 mb-12">
-        <Card className="border-0 rounded-3xl bg-white">
-          <CardContent className="p-8">
-            <h3 className="text-2xl font-bold text-black mb-2">Email</h3>
-            <p className="text-black/60 mb-4">
-              Napisz do nas, odpowiemy w ciągu 24h
-            </p>
-            <a href="mailto:kontakt@findsomeone.app" className="text-[#C44E35] font-medium hover:underline">
-              kontakt@findsomeone.app
-            </a>
-          </CardContent>
-        </Card>
-
-        <Card className="border-0 rounded-3xl bg-white">
-          <CardContent className="p-8">
-            <h3 className="text-2xl font-bold text-black mb-2">Pomoc techniczna</h3>
-            <p className="text-black/60 mb-4">
-              Masz problem techniczny? Zgłoś go
-            </p>
-            <a href="mailto:pomoc@findsomeone.app" className="text-[#C44E35] font-medium hover:underline">
-              pomoc@findsomeone.app
-            </a>
-          </CardContent>
-        </Card>
-      </div>
-
       <Card className="border-0 rounded-3xl bg-white">
         <CardContent className="p-8">
           <h2 className="text-2xl font-bold text-black mb-2">Formularz kontaktowy</h2>
@@ -128,8 +108,8 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 disabled={loading}
                 required
               >
-                <option value="general">Kontakt ogólny (kontakt@findsomeone.app)</option>
-                <option value="support">Pomoc techniczna (pomoc@findsomeone.app)</option>
+                <option value="general">Kontakt ogólny</option>
+                <option value="support">Pomoc techniczna</option>
               </select>
             </div>
 
@@ -172,11 +152,32 @@ export function ContactForm({ userEmail }: ContactFormProps) {
               </p>
             </div>
 
+            <div>
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="gdprConsent"
+                  checked={formData.gdprConsent}
+                  onChange={handleChange}
+                  required
+                  disabled={loading}
+                  className="mt-1 w-4 h-4 rounded border-2 border-black/10 text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
+                />
+                <span className="text-sm text-black/70 leading-relaxed">
+                  Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}
+                  <a href="/privacy" className="text-[#C44E35] hover:underline" target="_blank" rel="noopener noreferrer">
+                    Polityką Prywatności
+                  </a>
+                  . *
+                </span>
+              </label>
+            </div>
+
             <div className="mt-8 pt-6 border-t-2 border-black/5">
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !formData.gdprConsent}
                   className="w-full md:w-auto px-8 py-3 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   {loading ? 'Wysyłanie...' : 'Wyślij wiadomość'}

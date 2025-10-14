@@ -1,17 +1,56 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Heart } from 'lucide-react'
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
-import { useFavoriteIds } from '@/lib/hooks/useFavorites'
+import { createClient } from '@/lib/supabase/client'
 
 interface FavoritesIconProps {
   user: User | null
 }
 
 export function FavoritesIcon({ user }: FavoritesIconProps) {
-  const { data: favoriteIds = [] } = useFavoriteIds(user?.id)
-  const favoritesCount = favoriteIds.length
+  const [favoritesCount, setFavoritesCount] = useState(0)
+
+  useEffect(() => {
+    if (!user) return
+
+    const supabase = createClient()
+
+    // Fetch initial count
+    const fetchFavoritesCount = async () => {
+      const { count } = await supabase
+        .from('favorites')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+
+      setFavoritesCount(count || 0)
+    }
+
+    fetchFavoritesCount()
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('favorites-count')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'favorites',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          fetchFavoritesCount()
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [user?.id])
 
   if (!user) {
     return null

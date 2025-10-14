@@ -20,6 +20,7 @@ interface SendMessageModalProps {
   receiverName: string
   postTitle: string
   trigger?: React.ReactNode
+  variant?: 'default' | 'mobile-dock'
 }
 
 export function SendMessageModal({
@@ -27,7 +28,8 @@ export function SendMessageModal({
   receiverId,
   receiverName,
   postTitle,
-  trigger
+  trigger,
+  variant = 'default'
 }: SendMessageModalProps) {
   const [open, setOpen] = useState(false)
   const [message, setMessage] = useState('')
@@ -129,14 +131,21 @@ export function SendMessageModal({
   const characterCount = message.length
   const isValid = message.trim().length >= 10 && message.length <= 2000
 
+  // Default trigger based on variant
+  const defaultTrigger = variant === 'mobile-dock' ? (
+    <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold gap-0">
+      Wiadomość
+    </Button>
+  ) : (
+    <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 py-6 text-lg">
+      Wyślij wiadomość
+    </Button>
+  )
+
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        {trigger || (
-          <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 py-6 text-lg">
-            Wyślij wiadomość
-          </Button>
-        )}
+        {trigger || defaultTrigger}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[550px] rounded-3xl">
         <DialogHeader>

@@ -16,9 +16,9 @@ export default async function PrivacyPage() {
       <NavbarWithHide user={user} pageTitle="Prywatność" />
 
       <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">
-        <div className="mb-10 hidden md:block">
+        <div className="mb-8 hidden md:block">
           <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Polityka prywatności</h1>
-          <p className="text-lg text-black/60">
+          <p className="text-base md:text-lg text-black/60">
             Jak przetwarzamy i chronimy Twoje dane osobowe
           </p>
         </div>
@@ -105,12 +105,86 @@ export default async function PrivacyPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-black mb-4">7. Cookies</h2>
+                <h2 className="text-2xl font-bold text-black mb-4">7. Pliki cookies</h2>
+
+                <h3 className="text-xl font-semibold text-black mb-3 mt-6">7.1 Czym są pliki cookies?</h3>
                 <p className="text-black/70 leading-relaxed mb-4">
-                  Nasza strona wykorzystuje pliki cookies w celu zapewnienia prawidłowego
-                  działania oraz analizy ruchu. Możesz kontrolować pliki cookies w
-                  ustawieniach swojej przeglądarki.
+                  Pliki cookies to małe pliki tekstowe zapisywane na Twoim urządzeniu przez przeglądarkę internetową.
+                  Pozwalają nam zapamiętać Twoje preferencje i zapewnić lepsze działanie strony.
                 </p>
+
+                <h3 className="text-xl font-semibold text-black mb-3 mt-6">7.2 Jakie pliki cookies używamy?</h3>
+                <p className="text-black/70 leading-relaxed mb-4">
+                  Na naszej stronie wykorzystujemy następujące rodzaje plików cookies:
+                </p>
+                <ul className="space-y-3 text-black/70 list-disc list-inside mb-4">
+                  <li>
+                    <strong>Niezbędne (essential cookies)</strong> - wymagane do prawidłowego działania platformy,
+                    w tym uwierzytelniania, sesji użytkownika i zabezpieczeń. Te pliki cookies nie wymagają zgody.
+                  </li>
+                  <li>
+                    <strong>Funkcjonalne</strong> - zapamiętują Twoje preferencje (np. język, motyw ciemny/jasny),
+                    umożliwiają zapamiętanie zgody na pliki cookies.
+                  </li>
+                  <li>
+                    <strong>Analityczne</strong> - pomagają nam zrozumieć, jak użytkownicy korzystają ze strony
+                    (np. Vercel Analytics, Google Analytics), abyśmy mogli ulepszać platformę.
+                  </li>
+                  <li>
+                    <strong>Wydajnościowe</strong> - optymalizują wydajność strony i zbierają anonimowe dane
+                    dotyczące szybkości ładowania (np. Vercel Speed Insights).
+                  </li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-black mb-3 mt-6">7.3 Cele wykorzystania plików cookies</h3>
+                <p className="text-black/70 leading-relaxed mb-4">
+                  Pliki cookies wykorzystujemy w następujących celach:
+                </p>
+                <ul className="space-y-3 text-black/70 list-disc list-inside mb-4">
+                  <li>Utrzymanie sesji zalogowanego użytkownika</li>
+                  <li>Zapamiętywanie preferencji użytkownika (język, ustawienia wyświetlania)</li>
+                  <li>Zapewnienie bezpieczeństwa platformy i ochrona przed atakami</li>
+                  <li>Analiza ruchu i zachowań użytkowników w celu ulepszania platformy</li>
+                  <li>Optymalizacja wydajności strony</li>
+                  <li>Zapisywanie zgody na wykorzystanie plików cookies</li>
+                </ul>
+
+                <h3 className="text-xl font-semibold text-black mb-3 mt-6">7.4 Zarządzanie plikami cookies</h3>
+                <p className="text-black/70 leading-relaxed mb-4">
+                  Masz pełną kontrolę nad plikami cookies. Możesz:
+                </p>
+                <ul className="space-y-3 text-black/70 list-disc list-inside mb-4">
+                  <li>Zaakceptować wszystkie pliki cookies klikając "Rozumiem" w banerze</li>
+                  <li>Zablokować lub usunąć pliki cookies w ustawieniach swojej przeglądarki</li>
+                  <li>Ustawić przeglądarkę tak, aby informowała Cię o każdym pliku cookie</li>
+                </ul>
+                <p className="text-black/70 leading-relaxed mb-4 italic">
+                  <strong>Uwaga:</strong> Wyłączenie niezbędnych plików cookies może spowodować,
+                  że niektóre funkcje platformy nie będą działać prawidłowo (np. logowanie, sesja użytkownika).
+                </p>
+
+                <h3 className="text-xl font-semibold text-black mb-3 mt-6">7.5 Pliki cookies osób trzecich</h3>
+                <p className="text-black/70 leading-relaxed mb-4">
+                  Nasza strona korzysta z usług osób trzecich, które mogą ustawiać własne pliki cookies:
+                </p>
+                <ul className="space-y-3 text-black/70 list-disc list-inside mb-4">
+                  <li><strong>Vercel Analytics</strong> - analiza ruchu na stronie (anonimowa)</li>
+                  <li><strong>Vercel Speed Insights</strong> - monitorowanie wydajności strony</li>
+                  <li><strong>Supabase</strong> - uwierzytelnianie i sesje użytkowników</li>
+                </ul>
+                <p className="text-black/70 leading-relaxed mb-4">
+                  Te usługi mają własne polityki prywatności, z którymi możesz się zapoznać na ich stronach internetowych.
+                </p>
+
+                <h3 className="text-xl font-semibold text-black mb-3 mt-6">7.6 Czas przechowywania cookies</h3>
+                <p className="text-black/70 leading-relaxed mb-4">
+                  Czas przechowywania plików cookies zależy od ich typu:
+                </p>
+                <ul className="space-y-3 text-black/70 list-disc list-inside">
+                  <li><strong>Cookies sesyjne</strong> - usuwane po zamknięciu przeglądarki</li>
+                  <li><strong>Cookies trwałe</strong> - pozostają na urządzeniu przez określony czas (od kilku dni do roku)</li>
+                  <li><strong>Zgoda na cookies</strong> - zapamiętywana przez 12 miesięcy</li>
+                </ul>
               </section>
 
               <section>
@@ -168,7 +242,7 @@ export default async function PrivacyPage() {
 
                 <p className="text-black/70 leading-relaxed mb-4 italic">
                   <strong>Twoje prawo:</strong> Masz prawo zażądać pełnej informacji o tym, kto i kiedy miał dostęp do Twoich wiadomości.
-                  Wystarczy wysłać wniosek na adres privacy@findsomeone.pl, a w ciągu 30 dni otrzymasz pełny raport.
+                  Wystarczy wysłać wniosek poprzez formularz kontaktowy na stronie (kategoria: Sprawy RODO), a w ciągu 30 dni otrzymasz pełny raport.
                 </p>
 
                 <h3 className="text-xl font-semibold text-black mb-3 mt-6">8.5 Przechowywanie logów</h3>
@@ -225,13 +299,11 @@ export default async function PrivacyPage() {
                 <ul className="space-y-3 text-black/70 mb-4">
                   <li className="flex items-start gap-2">
                     <strong className="min-w-[180px]">Ogólne zapytania:</strong>
-                    <span>poprzez formularz kontaktowy na stronie</span>
+                    <span>poprzez <a href="/contact" className="text-[#C44E35] hover:underline">formularz kontaktowy</a> na stronie</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <strong className="min-w-[180px]">Sprawy RODO:</strong>
-                    <a href="mailto:privacy@findsomeone.pl" className="text-[#C44E35] hover:underline">
-                      privacy@findsomeone.pl
-                    </a>
+                    <span>poprzez <a href="/contact" className="text-[#C44E35] hover:underline">formularz kontaktowy</a> (wybierz kategorię "Kontakt ogólny")</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <strong className="min-w-[180px]">Zgłoszenia moderacji:</strong>

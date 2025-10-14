@@ -40,6 +40,11 @@ export default async function AdminPage() {
     .select('*', { count: 'exact', head: true })
     .eq('status', 'pending')
 
+  const { count: postReportsCount } = await supabase
+    .from('post_reports')
+    .select('*', { count: 'exact', head: true })
+    .eq('status', 'pending')
+
   const { count: moderationCount } = await supabase
     .from('posts')
     .select('*', { count: 'exact', head: true })
@@ -172,8 +177,28 @@ export default async function AdminPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-black/70 mb-1">Zgłoszenia</p>
+                      <p className="text-sm font-semibold text-black/70 mb-1">Zgłoszenia wiadomości</p>
                       <p className="text-3xl font-bold text-[#C44E35]">{reportsCount}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ) : null}
+
+          {postReportsCount && postReportsCount > 0 ? (
+            <Link href="/admin/post-reports">
+              <Card className="border-0 rounded-3xl bg-gradient-to-br from-red-50 to-orange-50 hover:shadow-lg transition-all cursor-pointer">
+                <CardContent className="py-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                      </svg>
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-black/70 mb-1">Zgłoszenia ogłoszeń</p>
+                      <p className="text-3xl font-bold text-[#C44E35]">{postReportsCount}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -201,7 +226,7 @@ export default async function AdminPage() {
             </Link>
           ) : null}
 
-          {!moderationCount && !reportsCount && !bannedUsersCount && (
+          {!moderationCount && !reportsCount && !postReportsCount && !bannedUsersCount && (
             <Card className="sm:col-span-3 border-0 rounded-3xl bg-gradient-to-br from-green-50 to-emerald-50">
               <CardContent className="pt-6 pb-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-green-500/10 flex items-center justify-center">
@@ -304,6 +329,42 @@ export default async function AdminPage() {
                   <div>
                     <h3 className="font-semibold text-black mb-1">Audit Logs</h3>
                     <p className="text-sm text-black/60">RODO & Dostęp</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/reports">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Zgłoszenia wiadomości</h3>
+                    <p className="text-sm text-black/60">Moderacja wiadomości</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/post-reports">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Zgłoszenia ogłoszeń</h3>
+                    <p className="text-sm text-black/60">Moderacja ogłoszeń</p>
                   </div>
                 </div>
               </CardContent>

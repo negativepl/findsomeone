@@ -39,7 +39,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showModerationModal, setShowModerationModal] = useState(false)
-  const [moderationStep, setModerationStep] = useState<'saving' | 'validating' | 'ai' | 'done'>('saving')
+  const [moderationInProgress, setModerationInProgress] = useState(false)
   const [moderationResult, setModerationResult] = useState<{
     status: string
     score: number
@@ -70,6 +70,44 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
   const [images, setImages] = useState<string[]>([])
   const [userId, setUserId] = useState<string>('')
+
+  // Hide/show dock on scroll
+  const [isDockVisible, setIsDockVisible] = useState(true)
+  const [lastScrollY, setLastScrollY] = useState(0)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        // Scrolling down & past threshold
+        setIsDockVisible(false)
+      } else {
+        // Scrolling up
+        setIsDockVisible(true)
+      }
+
+      setLastScrollY(currentScrollY)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScrollY])
+
+  // Listen for menu open/close events
+  useEffect(() => {
+    const handleMenuOpen = () => setIsMenuOpen(true)
+    const handleMenuClose = () => setIsMenuOpen(false)
+
+    window.addEventListener('mobileDockMenuOpen', handleMenuOpen)
+    window.addEventListener('mobileDockMenuClose', handleMenuClose)
+
+    return () => {
+      window.removeEventListener('mobileDockMenuOpen', handleMenuOpen)
+      window.removeEventListener('mobileDockMenuClose', handleMenuClose)
+    }
+  }, [])
 
   // Get user ID and categories on mount
   useEffect(() => {
@@ -139,7 +177,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     setLoading(true)
     setError(null)
     setShowModerationModal(true)
-    setModerationStep('saving')
+    setModerationInProgress(true)
 
     try {
       const { data: { user } } = await supabase.auth.getUser()
@@ -173,11 +211,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
       if (insertError) throw insertError
 
-      setModerationStep('validating')
-
       // Trigger moderation and wait for result
       if (newPost) {
-        setModerationStep('ai')
         const moderationResponse = await fetch('/api/moderate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -186,7 +221,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
         const moderationData = await moderationResponse.json()
         setModerationResult(moderationData)
-        setModerationStep('done')
+        setModerationInProgress(false)
 
         // Wait 2 seconds to show result
         await new Promise(resolve => setTimeout(resolve, 2000))
@@ -756,7 +791,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       </Card>
 
       {/* Mobile: Fixed bottom action bar */}
-      <div className="md:hidden fixed bottom-[72px] left-0 right-0 bg-white border-t border-black/10 safe-area-inset-bottom z-40">
+      <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-white z-30 pb-[72px] border-t border-black/10 overflow-hidden transition-transform duration-300 ${
+        (isDockVisible && !isMenuOpen) ? 'translate-y-0' : 'translate-y-full'
+      }`}>
         {/* Progress bar */}
         <div className="h-1 bg-black/5">
           <div
@@ -768,44 +805,52 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         {/* Action buttons */}
         <div className="flex gap-2 px-4 py-3">
           {currentStep === 1 ? (
-            <Link href="/dashboard" className="flex-1">
+            <div className="flex-1">
+              <Link href="/dashboard" className="block w-full">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
+                >
+                  Anuluj
+                </Button>
+              </Link>
+            </div>
+          ) : (
+            <div className="flex-1">
               <Button
                 type="button"
+                onClick={prevStep}
                 variant="outline"
                 className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
               >
-                Anuluj
+                Wstecz
               </Button>
-            </Link>
-          ) : (
-            <Button
-              type="button"
-              onClick={prevStep}
-              variant="outline"
-              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
-            >
-              Wstecz
-            </Button>
+            </div>
           )}
 
           {currentStep < totalSteps ? (
-            <Button
-              type="button"
-              onClick={nextStep}
-              disabled={!isStepValid(currentStep)}
-              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Dalej
-            </Button>
+            <div className="flex-1">
+              <Button
+                type="button"
+                onClick={nextStep}
+                disabled={!isStepValid(currentStep)}
+                className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Dalej
+              </Button>
+            </div>
           ) : (
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              disabled={loading}
-              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold"
-            >
-              {loading ? 'Dodawanie...' : 'Opublikuj'}
-            </Button>
+            <div className="flex-1">
+              <Button
+                type="submit"
+                onClick={handleSubmit}
+                disabled={loading}
+                className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold"
+              >
+                {loading ? 'Dodawanie...' : 'Opublikuj'}
+              </Button>
+            </div>
           )}
         </div>
       </div>
@@ -814,68 +859,27 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       {showModerationModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-8 max-w-md w-full">
-            {moderationStep !== 'done' ? (
-              <>
-                <div className="text-center mb-6">
-                  <div className="w-16 h-16 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <svg className="w-8 h-8 text-[#C44E35] animate-spin" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold text-black mb-2">
-                    Sprawdzanie ogłoszenia
-                  </h3>
-                  <p className="text-black/60">
-                    Proszę czekać, weryfikujemy treść...
-                  </p>
+            {moderationInProgress ? (
+              <div className="text-center">
+                <div className="w-20 h-20 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-[#C44E35] animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
                 </div>
-
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    {moderationStep === 'saving' ? (
-                      <div className="w-5 h-5 border-2 border-[#C44E35] border-t-transparent rounded-full animate-spin"></div>
-                    ) : (
-                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                    <span className="text-black">Zapisywanie ogłoszenia</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    {moderationStep === 'validating' ? (
-                      <div className="w-5 h-5 border-2 border-[#C44E35] border-t-transparent rounded-full animate-spin"></div>
-                    ) : moderationStep === 'saving' ? (
-                      <div className="w-5 h-5 border-2 border-black/20 rounded-full"></div>
-                    ) : (
-                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                    <span className="text-black">Walidacja podstawowa</span>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    {moderationStep === 'ai' ? (
-                      <div className="w-5 h-5 border-2 border-[#C44E35] border-t-transparent rounded-full animate-spin"></div>
-                    ) : moderationStep === 'saving' || moderationStep === 'validating' ? (
-                      <div className="w-5 h-5 border-2 border-black/20 rounded-full"></div>
-                    ) : (
-                      <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    )}
-                    <span className="text-black">Analiza AI</span>
-                  </div>
-                </div>
-              </>
+                <h3 className="text-2xl font-bold text-black mb-2">
+                  Sprawdzanie ogłoszenia
+                </h3>
+                <p className="text-black/60">
+                  Proszę czekać, weryfikujemy treść...
+                </p>
+              </div>
             ) : (
               <>
                 {moderationResult?.status === 'approved' ? (
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -888,8 +892,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
                 ) : moderationResult?.status === 'flagged' ? (
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
                     </div>
@@ -902,8 +906,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
                 ) : (
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-8 h-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </div>
@@ -911,7 +915,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       Ogłoszenie odrzucone
                     </h3>
                     <p className="text-black/60">
-                      Twoje ogłoszenie nie spełnia wymogów i zostało odrzucone.
+                      Twoje ogłoszenie nie spełnia naszych wymagań. Sprawdź, czy treść jest zgodna z regulaminem.
                     </p>
                   </div>
                 )}

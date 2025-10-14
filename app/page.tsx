@@ -85,7 +85,7 @@ export default async function Home() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'FindSomeone',
-    description: 'Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi - hydraulika, elektryka, sprzątanie i więcej.',
+    description: 'Platforma łącząca ludzi w okolicy. Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu? A może sam chcesz pomóc?',
     url: baseUrl,
     potentialAction: {
       '@type': 'SearchAction',
@@ -103,7 +103,7 @@ export default async function Home() {
     name: 'FindSomeone',
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
-    description: 'Platforma łącząca ludzi lokalnie w Polsce',
+    description: 'Platforma łącząca ludzi w Polsce',
     areaServed: {
       '@type': 'Country',
       name: 'Polska',
@@ -132,13 +132,37 @@ export default async function Home() {
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-12 md:py-16 text-center">
         <h2 className="text-6xl md:text-7xl font-bold mb-6 text-black leading-tight">
-          Znajdź lokalnych<br />specjalistów
+          Znajdź pomoc<br />
+          <span className="relative inline-block">
+            w okolicy
+            <svg
+              className="absolute left-0 -bottom-2 w-full"
+              viewBox="0 0 300 12"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M2 6C50 4 100 2 150 5C200 8 250 4 298 6"
+                stroke="#C44E35"
+                strokeWidth="3"
+                strokeLinecap="round"
+              />
+              <path
+                d="M2 9C50 7 100 5 150 8C200 11 250 7 298 9"
+                stroke="#C44E35"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
+            </svg>
+          </span>
         </h2>
         <p className="text-xl text-black/60 mb-10 max-w-2xl mx-auto leading-relaxed">
-          Szukasz hydraulika, elektryka czy pomocy w sprzątaniu?
-          A może sam oferujesz usługi?{' '}
+          Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu?
+          A może sam chcesz pomóc innym?{' '}
           <span className="font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent">
-            W FindSomeone łączymy ludzi lokalnie.
+            W FindSomeone łączymy ludzi w okolicy.
           </span>
         </p>
 
@@ -183,7 +207,7 @@ export default async function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
-              <div className="text-sm font-semibold text-black/80">Lokalne usługi w Polsce</div>
+              <div className="text-sm font-semibold text-black/80">Pomoc w całej Polsce</div>
             </div>
             <div className="bg-white rounded-3xl p-8 text-center">
               <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
@@ -191,7 +215,7 @@ export default async function Home() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <div className="text-sm font-semibold text-black/80">Zaufani specjaliści</div>
+              <div className="text-sm font-semibold text-black/80">Zaufani pomocnicy</div>
             </div>
           </div>
         </section>
@@ -451,8 +475,8 @@ export default async function Home() {
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
             <div className="flex items-center justify-between mb-8 md:mb-12">
               <div>
-                <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">Oferują usługi</h3>
-                <p className="text-lg text-black/60">Znajdź specjalistów w Twojej okolicy</p>
+                <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">Oferują pomoc</h3>
+                <p className="text-lg text-black/60">Znajdź ludzi w Twojej okolicy</p>
               </div>
               <div className="hidden md:block">
                 <Link href="/posts?type=offering">

@@ -19,17 +19,17 @@ export default async function HowItWorksPage() {
       <NavbarWithHide user={user} pageTitle="Jak to działa?" />
 
       <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">
-        <div className="mb-10 hidden md:block">
+        <div className="mb-8 hidden md:block">
           <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Jak to działa?</h1>
-          <p className="text-lg text-black/60">
-            Prosty sposób na znalezienie lokalnych specjalistów
+          <p className="text-base md:text-lg text-black/60">
+            Prosty sposób na znalezienie pomocy w okolicy
           </p>
         </div>
 
         {/* Dla poszukujących */}
           <section className="mb-16">
             <h2 className="text-3xl font-bold text-black mb-8 text-center">
-              Szukasz specjalisty?
+              Szukasz pomocy?
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               <Card className="border-0 rounded-3xl bg-white">
@@ -73,7 +73,7 @@ export default async function HowItWorksPage() {
           {/* Dla oferujących */}
           <section className="mb-16">
             <h2 className="text-3xl font-bold text-black mb-8 text-center">
-              Oferujesz usługi?
+              Chcesz pomóc innym?
             </h2>
             <div className="grid md:grid-cols-3 gap-6">
               <Card className="border-0 rounded-3xl bg-white">
@@ -95,7 +95,7 @@ export default async function HowItWorksPage() {
                   </div>
                   <h3 className="text-xl font-bold text-black mb-3">Dodaj ogłoszenie</h3>
                   <p className="text-black/60">
-                    Opisz swoje usługi, ustaw cenę i wskaż obszar, w którym działasz.
+                    Opisz w czym możesz pomóc, ustaw cenę i wskaż obszar, w którym działasz.
                   </p>
                 </CardContent>
               </Card>

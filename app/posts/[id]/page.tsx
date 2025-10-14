@@ -5,7 +5,6 @@ import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { RatingDisplay } from '@/components/RatingDisplay'
@@ -14,6 +13,12 @@ import { SendMessageModal } from '@/components/SendMessageModal'
 import { ReviewModalWrapper } from './ReviewModalWrapper'
 import { PhoneNumber } from './PhoneNumber'
 import { DistanceCard } from './DistanceCard'
+import { ReportPostDialog } from '@/components/ReportPostDialog'
+import { reportPost } from '@/lib/actions/report-post'
+import { CopyablePostId } from './CopyablePostId'
+import { ImageGallery } from './ImageGallery'
+import { PostDetailClientWrapper } from './PostDetailClient'
+import { MobileActionDock } from './MobileActionDock'
 import { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -105,6 +110,18 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
   const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
+
+  // Check if user is admin
+  let isAdmin = false
+  if (user) {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('is_admin')
+      .eq('id', user.id)
+      .single()
+
+    isAdmin = profile?.is_admin || false
+  }
 
   // Fetch post details
   const { data: post } = await supabase
@@ -285,239 +302,282 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
       />
 
       <ViewCounter postId={post.id} userId={user?.id} postAuthorId={post.user_id} />
-      <NavbarWithHide user={user} />
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <PostDetailClientWrapper user={user} postTitle={post.title} isAdmin={isAdmin}>
+        {/* Main Content */}
+        <main className="container mx-auto px-4 md:px-6 py-4 md:py-16 mb-[72px] md:mb-0">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-8">
           {/* Left Column - Post Details */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 md:space-y-6">
             {/* Main Card */}
-            <Card className="border-0 rounded-3xl bg-white shadow-sm">
+            <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
               <CardContent className="p-0">
-                {/* Header Section with Badges and Title */}
-                <div className="p-8 pb-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex flex-wrap gap-2">
-                      <Badge
-                        className={`rounded-full px-4 py-1.5 ${
-                          post.type === 'seeking'
-                            ? 'bg-[#C44E35] text-white border-0'
-                            : 'bg-black text-white border-0'
-                        }`}
-                      >
-                        {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                      </Badge>
-                      {post.categories && (
-                        <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-4 py-1.5">
-                          {post.categories.name}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex-shrink-0">
-                      <FavoriteButton
-                        postId={post.id}
-                        initialIsFavorite={isFavorite}
-                        showLabel={false}
-                      />
-                    </div>
-                  </div>
-
-                  <h1 className="text-2xl md:text-4xl font-bold text-black mb-4 leading-tight">{post.title}</h1>
-
-                  {/* Location & Meta in Header */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-black/60">
-                    <div className="flex items-center gap-1.5">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span>{post.city}{post.district && `, ${post.district}`}</span>
-                    </div>
-                    <span className="text-black/30">•</span>
-                    <div className="flex items-center gap-1.5">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      </svg>
-                      <span>{post.views || 0} wyświetleń</span>
-                    </div>
-                    <span className="text-black/30">•</span>
-                    <div className="flex items-center gap-1.5">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>
-                        {new Date(post.created_at).toLocaleDateString('pl-PL', {
-                          day: 'numeric',
-                          month: 'long',
-                          year: 'numeric'
-                        })},{' '}
-                        {new Date(post.created_at).toLocaleTimeString('pl-PL', {
-                          hour: '2-digit',
-                          minute: '2-digit'
-                        })}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Images Gallery */}
                 {post.images && post.images.length > 0 && (
-                  <div className="px-8 pb-6">
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {post.images.map((image, index) => (
-                        <div key={index} className="relative aspect-square rounded-2xl overflow-hidden bg-black/5">
-                          <Image
-                            src={image}
-                            alt={`${post.title} - zdjęcie ${index + 1}`}
-                            fill
-                            className="object-cover hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                      ))}
-                    </div>
+                  <div className="px-4 md:px-8 pt-4 md:pt-6 pb-0 md:pb-6">
+                    <ImageGallery
+                      images={post.images}
+                      title={post.title}
+                      favoriteButton={
+                        <FavoriteButton
+                          postId={post.id}
+                          initialIsFavorite={isFavorite}
+                          showLabel={false}
+                        />
+                      }
+                    />
                   </div>
                 )}
 
+                {/* Date and Price - Mobile Only */}
+                <div className="lg:hidden px-4 pt-4 pb-2 space-y-2">
+                  <div className="text-xs text-black/60">
+                    Dodano {new Date(post.created_at).toLocaleDateString('pl-PL', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </div>
+
+                  {(post.price_min || post.price_max) && (
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <span className="text-2xl font-bold text-black">
+                        {post.price_min && post.price_max
+                          ? `${post.price_min} - ${post.price_max} zł`
+                          : post.price_min
+                          ? `od ${post.price_min} zł`
+                          : `do ${post.price_max} zł`}
+                      </span>
+                      {post.price_type && (
+                        <span className="text-sm text-black/60">
+                          {post.price_type === 'hourly'
+                            ? '/ za godzinę'
+                            : post.price_type === 'fixed'
+                            ? '/ stała cena'
+                            : '/ do negocjacji'}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Badges Section - Above Description */}
+                <div className="px-4 md:px-8 pt-2 md:pt-0 pb-3 md:pb-4">
+                  <div className="flex flex-wrap gap-2">
+                    <Badge
+                      className={`rounded-full px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm ${
+                        post.type === 'seeking'
+                          ? 'bg-[#C44E35] text-white border-0'
+                          : 'bg-black text-white border-0'
+                      }`}
+                    >
+                      {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
+                    </Badge>
+                    {post.categories && (
+                      <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm">
+                        {post.categories.name}
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
                 {/* Description Section */}
-                <div className="px-8 pb-6">
-                  <h3 className="text-lg font-semibold text-black mb-3">Opis</h3>
+                <div className="px-4 md:px-8 pb-4 md:pb-6">
+                  <h2 className="text-xl md:text-2xl font-bold text-black mb-3 md:mb-4">Opis</h2>
                   <div
-                    className="prose prose-sm max-w-none text-black/70 leading-relaxed"
+                    className="prose prose-sm max-w-none text-black/70 leading-relaxed text-sm md:text-base"
                     dangerouslySetInnerHTML={{ __html: post.description }}
                   />
                 </div>
 
-                {/* Budget Section */}
-                {(post.price_min || post.price_max) && (
-                  <div className="px-8 pb-8">
-                    <div className="border-t border-black/5 pt-6">
-                      <div className="flex items-baseline gap-3">
-                        <h3 className="text-sm font-semibold text-black/60 uppercase tracking-wide">Budżet</h3>
-                        <div className="flex-1 flex items-baseline gap-2 flex-wrap">
-                          <span className="text-2xl font-bold text-black">
-                            {post.price_min && post.price_max
-                              ? `${post.price_min} - ${post.price_max} zł`
-                              : post.price_min
-                              ? `od ${post.price_min} zł`
-                              : `do ${post.price_max} zł`}
-                          </span>
-                          {post.price_type && (
-                            <span className="text-sm text-black/50">
-                              {post.price_type === 'hourly'
-                                ? '/ za godzinę'
-                                : post.price_type === 'fixed'
-                                ? '/ stała cena'
-                                : '/ do negocjacji'}
-                            </span>
-                          )}
-                        </div>
+                {/* Footer Section with Views, Post ID, and Report Button */}
+                <div className="px-4 md:px-8 pb-4 md:pb-8">
+                  <div className="border-t border-black/5 pt-3 md:pt-6">
+                    {/* Mobile: stacked layout */}
+                    <div className="flex flex-col items-center gap-2 md:hidden">
+                      <div className="text-black/50 text-[10px]">
+                        <span>{post.views || 0} wyświetleń</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-2">
+                        <CopyablePostId postId={post.id} />
+                        {user && user.id !== post.user_id && (
+                          <ReportPostDialog postId={post.id} onReport={reportPost} />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Desktop: single row with buttons left, views right */}
+                    <div className="hidden md:flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <CopyablePostId postId={post.id} />
+                        {user && user.id !== post.user_id && (
+                          <ReportPostDialog postId={post.id} onReport={reportPost} />
+                        )}
+                      </div>
+                      <div className="text-black/50 text-sm">
+                        <span>{post.views || 0} wyświetleń</span>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Right Column - Author Info & Contact */}
-          <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+          <div className="space-y-4 md:space-y-6 lg:sticky lg:top-24 lg:self-start">
+            {/* Title and Budget Section - Desktop Only */}
+            <Card className="hidden lg:block border-0 rounded-3xl bg-white shadow-sm">
+              <CardContent className="p-6 space-y-4">
+                {/* Date and Favorite Button */}
+                <div className="flex items-center justify-between gap-4">
+                  <div className="text-sm text-black/60">
+                    Dodano {new Date(post.created_at).toLocaleDateString('pl-PL', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </div>
+                  <FavoriteButton
+                    postId={post.id}
+                    initialIsFavorite={isFavorite}
+                    showLabel={false}
+                  />
+                </div>
+
+                {/* Title */}
+                <div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-black leading-tight">{post.title}</h1>
+                </div>
+
+                {/* Budget */}
+                {(post.price_min || post.price_max) && (
+                  <div className="pt-4 border-t border-black/5">
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <span className="text-3xl font-bold text-black">
+                        {post.price_min && post.price_max
+                          ? `${post.price_min} - ${post.price_max} zł`
+                          : post.price_min
+                          ? `od ${post.price_min} zł`
+                          : `do ${post.price_max} zł`}
+                      </span>
+                      {post.price_type && (
+                        <span className="text-base text-black/60">
+                          {post.price_type === 'hourly'
+                            ? '/ za godzinę'
+                            : post.price_type === 'fixed'
+                            ? '/ stała cena'
+                            : '/ do negocjacji'}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Author Card */}
-            <Card className="border-0 rounded-3xl bg-white shadow-sm">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-4 mb-6">
+            <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
+              <CardContent className="p-4 md:p-6">
+                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-4 md:mb-6">
                   <div className="relative">
                     {post.profiles?.avatar_url ? (
                       <Image
                         src={post.profiles.avatar_url}
                         alt={post.profiles.full_name || 'User'}
-                        width={64}
-                        height={64}
-                        className="rounded-full"
+                        width={56}
+                        height={56}
+                        className="rounded-full md:w-16 md:h-16"
                       />
                     ) : (
-                      <div className="w-16 h-16 rounded-full bg-black/10 flex items-center justify-center">
-                        <span className="text-2xl font-semibold text-black">
+                      <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-black/10 flex items-center justify-center">
+                        <span className="text-xl md:text-2xl font-semibold text-black">
                           {post.profiles?.full_name?.charAt(0) || 'U'}
                         </span>
                       </div>
                     )}
                     {/* Online Status Indicator */}
                     <div
-                      className={`absolute bottom-0 right-0 w-4 h-4 border-2 border-white rounded-full ${
+                      className={`absolute bottom-0 right-0 w-3 h-3 md:w-4 md:h-4 border-2 border-white rounded-full ${
                         isOnline ? 'bg-green-500' : 'bg-gray-400'
                       }`}
                       title={isOnline ? 'Online' : 'Offline'}
                     />
                   </div>
-                  <div>
-                    <h4 className="text-xl font-bold text-black">
+                  <div className="text-center md:text-left">
+                    <h4 className="text-lg md:text-xl font-bold text-black">
                       {post.profiles?.full_name || 'Anonymous'}
                     </h4>
                     {post.profiles?.rating > 0 && post.profiles?.total_reviews > 0 && (
-                      <RatingDisplay
-                        userId={post.user_id}
-                        rating={post.profiles.rating}
-                        reviewCount={post.profiles.total_reviews}
-                        clickable={post.profiles.show_profile_link !== false}
-                      />
+                      <div className="flex justify-center md:justify-start">
+                        <RatingDisplay
+                          userId={post.user_id}
+                          rating={post.profiles.rating}
+                          reviewCount={post.profiles.total_reviews}
+                          clickable={post.profiles.show_profile_link !== false}
+                        />
+                      </div>
                     )}
                   </div>
                 </div>
 
                 {/* Member Since Info */}
-                <div className="mb-6 pb-6 border-b border-black/5">
-                  <div className="flex items-center gap-2 text-sm text-black/60">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                    <span>
-                      Na platformie od{' '}
-                      {daysOnPlatform === 0
-                        ? 'dzisiaj'
-                        : daysOnPlatform === 1
-                        ? '1 dnia'
-                        : daysOnPlatform < 31
-                        ? `${daysOnPlatform} dni`
-                        : daysOnPlatform < 365
-                        ? `${Math.floor(daysOnPlatform / 30)} miesięcy`
-                        : `${Math.floor(daysOnPlatform / 365)} lat`}
-                    </span>
-                  </div>
-                  {/* Activity Status */}
-                  <div className={`flex items-center gap-2 text-sm mt-2 ${
-                    isOnline ? 'text-green-600' : 'text-black/50'
-                  }`}>
-                    <div className={`w-2 h-2 rounded-full ${
-                      isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
-                    }`} />
-                    <span className="font-medium">{lastActiveText}</span>
+                <div className="md:mb-6 md:pb-6 md:border-b md:border-black/5">
+                  <div className="flex flex-col gap-2 text-xs md:text-sm text-center md:text-left">
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-black/60">
+                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                      <span>
+                        Na platformie od{' '}
+                        {daysOnPlatform === 0
+                          ? 'dzisiaj'
+                          : daysOnPlatform === 1
+                          ? '1 dnia'
+                          : daysOnPlatform < 31
+                          ? `${daysOnPlatform} dni`
+                          : daysOnPlatform < 365
+                          ? `${Math.floor(daysOnPlatform / 30)} miesięcy`
+                          : `${Math.floor(daysOnPlatform / 365)} lat`}
+                      </span>
+                    </div>
+                    {/* Activity Status */}
+                    <div className={`flex items-center justify-center md:justify-start gap-2 ${
+                      isOnline ? 'text-green-600' : 'text-black/50'
+                    }`}>
+                      <div className={`w-2 h-2 rounded-full ${
+                        isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
+                      }`} />
+                      <span className="font-medium">{lastActiveText}</span>
+                    </div>
                   </div>
                 </div>
 
                 {post.profiles?.bio && (
-                  <p className="text-sm text-black/70 mb-4 leading-relaxed">
+                  <p className="text-xs md:text-sm text-black/70 mb-4 leading-relaxed">
                     {post.profiles.bio}
                   </p>
                 )}
 
                 {/* Contact Buttons */}
                 {user && user.id !== post.user_id ? (
-                  <div className="space-y-3">
-                    {/* Show message button only if user allows it */}
-                    {post.profiles?.show_messages !== false && (
-                      <SendMessageModal
-                        postId={post.id}
-                        receiverId={post.user_id}
-                        receiverName={post.profiles?.full_name || 'użytkownika'}
-                        postTitle={post.title}
-                      />
-                    )}
-                    {/* Phone number if available and user allows showing it */}
-                    {post.profiles?.phone && post.profiles?.show_phone !== false && (
-                      <PhoneNumber phone={post.profiles.phone} postId={post.id} />
-                    )}
+                  <div className="space-y-2 md:space-y-3">
+                    {/* Desktop only: Show message button and phone */}
+                    <div className="hidden md:block space-y-2 md:space-y-3">
+                      {/* Show message button only if user allows it */}
+                      {post.profiles?.show_messages !== false && (
+                        <SendMessageModal
+                          postId={post.id}
+                          receiverId={post.user_id}
+                          receiverName={post.profiles?.full_name || 'użytkownika'}
+                          postTitle={post.title}
+                        />
+                      )}
+                      {/* Phone number if available and user allows showing it */}
+                      {post.profiles?.phone && post.profiles?.show_phone !== false && (
+                        <PhoneNumber phone={post.profiles.phone} postId={post.id} />
+                      )}
+                    </div>
                     {/* Show review button if post is completed and user hasn't reviewed yet */}
                     {post.status === 'completed' && !hasReviewed && (
                       <ReviewModalWrapper
@@ -529,12 +589,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   </div>
                 ) : !user ? (
                   <Link href="/login">
-                    <Button className="w-full rounded-full bg-black hover:bg-black/80 text-white border-0 py-6 text-lg">
+                    <Button className="w-full rounded-full bg-black hover:bg-black/80 text-white border-0 py-5 md:py-6 text-base md:text-lg">
                       Zaloguj się aby skontaktować
                     </Button>
                   </Link>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="hidden md:block space-y-3">
                     <div className="bg-black/5 rounded-full py-3 text-center">
                       <p className="text-base text-black/60">To Twoje ogłoszenie</p>
                     </div>
@@ -555,12 +615,72 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
             {/* Other Posts from Author */}
             {otherPosts && otherPosts.length > 0 && (
-              <Card className="border-0 rounded-3xl bg-white shadow-sm">
-                <CardContent className="p-6">
-                  <h4 className="text-lg font-bold text-black mb-4">
+              <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
+                <CardContent className="p-4 md:p-6">
+                  <h4 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
                     Inne ogłoszenia użytkownika
                   </h4>
-                  <div className="space-y-4">
+
+                  {/* Mobile: Horizontal Carousel */}
+                  <div className="md:hidden -mx-4">
+                    <div className="horizontal-scroll-padding-mobile flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
+                      {otherPosts.map((otherPost: any) => (
+                        <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '320px' }}>
+                          <div className="group p-3 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
+                            <div className="flex flex-col gap-3">
+                              {/* Thumbnail */}
+                              {otherPost.images && otherPost.images.length > 0 && (
+                                <div className="relative w-full h-36 rounded-lg overflow-hidden bg-black/10">
+                                  <Image
+                                    src={otherPost.images[0]}
+                                    alt={otherPost.title}
+                                    fill
+                                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                  />
+                                </div>
+                              )}
+
+                              {/* Content */}
+                              <div className="flex flex-col gap-2">
+                                <div className="flex items-start gap-2">
+                                  <Badge
+                                    className={`rounded-full px-2 py-0.5 text-xs ${
+                                      otherPost.type === 'seeking'
+                                        ? 'bg-[#C44E35] text-white border-0'
+                                        : 'bg-black text-white border-0'
+                                    }`}
+                                  >
+                                    {otherPost.type === 'seeking' ? 'Szukam' : 'Oferuję'}
+                                  </Badge>
+                                </div>
+                                <h5 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
+                                  {otherPost.title}
+                                </h5>
+                                <div className="flex items-center gap-1.5 text-xs text-black/60">
+                                  <span>{otherPost.city}</span>
+                                  {(otherPost.price_min || otherPost.price_max) && (
+                                    <>
+                                      <span>•</span>
+                                      <span className="font-semibold text-black">
+                                        {otherPost.price_min && otherPost.price_max
+                                          ? `${otherPost.price_min}-${otherPost.price_max} zł`
+                                          : otherPost.price_min
+                                          ? `${otherPost.price_min} zł`
+                                          : `${otherPost.price_max} zł`}
+                                      </span>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Desktop: Vertical List */}
+                  <div className="hidden md:block space-y-4">
                     {otherPosts.map((otherPost: any, index: number) => (
                       <div key={otherPost.id}>
                         {index > 0 && <div className="h-px bg-black/10 my-4" />}
@@ -626,7 +746,24 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         </div>
       </main>
 
-      <Footer />
+      {/* Mobile Action Dock - Only for logged-in users who are not the post author */}
+      {user && (
+        <MobileActionDock
+          postId={post.id}
+          receiverId={post.user_id}
+          receiverName={post.profiles?.full_name || 'użytkownika'}
+          postTitle={post.title}
+          phone={post.profiles?.phone}
+          showMessages={post.profiles?.show_messages !== false}
+          showPhone={post.profiles?.show_phone !== false}
+          isOwnPost={user.id === post.user_id}
+        />
+      )}
+
+      <div className="hidden md:block">
+        <Footer />
+      </div>
+      </PostDetailClientWrapper>
     </div>
   )
 }

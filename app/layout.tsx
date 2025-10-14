@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/react";
 import TopLoader from "@/components/TopLoader";
 import { MobileDockWrapper } from "@/components/MobileDockWrapper";
 import { InstallPrompt } from "@/components/InstallPrompt";
+import CookieConsent from "@/components/CookieConsent";
 import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
 
@@ -23,11 +24,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'),
   title: {
-    default: "FindSomeone - Znajdź lokalnych specjalistów",
+    default: "FindSomeone - Znajdź pomoc w okolicy",
     template: "%s | FindSomeone"
   },
-  description: "Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi - hydraulika, elektryka, sprzątanie i więcej.",
-  keywords: ["usługi lokalne", "specjaliści", "ogłoszenia", "hydraulik", "elektryk", "sprzątanie", "FindSomeone", "lokalne usługi Polska"],
+  description: "Platforma łącząca ludzi w okolicy. Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu? A może sam chcesz pomóc?",
+  keywords: ["pomoc w okolicy", "ogłoszenia", "usługi", "hydraulik", "elektryk", "sprzątanie", "zakupy", "FindSomeone", "pomoc sąsiedzka"],
   authors: [{ name: "FindSomeone" }],
   creator: "FindSomeone",
   publisher: "FindSomeone",
@@ -47,13 +48,13 @@ export const metadata: Metadata = {
     locale: 'pl_PL',
     url: '/',
     siteName: 'FindSomeone',
-    title: 'FindSomeone - Znajdź lokalnych specjalistów',
-    description: 'Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi - hydraulika, elektryka, sprzątanie i więcej.',
+    title: 'FindSomeone - Znajdź pomoc w okolicy',
+    description: 'Platforma łącząca ludzi w okolicy. Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu? A może sam chcesz pomóc?',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FindSomeone - Znajdź lokalnych specjalistów',
-    description: 'Platforma łącząca ludzi lokalnie. Znajdź specjalistów lub oferuj swoje usługi.',
+    title: 'FindSomeone - Znajdź pomoc w okolicy',
+    description: 'Platforma łącząca ludzi w okolicy. Potrzebujesz pomocy lub chcesz pomóc innym?',
   },
   manifest: '/manifest.json',
   appleWebApp: {
@@ -96,6 +97,7 @@ export default async function RootLayout({
           {children}
           <MobileDockWrapper user={user} />
           <InstallPrompt />
+          <CookieConsent />
         </Providers>
         <SpeedInsights />
         <Analytics />
