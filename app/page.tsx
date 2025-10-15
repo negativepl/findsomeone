@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import Script from 'next/script'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,7 +12,6 @@ import { ScrollArrows } from '@/components/ScrollArrows'
 import { RatingDisplay } from '@/components/RatingDisplay'
 import { RecentlyViewedPosts } from '@/components/RecentlyViewedPosts'
 import { createClient } from '@/lib/supabase/server'
-import { CategoryIcon } from '@/lib/category-icons'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -20,10 +20,16 @@ export default async function Home() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Fetch all main categories from database
+  // Fetch all main categories with subcategories
   const { data: categories } = await supabase
     .from('categories')
-    .select('id, name, slug, icon')
+    .select(`
+      id,
+      name,
+      slug,
+      icon,
+      subcategories:categories!parent_id(id, name, slug)
+    `)
     .is('parent_id', null) // Only main categories
     .order('name')
 
@@ -116,18 +122,21 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <>
       {/* JSON-LD structured data */}
-      <script
+      <Script
+        id="json-ld-website"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <script
+      <Script
+        id="json-ld-organization"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-      <NavbarWithHide user={user} />
+      <div className="min-h-screen bg-[#FAF8F3]">
+        <NavbarWithHide user={user} />
 
       {/* Hero Section */}
       <section className="container mx-auto px-6 py-12 md:py-16 text-center">
@@ -270,55 +279,9 @@ export default async function Home() {
         </section>
       )}
 
-      {/* Categories Section */}
-      {categories && categories.length > 0 && (
-        <section className="container mx-auto px-6 py-12 md:py-14">
-          <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
-            <div className="flex items-center justify-between mb-8 md:mb-12">
-              <div>
-                <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">Wszystkie kategorie</h3>
-                <p className="text-lg text-black/60">Przeglądaj oferty według kategorii usług</p>
-              </div>
-            </div>
-
-            {/* Horizontal Scroll for all devices */}
-            <div className="relative">
-              <div className="hidden md:block">
-                <ScrollArrows containerId="categories-scroll" />
-              </div>
-              <div id="categories-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
-                <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
-                  {categories.map((cat) => (
-                    <Link
-                      key={cat.id}
-                      href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
-                      className="flex-shrink-0 snap-center"
-                      style={{ width: '200px' }}
-                    >
-                      <Card className="border-0 rounded-3xl bg-[#FAF8F3] hover:bg-[#F5F1E8] transition-all cursor-pointer h-full flex flex-col shadow-sm">
-                        <CardContent className="text-center flex flex-col items-center justify-center flex-1 py-8 px-5">
-                          <div className="mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center text-[#C44E35]" style={{ width: '80px', height: '80px' }}>
-                            <CategoryIcon iconName={cat.icon} className="w-8 h-8" />
-                          </div>
-                          <div className="h-5"></div>
-                          <p className="font-semibold text-black text-lg leading-tight">{cat.name}</p>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Recently Viewed Posts Section - Client Component */}
-      <RecentlyViewedPosts userFavorites={userFavorites} userId={user?.id} />
-
       {/* Seeking Posts Section */}
       {seekingPosts && seekingPosts.length > 0 && (
-        <section className="container mx-auto px-6 py-12 md:py-14">
+        <section className="container mx-auto px-6">
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
             <div className="flex items-center justify-between mb-8 md:mb-12">
               <div>
@@ -341,7 +304,7 @@ export default async function Home() {
               </div>
               <div id="seeking-posts-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
               <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
-              {seekingPosts.map((post: any) => (
+              {seekingPosts.map((post: any, index: number) => (
                 <Link
                   key={post.id}
                   href={`/posts/${post.id}`}
@@ -356,6 +319,8 @@ export default async function Home() {
                           src={post.images[0]}
                           alt={post.title}
                           fill
+                          sizes="320px"
+                          priority={index === 0}
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-all">
@@ -405,6 +370,7 @@ export default async function Home() {
                               alt={post.profiles.full_name || 'User'}
                               width={32}
                               height={32}
+                              loading="lazy"
                               className="rounded-full flex-shrink-0"
                             />
                           ) : (
@@ -494,7 +460,7 @@ export default async function Home() {
               </div>
               <div id="offering-posts-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
               <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
-              {offeringPosts.map((post: any) => (
+              {offeringPosts.map((post: any, index: number) => (
                 <Link
                   key={post.id}
                   href={`/posts/${post.id}`}
@@ -509,6 +475,8 @@ export default async function Home() {
                           src={post.images[0]}
                           alt={post.title}
                           fill
+                          sizes="320px"
+                          loading="lazy"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-all">
@@ -558,6 +526,7 @@ export default async function Home() {
                               alt={post.profiles.full_name || 'User'}
                               width={32}
                               height={32}
+                              loading="lazy"
                               className="rounded-full flex-shrink-0"
                             />
                           ) : (
@@ -644,7 +613,11 @@ export default async function Home() {
         </section>
       )}
 
-      <Footer />
-    </div>
+        {/* Recently Viewed Posts Section - Client Component - at bottom */}
+        <RecentlyViewedPosts userFavorites={userFavorites} userId={user?.id} />
+
+        <Footer />
+      </div>
+    </>
   )
 }

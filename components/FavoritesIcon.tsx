@@ -12,9 +12,21 @@ interface FavoritesIconProps {
 
 export function FavoritesIcon({ user }: FavoritesIconProps) {
   const [favoritesCount, setFavoritesCount] = useState(0)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    if (!user) return
+    // Load cached count after hydration
+    if (user && typeof window !== 'undefined') {
+      const cached = localStorage.getItem(`favorites_count_${user.id}`)
+      if (cached) {
+        setFavoritesCount(parseInt(cached, 10))
+      }
+      setIsHydrated(true)
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (!user || !isHydrated) return
 
     const supabase = createClient()
 
@@ -25,7 +37,10 @@ export function FavoritesIcon({ user }: FavoritesIconProps) {
         .select('*', { count: 'exact', head: true })
         .eq('user_id', user.id)
 
-      setFavoritesCount(count || 0)
+      const newCount = count || 0
+      setFavoritesCount(newCount)
+      // Cache the count in localStorage
+      localStorage.setItem(`favorites_count_${user.id}`, newCount.toString())
     }
 
     fetchFavoritesCount()
@@ -50,7 +65,7 @@ export function FavoritesIcon({ user }: FavoritesIconProps) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [user?.id])
+  }, [user?.id, isHydrated])
 
   if (!user) {
     return null

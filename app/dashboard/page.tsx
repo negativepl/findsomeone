@@ -49,7 +49,7 @@ export default async function DashboardPage() {
   const firstName = profile?.full_name?.split(' ')[0] || 'Użytkowniku'
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} pageTitle={`Witaj, ${firstName}!`} />
 
       <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">

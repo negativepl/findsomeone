@@ -51,21 +51,28 @@ export function NavbarSearchBar() {
   const [cities, setCities] = useState<City[]>([])
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false)
   const [isLoadingCities, setIsLoadingCities] = useState(false)
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false)
   const cityDropdownRef = useRef<HTMLDivElement>(null)
   const cityInputRef = useRef<HTMLInputElement>(null)
   const cityDebounceTimerRef = useRef<NodeJS.Timeout>()
 
-  // Sync with URL params (when on /posts page)
+  // Sync with URL params (only on /posts page)
   useEffect(() => {
     const cityParam = searchParams.get('city')
     const searchParam = searchParams.get('search')
 
-    // Sync city from URL - both directions (set and clear)
-    if (cityParam && cityParam !== selectedCity) {
-      setSelectedCity(cityParam)
-    } else if (!cityParam && selectedCity && pathname === '/posts') {
-      // Clear city if it's not in URL and we're on /posts page
-      setSelectedCity('')
+    // Only show city on /posts page from URL params
+    if (pathname === '/posts') {
+      if (cityParam && cityParam !== selectedCity) {
+        setSelectedCity(cityParam)
+      } else if (!cityParam && selectedCity) {
+        setSelectedCity('')
+      }
+    } else {
+      // Clear city when not on /posts page
+      if (selectedCity) {
+        setSelectedCity('')
+      }
     }
 
     // Sync search query from URL if different
@@ -99,12 +106,6 @@ export function NavbarSearchBar() {
       } catch (e) {
         // Invalid data, ignore
       }
-    }
-
-    // Load saved location
-    const savedCity = localStorage.getItem('selected_city')
-    if (savedCity) {
-      setSelectedCity(savedCity)
     }
   }, [])
 
@@ -180,14 +181,17 @@ export function NavbarSearchBar() {
     setSelectedCity(cityName)
     setCityQuery('')
     setIsCityDropdownOpen(false)
-    localStorage.setItem('selected_city', cityName)
 
-    // If on /posts page, automatically update URL to refresh results
-    if (pathname === '/posts') {
-      const params = new URLSearchParams(searchParams.toString())
-      params.set('city', cityName)
-      router.push(`${pathname}?${params.toString()}`)
+    // Always navigate to /posts with selected city
+    const params = new URLSearchParams()
+
+    // Preserve search query if exists
+    if (searchQuery) {
+      params.set('search', searchQuery)
     }
+
+    params.set('city', cityName)
+    router.push(`/posts?${params.toString()}`)
   }
 
   // Handle city focus - load popular cities
@@ -202,14 +206,75 @@ export function NavbarSearchBar() {
   const clearCity = () => {
     setSelectedCity('')
     setIsCityDropdownOpen(false)
-    localStorage.removeItem('selected_city')
 
-    // If on /posts page, automatically update URL to refresh results
+    // If on /posts page, remove city from URL
     if (pathname === '/posts') {
       const params = new URLSearchParams(searchParams.toString())
       params.delete('city')
-      router.push(`${pathname}?${params.toString()}`)
+      const queryString = params.toString()
+      router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
     }
+  }
+
+  // Detect user location
+  const detectLocation = async () => {
+    if (!navigator.geolocation) {
+      alert('Twoja przeglądarka nie obsługuje wykrywania lokalizacji')
+      return
+    }
+
+    setIsDetectingLocation(true)
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords
+
+          // Use Nominatim API for reverse geocoding
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=pl`
+          )
+          const data = await response.json()
+
+          // Extract city name
+          const city = data.address?.city ||
+                      data.address?.town ||
+                      data.address?.village ||
+                      data.address?.municipality ||
+                      null
+
+          if (city) {
+            handleCitySelect(city)
+          } else {
+            alert('Nie udało się określić miasta na podstawie Twojej lokalizacji')
+          }
+        } catch (error) {
+          console.error('Błąd podczas wykrywania lokalizacji:', error)
+          alert('Wystąpił błąd podczas wykrywania lokalizacji')
+        } finally {
+          setIsDetectingLocation(false)
+        }
+      },
+      (error) => {
+        console.error('Błąd geolokalizacji:', error)
+        setIsDetectingLocation(false)
+
+        if (error.code === error.PERMISSION_DENIED) {
+          alert('Odmówiono dostępu do lokalizacji. Sprawdź ustawienia przeglądarki.')
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          alert('Lokalizacja jest niedostępna')
+        } else if (error.code === error.TIMEOUT) {
+          alert('Przekroczono limit czasu wykrywania lokalizacji')
+        } else {
+          alert('Wystąpił błąd podczas wykrywania lokalizacji')
+        }
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 300000 // Cache position for 5 minutes
+      }
+    )
   }
 
   // Save search to recent searches
@@ -613,36 +678,42 @@ export function NavbarSearchBar() {
 
       {/* Location Selector */}
       <div ref={cityDropdownRef} className="relative">
-        <div className="flex items-center gap-1 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-full px-4 h-10 transition-colors">
-          <button
-            type="button"
-            onClick={() => {
-              setIsCityDropdownOpen(!isCityDropdownOpen)
-              if (!isCityDropdownOpen) handleCityFocus()
-            }}
-            className="flex items-center gap-2 flex-1 whitespace-nowrap"
-          >
-            <MapPin className="w-4 h-4 text-[#C44E35] flex-shrink-0" />
-            <span className="text-sm text-black font-medium truncate max-w-[120px]">
-              {selectedCity || 'Lokalizacja'}
-            </span>
-          </button>
+        <button
+          type="button"
+          onClick={() => {
+            setIsCityDropdownOpen(!isCityDropdownOpen)
+            if (!isCityDropdownOpen) handleCityFocus()
+          }}
+          className="flex items-center gap-2 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-full px-4 h-10 transition-colors w-full"
+        >
+          <MapPin className="w-4 h-4 text-[#C44E35] flex-shrink-0" />
+          <span className="text-sm text-black font-medium truncate max-w-[120px]">
+            {selectedCity || 'Lokalizacja'}
+          </span>
           {selectedCity && (
-            <button
-              type="button"
+            <span
               onClick={(e) => {
                 e.stopPropagation()
                 clearCity()
               }}
-              className="ml-1 hover:bg-black/10 rounded-full p-0.5 transition-colors flex-shrink-0"
+              className="ml-auto hover:bg-black/10 rounded-full p-0.5 transition-colors flex-shrink-0 cursor-pointer"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  clearCity()
+                }
+              }}
               aria-label="Usuń lokalizację"
             >
               <svg className="w-3 h-3 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </button>
+            </span>
           )}
-        </div>
+        </button>
 
         {/* City Dropdown */}
         {isCityDropdownOpen && (
@@ -666,6 +737,28 @@ export function NavbarSearchBar() {
             </div>
 
             <div className="overflow-y-auto p-2">
+              {/* Detect Location Button */}
+              <button
+                type="button"
+                onClick={detectLocation}
+                disabled={isDetectingLocation}
+                className="w-full mb-2 px-3 py-3 rounded-lg bg-[#C44E35]/10 hover:bg-[#C44E35]/20 transition-all flex items-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <div className="w-8 h-8 rounded-lg bg-[#C44E35]/20 flex items-center justify-center flex-shrink-0">
+                  {isDetectingLocation ? (
+                    <div className="w-4 h-4 border-2 border-[#C44E35]/30 border-t-[#C44E35] rounded-full animate-spin" />
+                  ) : (
+                    <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  )}
+                </div>
+                <span className="text-sm font-semibold text-[#C44E35] flex-1 text-left">
+                  {isDetectingLocation ? 'Wykrywanie...' : 'Wykryj moją lokalizację'}
+                </span>
+              </button>
+
               {cities.length > 0 ? (
                 <div className="space-y-1">
                   {cities.map((city, index) => (

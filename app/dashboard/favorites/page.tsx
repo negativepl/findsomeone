@@ -18,7 +18,7 @@ export default async function FavoritesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} pageTitle="Ulubione" />
 
       {/* Main Content */}

@@ -14,13 +14,32 @@ interface MobileNavIconsProps {
 export function MobileNavIcons({ user }: MobileNavIconsProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
+  const [favoritesCount, setFavoritesCount] = useState(0)
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
-    if (!user) return
+    // Load cached counts after hydration
+    if (user && typeof window !== 'undefined') {
+      const cachedUnread = localStorage.getItem(`unread_count_${user.id}`)
+      if (cachedUnread) {
+        setUnreadCount(parseInt(cachedUnread, 10))
+      }
+
+      const cachedFavorites = localStorage.getItem(`favorites_count_${user.id}`)
+      if (cachedFavorites) {
+        setFavoritesCount(parseInt(cachedFavorites, 10))
+      }
+
+      setIsHydrated(true)
+    }
+  }, [user])
+
+  useEffect(() => {
+    if (!user || !isHydrated) return
 
     const supabase = createClient()
 
-    // Fetch initial count
+    // Fetch initial counts
     const fetchUnreadCount = async () => {
       const { count } = await supabase
         .from('messages')
@@ -28,13 +47,27 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
         .eq('receiver_id', user.id)
         .eq('read', false)
 
-      setUnreadCount(count || 0)
+      const newCount = count || 0
+      setUnreadCount(newCount)
+      localStorage.setItem(`unread_count_${user.id}`, newCount.toString())
+    }
+
+    const fetchFavoritesCount = async () => {
+      const { count } = await supabase
+        .from('favorites')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id)
+
+      const newCount = count || 0
+      setFavoritesCount(newCount)
+      localStorage.setItem(`favorites_count_${user.id}`, newCount.toString())
     }
 
     fetchUnreadCount()
+    fetchFavoritesCount()
 
     // Subscribe to real-time changes
-    const channel = supabase
+    const messagesChannel = supabase
       .channel('mobile-unread-messages')
       .on(
         'postgres_changes',
@@ -45,7 +78,7 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
           filter: `receiver_id=eq.${user.id}`,
         },
         () => {
-          setUnreadCount((prev) => prev + 1)
+          fetchUnreadCount()
         }
       )
       .on(
@@ -59,22 +92,33 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
         async (payload) => {
           const updatedMsg = payload.new as any
           if (updatedMsg.read && updatedMsg.receiver_id === user.id) {
-            const { count } = await supabase
-              .from('messages')
-              .select('*', { count: 'exact', head: true })
-              .eq('receiver_id', user.id)
-              .eq('read', false)
-
-            setUnreadCount(count || 0)
+            fetchUnreadCount()
           }
         }
       )
       .subscribe()
 
+    const favoritesChannel = supabase
+      .channel('mobile-favorites-count')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'favorites',
+          filter: `user_id=eq.${user.id}`,
+        },
+        () => {
+          fetchFavoritesCount()
+        }
+      )
+      .subscribe()
+
     return () => {
-      supabase.removeChannel(channel)
+      supabase.removeChannel(messagesChannel)
+      supabase.removeChannel(favoritesChannel)
     }
-  }, [user?.id])
+  }, [user?.id, isHydrated])
 
   return (
     <>
@@ -94,10 +138,15 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
             {/* Favorites Icon */}
             <Link
               href="/dashboard/favorites"
-              className="inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
-              aria-label="Ulubione"
+              className="relative inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
+              aria-label={`Ulubione${favoritesCount > 0 ? ` (${favoritesCount})` : ''}`}
             >
               <Heart className="h-4 w-4 text-white" />
+              {favoritesCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-white text-[#C44E35] text-[10px] font-bold rounded-full border border-[#C44E35]">
+                  {favoritesCount > 99 ? '99+' : favoritesCount}
+                </span>
+              )}
             </Link>
 
             {/* Messages Icon */}

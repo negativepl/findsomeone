@@ -2,30 +2,23 @@
 
 import { User } from '@supabase/supabase-js'
 import { NewPostClient, useStepContext, StepContext } from './NewPostClient'
-import { NavbarClient } from '@/components/NavbarClient'
-import { NavbarWrapper } from '@/components/NavbarWrapper'
-import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
+import { useState } from 'react'
 
 interface NewPostPageClientProps {
   user: User
 }
 
-function NewPostNavbarInner() {
+function StepIndicator() {
   const stepContext = useStepContext()
 
   if (!stepContext) {
-    return (
-      <div className="md:hidden">
-        <h1 className="text-base font-semibold text-black">Dodaj ogłoszenie</h1>
-      </div>
-    )
+    return null
   }
 
   const { currentStep, totalSteps, stepTitle } = stepContext
 
   return (
-    <div className="md:hidden">
+    <div className="md:hidden fixed top-[60px] left-0 right-0 z-30 bg-white border-b border-black/5 px-4 py-3">
       <h1 className="text-base font-semibold text-black">{stepTitle}</h1>
       <p className="text-xs text-black/60">Krok {currentStep}/{totalSteps}</p>
     </div>
@@ -33,7 +26,6 @@ function NewPostNavbarInner() {
 }
 
 export function NewPostPageClient({ user }: NewPostPageClientProps) {
-  const [profile, setProfile] = useState<{ avatar_url: string | null; full_name: string | null } | null>(null)
   const [currentStep, setCurrentStep] = useState(1)
   const totalSteps = 6
 
@@ -49,20 +41,6 @@ export function NewPostPageClient({ user }: NewPostPageClientProps) {
     }
   }
 
-  useEffect(() => {
-    const supabase = createClient()
-
-    // Fetch profile
-    supabase
-      .from('profiles')
-      .select('avatar_url, full_name')
-      .eq('id', user.id)
-      .single()
-      .then(({ data }) => {
-        setProfile(data)
-      })
-  }, [user.id])
-
   const stepContextValue = {
     currentStep,
     totalSteps,
@@ -71,10 +49,8 @@ export function NewPostPageClient({ user }: NewPostPageClientProps) {
 
   return (
     <StepContext.Provider value={stepContextValue}>
-      <NavbarWrapper alwaysVisible={true}>
-        <NavbarClient user={user} showAddButton={false} stepInfo={<NewPostNavbarInner />} profile={profile} isAdmin={false} />
-      </NavbarWrapper>
-      <div className="h-[60px]" />
+      <StepIndicator />
+      <div className="md:hidden h-[56px]" />
       <NewPostClient onStepChange={setCurrentStep} />
     </StepContext.Provider>
   )

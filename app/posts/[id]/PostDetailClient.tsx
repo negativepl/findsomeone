@@ -1,38 +1,15 @@
 'use client'
 
-import { User } from '@supabase/supabase-js'
-import { NavbarClient } from '@/components/NavbarClient'
-import { NavbarWrapper } from '@/components/NavbarWrapper'
 import { useState, useEffect } from 'react'
-import { createClient } from '@/lib/supabase/client'
 
 interface PostDetailClientWrapperProps {
-  user: User | null
   children: React.ReactNode
   postTitle: string
-  isAdmin: boolean
 }
 
-export function PostDetailClientWrapper({ user, children, postTitle, isAdmin }: PostDetailClientWrapperProps) {
-  const [profile, setProfile] = useState<{ avatar_url: string | null; full_name: string | null } | null>(null)
+export function PostDetailClientWrapper({ children, postTitle }: PostDetailClientWrapperProps) {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
-
-  useEffect(() => {
-    if (!user) return
-
-    const supabase = createClient()
-
-    // Fetch profile
-    supabase
-      .from('profiles')
-      .select('avatar_url, full_name')
-      .eq('id', user.id)
-      .single()
-      .then(({ data }) => {
-        setProfile(data)
-      })
-  }, [user])
 
   // Handle scroll to show/hide header
   useEffect(() => {
@@ -56,16 +33,6 @@ export function PostDetailClientWrapper({ user, children, postTitle, isAdmin }: 
 
   return (
     <>
-      <NavbarWrapper alwaysVisible={true}>
-        <NavbarClient
-          user={user}
-          showAddButton={true}
-          profile={profile}
-          isAdmin={isAdmin}
-        />
-      </NavbarWrapper>
-      <div className="h-[60px]" />
-
       {/* Title below navbar - Mobile only */}
       <div className={`md:hidden fixed top-[60px] left-0 right-0 z-30 transition-transform duration-300 ${
         isHeaderVisible ? 'translate-y-0' : '-translate-y-full'

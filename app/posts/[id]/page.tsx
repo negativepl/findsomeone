@@ -19,6 +19,7 @@ import { CopyablePostId } from './CopyablePostId'
 import { ImageGallery } from './ImageGallery'
 import { PostDetailClientWrapper } from './PostDetailClient'
 import { MobileActionDock } from './MobileActionDock'
+import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Metadata } from 'next'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
@@ -303,7 +304,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
       <ViewCounter postId={post.id} userId={user?.id} postAuthorId={post.user_id} />
 
-      <PostDetailClientWrapper user={user} postTitle={post.title} isAdmin={isAdmin}>
+      <NavbarWithHide user={user} showAddButton={true} />
+
+      <PostDetailClientWrapper postTitle={post.title}>
         {/* Main Content */}
         <main className="container mx-auto px-4 md:px-6 py-4 md:py-16 mb-[72px] md:mb-0">
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-8">

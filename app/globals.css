@@ -287,6 +287,22 @@ html {
   padding-right: env(safe-area-inset-right, 0px);
 }
 
+/* Backdrop blur support */
+.backdrop-blur-lg {
+  -webkit-backdrop-filter: blur(16px) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.backdrop-blur-md {
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.backdrop-blur-sm {
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
 /* NProgress loading bar styles */
 #nprogress {
   pointer-events: none;

@@ -252,7 +252,7 @@ export default async function PostsPage({
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide
         user={user}
         pageTitle={searchQuery || cityQuery || categoryQuery ? 'Wyniki' : 'Ogłoszenia'}

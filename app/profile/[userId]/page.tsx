@@ -70,7 +70,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
     .limit(6)
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} pageTitle={profile.full_name || 'Profil'} />
 
       <div className="container mx-auto px-6 py-12">

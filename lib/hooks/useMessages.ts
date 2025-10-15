@@ -225,9 +225,25 @@ export function useUnreadCount(userId: string | null | undefined) {
 
       if (error) throw error
 
-      return count || 0
+      const unreadCount = count || 0
+
+      // Cache the count in localStorage
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(`unread_count_${userId}`, unreadCount.toString())
+      }
+
+      return unreadCount
     },
     enabled: !!userId,
+    placeholderData: (previousData) => {
+      // Use previous data or try to get from cache on client side only
+      if (previousData !== undefined) return previousData
+      if (typeof window !== 'undefined' && userId) {
+        const cached = localStorage.getItem(`unread_count_${userId}`)
+        return cached ? parseInt(cached, 10) : 0
+      }
+      return 0
+    },
     staleTime: 30 * 1000, // 30 seconds
     refetchInterval: 60 * 1000, // Refetch every minute
   })

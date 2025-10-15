@@ -139,7 +139,7 @@ export default async function MessagesPage() {
   const totalUnread = conversations.reduce((sum, conv) => sum + conv.unread_count, 0)
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0 flex flex-col">
+    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
       <NavbarWithHide user={user} pageTitle="Wiadomości" />
 
       <main className="container mx-auto px-4 md:px-6 py-6 md:py-16 flex-1">

@@ -6,6 +6,7 @@ import { MessagesIcon } from '@/components/MessagesIcon'
 import { FavoritesIcon } from '@/components/FavoritesIcon'
 import { MobileNavIcons } from '@/components/MobileNavIcons'
 import { NavbarSearchBar } from '@/components/NavbarSearchBar'
+import { CategoriesNavButton } from '@/components/CategoriesNavButton'
 import { User } from '@supabase/supabase-js'
 import { getUserRole } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -35,6 +36,20 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
     profile = data
   }
 
+  // Fetch categories for the categories button
+  const supabase = await createClient()
+  const { data: categories } = await supabase
+    .from('categories')
+    .select(`
+      id,
+      name,
+      slug,
+      icon,
+      subcategories:categories!parent_id(id, name, slug)
+    `)
+    .is('parent_id', null)
+    .order('name')
+
   return (
     <header className={`border-b border-black/5 bg-white ${noRounding ? '' : 'rounded-b-3xl'}`}>
       <div className="container mx-auto px-4 md:px-6 py-4 md:py-6 flex justify-between items-center gap-4">
@@ -62,8 +77,13 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
           </Link>
         )}
 
-        {/* Search Bar - Desktop */}
-        <NavbarSearchBar />
+        {/* Categories Button + Search Bar - Desktop */}
+        <div className="hidden md:flex gap-2 items-center flex-1 max-w-2xl">
+          {categories && categories.length > 0 && (
+            <CategoriesNavButton categories={categories} />
+          )}
+          <NavbarSearchBar />
+        </div>
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-2 lg:gap-3 items-center">

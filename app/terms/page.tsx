@@ -12,7 +12,7 @@ export default async function TermsPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} pageTitle="Regulamin" />
 
       <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">

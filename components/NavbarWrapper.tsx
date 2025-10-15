@@ -54,20 +54,14 @@ export function NavbarWrapper({ children, alwaysVisible = false }: NavbarWrapper
     }
   }, [lastScrollY, alwaysVisible])
 
-  // Prevent hydration mismatch by rendering static on server
-  if (!mounted) {
-    return (
-      <div className="fixed top-0 left-0 right-0 z-50">
-        {children}
-      </div>
-    )
-  }
-
+  // Always render with the same structure to prevent hydration mismatch
+  // During SSR and initial mount, always show navbar (translate-y-0)
   return (
     <div
       className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
-        isVisible ? 'translate-y-0' : '-translate-y-full'
+        !mounted || isVisible ? 'translate-y-0' : '-translate-y-full'
       }`}
+      suppressHydrationWarning
     >
       {children}
     </div>

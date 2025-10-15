@@ -13,7 +13,7 @@ export default async function ContactPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] pb-20 md:pb-0">
+    <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} pageTitle="Kontakt" />
 
       <main className="container mx-auto px-4 md:px-6 py-6 md:py-16">

@@ -12,7 +12,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-black/5 bg-white mt-20 rounded-t-3xl">
+    <footer className="border-t border-black/5 bg-white rounded-t-3xl pb-24 md:pb-0">
       <div className="container mx-auto px-6 pt-12 pb-6">
         <div className="grid md:grid-cols-4 gap-4 md:gap-8 mb-8">
           {/* Logo i opis */}
@@ -33,7 +33,7 @@ export function Footer() {
               aria-label="Rozwiń sekcję Produkt"
               aria-expanded={openSection === 'product'}
             >
-              <h4 className="font-semibold text-black mb-2 md:mb-4">Produkt</h4>
+              <h4 className="font-semibold text-lg text-black">Produkt</h4>
               <svg
                 className={`w-5 h-5 text-black/60 transition-transform md:hidden ${
                   openSection === 'product' ? 'rotate-180' : ''
@@ -66,7 +66,7 @@ export function Footer() {
               aria-label="Rozwiń sekcję Kategorie"
               aria-expanded={openSection === 'categories'}
             >
-              <h4 className="font-semibold text-black mb-2 md:mb-4">Kategorie</h4>
+              <h4 className="font-semibold text-lg text-black">Kategorie</h4>
               <svg
                 className={`w-5 h-5 text-black/60 transition-transform md:hidden ${
                   openSection === 'categories' ? 'rotate-180' : ''
@@ -99,7 +99,7 @@ export function Footer() {
               aria-label="Rozwiń sekcję Firma"
               aria-expanded={openSection === 'company'}
             >
-              <h4 className="font-semibold text-black mb-2 md:mb-4">Firma</h4>
+              <h4 className="font-semibold text-lg text-black">Firma</h4>
               <svg
                 className={`w-5 h-5 text-black/60 transition-transform md:hidden ${
                   openSection === 'company' ? 'rotate-180' : ''
