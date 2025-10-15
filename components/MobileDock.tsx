@@ -211,7 +211,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
   const [categoriesOpen, setCategoriesOpen] = useState(false)
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   const isLoggedIn = !!user
   const dockItems = getDockItems(isLoggedIn)
@@ -242,8 +242,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
 
   // Calculate active index for indicator animation
   const getActiveIndex = () => {
-    // If categories modal is open, show indicator under Categories button (highest priority)
-    if (categoriesOpen) {
+    // If categories modal or selected category is open, show indicator under Categories button (highest priority)
+    if (categoriesOpen || selectedCategory) {
       return dockItems.findIndex(item => item.isCategories)
     }
 
@@ -319,12 +319,12 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
 
   // Emit events when categories state changes
   useEffect(() => {
-    if (categoriesOpen) {
+    if (categoriesOpen || selectedCategory) {
       window.dispatchEvent(new Event('mobileDockCategoriesOpen'))
     } else {
       window.dispatchEvent(new Event('mobileDockCategoriesClose'))
     }
-  }, [categoriesOpen])
+  }, [categoriesOpen, selectedCategory])
 
   // Haptic feedback function
   const triggerHaptic = () => {
@@ -350,15 +350,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
       {/* Categories Drawer */}
       <Drawer.Root open={categoriesOpen} onOpenChange={setCategoriesOpen} modal={false}>
         <Drawer.Portal>
-          {categoriesOpen && (
-            <div
-              className="fixed inset-0 bg-black/40 z-40"
-              onClick={() => setCategoriesOpen(false)}
-              style={{ bottom: '84px' }}
-            />
-          )}
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[75vh]"
+            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-black/10"
             style={{
               paddingBottom: '84px',
               background: '#FAF8F3'
@@ -401,81 +394,38 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 <div className="space-y-2">
                   {categories.map((cat) => {
                     const hasSubcategories = cat.subcategories && cat.subcategories.length > 0
-                    const isExpanded = expandedCategory === cat.id
 
                     return (
-                      <div key={cat.id}>
-                        {/* Main category */}
-                        {hasSubcategories ? (
-                          <button
-                            onClick={() => {
-                              triggerHaptic()
-                              setExpandedCategory(isExpanded ? null : cat.id)
-                            }}
-                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-300 ${
-                              isExpanded
-                                ? 'bg-[#C44E35] text-white'
-                                : 'bg-white text-black border border-black/10 hover:bg-[#F5F1E8]'
-                            }`}
+                      <button
+                        key={cat.id}
+                        onClick={() => {
+                          triggerHaptic()
+                          if (hasSubcategories) {
+                            // Set selected category first to keep active state
+                            setSelectedCategory(cat)
+                            // Close categories drawer immediately
+                            setCategoriesOpen(false)
+                          } else {
+                            // Navigate directly to category
+                            router.push(`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`)
+                            setCategoriesOpen(false)
+                          }
+                        }}
+                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors duration-300 bg-white text-black border border-black/10 hover:bg-[#F5F1E8]"
+                      >
+                        <CategoryIcon iconName={cat.icon} className="w-6 h-6 text-black/60" />
+                        <span className="font-medium flex-1 text-base">{cat.name}</span>
+                        {hasSubcategories && (
+                          <svg
+                            className="w-5 h-5 text-black/40"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
                           >
-                            <CategoryIcon
-                              iconName={cat.icon}
-                              className={`w-5 h-5 transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-black/60'}`}
-                            />
-                            <span className="font-medium flex-1">{cat.name}</span>
-                            <svg
-                              className={`w-5 h-5 transition-all duration-300 ${isExpanded ? 'rotate-90 text-white' : 'text-black/40'}`}
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                            </svg>
-                          </button>
-                        ) : (
-                          <Link
-                            href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
-                            onClick={() => {
-                              triggerHaptic()
-                              setCategoriesOpen(false)
-                            }}
-                            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors duration-300 bg-white text-black border border-black/10 hover:bg-[#F5F1E8]"
-                          >
-                            <CategoryIcon iconName={cat.icon} className="w-5 h-5 text-black/60" />
-                            <span className="font-medium flex-1">{cat.name}</span>
-                          </Link>
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                          </svg>
                         )}
-
-                        {/* Subcategories */}
-                        {hasSubcategories && isExpanded && (
-                          <div className="ml-4 mt-2 space-y-1">
-                            {cat.subcategories!.map((sub) => (
-                              <Link
-                                key={sub.id}
-                                href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
-                                onClick={() => {
-                                  triggerHaptic()
-                                  setCategoriesOpen(false)
-                                }}
-                                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-colors duration-300 bg-white text-black/80 hover:bg-[#F5F1E8] hover:text-black"
-                              >
-                                <span className="text-sm font-medium">{sub.name}</span>
-                              </Link>
-                            ))}
-                            {/* "Zobacz wszystkie" for this category */}
-                            <Link
-                              href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
-                              onClick={() => {
-                                triggerHaptic()
-                                setCategoriesOpen(false)
-                              }}
-                              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-colors duration-300 text-[#C44E35] hover:bg-[#C44E35]/5 font-medium text-sm"
-                            >
-                              Zobacz wszystkie →
-                            </Link>
-                          </div>
-                        )}
-                      </div>
+                      </button>
                     )
                   })}
                 </div>
@@ -485,18 +435,96 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         </Drawer.Portal>
       </Drawer.Root>
 
+      {/* Category Detail Drawer */}
+      <Drawer.Root open={!!selectedCategory} onOpenChange={(open) => {
+        if (!open) {
+          setSelectedCategory(null)
+          setCategoriesOpen(true)
+        }
+      }} modal={false}>
+        <Drawer.Portal>
+          <Drawer.Content
+            className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-black/10"
+            style={{
+              paddingBottom: '84px',
+              background: '#FAF8F3'
+            }}
+          >
+            {/* Handle */}
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-black/20 mt-4 mb-2" />
+
+            <div className="overflow-y-auto flex-1">
+              <div className="p-6 space-y-4">
+                {/* Back button */}
+                <button
+                  onClick={() => {
+                    triggerHaptic()
+                    setSelectedCategory(null)
+                    setCategoriesOpen(true)
+                  }}
+                  className="flex items-center gap-2 text-black hover:text-[#C44E35] transition-colors mb-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  <span className="font-medium">Powrót</span>
+                </button>
+
+                {/* Title for accessibility */}
+                {selectedCategory && (
+                  <Drawer.Title className="sr-only">
+                    {selectedCategory.name}
+                  </Drawer.Title>
+                )}
+
+                {/* Main category button */}
+                {selectedCategory && (
+                  <div className="mb-4">
+                    <Link
+                      href={`/posts?category=${encodeURIComponent(selectedCategory.name.toLowerCase())}`}
+                      onClick={() => {
+                        triggerHaptic()
+                        setSelectedCategory(null)
+                        setCategoriesOpen(false)
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border border-black/10 hover:bg-[#F5F1E8] transition-colors"
+                    >
+                      <CategoryIcon iconName={selectedCategory.icon} className="w-6 h-6 text-black/60" />
+                      <span className="font-bold text-lg">{selectedCategory.name}</span>
+                    </Link>
+                  </div>
+                )}
+
+                {/* Subcategories */}
+                {selectedCategory?.subcategories && selectedCategory.subcategories.length > 0 && (
+                  <div className="space-y-2">
+                    {selectedCategory.subcategories.map((sub) => (
+                      <Link
+                        key={sub.id}
+                        href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
+                        onClick={() => {
+                          triggerHaptic()
+                          setSelectedCategory(null)
+                          setCategoriesOpen(false)
+                        }}
+                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors bg-white text-black border border-black/10 hover:bg-[#F5F1E8]"
+                      >
+                        <span className="font-medium text-base">{sub.name}</span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
       {/* Menu Drawer */}
       <Drawer.Root open={menuOpen} onOpenChange={setMenuOpen} modal={false}>
         <Drawer.Portal>
-          {menuOpen && (
-            <div
-              className="fixed inset-0 bg-black/40 z-40"
-              onClick={() => setMenuOpen(false)}
-              style={{ bottom: '84px' }}
-            />
-          )}
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[80vh]"
+            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[80vh] border-t border-black/10"
             style={{
               paddingBottom: '84px',
               background: 'white'
@@ -660,7 +688,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
             const isActive = pathname === item.href
 
             if (item.isCategories) {
-              const isCategoriesButtonActive = categoriesOpen
+              const isCategoriesButtonActive = categoriesOpen || !!selectedCategory
               const shouldBeWhite = isCategoriesButtonActive
 
               return (
@@ -671,6 +699,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     triggerHaptic()
                     // Close menu if open
                     if (menuOpen) setMenuOpen(false)
+                    // Close selected category if open
+                    if (selectedCategory) setSelectedCategory(null)
                     // Toggle categories
                     setCategoriesOpen(!categoriesOpen)
                   }}
@@ -702,6 +732,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     triggerHaptic()
                     // Close categories if open
                     if (categoriesOpen) setCategoriesOpen(false)
+                    // Close selected category if open
+                    if (selectedCategory) setSelectedCategory(null)
                     // Toggle menu
                     setMenuOpen(!menuOpen)
                   }}
