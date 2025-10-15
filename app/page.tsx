@@ -91,7 +91,7 @@ export default async function Home() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'FindSomeone',
-    description: 'Platforma łącząca ludzi w okolicy. Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu? A może sam chcesz pomóc?',
+    description: 'Platforma łącząca ludzi w Twoim mieście. Lokalna pomoc - zakupy, remont, sprzątanie. Znajdź pomocnika lub oferuj swoją pomoc innym za darmo.',
     url: baseUrl,
     potentialAction: {
       '@type': 'SearchAction',
@@ -109,7 +109,7 @@ export default async function Home() {
     name: 'FindSomeone',
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
-    description: 'Platforma łącząca ludzi w Polsce',
+    description: 'Darmowa platforma lokalnej pomocy łącząca ludzi w mieście. Pomoc przy zakupach, remoncie, sprzątaniu i inne drobne usługi.',
     areaServed: {
       '@type': 'Country',
       name: 'Polska',

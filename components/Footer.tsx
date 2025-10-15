@@ -25,18 +25,18 @@ export function Footer() {
             </p>
           </div>
 
-          {/* Produkt */}
+          {/* Główne */}
           <div>
             <button
-              onClick={() => toggleSection('product')}
+              onClick={() => toggleSection('main')}
               className="flex items-center justify-between w-full md:cursor-default py-2"
-              aria-label="Rozwiń sekcję Produkt"
-              aria-expanded={openSection === 'product'}
+              aria-label="Rozwiń sekcję Główne"
+              aria-expanded={openSection === 'main'}
             >
-              <h4 className="font-semibold text-lg text-black">Produkt</h4>
+              <h4 className="font-semibold text-lg text-black">Główne</h4>
               <svg
                 className={`w-5 h-5 text-black/60 transition-transform md:hidden ${
-                  openSection === 'product' ? 'rotate-180' : ''
+                  openSection === 'main' ? 'rotate-180' : ''
                 }`}
                 fill="none"
                 stroke="currentColor"
@@ -48,13 +48,13 @@ export function Footer() {
             </button>
             <ul
               className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all md:!block ${
-                openSection === 'product' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
+                openSection === 'main' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
               }`}
             >
-              <li><Link href="/dashboard" className="hover:text-black transition-colors inline-block py-2">Przeglądaj ogłoszenia</Link></li>
-              <li><Link href="/signup" className="hover:text-black transition-colors inline-block py-2">Zarejestruj się</Link></li>
-              <li><Link href="/login" className="hover:text-black transition-colors inline-block py-2">Zaloguj się</Link></li>
+              <li><Link href="/posts" className="hover:text-black transition-colors inline-block py-2">Przeglądaj ogłoszenia</Link></li>
               <li><Link href="/how-it-works" className="hover:text-black transition-colors inline-block py-2">Jak to działa</Link></li>
+              <li><Link href="/install" className="hover:text-black transition-colors inline-block py-2">Zainstaluj aplikację</Link></li>
+              <li><Link href="/faq" className="hover:text-black transition-colors inline-block py-2">FAQ</Link></li>
             </ul>
           </div>
 
