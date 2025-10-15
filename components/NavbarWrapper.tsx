@@ -58,9 +58,10 @@ export function NavbarWrapper({ children, alwaysVisible = false }: NavbarWrapper
   // During SSR and initial mount, always show navbar (translate-y-0)
   return (
     <div
-      className={`fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ${
-        !mounted || isVisible ? 'translate-y-0' : '-translate-y-full'
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 transition-transform duration-300"
+      style={{
+        transform: !mounted || isVisible ? 'translateY(0)' : 'translateY(-100%)'
+      }}
       suppressHydrationWarning
     >
       {children}

@@ -95,17 +95,23 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [lastScrollY])
 
-  // Listen for menu open/close events
+  // Listen for menu and categories open/close events
   useEffect(() => {
     const handleMenuOpen = () => setIsMenuOpen(true)
     const handleMenuClose = () => setIsMenuOpen(false)
+    const handleCategoriesOpen = () => setIsMenuOpen(true)
+    const handleCategoriesClose = () => setIsMenuOpen(false)
 
     window.addEventListener('mobileDockMenuOpen', handleMenuOpen)
     window.addEventListener('mobileDockMenuClose', handleMenuClose)
+    window.addEventListener('mobileDockCategoriesOpen', handleCategoriesOpen)
+    window.addEventListener('mobileDockCategoriesClose', handleCategoriesClose)
 
     return () => {
       window.removeEventListener('mobileDockMenuOpen', handleMenuOpen)
       window.removeEventListener('mobileDockMenuClose', handleMenuClose)
+      window.removeEventListener('mobileDockCategoriesOpen', handleCategoriesOpen)
+      window.removeEventListener('mobileDockCategoriesClose', handleCategoriesClose)
     }
   }, [])
 

@@ -50,7 +50,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <PresenceManager userId={userId} />
       {children}
       <Toaster position="top-right" richColors />
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />
     </QueryClientProvider>
   )
 }

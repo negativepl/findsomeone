@@ -8,6 +8,16 @@ import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { User } from '@supabase/supabase-js'
 import { createBrowserClient } from '@supabase/ssr'
+import { CategoryIcon } from '@/lib/category-icons'
+import { Drawer } from 'vaul'
+
+interface Category {
+  id: string
+  name: string
+  slug: string
+  icon: string
+  subcategories?: { id: string; name: string; slug: string }[]
+}
 
 const getDockItems = (isLoggedIn: boolean) => {
   if (isLoggedIn) {
@@ -17,18 +27,19 @@ const getDockItems = (isLoggedIn: boolean) => {
         href: '/',
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
         ),
       },
       {
-        title: 'Ogłoszenia',
-        href: '/posts',
+        title: 'Kategorie',
+        href: '#',
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
           </svg>
         ),
+        isCategories: true,
       },
       {
         title: 'Dodaj',
@@ -67,18 +78,19 @@ const getDockItems = (isLoggedIn: boolean) => {
         href: '/',
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
           </svg>
         ),
       },
       {
-        title: 'Ogłoszenia',
-        href: '/posts',
+        title: 'Kategorie',
+        href: '#',
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
           </svg>
         ),
+        isCategories: true,
       },
       {
         title: 'O nas',
@@ -191,13 +203,15 @@ interface MobileDockProps {
   user?: User | null
   profile?: { avatar_url: string | null; full_name: string | null } | null
   isAdmin?: boolean
+  categories?: Category[]
 }
 
-export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps = {}) {
+export function MobileDock({ user, profile, isAdmin = false, categories = [] }: MobileDockProps = {}) {
   const pathname = usePathname()
   const router = useRouter()
   const [menuOpen, setMenuOpen] = useState(false)
-  const [isClosing, setIsClosing] = useState(false)
+  const [categoriesOpen, setCategoriesOpen] = useState(false)
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
   const [isMounted, setIsMounted] = useState(false)
   const isLoggedIn = !!user
   const dockItems = getDockItems(isLoggedIn)
@@ -228,7 +242,12 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
 
   // Calculate active index for indicator animation
   const getActiveIndex = () => {
-    // If menu is open, show indicator under Menu button (highest priority)
+    // If categories modal is open, show indicator under Categories button (highest priority)
+    if (categoriesOpen) {
+      return dockItems.findIndex(item => item.isCategories)
+    }
+
+    // If menu is open, show indicator under Menu button
     if (menuOpen) {
       return dockItems.findIndex(item => item.isMenu)
     }
@@ -247,26 +266,65 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
   }
 
   const activeIndex = getActiveIndex()
+  const [prevActiveIndex, setPrevActiveIndex] = useState(activeIndex)
 
   // Check if the active item is the special "Dodaj" button
   const isSpecialActive = activeIndex !== -1 && dockItems[activeIndex]?.isSpecial
 
+  // Find special button index
+  const specialButtonIndex = dockItems.findIndex(item => item.isSpecial)
+
+  // Check if animation should pass through special button
+  const shouldAnimateThroughSpecial = () => {
+    if (activeIndex === -1 || prevActiveIndex === -1) return false
+    if (specialButtonIndex === -1) return false
+
+    const min = Math.min(activeIndex, prevActiveIndex)
+    const max = Math.max(activeIndex, prevActiveIndex)
+
+    // Special button is between previous and current position
+    return specialButtonIndex > min && specialButtonIndex < max
+  }
+
+  const passesThroughSpecial = shouldAnimateThroughSpecial()
+
   useEffect(() => {
-    if (menuOpen && !isClosing) {
-      handleClose()
+    if (activeIndex !== prevActiveIndex) {
+      // Delay updating prevActiveIndex to allow animation to use the old value
+      const timer = setTimeout(() => {
+        setPrevActiveIndex(activeIndex)
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [activeIndex, prevActiveIndex, specialButtonIndex, passesThroughSpecial])
+
+  useEffect(() => {
+    if (menuOpen) {
+      setMenuOpen(false)
+    }
+    if (categoriesOpen) {
+      setCategoriesOpen(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname])
 
-  const handleClose = () => {
-    setIsClosing(true)
-    // Emit event that menu is closing
-    window.dispatchEvent(new Event('mobileDockMenuClose'))
-    setTimeout(() => {
-      setMenuOpen(false)
-      setIsClosing(false)
-    }, 300)
-  }
+  // Emit events when menu state changes
+  useEffect(() => {
+    if (menuOpen) {
+      window.dispatchEvent(new Event('mobileDockMenuOpen'))
+    } else {
+      window.dispatchEvent(new Event('mobileDockMenuClose'))
+    }
+  }, [menuOpen])
+
+  // Emit events when categories state changes
+  useEffect(() => {
+    if (categoriesOpen) {
+      window.dispatchEvent(new Event('mobileDockCategoriesOpen'))
+    } else {
+      window.dispatchEvent(new Event('mobileDockCategoriesClose'))
+    }
+  }, [categoriesOpen])
 
   // Haptic feedback function
   const triggerHaptic = () => {
@@ -282,148 +340,353 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
     await supabase.auth.signOut()
-    handleClose()
+    setMenuOpen(false)
     router.push('/')
     router.refresh()
   }
 
   return (
     <>
-      {/* Menu overlay */}
-      {(menuOpen || isClosing) && (
-        <>
-          {/* Backdrop */}
-          <div
-            className={cn(
-              "md:hidden fixed inset-0 bg-black/50 z-10",
-              isClosing ? "animate-out fade-out duration-300" : "animate-in fade-in duration-200"
-            )}
-            onClick={handleClose}
-          />
-
-          {/* Menu panel */}
-          <div
-            className={cn(
-              "md:hidden fixed left-0 right-0 bg-white rounded-t-3xl z-20 max-h-[80vh] overflow-hidden",
-              isClosing ? "animate-out slide-out-to-bottom duration-300" : "animate-in slide-in-from-bottom duration-400"
-            )}
+      {/* Categories Drawer */}
+      <Drawer.Root open={categoriesOpen} onOpenChange={setCategoriesOpen} modal={false}>
+        <Drawer.Portal>
+          {categoriesOpen && (
+            <div
+              className="fixed inset-0 bg-black/40 z-40"
+              onClick={() => setCategoriesOpen(false)}
+              style={{ bottom: '84px' }}
+            />
+          )}
+          <Drawer.Content
+            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[75vh]"
             style={{
-              bottom: '0',
               paddingBottom: '84px',
+              background: '#FAF8F3'
             }}
           >
-            <div className="p-6">
-              <div className="flex justify-between items-center mb-6">
-                {/* User info or Menu title */}
-                {isLoggedIn && user ? (
-                  <div className="flex items-center gap-3">
-                    {/* Avatar */}
-                    {profile?.avatar_url ? (
-                      <Image
-                        src={profile.avatar_url}
-                        alt=""
-                        width={48}
-                        height={48}
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-[#C44E35] text-white flex items-center justify-center font-bold text-lg" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
-                        {getInitials()}
-                      </div>
-                    )}
-                    {/* User info */}
-                    <div className="flex flex-col">
-                      <p className="font-semibold text-black">{getUserName()}</p>
-                      <p className="text-sm text-black/60 truncate max-w-[180px]">{user.email}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <h2 className="text-xl font-bold text-black">Menu</h2>
-                )}
+            {/* Handle */}
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-black/20 mt-4 mb-2" />
 
-                <button
+            <div className="overflow-y-auto flex-1">
+              <div className="p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <Drawer.Title className="text-lg font-bold text-black">Kategorie</Drawer.Title>
+                  <button
+                    onClick={() => {
+                      triggerHaptic()
+                      setCategoriesOpen(false)
+                    }}
+                    className="p-2 hover:bg-black/5 rounded-full transition-colors duration-300"
+                    aria-label="Zamknij menu"
+                  >
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* All categories button */}
+                <Link
+                  href="/posts"
                   onClick={() => {
                     triggerHaptic()
-                    handleClose()
+                    setCategoriesOpen(false)
                   }}
-                  className="text-black/60 hover:text-black transition-colors p-2 -mr-2 rounded-full hover:bg-black/5"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors duration-300 bg-white text-black border border-black/10 hover:bg-[#F5F1E8]"
                 >
-                  <svg className="w-5 h-5" viewBox="0 0 20 20" stroke="currentColor" fill="none">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15L15 5M5 5L15 15" />
-                  </svg>
-                </button>
-              </div>
-              <div className="grid grid-cols-2 gap-3 overflow-y-auto max-h-[60vh]">
-                {menuItems.map((item, index) => {
-                  // Handle logout separately
-                  if (item.isLogout) {
-                    return (
-                      <button
-                        key={`${item.href}-${index}`}
-                        onClick={handleSignOut}
-                        className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors bg-red-50 hover:bg-red-100 text-red-600"
-                      >
-                        <div className="text-red-600">
-                          {item.icon}
-                        </div>
-                        <span className="text-sm text-red-600">{item.title}</span>
-                      </button>
-                    )
-                  }
+                  <span className="font-medium">Wszystkie kategorie</span>
+                </Link>
 
-                  return (
-                    <Link
-                      key={`${item.href}-${index}`}
-                      href={item.href}
-                      onClick={triggerHaptic}
-                      className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors bg-[#F5F1E8] hover:bg-brand hover:text-white group"
-                    >
-                      <div className="text-black group-hover:text-white transition-colors">
-                        {item.icon}
+                {/* Categories list */}
+                <div className="space-y-2">
+                  {categories.map((cat) => {
+                    const hasSubcategories = cat.subcategories && cat.subcategories.length > 0
+                    const isExpanded = expandedCategory === cat.id
+
+                    return (
+                      <div key={cat.id}>
+                        {/* Main category */}
+                        {hasSubcategories ? (
+                          <button
+                            onClick={() => {
+                              triggerHaptic()
+                              setExpandedCategory(isExpanded ? null : cat.id)
+                            }}
+                            className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-300 ${
+                              isExpanded
+                                ? 'bg-[#C44E35] text-white'
+                                : 'bg-white text-black border border-black/10 hover:bg-[#F5F1E8]'
+                            }`}
+                          >
+                            <CategoryIcon
+                              iconName={cat.icon}
+                              className={`w-5 h-5 transition-colors duration-300 ${isExpanded ? 'text-white' : 'text-black/60'}`}
+                            />
+                            <span className="font-medium flex-1">{cat.name}</span>
+                            <svg
+                              className={`w-5 h-5 transition-all duration-300 ${isExpanded ? 'rotate-90 text-white' : 'text-black/40'}`}
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </button>
+                        ) : (
+                          <Link
+                            href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
+                            onClick={() => {
+                              triggerHaptic()
+                              setCategoriesOpen(false)
+                            }}
+                            className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors duration-300 bg-white text-black border border-black/10 hover:bg-[#F5F1E8]"
+                          >
+                            <CategoryIcon iconName={cat.icon} className="w-5 h-5 text-black/60" />
+                            <span className="font-medium flex-1">{cat.name}</span>
+                          </Link>
+                        )}
+
+                        {/* Subcategories */}
+                        {hasSubcategories && isExpanded && (
+                          <div className="ml-4 mt-2 space-y-1">
+                            {cat.subcategories!.map((sub) => (
+                              <Link
+                                key={sub.id}
+                                href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
+                                onClick={() => {
+                                  triggerHaptic()
+                                  setCategoriesOpen(false)
+                                }}
+                                className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-colors duration-300 bg-white text-black/80 hover:bg-[#F5F1E8] hover:text-black"
+                              >
+                                <span className="text-sm font-medium">{sub.name}</span>
+                              </Link>
+                            ))}
+                            {/* "Zobacz wszystkie" for this category */}
+                            <Link
+                              href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
+                              onClick={() => {
+                                triggerHaptic()
+                                setCategoriesOpen(false)
+                              }}
+                              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-left transition-colors duration-300 text-[#C44E35] hover:bg-[#C44E35]/5 font-medium text-sm"
+                            >
+                              Zobacz wszystkie →
+                            </Link>
+                          </div>
+                        )}
                       </div>
-                      <span className="text-sm text-black group-hover:text-white transition-colors">{item.title}</span>
-                    </Link>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
+
+      {/* Menu Drawer */}
+      <Drawer.Root open={menuOpen} onOpenChange={setMenuOpen} modal={false}>
+        <Drawer.Portal>
+          {menuOpen && (
+            <div
+              className="fixed inset-0 bg-black/40 z-40"
+              onClick={() => setMenuOpen(false)}
+              style={{ bottom: '84px' }}
+            />
+          )}
+          <Drawer.Content
+            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[80vh]"
+            style={{
+              paddingBottom: '84px',
+              background: 'white'
+            }}
+          >
+            {/* Handle */}
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-black/20 mt-4 mb-2" />
+
+            <div className="overflow-y-auto flex-1">
+              <div className="p-6">
+                <div className="flex justify-between items-center mb-6">
+                  {/* User info or Menu title */}
+                  {isLoggedIn && user ? (
+                    <>
+                      <div className="flex items-center gap-3">
+                        {/* Avatar */}
+                        {profile?.avatar_url ? (
+                          <Image
+                            src={profile.avatar_url}
+                            alt=""
+                            width={48}
+                            height={48}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-[#C44E35] text-white flex items-center justify-center font-bold text-lg" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+                            {getInitials()}
+                          </div>
+                        )}
+                        {/* User info */}
+                        <div className="flex flex-col">
+                          <Drawer.Title className="font-semibold text-black">{getUserName()}</Drawer.Title>
+                          <p className="text-sm text-black/60 truncate max-w-[180px]">{user.email}</p>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <Drawer.Title className="text-xl font-bold text-black">Menu</Drawer.Title>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      triggerHaptic()
+                      setMenuOpen(false)
+                    }}
+                    className="text-black/60 hover:text-black transition-colors duration-300 p-2 -mr-2 rounded-full hover:bg-black/5"
+                  >
+                    <svg className="w-5 h-5" viewBox="0 0 20 20" stroke="currentColor" fill="none">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15L15 5M5 5L15 15" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {menuItems.map((item, index) => {
+                    // Handle logout separately
+                    if (item.isLogout) {
+                      return (
+                        <button
+                          key={`${item.href}-${index}`}
+                          onClick={handleSignOut}
+                          className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors duration-300 bg-red-50 hover:bg-red-100 text-red-600"
+                        >
+                          <div className="text-red-600">
+                            {item.icon}
+                          </div>
+                          <span className="text-sm text-red-600">{item.title}</span>
+                        </button>
+                      )
+                    }
+
+                    return (
+                      <Link
+                        key={`${item.href}-${index}`}
+                        href={item.href}
+                        onClick={triggerHaptic}
+                        className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors duration-300 bg-[#F5F1E8] hover:bg-brand hover:text-white group"
+                      >
+                        <div className="text-black group-hover:text-white transition-colors duration-300">
+                          {item.icon}
+                        </div>
+                        <span className="text-sm text-black group-hover:text-white transition-colors duration-300">{item.title}</span>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          </Drawer.Content>
+        </Drawer.Portal>
+      </Drawer.Root>
 
       {/* Bottom dock */}
       <motion.div
         initial={false}
         animate={{ y: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
+        transition={{ duration: 0.3, ease: [0.34, 1.25, 0.35, 1] }}
         className={cn(
-          "md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white border-t border-black/5",
+          "md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-black/5",
           !isMessagePage && "rounded-t-3xl"
         )}
         style={{
           WebkitTransform: 'translateZ(0)',
           transform: 'translateZ(0)',
+          zIndex: 9999,
+          pointerEvents: 'auto'
         }}
       >
         <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
           {/* Animated indicator background */}
-          <div
-            className="absolute bg-brand transition-all"
-            style={{
-              height: isSpecialActive ? '44px' : '36px',
-              width: isSpecialActive ? '44px' : '36px',
-              borderRadius: isSpecialActive ? '50%' : '12px',
-              top: isSpecialActive ? '8px' : '12px',
-              zIndex: 0,
-              left: activeIndex !== -1
-                ? `calc((100% - 32px) / ${dockItems.length} * ${activeIndex} + 16px + (100% - 32px) / ${dockItems.length} / 2 - ${isSpecialActive ? '22px' : '18px'})`
-                : '0px',
-              transition: 'left 0.4s cubic-bezier(0.34, 1.25, 0.35, 1), opacity 0.2s, width 0.3s ease, height 0.3s ease, border-radius 0.3s ease, top 0.3s ease',
-              opacity: isMounted && activeIndex !== -1 ? 1 : 0,
+          <motion.div
+            className="absolute bg-brand"
+            initial={false}
+            animate={
+              passesThroughSpecial && activeIndex !== -1 && prevActiveIndex !== -1
+                ? {
+                    left: [
+                      `calc((100% - 32px) / ${dockItems.length} * ${prevActiveIndex} + 16px + (100% - 32px) / ${dockItems.length} / 2 - 18px)`,
+                      `calc((100% - 32px) / ${dockItems.length} * ${specialButtonIndex} + 16px + (100% - 32px) / ${dockItems.length} / 2 - 22px)`,
+                      `calc((100% - 32px) / ${dockItems.length} * ${activeIndex} + 16px + (100% - 32px) / ${dockItems.length} / 2 - ${isSpecialActive ? '22px' : '18px'})`
+                    ],
+                    width: [
+                      '36px',
+                      '44px',
+                      isSpecialActive ? '44px' : '36px'
+                    ],
+                    height: [
+                      '36px',
+                      '44px',
+                      isSpecialActive ? '44px' : '36px'
+                    ],
+                    borderRadius: [
+                      '12px',
+                      '50%',
+                      isSpecialActive ? '50%' : '12px'
+                    ],
+                    top: [
+                      '12px',
+                      '8px',
+                      isSpecialActive ? '8px' : '12px'
+                    ],
+                    opacity: isMounted && activeIndex !== -1 ? 1 : 0,
+                  }
+                : {
+                    left: activeIndex !== -1
+                      ? `calc((100% - 32px) / ${dockItems.length} * ${activeIndex} + 16px + (100% - 32px) / ${dockItems.length} / 2 - ${isSpecialActive ? '22px' : '18px'})`
+                      : '0px',
+                    width: isSpecialActive ? '44px' : '36px',
+                    height: isSpecialActive ? '44px' : '36px',
+                    borderRadius: isSpecialActive ? '50%' : '12px',
+                    top: isSpecialActive ? '8px' : '12px',
+                    opacity: isMounted && activeIndex !== -1 ? 1 : 0,
+                  }
+            }
+            transition={{
+              duration: 0.3,
+              ease: [0.34, 1.25, 0.35, 1]
             }}
+            style={{ zIndex: 0 }}
           />
           {dockItems.map((item, index) => {
             const isActive = pathname === item.href
+
+            if (item.isCategories) {
+              const isCategoriesButtonActive = categoriesOpen
+              const shouldBeWhite = isCategoriesButtonActive
+
+              return (
+                <button
+                  key="categories"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    triggerHaptic()
+                    // Close menu if open
+                    if (menuOpen) setMenuOpen(false)
+                    // Toggle categories
+                    setCategoriesOpen(!categoriesOpen)
+                  }}
+                  className="flex flex-col items-center justify-center gap-4 flex-1 relative py-2"
+                  style={{ zIndex: 10000, pointerEvents: 'auto' }}
+                >
+                  <div className={cn(
+                    "transition-colors duration-300",
+                    shouldBeWhite ? 'text-white' : 'text-black/60'
+                  )}>
+                    {item.icon}
+                  </div>
+                  <span className="text-xs leading-none text-black/60">{item.title}</span>
+                </button>
+              )
+            }
 
             if (item.isMenu) {
               const isMenuButtonActive = menuOpen
@@ -434,21 +697,19 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
               return (
                 <button
                   key="menu"
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation()
                     triggerHaptic()
-                    const newMenuState = !menuOpen
-                    setMenuOpen(newMenuState)
-                    // Emit event for menu state change
-                    if (newMenuState) {
-                      window.dispatchEvent(new Event('mobileDockMenuOpen'))
-                    } else {
-                      window.dispatchEvent(new Event('mobileDockMenuClose'))
-                    }
+                    // Close categories if open
+                    if (categoriesOpen) setCategoriesOpen(false)
+                    // Toggle menu
+                    setMenuOpen(!menuOpen)
                   }}
-                  className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
+                  className="flex flex-col items-center justify-center gap-4 flex-1 relative py-2"
+                  style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
                   <div className={cn(
-                    "transition-colors",
+                    "transition-colors duration-300",
                     shouldBeWhite ? 'text-white' : 'text-black/60'
                   )}>
                     {item.icon}
@@ -487,8 +748,8 @@ export function MobileDock({ user, profile, isAdmin = false }: MobileDockProps =
                 className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
               >
                 <div className={cn(
-                  "transition-colors",
-                  isActive && !menuOpen ? 'text-white' : 'text-black/60'
+                  "transition-colors duration-300",
+                  isActive && !menuOpen && !categoriesOpen ? 'text-white' : 'text-black/60'
                 )}>
                   {item.icon}
                 </div>
