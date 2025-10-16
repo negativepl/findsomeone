@@ -14,9 +14,10 @@ interface AnimatedTabsProps {
   activeTab: string
   onTabChange: (tabId: string) => void
   className?: string
+  showLoader?: boolean // Whether to show TopLoader on tab change
 }
 
-export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '' }: AnimatedTabsProps) {
+export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', showLoader = false }: AnimatedTabsProps) {
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 })
   const tabsRef = useRef<{ [key: string]: HTMLButtonElement | null }>({})
 
@@ -46,7 +47,8 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '' }: A
           key={tab.id}
           ref={(el) => (tabsRef.current[tab.id] = el)}
           onClick={() => onTabChange(tab.id)}
-          data-no-loader="true"
+          data-navigate={showLoader ? "true" : undefined}
+          data-no-loader={!showLoader ? "true" : undefined}
           className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-colors duration-200 relative text-sm md:text-base whitespace-nowrap ${
             activeTab === tab.id
               ? 'text-[#C44E35]'

@@ -48,6 +48,7 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
       activeTab={currentType}
       onTabChange={handleTabChange}
       className="justify-center md:justify-start"
+      showLoader={true}
     />
   )
 }
