@@ -43,7 +43,7 @@ const getDockItems = (isLoggedIn: boolean) => {
       },
       {
         title: 'Dodaj',
-        href: '/dashboard/posts/new',
+        href: '/dashboard/my-posts/new',
         icon: (
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -127,7 +127,7 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
   const items = [
     {
       title: 'Moje ogłoszenia',
-      href: '/dashboard/posts',
+      href: '/dashboard/my-posts',
       icon: (
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
@@ -348,13 +348,14 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
   return (
     <>
       {/* Categories Drawer */}
-      <Drawer.Root open={categoriesOpen} onOpenChange={setCategoriesOpen} modal={false}>
+      <Drawer.Root open={categoriesOpen} onOpenChange={setCategoriesOpen} modal={true}>
         <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-gray-50/95 z-30 transition-all duration-300" />
           <Drawer.Content
             className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-black/10"
             style={{
               paddingBottom: '84px',
-              background: '#FAF8F3'
+              background: 'white'
             }}
           >
             {/* Handle */}
@@ -385,7 +386,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     triggerHaptic()
                     setCategoriesOpen(false)
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors duration-300 bg-white text-black border border-black/10 hover:bg-[#F5F1E8]"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors duration-300 bg-[#F5F1E8] text-black hover:bg-brand hover:text-white"
                 >
                   <span className="font-medium">Wszystkie kategorie</span>
                 </Link>
@@ -411,13 +412,13 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                             setCategoriesOpen(false)
                           }
                         }}
-                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors duration-300 bg-white text-black border border-black/10 hover:bg-[#F5F1E8]"
+                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors duration-300 bg-[#F5F1E8] text-black hover:bg-brand hover:text-white group"
                       >
-                        <CategoryIcon iconName={cat.icon} className="w-6 h-6 text-black/60" />
+                        <CategoryIcon iconName={cat.icon} className="w-6 h-6 text-black/60 group-hover:text-white transition-colors duration-300" />
                         <span className="font-medium flex-1 text-base">{cat.name}</span>
                         {hasSubcategories && (
                           <svg
-                            className="w-5 h-5 text-black/40"
+                            className="w-5 h-5 text-black/40 group-hover:text-white transition-colors duration-300"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -441,13 +442,14 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
           setSelectedCategory(null)
           setCategoriesOpen(true)
         }
-      }} modal={false}>
+      }} modal={true}>
         <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-gray-50/95 z-30 transition-all duration-300" />
           <Drawer.Content
             className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-black/10"
             style={{
               paddingBottom: '84px',
-              background: '#FAF8F3'
+              background: 'white'
             }}
           >
             {/* Handle */}
@@ -487,9 +489,9 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         setSelectedCategory(null)
                         setCategoriesOpen(false)
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border border-black/10 hover:bg-[#F5F1E8] transition-colors"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#F5F1E8] hover:bg-brand hover:text-white transition-colors group"
                     >
-                      <CategoryIcon iconName={selectedCategory.icon} className="w-6 h-6 text-black/60" />
+                      <CategoryIcon iconName={selectedCategory.icon} className="w-6 h-6 text-black/60 group-hover:text-white transition-colors duration-300" />
                       <span className="font-bold text-lg">{selectedCategory.name}</span>
                     </Link>
                   </div>
@@ -507,7 +509,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                           setSelectedCategory(null)
                           setCategoriesOpen(false)
                         }}
-                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors bg-white text-black border border-black/10 hover:bg-[#F5F1E8]"
+                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors bg-[#F5F1E8] text-black hover:bg-brand hover:text-white"
                       >
                         <span className="font-medium text-base">{sub.name}</span>
                       </Link>
@@ -521,8 +523,9 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
       </Drawer.Root>
 
       {/* Menu Drawer */}
-      <Drawer.Root open={menuOpen} onOpenChange={setMenuOpen} modal={false}>
+      <Drawer.Root open={menuOpen} onOpenChange={setMenuOpen} modal={true}>
         <Drawer.Portal>
+          <Drawer.Overlay className="fixed inset-0 bg-gray-50/95 z-30 transition-all duration-300" />
           <Drawer.Content
             className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[80vh] border-t border-black/10"
             style={{
@@ -679,8 +682,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   }
             }
             transition={{
-              duration: 0.3,
-              ease: [0.34, 1.25, 0.35, 1]
+              duration: 0.35,
+              ease: [0.34, 1.15, 0.64, 1]
             }}
             style={{ zIndex: 0 }}
           />
@@ -707,12 +710,18 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   className="flex flex-col items-center justify-center gap-4 flex-1 relative py-2"
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
-                  <div className={cn(
-                    "transition-colors duration-300",
-                    shouldBeWhite ? 'text-white' : 'text-black/60'
-                  )}>
+                  <motion.div
+                    className="transition-colors duration-300"
+                    animate={{
+                      color: shouldBeWhite ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
+                    }}
+                    transition={{
+                      duration: 0.35,
+                      ease: [0.34, 1.15, 0.64, 1]
+                    }}
+                  >
                     {item.icon}
-                  </div>
+                  </motion.div>
                   <span className="text-xs leading-none text-black/60">{item.title}</span>
                 </button>
               )
@@ -721,8 +730,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
             if (item.isMenu) {
               const isMenuButtonActive = menuOpen
               const isOnMenuPage = menuItems.some(menuItem => menuItem.href === pathname)
-              // Menu button is white when: menuOpen OR on menu page
-              const shouldBeWhite = isMenuButtonActive || isOnMenuPage
+              // Menu button is white when: menuOpen OR on menu page (but NOT when categories are open)
+              const shouldBeWhite = (isMenuButtonActive || isOnMenuPage) && !categoriesOpen && !selectedCategory
 
               return (
                 <button
@@ -740,12 +749,18 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   className="flex flex-col items-center justify-center gap-4 flex-1 relative py-2"
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
-                  <div className={cn(
-                    "transition-colors duration-300",
-                    shouldBeWhite ? 'text-white' : 'text-black/60'
-                  )}>
+                  <motion.div
+                    className="transition-colors duration-300"
+                    animate={{
+                      color: shouldBeWhite ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
+                    }}
+                    transition={{
+                      duration: 0.35,
+                      ease: [0.34, 1.15, 0.64, 1]
+                    }}
+                  >
                     {item.icon}
-                  </div>
+                  </motion.div>
                   <span className="text-xs leading-none text-black/60">{item.title}</span>
                 </button>
               )
@@ -779,12 +794,18 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 onClick={triggerHaptic}
                 className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
               >
-                <div className={cn(
-                  "transition-colors duration-300",
-                  isActive && !menuOpen && !categoriesOpen ? 'text-white' : 'text-black/60'
-                )}>
+                <motion.div
+                  className="transition-colors duration-300"
+                  animate={{
+                    color: isActive && !menuOpen && !categoriesOpen ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
+                  }}
+                  transition={{
+                    duration: 0.35,
+                    ease: [0.34, 1.15, 0.64, 1]
+                  }}
+                >
                   {item.icon}
-                </div>
+                </motion.div>
                 <span className="text-xs leading-none text-black/60">{item.title}</span>
               </Link>
             )

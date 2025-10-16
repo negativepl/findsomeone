@@ -64,7 +64,7 @@ export default async function DashboardPage() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <Link href="/dashboard/posts">
+          <Link href="/dashboard/my-posts">
             <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full">
               <CardContent className="p-6">
                 <div className="flex items-start justify-between h-full">
@@ -153,7 +153,7 @@ export default async function DashboardPage() {
               <CardTitle className="text-2xl font-bold text-black">Szybkie akcje</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Link href="/dashboard/posts/new" className="block">
+              <Link href="/dashboard/my-posts/new" className="block">
                 <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-14 text-base">
                   Dodaj nowe ogłoszenie
                 </Button>

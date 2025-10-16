@@ -38,22 +38,24 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
       {posts && posts.length > 0 ? (
         posts.map((post) => (
-          <Link key={post.id} href={`/dashboard/posts/${post.id}`} className="block h-full">
+          <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
             <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col">
               {/* Image */}
               {post.images && post.images.length > 0 && (
-                <div className="relative w-full h-48 bg-black/5">
+                <div className="relative w-full h-48 bg-black/5 overflow-hidden">
                   <Image
                     src={post.images[0]}
                     alt={post.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-all">
-                    <FavoriteButton
-                      postId={post.id}
-                      initialIsFavorite={true}
-                    />
+                  <div className="absolute top-3 right-3 z-10" data-no-loader="true">
+                    <div className="bg-white/80 backdrop-blur-md rounded-full p-2 hover:bg-white transition-all border border-white/60 shadow-sm">
+                      <FavoriteButton
+                        postId={post.id}
+                        initialIsFavorite={true}
+                      />
+                    </div>
                   </div>
                 </div>
               )}

@@ -7,15 +7,17 @@ interface FavoriteButtonWrapperProps {
   initialIsFavorite?: boolean
   showLabel?: boolean
   className?: string
+  withContainer?: boolean
 }
 
 export function FavoriteButtonWrapper({
   postId,
   initialIsFavorite = false,
   showLabel = false,
-  className = ''
+  className = '',
+  withContainer = true
 }: FavoriteButtonWrapperProps) {
-  return (
+  const button = (
     <FavoriteButton
       postId={postId}
       initialIsFavorite={initialIsFavorite}
@@ -23,4 +25,14 @@ export function FavoriteButtonWrapper({
       className={className}
     />
   )
+
+  if (withContainer) {
+    return (
+      <div className="bg-white/80 backdrop-blur-md rounded-full p-2 hover:bg-white transition-all border border-white/60 shadow-sm">
+        {button}
+      </div>
+    )
+  }
+
+  return button
 }

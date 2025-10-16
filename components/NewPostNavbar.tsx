@@ -1,6 +1,6 @@
 'use client'
 
-import { useStepContext } from '@/app/dashboard/posts/new/NewPostClient'
+import { useStepContext } from '@/app/dashboard/my-posts/new/NewPostClient'
 
 export function NewPostNavbar() {
   const stepContext = useStepContext()

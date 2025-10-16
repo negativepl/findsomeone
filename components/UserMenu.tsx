@@ -123,7 +123,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             </Link>
 
             <Link
-              href="/dashboard/posts"
+              href="/dashboard/my-posts"
               className="block px-4 py-2 hover:bg-black/5 transition-colors text-black"
               onClick={() => setIsOpen(false)}
             >

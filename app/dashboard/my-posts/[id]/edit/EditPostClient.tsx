@@ -120,7 +120,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
       // Start loading bar before navigation
       NProgress.start()
-      router.push('/dashboard/posts')
+      router.push('/dashboard/my-posts')
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Wystąpił błąd')
@@ -325,7 +325,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
             {/* Footer with buttons */}
             <div className="mt-8 pt-6 border-t-2 border-black/5 rounded-b-3xl">
               <div className="flex flex-col md:flex-row gap-3 md:justify-end">
-                <Link href="/dashboard/posts">
+                <Link href="/dashboard/my-posts">
                   <Button
                     type="button"
                     variant="outline"

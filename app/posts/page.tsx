@@ -6,7 +6,7 @@ import { Footer } from '@/components/Footer'
 import { DashboardTabs } from '@/components/DashboardTabs'
 import { SearchFilters } from '@/components/SearchFilters'
 import { PostsFilters } from '@/components/PostsFilters'
-import { PostsList } from './PostsList'
+import { PostsListWrapper } from './PostsListWrapper'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -231,9 +231,88 @@ export default async function PostsPage({
     posts = fetchedPosts || []
   }
 
-  // Calculate counts for tabs from all results (not just current page)
-  const seekingCount = posts.filter(p => p.type === 'seeking').length
-  const offeringCount = posts.filter(p => p.type === 'offering').length
+  // Calculate counts for tabs - need to query all posts with filters (not just current page)
+  let seekingCount = 0
+  let offeringCount = 0
+
+  if (searchQuery && searchQuery.trim().length >= 2) {
+    // For search results, count from filtered results
+    const { data: searchResults } = await supabase
+      .rpc('search_posts', {
+        search_query: searchQuery.trim(),
+        limit_count: 1000
+      })
+
+    let filteredResults = searchResults || []
+
+    if (cityQuery) {
+      filteredResults = filteredResults.filter((post: any) =>
+        post.city?.toLowerCase().includes(cityQuery.toLowerCase()) ||
+        post.district?.toLowerCase().includes(cityQuery.toLowerCase())
+      )
+    }
+
+    if (categoryQuery) {
+      filteredResults = filteredResults.filter((post: any) =>
+        post.category_name?.toLowerCase().includes(categoryQuery.toLowerCase())
+      )
+    }
+
+    seekingCount = filteredResults.filter((post: any) => post.type === 'seeking').length
+    offeringCount = filteredResults.filter((post: any) => post.type === 'offering').length
+  } else {
+    // For regular queries, count separately with filters
+    let seekingQuery = supabase
+      .from('posts')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'active')
+      .eq('type', 'seeking')
+
+    let offeringQuery = supabase
+      .from('posts')
+      .select('*', { count: 'exact', head: true })
+      .eq('status', 'active')
+      .eq('type', 'offering')
+
+    // Apply city filter to both
+    if (cityQuery) {
+      seekingQuery = seekingQuery.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
+      offeringQuery = offeringQuery.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
+    }
+
+    // Apply category filter to both
+    if (categoryQuery) {
+      const { data: category } = await supabase
+        .from('categories')
+        .select('id')
+        .ilike('name', categoryQuery)
+        .single()
+
+      let categoryId = category?.id
+
+      if (!categoryId) {
+        const { data: categorySynonym } = await supabase
+          .from('category_synonyms')
+          .select('category_id')
+          .ilike('synonym', categoryQuery)
+          .limit(1)
+          .single()
+
+        categoryId = categorySynonym?.category_id
+      }
+
+      if (categoryId) {
+        seekingQuery = seekingQuery.eq('category_id', categoryId)
+        offeringQuery = offeringQuery.eq('category_id', categoryId)
+      }
+    }
+
+    const { count: seekingCountResult } = await seekingQuery
+    const { count: offeringCountResult } = await offeringQuery
+
+    seekingCount = seekingCountResult || 0
+    offeringCount = offeringCountResult || 0
+  }
 
   // Calculate pagination values
   const totalPages = Math.ceil(totalCount / itemsPerPage)
@@ -283,7 +362,7 @@ export default async function PostsPage({
           <DashboardTabs
             seekingCount={seekingCount}
             offeringCount={offeringCount}
-            totalCount={totalCount}
+            totalCount={seekingCount + offeringCount}
           />
         </div>
 
@@ -296,23 +375,13 @@ export default async function PostsPage({
 
           {/* Right Content - Posts */}
           <div className="space-y-6">
-            {/* Results Info and Sort Bar */}
-            {posts && posts.length > 0 && (
-              <PostsFilters
-                currentSort={sortQuery}
-                itemsPerPage={itemsPerPage}
-                startItem={startItem}
-                endItem={endItem}
-                totalCount={totalCount}
-              />
-            )}
-
-            {/* Posts Grid */}
+            {/* Posts Grid/List with filters */}
             {posts && posts.length > 0 ? (
-              <PostsList
+              <PostsListWrapper
                 initialPosts={posts}
                 totalCount={totalCount}
                 userFavorites={userFavorites}
+                currentSort={sortQuery}
                 searchParams={{
                   search: searchQuery,
                   city: cityQuery,
@@ -352,7 +421,7 @@ export default async function PostsPage({
                     </Link>
                   ) : (
                     user && (
-                      <Link href="/dashboard/posts/new">
+                      <Link href="/dashboard/my-posts/new">
                         <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
                           Dodaj ogłoszenie
                         </Button>

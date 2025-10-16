@@ -18,7 +18,7 @@ export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible
       <NavbarWrapper alwaysVisible={alwaysVisible}>
         <Navbar user={user} showAddButton={showAddButton} noRounding={noRounding} pageTitle={pageTitle} stepInfo={stepInfo} />
       </NavbarWrapper>
-      <div className="h-[60px]" /> {/* Spacer for fixed navbar */}
+      <div className="h-16" /> {/* Spacer for fixed navbar */}
     </>
   )
 }

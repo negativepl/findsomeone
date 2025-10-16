@@ -25,6 +25,12 @@ export default function TopLoader() {
     const handleClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
 
+      // Check if click is on or inside an element with data-no-loader attribute
+      const noLoader = target.closest('[data-no-loader="true"]');
+      if (noLoader) {
+        return;
+      }
+
       // Check if click is on or inside a link
       const link = target.closest('a');
       if (link && link.href && link.target !== '_blank') {

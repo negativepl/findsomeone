@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
+import { AnimatedTabs } from '@/components/AnimatedTabs'
 
 interface Post {
   id: string
@@ -133,106 +134,52 @@ export function ModerationPanel({
   const endIndex = startIndex + ITEMS_PER_PAGE
   const currentPosts = posts.slice(startIndex, endIndex)
 
+  const tabs = [
+    {
+      id: 'flagged',
+      label: 'Wymagają uwagi',
+      count: flaggedCount,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'checking',
+      label: 'Sprawdzane',
+      count: checkingCount,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+    {
+      id: 'pending',
+      label: 'Oczekujące',
+      count: pendingCount,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        </svg>
+      ),
+    },
+    {
+      id: 'rejected',
+      label: 'Odrzucone',
+      count: rejectedCount,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      ),
+    },
+  ]
+
   return (
     <div className="space-y-6">
-      {/* Tabs Navigation */}
-      <div className="flex gap-2 border-b-2 border-black/10">
-        <button
-          onClick={() => setSelectedStatus('flagged')}
-          className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
-            selectedStatus === 'flagged'
-              ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
-          }`}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <span>Wymagają uwagi</span>
-          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-            selectedStatus === 'flagged'
-              ? 'bg-[#C44E35] text-white'
-              : 'bg-black/10 text-black/60'
-          }`}>
-            {flaggedCount}
-          </span>
-          {selectedStatus === 'flagged' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-          )}
-        </button>
-
-        <button
-          onClick={() => setSelectedStatus('checking')}
-          className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
-            selectedStatus === 'checking'
-              ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
-          }`}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>Sprawdzane</span>
-          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-            selectedStatus === 'checking'
-              ? 'bg-[#C44E35] text-white'
-              : 'bg-black/10 text-black/60'
-          }`}>
-            {checkingCount}
-          </span>
-          {selectedStatus === 'checking' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-          )}
-        </button>
-
-        <button
-          onClick={() => setSelectedStatus('pending')}
-          className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
-            selectedStatus === 'pending'
-              ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
-          }`}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-          <span>Oczekujące</span>
-          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-            selectedStatus === 'pending'
-              ? 'bg-[#C44E35] text-white'
-              : 'bg-black/10 text-black/60'
-          }`}>
-            {pendingCount}
-          </span>
-          {selectedStatus === 'pending' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-          )}
-        </button>
-
-        <button
-          onClick={() => setSelectedStatus('rejected')}
-          className={`flex items-center gap-3 px-6 py-4 font-semibold transition-all relative ${
-            selectedStatus === 'rejected'
-              ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
-          }`}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <span>Odrzucone</span>
-          <span className={`px-2.5 py-1 rounded-full text-xs font-bold ${
-            selectedStatus === 'rejected'
-              ? 'bg-[#C44E35] text-white'
-              : 'bg-black/10 text-black/60'
-          }`}>
-            {rejectedCount}
-          </span>
-          {selectedStatus === 'rejected' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-          )}
-        </button>
-      </div>
+      <AnimatedTabs tabs={tabs} activeTab={selectedStatus} onTabChange={setSelectedStatus} />
 
       {/* Posts List */}
       {loading ? (

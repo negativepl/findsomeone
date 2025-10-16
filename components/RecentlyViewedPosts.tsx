@@ -73,7 +73,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
   }
 
   return (
-    <section className="container mx-auto px-6 pb-20 md:pb-32">
+    <section className="container mx-auto px-6 py-12 md:py-14">
       <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
         <div className="flex items-center justify-between mb-8 md:mb-12">
           <div>
@@ -138,7 +138,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-all">
+                        <div className="absolute top-3 right-3 z-10">
                           <FavoriteButtonWrapper
                             postId={post.id}
                             initialIsFavorite={userFavorites.includes(post.id)}

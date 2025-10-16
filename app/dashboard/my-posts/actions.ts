@@ -32,7 +32,7 @@ export async function deletePost(postId: string) {
     return { error: error.message }
   }
 
-  revalidatePath('/dashboard/posts')
+  revalidatePath('/dashboard/my-posts')
   return { success: true }
 }
 
@@ -65,7 +65,7 @@ export async function updatePostStatus(postId: string, status: 'active' | 'close
     return { error: error.message }
   }
 
-  revalidatePath('/dashboard/posts')
-  revalidatePath(`/dashboard/posts/${postId}`)
+  revalidatePath('/dashboard/my-posts')
+  revalidatePath(`/dashboard/my-posts/${postId}`)
   return { success: true }
 }

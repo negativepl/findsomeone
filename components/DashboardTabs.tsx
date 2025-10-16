@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { AnimatedTabs } from './AnimatedTabs'
 
 interface DashboardTabsProps {
   seekingCount: number
@@ -35,73 +36,18 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
     router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
   }
 
+  const tabs = [
+    { id: 'all', label: 'Wszystkie', count: totalCount },
+    { id: 'seeking', label: 'Szukam', count: seekingCount },
+    { id: 'offering', label: 'Oferuję', count: offeringCount },
+  ]
+
   return (
-    <div className="flex gap-1 md:gap-2 border-b-2 border-black/10 justify-center md:justify-start">
-      <button
-        onClick={() => handleTabChange('all')}
-        data-navigate="true"
-        className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
-          currentType === 'all'
-            ? 'text-[#C44E35]'
-            : 'text-black/60 hover:text-black'
-        }`}
-      >
-        <span>Wszystkie</span>
-        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
-          currentType === 'all'
-            ? 'bg-[#C44E35] text-white'
-            : 'bg-black/10 text-black/60'
-        }`}>
-          {totalCount}
-        </span>
-        {currentType === 'all' && (
-          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-        )}
-      </button>
-
-      <button
-        onClick={() => handleTabChange('seeking')}
-        data-navigate="true"
-        className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
-          currentType === 'seeking'
-            ? 'text-[#C44E35]'
-            : 'text-black/60 hover:text-black'
-        }`}
-      >
-        <span>Szukam</span>
-        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
-          currentType === 'seeking'
-            ? 'bg-[#C44E35] text-white'
-            : 'bg-black/10 text-black/60'
-        }`}>
-          {seekingCount}
-        </span>
-        {currentType === 'seeking' && (
-          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-        )}
-      </button>
-
-      <button
-        onClick={() => handleTabChange('offering')}
-        data-navigate="true"
-        className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-all relative text-sm md:text-base ${
-          currentType === 'offering'
-            ? 'text-[#C44E35]'
-            : 'text-black/60 hover:text-black'
-        }`}
-      >
-        <span>Oferuję</span>
-        <span className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold ${
-          currentType === 'offering'
-            ? 'bg-[#C44E35] text-white'
-            : 'bg-black/10 text-black/60'
-        }`}>
-          {offeringCount}
-        </span>
-        {currentType === 'offering' && (
-          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-        )}
-      </button>
-    </div>
+    <AnimatedTabs
+      tabs={tabs}
+      activeTab={currentType}
+      onTabChange={handleTabChange}
+      className="justify-center md:justify-start"
+    />
   )
 }

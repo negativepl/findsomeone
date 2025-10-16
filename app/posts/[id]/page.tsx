@@ -601,7 +601,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     <div className="bg-black/5 rounded-full py-3 text-center">
                       <p className="text-base text-black/60">To Twoje ogłoszenie</p>
                     </div>
-                    <Link href={`/dashboard/posts/${post.id}/edit`}>
+                    <Link href={`/dashboard/my-posts/${post.id}/edit`}>
                       <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 py-6 text-lg">
                         Edytuj ogłoszenie
                       </Button>

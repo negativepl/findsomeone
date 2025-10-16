@@ -742,6 +742,7 @@ export function NavbarSearchBar() {
                 type="button"
                 onClick={detectLocation}
                 disabled={isDetectingLocation}
+                data-navigate="true"
                 className="w-full mb-2 px-3 py-3 rounded-lg bg-[#C44E35]/10 hover:bg-[#C44E35]/20 transition-all flex items-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div className="w-8 h-8 rounded-lg bg-[#C44E35]/20 flex items-center justify-center flex-shrink-0">
@@ -766,6 +767,7 @@ export function NavbarSearchBar() {
                       key={`${city.slug}-${index}`}
                       type="button"
                       onClick={() => handleCitySelect(city.name)}
+                      data-navigate="true"
                       className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center justify-between group ${
                         selectedCity === city.name
                           ? 'bg-[#C44E35]/10 text-[#C44E35]'

@@ -233,7 +233,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         await new Promise(resolve => setTimeout(resolve, 2000))
       }
 
-      router.push('/dashboard/posts')
+      router.push('/dashboard/my-posts')
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Wystąpił błąd')

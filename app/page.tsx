@@ -139,34 +139,43 @@ export default async function Home() {
         <NavbarWithHide user={user} />
 
       {/* Hero Section */}
-      <section className="container mx-auto px-6 py-12 md:py-16 text-center">
-        <h2 className="text-6xl md:text-7xl font-bold mb-6 text-black leading-tight">
-          Znajdź pomoc<br />
-          <span className="relative inline-block">
-            w okolicy
-            <svg
-              className="absolute left-0 -bottom-2 w-full"
-              viewBox="0 0 300 12"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              preserveAspectRatio="none"
-            >
-              <path
-                d="M2 6C50 4 100 2 150 5C200 8 250 4 298 6"
-                stroke="#C44E35"
-                strokeWidth="3"
-                strokeLinecap="round"
-              />
-              <path
-                d="M2 9C50 7 100 5 150 8C200 11 250 7 298 9"
-                stroke="#C44E35"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                opacity="0.6"
-              />
-            </svg>
-          </span>
-        </h2>
+      <section className="relative overflow-hidden">
+        {/* Gradient overlay - full width with stronger visibility */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 120% 60% at 50% 0%, rgba(196, 78, 53, 0.15) 0%, rgba(196, 78, 53, 0.08) 30%, transparent 70%)'
+          }}
+        />
+
+        <div className="relative z-10 container mx-auto px-6 py-12 md:py-14 text-center">
+          <h2 className="text-6xl md:text-7xl font-bold mb-6 text-black leading-tight">
+            Znajdź pomoc<br />
+            <span className="relative inline-block">
+              w okolicy
+              <svg
+                className="absolute left-0 -bottom-2 w-full"
+                viewBox="0 0 300 12"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M2 6C50 4 100 2 150 5C200 8 250 4 298 6"
+                  stroke="#C44E35"
+                  strokeWidth="3"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M2 9C50 7 100 5 150 8C200 11 250 7 298 9"
+                  stroke="#C44E35"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  opacity="0.6"
+                />
+              </svg>
+            </span>
+          </h2>
         <p className="text-xl text-black/60 mb-10 max-w-2xl mx-auto leading-relaxed">
           Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu?
           A może sam chcesz pomóc innym?{' '}
@@ -175,60 +184,20 @@ export default async function Home() {
           </span>
         </p>
 
-        <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0">
-          <Link href="/posts" className="w-full md:w-auto">
-            <Button size="lg" variant="outline" className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all min-h-[56px] md:min-w-[200px]">
-              Przeglądaj ogłoszenia
-            </Button>
-          </Link>
-          <Link href={user ? "/dashboard/posts/new" : "/signup"} className="w-full md:w-auto">
-            <Button size="lg" className="w-full md:w-auto text-lg px-12 py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all min-h-[56px] md:min-w-[200px]">
-              Dodaj ogłoszenie
-            </Button>
-          </Link>
+          <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0">
+            <Link href="/posts" className="w-full md:w-auto">
+              <Button size="lg" variant="outline" className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all min-h-[56px] md:min-w-[200px]">
+                Przeglądaj ogłoszenia
+              </Button>
+            </Link>
+            <Link href={user ? "/dashboard/my-posts/new" : "/signup"} className="w-full md:w-auto">
+              <Button size="lg" className="w-full md:w-auto text-lg px-12 py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all min-h-[56px] md:min-w-[200px]">
+                Dodaj ogłoszenie
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
-
-      {/* Stats Section - Only show for non-authenticated users */}
-      {!user && (
-        <section className="container mx-auto px-6 py-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-white rounded-3xl p-8 text-center">
-              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                </svg>
-              </div>
-              <div className="text-sm font-semibold text-black/80">Szybko rosnąca społeczność</div>
-            </div>
-            <div className="bg-white rounded-3xl p-8 text-center">
-              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </div>
-              <div className="text-sm font-semibold text-black/80">Nowe ogłoszenia codziennie</div>
-            </div>
-            <div className="bg-white rounded-3xl p-8 text-center">
-              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-              <div className="text-sm font-semibold text-black/80">Pomoc w całej Polsce</div>
-            </div>
-            <div className="bg-white rounded-3xl p-8 text-center">
-              <div className="w-12 h-12 mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div className="text-sm font-semibold text-black/80">Zaufani pomocnicy</div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Features Section - Only show for non-authenticated users */}
       {!user && (
@@ -281,7 +250,7 @@ export default async function Home() {
 
       {/* Seeking Posts Section */}
       {seekingPosts && seekingPosts.length > 0 && (
-        <section className="container mx-auto px-6">
+        <section className="container mx-auto px-6 py-12 md:py-14">
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
             <div className="flex items-center justify-between mb-8 md:mb-12">
               <div>
@@ -323,7 +292,7 @@ export default async function Home() {
                           priority={index === 0}
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-all">
+                        <div className="absolute top-3 right-3 z-10" data-no-loader="true">
                           <FavoriteButtonWrapper
                             postId={post.id}
                             initialIsFavorite={userFavorites.includes(post.id)}
@@ -479,7 +448,7 @@ export default async function Home() {
                           loading="lazy"
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute top-3 right-3 z-10 bg-white/90 backdrop-blur-sm rounded-full p-2 hover:bg-white transition-all">
+                        <div className="absolute top-3 right-3 z-10" data-no-loader="true">
                           <FavoriteButtonWrapper
                             postId={post.id}
                             initialIsFavorite={userFavorites.includes(post.id)}
@@ -591,15 +560,18 @@ export default async function Home() {
         </section>
       )}
 
-      {/* CTA Section - Only show for non-authenticated users */}
+        {/* Recently Viewed Posts Section - Client Component */}
+        <RecentlyViewedPosts userFavorites={userFavorites} userId={user?.id} />
+
+      {/* CTA Section - Only show for non-authenticated users - at bottom */}
       {!user && (
-        <section className="container mx-auto px-6 py-24 text-center">
+        <section className="container mx-auto px-6 py-12 md:py-14 text-center">
           <div className="bg-[#1A1A1A] rounded-[3rem] p-16 text-white relative overflow-hidden">
             {/* Dekoracyjny gradient w tle */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#F4A261]/10 to-transparent pointer-events-none" />
 
             <div className="relative z-10">
-              <h3 className="text-5xl font-bold mb-6">Gotowy do rozpoczęcia?</h3>
+              <h3 className="text-5xl font-bold mb-6">Czas zacząć!</h3>
               <p className="text-xl mb-10 text-white/70 max-w-2xl mx-auto">
                 Dołącz do tysięcy użytkowników, którzy znajdują i oferują lokalne usługi
               </p>
@@ -612,9 +584,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-
-        {/* Recently Viewed Posts Section - Client Component - at bottom */}
-        <RecentlyViewedPosts userFavorites={userFavorites} userId={user?.id} />
 
         <Footer />
       </div>
