@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { createPortal } from 'react-dom'
 import Link from 'next/link'
+import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { CategoryIcon } from '@/lib/category-icons'
 import { createClient } from '@/lib/supabase/client'
@@ -36,6 +37,8 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
   const [mounted, setMounted] = useState(false)
   const searchInputRef = useRef<HTMLInputElement>(null)
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const openTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   // Check if mounted (for portal)
   useEffect(() => {
@@ -44,6 +47,13 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
 
   // Handle opening with animation
   const handleOpen = () => {
+    // Cancel any pending close
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
+
+    setIsClosing(false)
     setIsOpen(true)
     setIsOpening(true)
     // Remove opening state after animation completes
@@ -60,7 +70,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
       setIsOpen(false)
       setIsClosing(false)
       setHoveredCategory(null)
-    }, 300) // Match animation duration
+    }, 250) // Match animation duration
   }
 
   // Focus search input when menu opens
@@ -140,6 +150,9 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
       if (closeTimeoutRef.current) {
         clearTimeout(closeTimeoutRef.current)
       }
+      if (openTimeoutRef.current) {
+        clearTimeout(openTimeoutRef.current)
+      }
     }
   }, [])
 
@@ -154,7 +167,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
       // Add delay before changing category
       hoverTimeoutRef.current = setTimeout(() => {
         setHoveredCategory(categoryId)
-      }, 300) // 300ms delay
+      }, 150) // Faster response
     }
   }
 
@@ -185,24 +198,62 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
     // Set a short delay before closing to prevent accidental closes
     closeTimeoutRef.current = setTimeout(() => {
       handleClose()
-    }, 200)
+    }, 300) // Increased delay
   }
 
   const handleMenuMouseEnter = () => {
     // Cancel closing if mouse re-enters the menu
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
     }
     setIsClosing(false)
   }
 
-  const backdropContent = isOpen && mounted ? createPortal(
-    <div
-      className={`fixed inset-0 bg-gray-50/95 z-40 transition-opacity duration-300 ${
-        isClosing || isOpening ? 'opacity-0' : 'opacity-100'
-      }`}
-      onClick={() => handleClose()}
-    />,
+  // Handle button hover to open menu
+  const handleButtonMouseEnter = () => {
+    // Clear any existing timeout
+    if (openTimeoutRef.current) {
+      clearTimeout(openTimeoutRef.current)
+    }
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
+    }
+
+    // Open immediately on hover
+    if (!isOpen) {
+      handleOpen()
+    }
+  }
+
+  // Handle button mouse leave
+  const handleButtonMouseLeave = () => {
+    // Only start close timer if not hovering over menu
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+
+    closeTimeoutRef.current = setTimeout(() => {
+      if (isOpen) {
+        handleClose()
+      }
+    }, 300)
+  }
+
+  const backdropContent = mounted ? createPortal(
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="fixed inset-0 bg-gray-50/95 z-40"
+          onClick={() => handleClose()}
+        />
+      )}
+    </AnimatePresence>,
     document.body
   ) : null
 
@@ -213,6 +264,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
 
       {/* Compact Categories Button */}
       <button
+        ref={buttonRef}
         onClick={() => {
           if (isOpen) {
             handleClose()
@@ -220,53 +272,69 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
             handleOpen()
           }
         }}
-        className="h-10 rounded-full bg-[#FAF8F3] hover:bg-[#F5F1E8] transition-colors px-4 gap-2 flex items-center border-0"
+        onMouseEnter={handleButtonMouseEnter}
+        onMouseLeave={handleButtonMouseLeave}
+        className="h-10 rounded-full bg-[#FAF8F3] hover:bg-[#F5F1E8] transition-all duration-200 px-4 gap-2 flex items-center border-0 hover:shadow-sm"
       >
-        <svg className="w-5 h-5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg
+          className={`w-5 h-5 text-[#C44E35] transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
         <span className="text-sm font-medium hidden lg:inline text-black">Kategorie</span>
       </button>
 
       {/* Mega Menu Panel - positioned below navbar */}
-      {isOpen && (
-        <div
-          className={`hidden md:block fixed left-0 right-0 transition-all duration-300 ease-out ${
-            isClosing
-              ? 'opacity-0 -translate-y-4'
-              : isOpening
-              ? 'opacity-0 -translate-y-4'
-              : 'opacity-100 translate-y-0'
-          }`}
-          style={{ top: '100px', zIndex: 45 }}
-          onClick={(e) => {
-            // Close if clicking on the outer container
-            if (e.target === e.currentTarget) {
-              handleClose()
-            }
-          }}
-        >
-          <div
-            className="container mx-auto px-6"
-            style={{ maxWidth: '1400px' }}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{
+              duration: 0.3,
+              ease: [0.16, 1, 0.3, 1] // Smooth custom easing
+            }}
+            className="hidden md:block fixed left-0 right-0"
+            style={{ top: '100px', zIndex: 45 }}
             onClick={(e) => {
-              // Close if clicking on the container padding area
+              // Close if clicking on the outer container
               if (e.target === e.currentTarget) {
                 handleClose()
               }
             }}
           >
             <div
-              className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8"
-              style={{ minHeight: '500px', maxHeight: '80vh', overflowY: 'auto' }}
+              className="container mx-auto px-6"
+              style={{ maxWidth: '1400px' }}
               onClick={(e) => {
-                // Stop propagation to prevent closing when clicking inside
-                e.stopPropagation()
+                // Close if clicking on the container padding area
+                if (e.target === e.currentTarget) {
+                  handleClose()
+                }
               }}
-              onMouseEnter={handleMenuMouseEnter}
-              onMouseLeave={handleMenuMouseLeave}
             >
-              <div className="flex gap-8" style={{ minHeight: '450px' }}>
+              <motion.div
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.95 }}
+                transition={{
+                  duration: 0.3,
+                  ease: [0.16, 1, 0.3, 1]
+                }}
+                className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8"
+                style={{ minHeight: '500px', maxHeight: '80vh', overflowY: 'auto' }}
+                onClick={(e) => {
+                  // Stop propagation to prevent closing when clicking inside
+                  e.stopPropagation()
+                }}
+                onMouseEnter={handleMenuMouseEnter}
+                onMouseLeave={handleMenuMouseLeave}
+              >
+                <div className="flex gap-8" style={{ minHeight: '450px' }}>
                 {/* Left side - All categories grid */}
                 <div className="pr-6" style={{ flex: '0 0 65%' }}>
                   <div className="flex items-center justify-between mb-6">
@@ -352,27 +420,43 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                         )
                       }
 
-                      return filteredCategories.map((cat) => {
+                      return filteredCategories.map((cat, index) => {
                         return (
-                          <Link
+                          <motion.div
                             key={cat.id}
-                            href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
-                            onMouseEnter={() => handleCategoryHover(cat.id)}
-                            onMouseLeave={handleCategoryLeave}
-                            onClick={() => handleClose()}
-                            className="flex flex-col items-center gap-2 p-3 rounded-2xl hover:bg-[#FAF8F3] transition-all duration-300 text-center group"
+                            initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            transition={{
+                              duration: 0.3,
+                              delay: index * 0.02,
+                              ease: [0.16, 1, 0.3, 1]
+                            }}
                           >
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                              hoveredCategory === cat.id
-                                ? 'bg-[#C44E35] text-white ring-2 ring-[#C44E35]/30 scale-110'
-                                : 'bg-[#C44E35]/10 text-[#C44E35] group-hover:bg-[#C44E35]/20 group-hover:scale-105'
-                            }`}>
-                              <CategoryIcon iconName={cat.icon} className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
-                            </div>
-                            <span className={`text-xs font-medium transition-colors duration-300 ${
-                              hoveredCategory === cat.id ? 'text-[#C44E35]' : 'text-black'
-                            }`}>{cat.name}</span>
-                          </Link>
+                            <Link
+                              href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
+                              onMouseEnter={() => handleCategoryHover(cat.id)}
+                              onMouseLeave={handleCategoryLeave}
+                              onClick={() => handleClose()}
+                              className="flex flex-col items-center gap-2 p-3 rounded-2xl hover:bg-[#FAF8F3] transition-all duration-200 text-center group"
+                            >
+                              <motion.div
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200 ease-out ${
+                                  hoveredCategory === cat.id
+                                    ? 'bg-[#C44E35] text-white ring-4 ring-[#C44E35]/20 scale-110 shadow-lg'
+                                    : 'bg-[#C44E35]/10 text-[#C44E35] group-hover:bg-[#C44E35]/20 shadow-sm'
+                                }`}
+                              >
+                                <CategoryIcon iconName={cat.icon} className={`w-6 h-6 transition-transform duration-200 ${
+                                  hoveredCategory === cat.id ? 'scale-110' : 'group-hover:scale-110'
+                                }`} />
+                              </motion.div>
+                              <span className={`text-xs font-medium transition-colors duration-200 ${
+                                hoveredCategory === cat.id ? 'text-[#C44E35] font-semibold' : 'text-black'
+                              }`}>{cat.name}</span>
+                            </Link>
+                          </motion.div>
                         )
                       })
                     })()}
@@ -392,59 +476,97 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                   className="border-l border-black/5 pl-8"
                   style={{ flex: '0 0 35%' }}
                 >
-                  {hoveredCategory && (
-                  <div
-                    className="animate-in fade-in slide-in-from-right-4 duration-200"
-                    onMouseEnter={handleSubcategoriesEnter}
-                    onMouseLeave={handleSubcategoriesLeave}
-                  >
-                    {(() => {
+                  <AnimatePresence mode="wait">
+                    {hoveredCategory && (() => {
                       const hoveredCat = categories.find(c => c.id === hoveredCategory)
 
                       return hoveredCat ? (
-                        <>
-                          <div className="flex items-center gap-3 mb-6">
+                        <motion.div
+                          key={hoveredCat.id}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -10 }}
+                          transition={{
+                            duration: 0.25,
+                            ease: [0.16, 1, 0.3, 1]
+                          }}
+                          onMouseEnter={handleSubcategoriesEnter}
+                          onMouseLeave={handleSubcategoriesLeave}
+                        >
+                          <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.2, delay: 0.1 }}
+                            className="flex items-center gap-3 mb-6"
+                          >
                             <div className="w-10 h-10 rounded-xl bg-[#C44E35] text-white flex items-center justify-center">
                               <CategoryIcon iconName={hoveredCat.icon} className="w-5 h-5" />
                             </div>
                             <h4 className="text-lg font-bold text-black">{hoveredCat.name}</h4>
-                          </div>
+                          </motion.div>
 
                           {/* Subcategories */}
                           {hoveredCat.subcategories && hoveredCat.subcategories.length > 0 ? (
                             <div className="space-y-1">
-                              {hoveredCat.subcategories.map((sub) => (
-                                <Link
+                              {hoveredCat.subcategories.map((sub, index) => (
+                                <motion.div
                                   key={sub.id}
-                                  href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
-                                  className="block px-4 py-2.5 rounded-xl hover:bg-[#FAF8F3] transition-all text-sm font-medium text-black/80 hover:text-black"
+                                  initial={{ opacity: 0, x: 10 }}
+                                  animate={{ opacity: 1, x: 0 }}
+                                  transition={{
+                                    duration: 0.2,
+                                    delay: 0.1 + (index * 0.03),
+                                    ease: [0.16, 1, 0.3, 1]
+                                  }}
+                                >
+                                  <Link
+                                    href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
+                                    className="block px-4 py-2.5 rounded-xl hover:bg-[#FAF8F3] transition-all text-sm font-medium text-black/80 hover:text-black"
+                                    onClick={() => handleClose()}
+                                  >
+                                    {sub.name}
+                                  </Link>
+                                </motion.div>
+                              ))}
+                              <motion.div
+                                initial={{ opacity: 0, x: 10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{
+                                  duration: 0.2,
+                                  delay: 0.1 + (hoveredCat.subcategories.length * 0.03),
+                                  ease: [0.16, 1, 0.3, 1]
+                                }}
+                              >
+                                <Link
+                                  href={`/posts?category=${encodeURIComponent(hoveredCat.name.toLowerCase())}`}
+                                  className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#C44E35] hover:bg-[#C44E35]/5 transition-all mt-3"
                                   onClick={() => handleClose()}
                                 >
-                                  {sub.name}
+                                  Zobacz wszystkie →
                                 </Link>
-                              ))}
-                              <Link
-                                href={`/posts?category=${encodeURIComponent(hoveredCat.name.toLowerCase())}`}
-                                className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#C44E35] hover:bg-[#C44E35]/5 transition-all mt-3"
-                                onClick={() => handleClose()}
-                              >
-                                Zobacz wszystkie →
-                              </Link>
+                              </motion.div>
                             </div>
                           ) : (
-                            <p className="text-sm text-black/60">Brak podkategorii</p>
+                            <motion.p
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              transition={{ duration: 0.2, delay: 0.1 }}
+                              className="text-sm text-black/60"
+                            >
+                              Brak podkategorii
+                            </motion.p>
                           )}
-                        </>
+                        </motion.div>
                       ) : null
                     })()}
-                  </div>
-                  )}
+                  </AnimatePresence>
                 </div>
-              </div>
+                </div>
+              </motion.div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }
