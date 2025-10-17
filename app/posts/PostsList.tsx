@@ -19,6 +19,7 @@ interface Post {
   price_max: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | null
   images: string[] | null
+  created_at: string
   profiles: {
     full_name: string | null
     avatar_url: string | null
@@ -52,6 +53,17 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
   const observerTarget = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = parseInt(searchParams.limit || '12', 10)
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString('pl-PL', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
 
   useEffect(() => {
     // Reset posts when search params change
@@ -107,115 +119,384 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
   return (
     <>
-      <div className={viewMode === 'list' ? 'flex flex-col gap-4' : `grid gap-6 ${
+      <div className={viewMode === 'list' ? 'flex flex-col gap-4' : `grid gap-4 md:gap-6 ${
         itemsPerPage >= 24 ? 'md:grid-cols-2 lg:grid-cols-4' :
         itemsPerPage >= 12 ? 'md:grid-cols-2 lg:grid-cols-3' :
         'md:grid-cols-1 lg:grid-cols-2'
       }`}>
         {posts.map((post: Post) => (
           <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
-            <Card className={`border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden gap-0 py-0 cursor-pointer ${
-              viewMode === 'list' ? 'flex flex-row h-auto' : 'flex flex-col h-full'
+            <Card className={`border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden gap-0 py-0 cursor-pointer relative ${
+              viewMode === 'list' ? 'flex flex-col' : 'flex flex-col h-full'
             }`}>
-              {/* Image */}
-              {post.images && post.images.length > 0 && (
-                <div className={`relative bg-black/5 overflow-hidden ${
-                  viewMode === 'list' ? 'w-64 min-h-full flex-shrink-0' : 'w-full h-48'
-                }`}>
-                  <Image
-                    src={post.images[0]}
-                    alt={post.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute top-3 right-3 z-10" data-no-loader="true">
-                    <FavoriteButtonWrapper
-                      postId={post.id}
-                      initialIsFavorite={userFavorites.includes(post.id)}
-                      withContainer={true}
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div className={viewMode === 'list' ? 'flex-1 flex flex-col' : 'flex-1 flex flex-col min-h-0'}>
-                <CardHeader className="pb-4 pt-6">
-                  <CardTitle className="text-xl font-bold text-black">{post.title}</CardTitle>
-                </CardHeader>
-
-                <CardContent className="pb-6 mt-auto space-y-3 flex-shrink-0">
-                {/* Location */}
-                <div className="flex items-center gap-1 text-sm text-black/60">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  {post.city}{post.district && `, ${post.district}`}
-                </div>
-
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2 min-w-0 flex-1">
-                    {post.profiles?.avatar_url ? (
-                      <Image
-                        src={post.profiles.avatar_url}
-                        alt={post.profiles.full_name || 'User'}
-                        width={32}
-                        height={32}
-                        className="rounded-full flex-shrink-0"
+              {viewMode === 'list' ? (
+                /* List view: mobile - vertical layout, desktop - horizontal with image on left */
+                <>
+                  {/* Mobile layout */}
+                  <div className="md:hidden flex flex-col">
+                    {/* Favorite button - top left corner */}
+                    <div className="absolute top-2 left-2 z-10" data-no-loader="true">
+                      <FavoriteButtonWrapper
+                        postId={post.id}
+                        initialIsFavorite={userFavorites.includes(post.id)}
+                        withContainer={true}
                       />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
-                        <span className="text-xs font-semibold text-black">
-                          {post.profiles?.full_name?.charAt(0) || 'U'}
-                        </span>
+                    </div>
+
+                    <div className="flex gap-3 p-4 pb-0 items-center">
+                      {/* Image */}
+                      {post.images && post.images.length > 0 && (
+                        <div className="relative bg-black/5 overflow-hidden w-20 h-20 rounded-xl flex-shrink-0">
+                          <Image
+                            src={post.images[0]}
+                            alt={post.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      )}
+
+                      {/* Content */}
+                      <div className="flex-1 flex flex-col justify-between min-w-0 min-h-[80px]">
+                        <h3 className="text-base font-bold text-black mb-2">
+                          {post.title}
+                        </h3>
+
+                        {/* Location and Date */}
+                        <div className="flex items-center justify-between gap-2 text-xs text-black/60">
+                          <div className="flex items-center gap-1 min-w-0">
+                            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span className="truncate">{post.city}{post.district && `, ${post.district}`}</span>
+                          </div>
+                          <span className="flex-shrink-0">{formatDate(post.created_at)}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer - full width */}
+                    <div className="pb-4 mt-3 px-4">
+                      <div className="pt-3 border-t-2 border-black/5">
+                        <div className="flex items-center justify-between gap-2">
+                        {/* User info */}
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          {post.profiles?.avatar_url ? (
+                            <Image
+                              src={post.profiles.avatar_url}
+                              alt={post.profiles.full_name || 'User'}
+                              width={36}
+                              height={36}
+                              className="rounded-full flex-shrink-0"
+                            />
+                          ) : (
+                            <div className="w-9 h-9 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
+                              <span className="text-sm font-semibold text-black">
+                                {post.profiles?.full_name?.charAt(0) || 'U'}
+                              </span>
+                            </div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-semibold text-black truncate">
+                              {post.profiles?.full_name || 'Anonymous'}
+                            </p>
+                            {post.profiles?.rating && post.profiles.rating > 0 && (
+                              <RatingDisplay
+                                userId={post.user_id}
+                                rating={post.profiles.rating}
+                                reviewCount={post.profiles.total_reviews || 0}
+                                className="text-xs"
+                                clickable={false}
+                              />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Price */}
+                        {(post.price_min || post.price_max) ? (
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-base font-bold text-black whitespace-nowrap">
+                              {post.price_min && post.price_max
+                                ? `${post.price_min}-${post.price_max} zł`
+                                : post.price_min
+                                ? `${post.price_min} zł`
+                                : `${post.price_max} zł`}
+                            </p>
+                            {post.price_type && (
+                              <p className="text-xs text-black/60 whitespace-nowrap">
+                                {post.price_type === 'hourly'
+                                  ? 'za godzinę'
+                                  : post.price_type === 'fixed'
+                                  ? 'cena stała'
+                                  : 'do negocjacji'}
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          post.price_type === 'negotiable' && (
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-sm text-black/60 whitespace-nowrap">Do negocjacji</p>
+                            </div>
+                          )
+                        )}
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Desktop layout */}
+                  <div className="hidden md:flex h-full">
+                    {/* Image container - left side, full height */}
+                    {post.images && post.images.length > 0 && (
+                      <div className="relative bg-black/5 overflow-hidden w-64 flex-shrink-0 rounded-l-3xl">
+                        <Image
+                          src={post.images[0]}
+                          alt={post.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        {/* Favorite button - top left corner */}
+                        <div className="absolute top-4 left-4 z-10" data-no-loader="true">
+                          <FavoriteButtonWrapper
+                            postId={post.id}
+                            initialIsFavorite={userFavorites.includes(post.id)}
+                            withContainer={true}
+                          />
+                        </div>
                       </div>
                     )}
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-semibold text-black truncate">
-                        {post.profiles?.full_name || 'Anonymous'}
-                      </p>
-                      {post.profiles?.rating && post.profiles.rating > 0 && (
-                        <RatingDisplay
-                          userId={post.user_id}
-                          rating={post.profiles.rating}
-                          reviewCount={post.profiles.total_reviews || 0}
-                          className="text-xs"
-                          clickable={false}
-                        />
-                      )}
+
+                    {/* Content container - right side */}
+                    <div className="flex-1 flex flex-col p-6">
+                      {/* Main content area - tylko tytuł */}
+                      <div className="flex-1 pb-6">
+                        <h3 className="text-xl font-bold text-black">
+                          {post.title}
+                        </h3>
+                      </div>
+
+                      {/* Footer - bottom of content */}
+                      <div className="space-y-3">
+                        {/* Location and Date */}
+                        <div className="flex items-center justify-between gap-4 text-sm text-black/60">
+                          <div className="flex items-center gap-1">
+                            <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span className="truncate">{post.city}{post.district && `, ${post.district}`}</span>
+                          </div>
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <span>{formatDate(post.created_at)}</span>
+                          </div>
+                        </div>
+
+                        {/* Border separator */}
+                        <div>
+                          <div className="border-t-2 border-black/5"></div>
+                        </div>
+
+                        {/* User info and Price */}
+                        <div className="flex items-center justify-between gap-6">
+                          {/* User info - left side */}
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            {post.profiles?.avatar_url ? (
+                              <Image
+                                src={post.profiles.avatar_url}
+                                alt={post.profiles.full_name || 'User'}
+                                width={40}
+                                height={40}
+                                className="rounded-full flex-shrink-0"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
+                                <span className="text-sm font-semibold text-black">
+                                  {post.profiles?.full_name?.charAt(0) || 'U'}
+                                </span>
+                              </div>
+                            )}
+                            <div className="min-w-0 flex-1">
+                              <p className="text-base font-semibold text-black truncate">
+                                {post.profiles?.full_name || 'Anonymous'}
+                              </p>
+                              {post.profiles?.rating && post.profiles.rating > 0 && (
+                                <RatingDisplay
+                                  userId={post.user_id}
+                                  rating={post.profiles.rating}
+                                  reviewCount={post.profiles.total_reviews || 0}
+                                  className="text-sm"
+                                  clickable={false}
+                                />
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Price - right side */}
+                          {(post.price_min || post.price_max) ? (
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-xl font-bold text-black whitespace-nowrap">
+                                {post.price_min && post.price_max
+                                  ? `${post.price_min}-${post.price_max} zł`
+                                  : post.price_min
+                                  ? `${post.price_min} zł`
+                                  : `${post.price_max} zł`}
+                              </p>
+                              {post.price_type && (
+                                <p className="text-sm text-black/60 whitespace-nowrap">
+                                  {post.price_type === 'hourly'
+                                    ? 'za godzinę'
+                                    : post.price_type === 'fixed'
+                                    ? 'cena stała'
+                                    : 'do negocjacji'}
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            post.price_type === 'negotiable' && (
+                              <div className="text-right flex-shrink-0">
+                                <p className="text-base text-black/60 whitespace-nowrap">Do negocjacji</p>
+                              </div>
+                            )
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
-
-                  {/* Price */}
-                  {(post.price_min || post.price_max) ? (
-                    <div className="text-right flex-shrink-0">
-                      <p className="text-xl font-bold text-black whitespace-nowrap">
-                        {post.price_min && post.price_max
-                          ? `${post.price_min}-${post.price_max} zł`
-                          : post.price_min
-                          ? `${post.price_min} zł`
-                          : `${post.price_max} zł`}
-                      </p>
-                      {post.price_type && (
-                        <p className="text-sm text-black/60 whitespace-nowrap">
-                          {post.price_type === 'hourly'
-                            ? 'za godzinę'
-                            : post.price_type === 'fixed'
-                            ? 'cena stała'
-                            : 'do negocjacji'}
-                        </p>
-                      )}
-                    </div>
-                  ) : (
-                    post.price_type === 'negotiable' && (
-                      <div className="text-right flex-shrink-0">
-                        <p className="text-base text-black/60 whitespace-nowrap">Do negocjacji</p>
+                </>
+              ) : (
+                /* Grid view: image above, content below */
+                <>
+                  {/* Image */}
+                  {post.images && post.images.length > 0 && (
+                    <div className="relative bg-black/5 overflow-hidden w-full h-40 md:h-48 rounded-t-3xl">
+                      <Image
+                        src={post.images[0]}
+                        alt={post.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute top-3 left-3 z-10" data-no-loader="true">
+                        <FavoriteButtonWrapper
+                          postId={post.id}
+                          initialIsFavorite={userFavorites.includes(post.id)}
+                          withContainer={true}
+                        />
                       </div>
-                    )
+                    </div>
                   )}
-                </div>
-                </CardContent>
-              </div>
+
+                  <div className="flex-1 flex flex-col min-h-0">
+                    <CardHeader className="pb-4 pt-4 px-4 md:pt-6 md:px-6">
+                      <CardTitle className="text-base md:text-xl font-bold text-black">
+                        {post.title}
+                      </CardTitle>
+                      {/* Mobile - Location and date in header */}
+                      <div className="flex md:hidden items-center justify-between gap-2 mt-2 text-xs text-black/60">
+                        <div className="flex items-center gap-1">
+                          <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span className="truncate">{post.city}</span>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <span>{formatDate(post.created_at)}</span>
+                        </div>
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="pb-4 px-4 md:pb-6 md:px-6 mt-auto space-y-0 md:space-y-3 flex-shrink-0">
+                      {/* Mobile - Border separator */}
+                      <div className="md:hidden mb-3">
+                        <div className="border-t-2 border-black/5"></div>
+                      </div>
+
+                      {/* Desktop - Location and date above user info */}
+                      <div className="hidden md:flex items-center justify-between gap-4 text-sm text-black/60 mb-3">
+                        <div className="flex items-center gap-1">
+                          <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span className="truncate">{post.city}{post.district && `, ${post.district}`}</span>
+                        </div>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <span>{formatDate(post.created_at)}</span>
+                        </div>
+                      </div>
+
+                      {/* Desktop - Border separator */}
+                      <div className="hidden md:block mb-3">
+                        <div className="border-t-2 border-black/5"></div>
+                      </div>
+
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="flex items-center gap-2 min-w-0 flex-1">
+                          {post.profiles?.avatar_url ? (
+                            <Image
+                              src={post.profiles.avatar_url}
+                              alt={post.profiles.full_name || 'User'}
+                              width={28}
+                              height={28}
+                              className="rounded-full flex-shrink-0 md:w-8 md:h-8"
+                            />
+                          ) : (
+                            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
+                              <span className="text-xs font-semibold text-black">
+                                {post.profiles?.full_name?.charAt(0) || 'U'}
+                              </span>
+                            </div>
+                          )}
+                          <div className="min-w-0 flex-1">
+                            <p className="text-xs md:text-sm font-semibold text-black truncate">
+                              {post.profiles?.full_name || 'Anonymous'}
+                            </p>
+                            {/* Rating - all devices */}
+                            {post.profiles?.rating && post.profiles.rating > 0 && (
+                              <RatingDisplay
+                                userId={post.user_id}
+                                rating={post.profiles.rating}
+                                reviewCount={post.profiles.total_reviews || 0}
+                                className="text-xs md:text-sm"
+                                clickable={false}
+                              />
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Price */}
+                        {(post.price_min || post.price_max) ? (
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-base md:text-xl font-bold text-black whitespace-nowrap">
+                              {post.price_min && post.price_max
+                                ? `${post.price_min}-${post.price_max} zł`
+                                : post.price_min
+                                ? `${post.price_min} zł`
+                                : `${post.price_max} zł`}
+                            </p>
+                            {post.price_type && (
+                              <p className="text-xs md:text-sm text-black/60 whitespace-nowrap">
+                                {post.price_type === 'hourly'
+                                  ? 'za godzinę'
+                                  : post.price_type === 'fixed'
+                                  ? 'cena stała'
+                                  : 'do negocjacji'}
+                              </p>
+                            )}
+                          </div>
+                        ) : (
+                          post.price_type === 'negotiable' && (
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-sm md:text-base text-black/60 whitespace-nowrap">Do negocjacji</p>
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </CardContent>
+                  </div>
+                </>
+              )}
             </Card>
           </Link>
         ))}

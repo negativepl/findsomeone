@@ -8,6 +8,12 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MyListingsTabs } from '@/components/MyListingsTabs'
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -19,7 +25,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { deletePost, updatePostStatus } from './actions'
 import { useRouter } from 'next/navigation'
-import { Pencil, PauseCircle, CheckCircle, PlayCircle, Trash2, MapPin, Clock, Eye, Phone } from 'lucide-react'
+import { Pencil, PauseCircle, CheckCircle, PlayCircle, Trash2, MapPin, Clock, Eye, Phone, XCircle, CalendarClock, RefreshCw, AlertCircle } from 'lucide-react'
 import {
   Select,
   SelectContent,
@@ -38,11 +44,13 @@ interface Post {
   district: string | null
   price_min: number | null
   price_max: number | null
-  price_type: 'hourly' | 'fixed' | 'negotiable' | null
+  price_type: 'hourly' | 'fixed' | 'negotiable' | 'free' | null
   status: 'active' | 'pending' | 'closed' | 'completed'
   moderation_status: 'pending' | 'checking' | 'approved' | 'rejected' | 'flagged'
   moderation_reason: string | null
   created_at: string
+  expires_at: string | null
+  extended_count: number
   views: number
   phone_clicks: number
   images: string[] | null
@@ -202,6 +210,60 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
     setDeleteDialogOpen(true)
   }
 
+  const handleExtendPost = async (postId: string, e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!confirm('Czy na pewno chcesz przedłużyć to ogłoszenie o 30 dni?')) {
+      return
+    }
+
+    startTransition(async () => {
+      try {
+        const response = await fetch(`/api/posts/${postId}/extend`, {
+          method: 'POST',
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to extend post')
+        }
+
+        router.refresh()
+      } catch (error) {
+        alert('Błąd podczas przedłużania ogłoszenia')
+      }
+    })
+  }
+
+  const getDaysUntilExpiry = (expiresAt: string | null): number | null => {
+    if (!expiresAt) return null
+    const now = new Date()
+    const expiry = new Date(expiresAt)
+    const diffTime = expiry.getTime() - now.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays
+  }
+
+  const getExpiryText = (expiresAt: string | null): { text: string, urgent: boolean } => {
+    const days = getDaysUntilExpiry(expiresAt)
+    if (days === null) return { text: '', urgent: false }
+
+    if (days < 0) return { text: 'Wygasło', urgent: true }
+    if (days === 0) return { text: 'Wygasa dziś', urgent: true }
+    if (days === 1) return { text: 'Wygasa jutro', urgent: true }
+    if (days <= 7) return { text: `Wygasa za ${days} dni`, urgent: true }
+    return { text: `Wygasa za ${days} dni`, urgent: false }
+  }
+
+  const isPendingModeration = (post: Post): boolean => {
+    return (post.status === 'pending' ||
+            post.moderation_status === 'checking' ||
+            post.moderation_status === 'pending' ||
+            post.moderation_status === 'flagged')
+  }
+
+  const pendingModerationPosts = posts.filter(isPendingModeration)
+
   // Don't render until we've loaded the saved preference
   if (!isLoaded) {
     return null
@@ -209,6 +271,25 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
   return (
     <>
+      {/* Pending Moderation Alert */}
+      {pendingModerationPosts.length > 0 && (
+        <div className="mb-6 bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <h3 className="font-semibold text-yellow-900 mb-1">
+              {pendingModerationPosts.length === 1
+                ? 'Ogłoszenie oczekuje na zatwierdzenie'
+                : `${pendingModerationPosts.length} ogłoszeń oczekuje na zatwierdzenie`}
+            </h3>
+            <p className="text-sm text-yellow-800">
+              {pendingModerationPosts.length === 1
+                ? 'Twoje ogłoszenie jest obecnie sprawdzane przez moderatora. Zostanie opublikowane po pozytywnej weryfikacji.'
+                : 'Twoje ogłoszenia są obecnie sprawdzane przez moderatora. Zostaną opublikowane po pozytywnej weryfikacji.'}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="mb-6">
         <MyListingsTabs
@@ -242,7 +323,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
       {/* Posts List/Grid */}
       {filteredPosts && filteredPosts.length > 0 ? (
-        <div className={viewMode === 'list' ? 'space-y-4' : 'grid gap-6 md:grid-cols-2 lg:grid-cols-3'}>
+        <div className={viewMode === 'list' ? 'space-y-4' : 'grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3'}>
           {filteredPosts.map((post: Post) => (
             <Card key={post.id} className={`border-0 rounded-3xl bg-white shadow-sm hover:shadow-md transition-shadow group relative ${
               viewMode === 'list' ? '' : 'flex flex-col h-full'
@@ -254,154 +335,417 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                 aria-label={`Zobacz ogłoszenie: ${post.title}`}
               />
 
-              <CardContent className={viewMode === 'list' ? 'p-6 relative z-10' : 'p-0 flex flex-col h-full relative z-10'}>
-                <div className={viewMode === 'list' ? 'flex flex-col md:flex-row gap-6' : 'flex flex-col h-full'}>
-                  {/* Image thumbnail */}
-                  {post.images && post.images.length > 0 && (
-                    <div className={`relative overflow-hidden bg-black/5 flex-shrink-0 ${
-                      viewMode === 'list'
-                        ? 'w-full md:w-40 h-40 rounded-2xl'
-                        : 'w-full h-48 rounded-t-3xl'
-                    }`}>
-                      <Image
-                        src={post.images[0]}
-                        alt={post.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  )}
-
-                  {/* Content area */}
-                  <div className={`flex-1 flex flex-col justify-between min-w-0 ${
-                    viewMode === 'grid' ? 'p-6' : ''
-                  }`}>
-                    {/* Top section - Badges and Title */}
-                    <div>
-                      <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Badge
-                            className={`rounded-full px-3 py-1 text-xs ${
-                              post.type === 'seeking'
-                                ? 'bg-[#C44E35] text-white border-0'
-                                : 'bg-black text-white border-0'
-                            }`}
-                          >
-                            {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                          </Badge>
-                          {viewMode === 'list' && post.categories && (
-                            <Badge variant="outline" className="rounded-full border-black/10 text-black/60 text-xs">
-                              {post.categories.name}
-                            </Badge>
-                          )}
-                          <Badge
-                            variant="outline"
-                            className={`rounded-full text-xs ${
-                              post.moderation_status === 'rejected'
-                                ? 'border-red-500 text-red-600 bg-red-50'
-                                : post.status === 'active'
-                                ? 'border-green-500 text-green-600 bg-green-50'
-                                : post.status === 'completed'
-                                ? 'border-blue-500 text-blue-600 bg-blue-50'
-                                : 'border-black/10 text-black/60'
-                            }`}
-                          >
-                            {post.moderation_status === 'rejected'
-                              ? '✗ Odrzucone'
-                              : post.status === 'active'
-                              ? '✓ Aktywne'
-                              : post.status === 'completed'
-                              ? 'Zakończone'
-                              : 'Nieaktywne'}
-                          </Badge>
-                        </div>
-                        {viewMode === 'grid' && (
-                          <span className="text-sm text-black/60">
-                            {new Date(post.created_at).toLocaleDateString('pl-PL', {
-                              day: 'numeric',
-                              month: 'short',
-                              year: 'numeric'
-                            })}, {new Date(post.created_at).toLocaleTimeString('pl-PL', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </span>
+              <CardContent className={viewMode === 'list' ? 'p-0 relative z-10' : 'p-0 flex flex-col h-full relative z-10'}>
+                {viewMode === 'list' ? (
+                  /* List view: mobile - vertical layout, desktop - horizontal with image on left (like /posts) */
+                  <>
+                    {/* Mobile layout */}
+                    <div className="md:hidden flex flex-col">
+                      <div className="flex gap-3 p-4 pb-0 items-start">
+                        {/* Image thumbnail */}
+                        {post.images && post.images.length > 0 && (
+                          <div className="relative overflow-hidden bg-black/5 flex-shrink-0 w-20 h-20 rounded-xl">
+                            <Image
+                              src={post.images[0]}
+                              alt={post.title}
+                              fill
+                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                          </div>
                         )}
+
+                        {/* Content */}
+                        <div className="flex-1 flex flex-col min-w-0">
+                          {/* Status icon in top right */}
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <h3 className="text-base font-bold text-black line-clamp-2 flex-1">
+                              {post.title}
+                            </h3>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                    post.moderation_status === 'rejected'
+                                      ? 'bg-red-500'
+                                      : isPendingModeration(post)
+                                      ? 'bg-yellow-500'
+                                      : post.status === 'active'
+                                      ? 'bg-[#C44E35]'
+                                      : post.status === 'completed'
+                                      ? 'bg-black'
+                                      : 'bg-gray-400'
+                                  }`}>
+                                    {post.moderation_status === 'rejected' ? (
+                                      <XCircle className="w-3 h-3 text-white" />
+                                    ) : isPendingModeration(post) ? (
+                                      <AlertCircle className="w-3 h-3 text-white" />
+                                    ) : post.status === 'active' ? (
+                                      <CheckCircle className="w-3 h-3 text-white" />
+                                    ) : post.status === 'completed' ? (
+                                      <CheckCircle className="w-3 h-3 text-white" />
+                                    ) : (
+                                      <PauseCircle className="w-3 h-3 text-white" />
+                                    )}
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <p>{post.moderation_status === 'rejected'
+                                    ? 'Odrzucone'
+                                    : isPendingModeration(post)
+                                    ? 'Oczekuje na zatwierdzenie'
+                                    : post.status === 'active'
+                                    ? 'Aktywne'
+                                    : post.status === 'completed'
+                                    ? 'Zakończone'
+                                    : 'Nieaktywne'}</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          </div>
+
+                          {/* Rejection reason */}
+                          {post.moderation_status === 'rejected' && post.moderation_reason && (
+                            <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded-xl">
+                              <p className="text-xs text-red-800">
+                                <span className="font-semibold">Powód:</span> {post.moderation_reason}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Location and Stats */}
+                          <div className="flex items-center gap-2 text-xs text-black/60 flex-wrap">
+                            <div className="flex items-center gap-1">
+                              <MapPin className="w-3 h-3" />
+                              <span className="truncate">{post.city}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Eye className="w-3 h-3" />
+                              <span>{post.views}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Phone className="w-3 h-3" />
+                              <span>{post.phone_clicks || 0}</span>
+                            </div>
+                            {post.status === 'active' && post.expires_at && (() => {
+                              const expiryInfo = getExpiryText(post.expires_at)
+                              return expiryInfo.text && (
+                                <div className={`flex items-center gap-1 ${expiryInfo.urgent ? 'text-[#C44E35] font-semibold' : ''}`}>
+                                  <CalendarClock className="w-3 h-3" />
+                                  <span>{expiryInfo.text}</span>
+                                </div>
+                              )
+                            })()}
+                          </div>
+                        </div>
                       </div>
 
-                      <h3 className="text-xl font-bold text-black mb-3">
-                        {post.title}
-                      </h3>
+                      {/* Footer - full width */}
+                      <div className="pt-3 pb-4 mt-3 border-t-2 border-black/5 px-4">
+                        <div className="flex items-center justify-between gap-2">
+                          {/* Price */}
+                          {(post.price_min || post.price_max) ? (
+                            <div className="text-left">
+                              <p className="text-base font-bold text-black">
+                                {post.price_min && post.price_max
+                                  ? `${post.price_min}-${post.price_max} zł`
+                                  : post.price_min
+                                  ? `${post.price_min} zł`
+                                  : `${post.price_max} zł`}
+                              </p>
+                              {post.price_type && (
+                                <p className="text-xs text-black/60">
+                                  {post.price_type === 'hourly'
+                                    ? 'za godzinę'
+                                    : post.price_type === 'fixed'
+                                    ? 'cena stała'
+                                    : 'do negocjacji'}
+                                </p>
+                              )}
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
 
-                      {/* Rejection reason */}
-                      {post.moderation_status === 'rejected' && post.moderation_reason && (
-                        <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-xl">
-                          <p className="text-sm text-red-800">
-                            <span className="font-semibold">Powód odrzucenia:</span> {post.moderation_reason}
-                          </p>
-                        </div>
-                      )}
+                        {/* Actions */}
+                        <div className="flex items-center gap-1.5">
+                          {post.status === 'active' && post.expires_at && getDaysUntilExpiry(post.expires_at) !== null && getDaysUntilExpiry(post.expires_at)! <= 7 && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={(e) => handleExtendPost(post.id, e)}
+                                    className="h-8 w-8 rounded-full border-2 border-[#C44E35] bg-[#C44E35]/10 hover:bg-[#C44E35]/20 flex items-center justify-center transition-all relative z-20"
+                                    disabled={isPending}
+                                  >
+                                    <RefreshCw className="w-3 h-3 text-[#C44E35]" />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <p>Przedłuż o 30 dni</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
 
-                      {/* Meta info - Grid view: location in bottom section, List view: all details */}
-                      {viewMode === 'list' && (
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-black/60">
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">{post.city}{post.district && `, ${post.district}`}</span>
-                          </div>
-                          <span className="text-black/30">•</span>
-                          <div className="flex items-center gap-1.5">
-                            <Eye className="w-4 h-4 flex-shrink-0" />
-                            <span>{post.views} wyświetleń</span>
-                          </div>
-                          <span className="text-black/30">•</span>
-                          <div className="flex items-center gap-1.5">
-                            <Phone className="w-4 h-4 flex-shrink-0" />
-                            <span>{post.phone_clicks || 0} kliknięć tel.</span>
-                          </div>
-                          <span className="text-black/30">•</span>
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="w-4 h-4 flex-shrink-0" />
-                            <span>
-                              {new Date(post.created_at).toLocaleDateString('pl-PL', {
-                                day: 'numeric',
-                                month: 'short',
-                                year: 'numeric'
-                              })},{' '}
-                              {new Date(post.created_at).toLocaleTimeString('pl-PL', {
-                                hour: '2-digit',
-                                minute: '2-digit'
-                              })}
-                            </span>
-                          </div>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
+                                  <button className="h-8 w-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all">
+                                    <Pencil className="w-3 h-3 text-black" />
+                                  </button>
+                                </Link>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                <p>Edytuj</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
+                          {post.status === 'active' && (
+                            <>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault()
+                                        handleStatusChange(post.id, 'closed')
+                                      }}
+                                      className="h-8 w-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                      disabled={isPending}
+                                    >
+                                      <PauseCircle className="w-3 h-3 text-black" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <p>Dezaktywuj</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault()
+                                        handleStatusChange(post.id, 'completed')
+                                      }}
+                                      className="h-8 w-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                      disabled={isPending}
+                                    >
+                                      <CheckCircle className="w-3 h-3 text-black" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <p>Zakończ</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </>
+                          )}
+
+                          {post.status === 'closed' && (
+                            <>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault()
+                                        handleStatusChange(post.id, 'active')
+                                      }}
+                                      className="h-8 w-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                      disabled={isPending}
+                                    >
+                                      <PlayCircle className="w-3 h-3 text-black" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <p>Aktywuj</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault()
+                                        handleStatusChange(post.id, 'completed')
+                                      }}
+                                      className="h-8 w-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                      disabled={isPending}
+                                    >
+                                      <CheckCircle className="w-3 h-3 text-black" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <p>Zakończ</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </>
+                          )}
+
+                          {post.status === 'completed' && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault()
+                                      handleStatusChange(post.id, 'active')
+                                    }}
+                                    className="h-8 w-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                    disabled={isPending}
+                                  >
+                                    <PlayCircle className="w-3 h-3 text-black" />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <p>Aktywuj ponownie</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    openDeleteDialog(post.id)
+                                  }}
+                                  className="h-8 w-8 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] flex items-center justify-center transition-colors relative z-20"
+                                  disabled={isPending}
+                                >
+                                  <Trash2 className="w-3 h-3 text-white" />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                <p>Usuń</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
-                      )}
+                      </div>
                     </div>
+                  </div>
 
-                    {/* Bottom section - Stats/Price and Actions */}
-                    {viewMode === 'grid' ? (
-                      /* Grid view: simple stats + location + price with actions */
-                      <div className="mt-auto">
-                        {/* Stats and Location in one row */}
-                        <div className="flex items-center justify-center gap-3 text-sm text-black/60 flex-wrap p-3 bg-black/5 rounded-xl mb-3">
-                            <div className="flex items-center gap-1.5">
+                    {/* Desktop layout */}
+                    <div className="hidden md:flex h-full overflow-hidden rounded-3xl">
+                      {/* Image container - left side, full height */}
+                      {post.images && post.images.length > 0 && (
+                        <div className="relative bg-black/5 w-64 flex-shrink-0">
+                          <Image
+                            src={post.images[0]}
+                            alt={post.title}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      )}
+
+                      {/* Content container - right side */}
+                      <div className="flex-1 flex flex-col p-6">
+                        {/* Top section */}
+                        <div className="flex items-start justify-between gap-3 mb-3">
+                          <h3 className="text-xl font-bold text-black flex-1">
+                            {post.title}
+                          </h3>
+                          {/* Status icon */}
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                  post.moderation_status === 'rejected'
+                                    ? 'bg-red-500'
+                                    : isPendingModeration(post)
+                                    ? 'bg-yellow-500'
+                                    : post.status === 'active'
+                                    ? 'bg-[#C44E35]'
+                                    : post.status === 'completed'
+                                    ? 'bg-black'
+                                    : 'bg-gray-400'
+                                }`}>
+                                  {post.moderation_status === 'rejected' ? (
+                                    <XCircle className="w-4 h-4 text-white" />
+                                  ) : isPendingModeration(post) ? (
+                                    <AlertCircle className="w-4 h-4 text-white" />
+                                  ) : post.status === 'active' ? (
+                                    <CheckCircle className="w-4 h-4 text-white" />
+                                  ) : post.status === 'completed' ? (
+                                    <CheckCircle className="w-4 h-4 text-white" />
+                                  ) : (
+                                    <PauseCircle className="w-4 h-4 text-white" />
+                                  )}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                <p>{post.moderation_status === 'rejected'
+                                  ? 'Odrzucone'
+                                  : isPendingModeration(post)
+                                  ? 'Oczekuje na zatwierdzenie'
+                                  : post.status === 'active'
+                                  ? 'Aktywne'
+                                  : post.status === 'completed'
+                                  ? 'Zakończone'
+                                  : 'Nieaktywne'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+
+                        {/* Rejection reason */}
+                        {post.moderation_status === 'rejected' && post.moderation_reason && (
+                          <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-xl">
+                            <p className="text-sm text-red-800">
+                              <span className="font-semibold">Powód odrzucenia:</span> {post.moderation_reason}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Spacer */}
+                        <div className="flex-1"></div>
+
+                        {/* Bottom section */}
+                        <div className="space-y-3">
+                          {/* Location and Stats */}
+                          <div className="flex items-center gap-4 text-sm text-black/60">
+                            <div className="flex items-center gap-1">
+                              <MapPin className="w-4 h-4" />
+                              <span>{post.city}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
                               <Eye className="w-4 h-4" />
                               <span>{post.views}</span>
                             </div>
-                            <span className="text-black/30">•</span>
-                            <div className="flex items-center gap-1.5">
+                            <div className="flex items-center gap-1">
                               <Phone className="w-4 h-4" />
                               <span>{post.phone_clicks || 0}</span>
                             </div>
-                            <span className="text-black/30">•</span>
-                            <div className="flex items-center gap-1.5">
-                              <MapPin className="w-4 h-4 flex-shrink-0" />
-                              <span className="truncate">{post.city}{post.district && `, ${post.district}`}</span>
+                            <div className="flex items-center gap-1.5 ml-auto">
+                              <Clock className="w-4 h-4" />
+                              <span>
+                                {new Date(post.created_at).toLocaleDateString('pl-PL', {
+                                  day: 'numeric',
+                                  month: 'short',
+                                  year: 'numeric'
+                                })},{' '}
+                                {new Date(post.created_at).toLocaleTimeString('pl-PL', {
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </span>
                             </div>
-                        </div>
+                          </div>
 
-                        {/* Footer with price and actions */}
-                        <div className="pt-4 border-t-2 border-black/5">
+                          {/* Border separator */}
+                          <div className="border-t-2 border-black/5"></div>
+
+                          {/* Price and Actions */}
                           <div className="flex items-center justify-between gap-4">
                             {/* Price */}
                             {(post.price_min || post.price_max) ? (
@@ -429,122 +773,286 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                             {/* Actions */}
                             <div className="flex items-center gap-2">
-                              <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
-                                <button
-                                  className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all"
-                                  title="Edytuj"
-                                >
-                                  <Pencil className="w-4 h-4 text-black" />
-                                </button>
-                              </Link>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
+                                      <button className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all">
+                                        <Pencil className="w-4 h-4 text-black" />
+                                      </button>
+                                    </Link>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <p>Edytuj</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
 
                               {post.status === 'active' && (
                                 <>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'closed')
-                                    }}
-                                    className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                    title="Dezaktywuj"
-                                  >
-                                    <PauseCircle className="w-4 h-4 text-black" />
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'completed')
-                                    }}
-                                    className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                    title="Zakończ"
-                                  >
-                                    <CheckCircle className="w-4 h-4 text-black" />
-                                  </button>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault()
+                                            handleStatusChange(post.id, 'closed')
+                                          }}
+                                          className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          disabled={isPending}
+                                        >
+                                          <PauseCircle className="w-4 h-4 text-black" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                        <p>Dezaktywuj</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault()
+                                            handleStatusChange(post.id, 'completed')
+                                          }}
+                                          className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          disabled={isPending}
+                                        >
+                                          <CheckCircle className="w-4 h-4 text-black" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                        <p>Zakończ</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 </>
                               )}
 
                               {post.status === 'closed' && (
                                 <>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'active')
-                                    }}
-                                    className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                    title="Aktywuj"
-                                  >
-                                    <PlayCircle className="w-4 h-4 text-black" />
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'completed')
-                                    }}
-                                    className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                    title="Zakończ"
-                                  >
-                                    <CheckCircle className="w-4 h-4 text-black" />
-                                  </button>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault()
+                                            handleStatusChange(post.id, 'active')
+                                          }}
+                                          className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          disabled={isPending}
+                                        >
+                                          <PlayCircle className="w-4 h-4 text-black" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                        <p>Aktywuj</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault()
+                                            handleStatusChange(post.id, 'completed')
+                                          }}
+                                          className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          disabled={isPending}
+                                        >
+                                          <CheckCircle className="w-4 h-4 text-black" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                        <p>Zakończ</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 </>
                               )}
 
                               {post.status === 'completed' && (
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault()
-                                    handleStatusChange(post.id, 'active')
-                                  }}
-                                  className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                  disabled={isPending}
-                                  title="Aktywuj ponownie"
-                                >
-                                  <PlayCircle className="w-4 h-4 text-black" />
-                                </button>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault()
+                                          handleStatusChange(post.id, 'active')
+                                        }}
+                                        className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                        disabled={isPending}
+                                      >
+                                        <PlayCircle className="w-4 h-4 text-black" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <p>Aktywuj ponownie</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
                               )}
 
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  openDeleteDialog(post.id)
-                                }}
-                                className="h-10 w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] flex items-center justify-center transition-colors relative z-20"
-                                disabled={isPending}
-                                title="Usuń"
-                              >
-                                <Trash2 className="w-4 h-4 text-white" />
-                              </button>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault()
+                                        openDeleteDialog(post.id)
+                                      }}
+                                      className="h-10 w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] flex items-center justify-center transition-colors relative z-20"
+                                      disabled={isPending}
+                                    >
+                                      <Trash2 className="w-4 h-4 text-white" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <p>Usuń</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             </div>
                           </div>
                         </div>
                       </div>
-                    ) : (
-                      /* List view: full details with price and actions in one footer */
-                      <>
+                    </div>
+                  </>
+                ) : (
+                  /* Grid view: image above, content below */
+                  <>
+                    {/* Image thumbnail */}
+                    {post.images && post.images.length > 0 && (
+                      <div className="relative overflow-hidden bg-black/5 flex-shrink-0 w-full h-40 md:h-48 rounded-t-3xl">
+                        <Image
+                          src={post.images[0]}
+                          alt={post.title}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+
+                    {/* Content area */}
+                    <div className="flex-1 flex flex-col min-w-0 p-4 md:p-6">
+                      {/* Top section - Badges and Title */}
+                      <div className="flex-1">
+                        <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
+                          <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
+                            <Badge
+                              className={`rounded-full h-6 md:h-8 px-3 md:px-4 text-xs md:text-sm whitespace-nowrap flex items-center ${
+                                post.type === 'seeking'
+                                  ? 'bg-[#C44E35] text-white border-0'
+                                  : 'bg-black text-white border-0'
+                              }`}
+                            >
+                              {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
+                            </Badge>
+                          </div>
+                          {/* Status icon in top right */}
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className={`w-6 h-6 md:w-8 md:h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                                  post.moderation_status === 'rejected'
+                                    ? 'bg-red-500'
+                                    : isPendingModeration(post)
+                                    ? 'bg-yellow-500'
+                                    : post.status === 'active'
+                                    ? 'bg-[#C44E35]'
+                                    : post.status === 'completed'
+                                    ? 'bg-black'
+                                    : 'bg-gray-400'
+                                }`}>
+                                  {post.moderation_status === 'rejected' ? (
+                                    <XCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                  ) : isPendingModeration(post) ? (
+                                    <AlertCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                  ) : post.status === 'active' ? (
+                                    <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                  ) : post.status === 'completed' ? (
+                                    <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                  ) : (
+                                    <PauseCircle className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                  )}
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                <p>{post.moderation_status === 'rejected'
+                                  ? 'Odrzucone'
+                                  : isPendingModeration(post)
+                                  ? 'Oczekuje na zatwierdzenie'
+                                  : post.status === 'active'
+                                  ? 'Aktywne'
+                                  : post.status === 'completed'
+                                  ? 'Zakończone'
+                                  : 'Nieaktywne'}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+
+                        <h3 className="text-base md:text-xl font-bold text-black mb-2 md:mb-3 line-clamp-2">
+                          {post.title}
+                        </h3>
+
+                        {/* Rejection reason */}
+                        {post.moderation_status === 'rejected' && post.moderation_reason && (
+                          <div className="mb-2 md:mb-3 p-2 md:p-3 bg-red-50 border border-red-200 rounded-xl">
+                            <p className="text-xs md:text-sm text-red-800">
+                              <span className="font-semibold">Powód odrzucenia:</span> {post.moderation_reason}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Bottom section - Stats/Price and Actions */}
+                      <div className="mt-auto">
+                        {/* Location and Stats in one row */}
+                        <div className="flex items-center justify-between gap-2 md:gap-3 text-xs md:text-sm text-black/60 mb-3">
+                            {/* Location - left */}
+                            <div className="flex items-center gap-1 md:gap-1.5 min-w-0">
+                              <MapPin className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
+                              <span className="truncate">{post.city}{post.district && `, ${post.district}`}</span>
+                            </div>
+
+                            {/* Stats - right */}
+                            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+                              <div className="flex items-center gap-1 md:gap-1.5">
+                                <Eye className="w-3 h-3 md:w-4 md:h-4" />
+                                <span>{post.views}</span>
+                              </div>
+                              <div className="flex items-center gap-1 md:gap-1.5">
+                                <Phone className="w-3 h-3 md:w-4 md:h-4" />
+                                <span>{post.phone_clicks || 0}</span>
+                              </div>
+                            </div>
+                        </div>
+
                         {/* Footer with price and actions */}
-                        <div className="pt-4 mt-4 border-t-2 border-black/5">
-                          <div className="flex items-center justify-between gap-4">
+                        <div className="pt-3 md:pt-4 border-t-2 border-black/5">
+                          <div className="flex items-center justify-between gap-2 md:gap-4">
                             {/* Price */}
                             {(post.price_min || post.price_max) ? (
-                              <div className="flex items-center gap-3">
-                                <span className="text-xl font-bold text-black">
+                              <div className="text-left">
+                                <p className="text-base md:text-xl font-bold text-black">
                                   {post.price_min && post.price_max
                                     ? `${post.price_min}-${post.price_max} zł`
                                     : post.price_min
                                     ? `${post.price_min} zł`
                                     : `${post.price_max} zł`}
-                                </span>
+                                </p>
                                 {post.price_type && (
-                                  <span className="text-sm text-black/60">
+                                  <p className="text-xs md:text-sm text-black/60">
                                     {post.price_type === 'hourly'
                                       ? 'za godzinę'
                                       : post.price_type === 'fixed'
                                       ? 'cena stała'
                                       : 'do negocjacji'}
-                                  </span>
+                                  </p>
                                 )}
                               </div>
                             ) : (
@@ -552,102 +1060,156 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             )}
 
                             {/* Actions */}
-                            <div className="flex items-center gap-2">
-                              <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
-                                <button
-                                  className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all"
-                                  title="Edytuj"
-                                >
-                                  <Pencil className="w-4 h-4 text-black" />
-                                </button>
-                              </Link>
+                            <div className="flex items-center gap-1.5 md:gap-2">
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
+                                      <button className="h-8 w-8 md:h-10 md:w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all">
+                                        <Pencil className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                      </button>
+                                    </Link>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <p>Edytuj</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
 
                               {post.status === 'active' && (
                                 <>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'closed')
-                                    }}
-                                    className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                    title="Dezaktywuj"
-                                  >
-                                    <PauseCircle className="w-4 h-4 text-black" />
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'completed')
-                                    }}
-                                    className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                    title="Zakończ"
-                                  >
-                                    <CheckCircle className="w-4 h-4 text-black" />
-                                  </button>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault()
+                                            handleStatusChange(post.id, 'closed')
+                                          }}
+                                          className="h-8 w-8 md:h-10 md:w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          disabled={isPending}
+                                        >
+                                          <PauseCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                        <p>Dezaktywuj</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault()
+                                            handleStatusChange(post.id, 'completed')
+                                          }}
+                                          className="h-8 w-8 md:h-10 md:w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          disabled={isPending}
+                                        >
+                                          <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                        <p>Zakończ</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 </>
                               )}
 
                               {post.status === 'closed' && (
                                 <>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'active')
-                                    }}
-                                    className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                    title="Aktywuj"
-                                  >
-                                    <PlayCircle className="w-4 h-4 text-black" />
-                                  </button>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'completed')
-                                    }}
-                                    className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                    title="Zakończ"
-                                  >
-                                    <CheckCircle className="w-4 h-4 text-black" />
-                                  </button>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault()
+                                            handleStatusChange(post.id, 'active')
+                                          }}
+                                          className="h-8 w-8 md:h-10 md:w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          disabled={isPending}
+                                        >
+                                          <PlayCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                        <p>Aktywuj</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
+                                  <TooltipProvider>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button
+                                          onClick={(e) => {
+                                            e.preventDefault()
+                                            handleStatusChange(post.id, 'completed')
+                                          }}
+                                          className="h-8 w-8 md:h-10 md:w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          disabled={isPending}
+                                        >
+                                          <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                        <p>Zakończ</p>
+                                      </TooltipContent>
+                                    </Tooltip>
+                                  </TooltipProvider>
                                 </>
                               )}
 
                               {post.status === 'completed' && (
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault()
-                                    handleStatusChange(post.id, 'active')
-                                  }}
-                                  className="h-10 w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
-                                  disabled={isPending}
-                                  title="Aktywuj ponownie"
-                                >
-                                  <PlayCircle className="w-4 h-4 text-black" />
-                                </button>
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault()
+                                          handleStatusChange(post.id, 'active')
+                                        }}
+                                        className="h-8 w-8 md:h-10 md:w-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                        disabled={isPending}
+                                      >
+                                        <PlayCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <p>Aktywuj ponownie</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
                               )}
 
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  openDeleteDialog(post.id)
-                                }}
-                                className="h-10 w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] flex items-center justify-center transition-colors relative z-20"
-                                disabled={isPending}
-                                title="Usuń"
-                              >
-                                <Trash2 className="w-4 h-4 text-white" />
-                              </button>
+                              <TooltipProvider>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => {
+                                        e.preventDefault()
+                                        openDeleteDialog(post.id)
+                                      }}
+                                      className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] flex items-center justify-center transition-colors relative z-20"
+                                      disabled={isPending}
+                                    >
+                                      <Trash2 className="w-3 h-3 md:w-4 md:h-4 text-white" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <p>Usuń</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
                             </div>
                           </div>
                         </div>
-                      </>
-                    )}
-                  </div>
-                </div>
+                      </div>
+                    </div>
+                  </>
+                )}
               </CardContent>
             </Card>
           ))}

@@ -76,6 +76,7 @@ export async function GET(request: NextRequest) {
         price_max: result.price_max,
         price_type: result.price_type,
         images: result.images,
+        created_at: result.created_at,
         profiles: {
           full_name: result.user_full_name,
           avatar_url: result.user_avatar_url,

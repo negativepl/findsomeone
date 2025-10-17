@@ -25,6 +25,7 @@ interface Post {
   price_max: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | null
   images: string[] | null
+  created_at: string
   profiles: {
     full_name: string | null
     avatar_url: string | null
@@ -128,6 +129,7 @@ export default async function PostsPage({
       price_max: result.price_max,
       price_type: result.price_type,
       images: result.images,
+      created_at: result.created_at,
       profiles: {
         full_name: result.user_full_name,
         avatar_url: result.user_avatar_url,

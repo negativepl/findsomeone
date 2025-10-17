@@ -16,6 +16,7 @@ interface Category {
   id: string
   name: string
   slug: string
+  parent_id?: string | null
 }
 
 interface StepContextType {
@@ -46,6 +47,10 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     reasons: string[]
   } | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
+  const [subcategories, setSubcategories] = useState<Category[]>([])
+
+  // Show type selection modal on mount
+  const [showTypeModal, setShowTypeModal] = useState(true)
 
   // Mobile multi-step state
   const [currentStep, setCurrentStepInternal] = useState(1)
@@ -61,15 +66,26 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     description: '',
     type: 'seeking' as 'seeking' | 'offering',
     category: '',
+    subcategory: '',
     city: '',
     district: '',
     priceMin: '',
     priceMax: '',
-    priceType: 'negotiable' as 'hourly' | 'fixed' | 'negotiable',
+    priceType: 'negotiable' as 'hourly' | 'fixed' | 'negotiable' | 'free',
   })
 
   const [images, setImages] = useState<string[]>([])
   const [userId, setUserId] = useState<string>('')
+
+  // AI Category suggestion state
+  const [suggestingCategory, setSuggestingCategory] = useState(false)
+  const [categorySuggestion, setCategorySuggestion] = useState<{
+    categorySlug: string
+    subcategorySlug?: string
+    confidence: number
+    reasoning: string
+  } | null>(null)
+  const [aiSuggestionApplied, setAiSuggestionApplied] = useState(false)
 
   // Hide/show dock on scroll
   const [isDockVisible, setIsDockVisible] = useState(true)
@@ -132,11 +148,69 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       })
   }, [supabase])
 
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    if (formData.category) {
+      // Find the selected category's ID
+      const selectedCategory = categories.find(cat => cat.slug === formData.category)
+      if (selectedCategory) {
+        // Fetch subcategories for this category
+        supabase
+          .from('categories')
+          .select('id, name, slug, parent_id')
+          .eq('parent_id', selectedCategory.id)
+          .order('name')
+          .then(({ data }) => {
+            if (data) {
+              setSubcategories(data)
+            } else {
+              setSubcategories([])
+            }
+          })
+      }
+    } else {
+      setSubcategories([])
+      setFormData(prev => ({ ...prev, subcategory: '' }))
+    }
+  }, [formData.category, categories, supabase])
+
+  // Apply AI-suggested subcategory after subcategories are loaded
+  useEffect(() => {
+    if (categorySuggestion?.subcategorySlug && subcategories.length > 0) {
+      // Check if the suggested subcategory exists in the loaded subcategories
+      const subcategoryExists = subcategories.some(sub => sub.slug === categorySuggestion.subcategorySlug)
+      if (subcategoryExists && formData.subcategory !== categorySuggestion.subcategorySlug) {
+        setFormData(prev => ({
+          ...prev,
+          subcategory: categorySuggestion.subcategorySlug || '',
+        }))
+      }
+    }
+  }, [subcategories, categorySuggestion, formData.subcategory])
+
+  // Auto-detect category from title with debounce
+  useEffect(() => {
+    // Only auto-detect if:
+    // 1. Title is at least 10 characters
+    // 2. Category is not manually selected yet
+    // 3. AI suggestion hasn't been applied yet
+    if (formData.title.length >= 10 && !formData.category && !aiSuggestionApplied) {
+      const timeoutId = setTimeout(() => {
+        handleSuggestCategory()
+      }, 1500) // Wait 1.5s after user stops typing
+
+      return () => clearTimeout(timeoutId)
+    }
+  }, [formData.title]) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Validation for each step
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1: // Podstawowe info
-        return !!(formData.type && formData.category && formData.title.trim())
+        const hasRequiredFields = !!(formData.type && formData.category && formData.title.trim())
+        // If subcategories are available, subcategory must be selected
+        const hasSubcategoryIfNeeded = subcategories.length === 0 || !!formData.subcategory
+        return hasRequiredFields && hasSubcategoryIfNeeded
       case 2: // Szczegóły
         return formData.description.trim().length > 0
       case 3: // Zdjęcia (opcjonalne, zawsze valid)
@@ -178,6 +252,57 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     }
   }
 
+  const handleTypeSelection = (type: 'seeking' | 'offering') => {
+    setFormData(prev => ({ ...prev, type }))
+    setShowTypeModal(false)
+  }
+
+  // AI-powered category suggestion
+  const handleSuggestCategory = async () => {
+    if (!formData.title && !formData.description) {
+      setError('Wpisz tytuł lub opis, aby wykryć kategorię')
+      return
+    }
+
+    setSuggestingCategory(true)
+    setCategorySuggestion(null)
+    setError(null)
+
+    try {
+      const response = await fetch('/api/posts/suggest-category', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          type: formData.type,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Nie udało się wykryć kategorii')
+      }
+
+      if (data.suggestion) {
+        setCategorySuggestion(data.suggestion)
+        setAiSuggestionApplied(true)
+        // Auto-apply the main category first
+        // Subcategory will be applied automatically by useEffect after subcategories load
+        setFormData(prev => ({
+          ...prev,
+          category: data.suggestion.categorySlug,
+          subcategory: '', // Reset subcategory, will be set by useEffect
+        }))
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Wystąpił błąd podczas wykrywania kategorii')
+    } finally {
+      setSuggestingCategory(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -199,12 +324,23 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         .eq('slug', formData.category)
         .single()
 
+      // Get subcategory ID from slug if selected
+      let subcategoryId = null
+      if (formData.subcategory) {
+        const { data: subcategory } = await supabase
+          .from('categories')
+          .select('id')
+          .eq('slug', formData.subcategory)
+          .single()
+        subcategoryId = subcategory?.id || null
+      }
+
       const { data: newPost, error: insertError } = await supabase.from('posts').insert({
         user_id: user.id,
         title: formData.title,
         description: formData.description,
         type: formData.type,
-        category_id: category?.id || null,
+        category_id: subcategoryId || category?.id || null, // Use subcategory if selected, otherwise main category
         city: formData.city,
         district: formData.district || null,
         price_min: formData.priceMin ? parseFloat(formData.priceMin) : null,
@@ -244,11 +380,87 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
   return (
       <main className="md:container md:mx-auto px-4 md:px-6 h-full md:h-auto md:py-16 flex flex-col md:block">
+        {/* Type Selection Modal */}
+        {showTypeModal && (
+          <div className="fixed inset-0 bg-gray-50/95 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-3xl p-8 md:p-12 max-w-3xl w-full">
+              <div className="text-center mb-10">
+                <h2 className="text-3xl md:text-4xl font-bold text-black mb-3">Co chcesz zrobić?</h2>
+                <p className="text-lg text-black/60">Wybierz typ ogłoszenia</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Seeking Card */}
+                <button
+                  onClick={() => handleTypeSelection('seeking')}
+                  className="group bg-white border-2 border-black/10 hover:border-[#C44E35] rounded-3xl p-8 text-left transition-all"
+                >
+                  <div className="flex flex-col gap-6">
+                    <div className="w-16 h-16 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center">
+                      <svg className="w-9 h-9 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-black mb-3">Szukam usługi</h3>
+                      <p className="text-base text-black/70 leading-relaxed">
+                        Potrzebujesz kogoś do wykonania pracy? Opisz czego szukasz i znajdź specjalistów.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-base font-semibold text-[#C44E35]">
+                      <span>Wybierz</span>
+                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+
+                {/* Offering Card */}
+                <button
+                  onClick={() => handleTypeSelection('offering')}
+                  className="group bg-white border-2 border-black/10 hover:border-[#C44E35] rounded-3xl p-8 text-left transition-all"
+                >
+                  <div className="flex flex-col gap-6">
+                    <div className="w-16 h-16 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center">
+                      <svg className="w-9 h-9 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-black mb-3">Oferuję usługi</h3>
+                      <p className="text-base text-black/70 leading-relaxed">
+                        Świadczysz usługi? Opisz co oferujesz i dotrzij do klientów szukających pomocy.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-base font-semibold text-[#C44E35]">
+                      <span>Wybierz</span>
+                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Page Header - Above Card - Hidden on mobile */}
         <div className="hidden md:block mb-8">
-          <h1 className="text-4xl font-bold text-black mb-3">Dodaj nowe ogłoszenie</h1>
+          <div className="flex items-center justify-between mb-3">
+            <h1 className="text-4xl font-bold text-black">Dodaj nowe ogłoszenie</h1>
+            {!showTypeModal && (
+              <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-[#C44E35]/10 text-[#C44E35] border-2 border-[#C44E35]/20">
+                {formData.type === 'seeking' ? 'Szukasz usługi' : 'Oferujesz usługę'}
+              </span>
+            )}
+          </div>
           <p className="text-lg text-black/60">
-            Wypełnij formularz aby dodać ogłoszenie o poszukiwaniu lub oferowaniu usługi
+            {formData.type === 'seeking'
+              ? 'Opisz czego szukasz i znajdź odpowiednich specjalistów'
+              : 'Opisz swoje usługi i dotrzij do potencjalnych klientów'
+            }
           </p>
         </div>
 
@@ -257,39 +469,68 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
           <form onSubmit={handleSubmit} className="space-y-6 h-full md:h-auto flex flex-col md:block">
             {/* Desktop: All fields visible */}
             <div className="hidden md:block space-y-6">
-              {/* Title, Category and Type in one row */}
-              <div className="grid md:grid-cols-[1fr_280px_280px] gap-4">
-                {/* Title */}
-                <div className="space-y-3">
-                  <Label htmlFor="title" className="text-base font-semibold text-black">
-                    Tytuł ogłoszenia *
-                  </Label>
-                  <div className="relative">
-                    <Input
-                      id="title"
-                      placeholder={
-                        formData.type === 'seeking'
-                          ? 'np. Szukam hydraulika w Warszawie'
-                          : 'np. Oferuję usługi hydrauliczne'
+              {/* Title */}
+              <div className="space-y-3">
+                <Label htmlFor="title" className="text-base font-semibold text-black">
+                  Tytuł ogłoszenia *
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="title"
+                    placeholder={
+                      formData.type === 'seeking'
+                        ? 'np. Szukam hydraulika w Warszawie'
+                        : 'np. Oferuję usługi hydrauliczne'
+                    }
+                    value={formData.title}
+                    onChange={(e) => {
+                      setFormData({ ...formData, title: e.target.value })
+                      // Reset AI flag when user changes title
+                      if (aiSuggestionApplied) {
+                        setAiSuggestionApplied(false)
+                        setCategorySuggestion(null)
                       }
-                      value={formData.title}
-                      onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                      required
-                      maxLength={80}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
-                    />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-black/40 font-medium">
-                      {formData.title.length}/80
-                    </span>
-                  </div>
+                    }}
+                    required
+                    maxLength={80}
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-black/40 font-medium">
+                    {formData.title.length}/80
+                  </span>
                 </div>
+              </div>
 
+              {/* Category and Subcategory */}
+              <div className="grid gap-4 md:grid-cols-2">
                 {/* Category */}
                 <div className="space-y-3">
-                  <Label className="text-base font-semibold text-black">Kategoria *</Label>
+                  <div className="flex items-center gap-2">
+                    <Label className="text-base font-semibold text-black">Kategoria *</Label>
+                    {suggestingCategory && (
+                      <div className="flex items-center gap-1.5 text-xs text-[#C44E35]">
+                        <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span className="font-medium">AI wykrywa...</span>
+                      </div>
+                    )}
+                    {aiSuggestionApplied && !suggestingCategory && (
+                      <div className="flex items-center gap-1.5 text-xs text-[#C44E35]">
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        </svg>
+                        <span className="font-medium">Wykryte przez AI</span>
+                      </div>
+                    )}
+                  </div>
                   <Select
                     value={formData.category}
-                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                    onValueChange={(value) => {
+                      setFormData({ ...formData, category: value, subcategory: '' })
+                      setAiSuggestionApplied(false)
+                    }}
                     required
                   >
                     <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
@@ -305,21 +546,26 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </Select>
                 </div>
 
-                {/* Type */}
+                {/* Subcategory */}
                 <div className="space-y-3">
-                  <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
+                  <Label className="text-base font-semibold text-black">
+                    Podkategoria {subcategories.length > 0 && '*'}
+                  </Label>
                   <Select
-                    value={formData.type}
-                    onValueChange={(value: 'seeking' | 'offering') =>
-                      setFormData({ ...formData, type: value })
-                    }
+                    value={formData.subcategory}
+                    onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
+                    disabled={subcategories.length === 0}
+                    required={subcategories.length > 0}
                   >
                     <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
-                      <SelectValue />
+                      <SelectValue placeholder={subcategories.length > 0 ? "Wybierz" : "Brak"} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="seeking">Szukam usługi</SelectItem>
-                      <SelectItem value="offering">Oferuję usługi</SelectItem>
+                      {subcategories.map((subcat) => (
+                        <SelectItem key={subcat.id} value={subcat.slug}>
+                          {subcat.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -378,58 +624,59 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 </div>
               </div>
 
-              {/* Price */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold text-black">Budżet (opcjonalnie)</Label>
-                <div className="grid md:grid-cols-[1fr_1fr_280px] gap-4">
-                  <div className="space-y-3">
-                    <Label htmlFor="priceMin" className="text-sm text-black/60">
-                      Cena minimalna (zł)
-                    </Label>
-                    <Input
-                      id="priceMin"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      placeholder="0"
-                      value={formData.priceMin}
-                      onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <Label htmlFor="priceMax" className="text-sm text-black/60">
-                      Cena maksymalna (zł)
-                    </Label>
-                    <Input
-                      id="priceMax"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      placeholder="0"
-                      value={formData.priceMax}
-                      onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <Label className="text-sm text-black/60">Typ ceny</Label>
-                    <Select
-                      value={formData.priceType}
-                      onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
-                        setFormData({ ...formData, priceType: value })
-                      }
-                    >
-                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="hourly">Za godzinę</SelectItem>
-                        <SelectItem value="fixed">Stała cena</SelectItem>
-                        <SelectItem value="negotiable">Do negocjacji</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+              {/* Price - 3 columns equal width */}
+              <div className="grid md:grid-cols-3 gap-4">
+                <div className="space-y-3">
+                  <Label className="text-base font-semibold text-black">Typ ceny *</Label>
+                  <Select
+                    value={formData.priceType}
+                    onValueChange={(value: 'hourly' | 'fixed' | 'negotiable' | 'free') =>
+                      setFormData({ ...formData, priceType: value })
+                    }
+                    required
+                  >
+                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="free">Za darmo</SelectItem>
+                      <SelectItem value="hourly">Za godzinę</SelectItem>
+                      <SelectItem value="fixed">Stała cena</SelectItem>
+                      <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-3">
+                  <Label htmlFor="priceMin" className="text-base font-semibold text-black">
+                    Cena min. (zł)
+                  </Label>
+                  <Input
+                    id="priceMin"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0"
+                    value={formData.priceMin}
+                    onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
+                    disabled={formData.priceType === 'free'}
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
+                </div>
+                <div className="space-y-3">
+                  <Label htmlFor="priceMax" className="text-base font-semibold text-black">
+                    Cena maks. (zł)
+                  </Label>
+                  <Input
+                    id="priceMax"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0"
+                    value={formData.priceMax}
+                    onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
+                    disabled={formData.priceType === 'free'}
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                  />
                 </div>
               </div>
             </div>
@@ -440,28 +687,62 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {currentStep === 1 && (
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
-                    <Select
-                      value={formData.type}
-                      onValueChange={(value: 'seeking' | 'offering') =>
-                        setFormData({ ...formData, type: value })
-                      }
-                    >
-                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="seeking">Szukam usługi</SelectItem>
-                        <SelectItem value="offering">Oferuję usługi</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="title-mobile" className="text-base font-semibold text-black">
+                      Tytuł ogłoszenia *
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="title-mobile"
+                        placeholder={
+                          formData.type === 'seeking'
+                            ? 'np. Szukam hydraulika w Warszawie'
+                            : 'np. Oferuję usługi hydrauliczne'
+                        }
+                        value={formData.title}
+                        onChange={(e) => {
+                          setFormData({ ...formData, title: e.target.value })
+                          if (aiSuggestionApplied) {
+                            setAiSuggestionApplied(false)
+                            setCategorySuggestion(null)
+                          }
+                        }}
+                        required
+                        maxLength={80}
+                        className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-14 text-base"
+                      />
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-black/40 font-medium">
+                        {formData.title.length}/80
+                      </span>
+                    </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-black">Kategoria *</Label>
+                    <div className="flex items-center gap-2">
+                      <Label className="text-base font-semibold text-black">Kategoria *</Label>
+                      {suggestingCategory && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#C44E35]">
+                          <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
+                          <span className="font-medium">AI...</span>
+                        </div>
+                      )}
+                      {aiSuggestionApplied && !suggestingCategory && (
+                        <div className="flex items-center gap-1.5 text-xs text-[#C44E35]">
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                          </svg>
+                          <span className="font-medium">AI</span>
+                        </div>
+                      )}
+                    </div>
                     <Select
                       value={formData.category}
-                      onValueChange={(value) => setFormData({ ...formData, category: value })}
+                      onValueChange={(value) => {
+                        setFormData({ ...formData, category: value, subcategory: '' })
+                        setAiSuggestionApplied(false)
+                      }}
                       required
                     >
                       <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
@@ -477,29 +758,27 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="title-mobile" className="text-base font-semibold text-black">
-                      Tytuł ogłoszenia *
-                    </Label>
-                    <div className="relative">
-                      <Input
-                        id="title-mobile"
-                        placeholder={
-                          formData.type === 'seeking'
-                            ? 'np. Szukam hydraulika w Warszawie'
-                            : 'np. Oferuję usługi hydrauliczne'
-                        }
-                        value={formData.title}
-                        onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  {subcategories.length > 0 && (
+                    <div className="space-y-2">
+                      <Label className="text-base font-semibold text-black">Podkategoria *</Label>
+                      <Select
+                        value={formData.subcategory}
+                        onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
                         required
-                        maxLength={80}
-                        className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-14 text-base"
-                      />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-black/40 font-medium">
-                        {formData.title.length}/80
-                      </span>
+                      >
+                        <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
+                          <SelectValue placeholder="Wybierz podkategorię" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {subcategories.map((subcat) => (
+                            <SelectItem key={subcat.id} value={subcat.slug}>
+                              {subcat.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
-                  </div>
+                  )}
                 </div>
               )}
 
@@ -570,22 +849,20 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Step 5: Budżet */}
               {currentStep === 5 && (
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
-                  <div>
-                    <p className="text-xs text-black/60">Opcjonalnie - możesz pominąć ten krok</p>
-                  </div>
-
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-black">Typ ceny</Label>
+                    <Label className="text-base font-semibold text-black">Typ ceny *</Label>
                     <Select
                       value={formData.priceType}
-                      onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
+                      onValueChange={(value: 'hourly' | 'fixed' | 'negotiable' | 'free') =>
                         setFormData({ ...formData, priceType: value })
                       }
+                      required
                     >
                       <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
+                        <SelectItem value="free">Za darmo</SelectItem>
                         <SelectItem value="hourly">Za godzinę</SelectItem>
                         <SelectItem value="fixed">Stała cena</SelectItem>
                         <SelectItem value="negotiable">Do negocjacji</SelectItem>
@@ -593,37 +870,41 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     </Select>
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="priceMin-mobile" className="text-base font-semibold text-black">
-                      Cena minimalna (zł)
-                    </Label>
-                    <Input
-                      id="priceMin-mobile"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      placeholder="0"
-                      value={formData.priceMin}
-                      onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
-                    />
-                  </div>
+                  {formData.priceType !== 'free' && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceMin-mobile" className="text-base font-semibold text-black">
+                          Cena minimalna (zł) <span className="text-black/40 font-normal">(opcjonalnie)</span>
+                        </Label>
+                        <Input
+                          id="priceMin-mobile"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          placeholder="0"
+                          value={formData.priceMin}
+                          onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
+                          className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                        />
+                      </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="priceMax-mobile" className="text-base font-semibold text-black">
-                      Cena maksymalna (zł)
-                    </Label>
-                    <Input
-                      id="priceMax-mobile"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      placeholder="0"
-                      value={formData.priceMax}
-                      onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
-                    />
-                  </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="priceMax-mobile" className="text-base font-semibold text-black">
+                          Cena maksymalna (zł) <span className="text-black/40 font-normal">(opcjonalnie)</span>
+                        </Label>
+                        <Input
+                          id="priceMax-mobile"
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          placeholder="0"
+                          value={formData.priceMax}
+                          onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
+                          className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                        />
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
@@ -732,26 +1013,35 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           onClick={() => setCurrentStep(5)}
                           className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
                         >
-                          {formData.priceMin || formData.priceMax ? 'Edytuj' : 'Dodaj'}
+                          Edytuj
                         </button>
                       </div>
-                      {(formData.priceMin || formData.priceMax) ? (
-                        <div className="flex items-center gap-2">
-                          <svg className="w-5 h-5 text-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span className="text-sm font-medium text-black">
-                            {formData.priceMin && `${formData.priceMin} zł`}
-                            {formData.priceMin && formData.priceMax && ' - '}
-                            {formData.priceMax && `${formData.priceMax} zł`}
-                            <span className="text-black/60 ml-1">
-                              ({formData.priceType === 'hourly' ? 'za godz.' : formData.priceType === 'fixed' ? 'stała' : 'do negocjacji'})
-                            </span>
-                          </span>
-                        </div>
-                      ) : (
-                        <p className="text-sm text-black/40">Nie określono budżetu</p>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <svg className="w-5 h-5 text-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-sm font-medium text-black">
+                          {formData.priceType === 'free' ? (
+                            'Za darmo'
+                          ) : (
+                            <>
+                              {formData.priceMin && `${formData.priceMin} zł`}
+                              {formData.priceMin && formData.priceMax && ' - '}
+                              {formData.priceMax && `${formData.priceMax} zł`}
+                              {(formData.priceMin || formData.priceMax) && (
+                                <span className="text-black/60 ml-1">
+                                  ({formData.priceType === 'hourly' ? 'za godz.' : formData.priceType === 'fixed' ? 'stała' : 'do negocjacji'})
+                                </span>
+                              )}
+                              {!formData.priceMin && !formData.priceMax && (
+                                <span className="text-black/60">
+                                  {formData.priceType === 'hourly' ? 'Za godzinę' : formData.priceType === 'fixed' ? 'Stała cena' : 'Do negocjacji'}
+                                </span>
+                              )}
+                            </>
+                          )}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
