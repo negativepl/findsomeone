@@ -63,6 +63,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
   })
 
   const [images, setImages] = useState<string[]>(post.images || [])
+  const [imageRotations, setImageRotations] = useState<Record<string, number>>({})
 
   // Fetch categories on mount
   useEffect(() => {
@@ -76,6 +77,100 @@ export function EditPostClient({ post }: EditPostClientProps) {
       })
   }, [supabase])
 
+  // Process rotated images before submit
+  const processRotatedImages = async (imagesToProcess: string[], rotations: Record<string, number>) => {
+    const processedImages: string[] = []
+
+    for (const imageUrl of imagesToProcess) {
+      const rotation = rotations[imageUrl] || 0
+
+      // If no rotation, keep original
+      if (rotation === 0) {
+        processedImages.push(imageUrl)
+        continue
+      }
+
+      try {
+        // Fetch the image
+        const response = await fetch(imageUrl)
+        const blob = await response.blob()
+
+        // Create image element
+        const img = document.createElement('img')
+        const objectUrl = URL.createObjectURL(blob)
+
+        await new Promise((resolve, reject) => {
+          img.onload = resolve
+          img.onerror = reject
+          img.src = objectUrl
+        })
+
+        // Create canvas with swapped dimensions for 90/270 degree rotations
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        if (!ctx) throw new Error('Canvas context not available')
+
+        // Swap width/height for 90 and 270 degree rotations
+        if (rotation === 90 || rotation === 270) {
+          canvas.width = img.height
+          canvas.height = img.width
+        } else {
+          canvas.width = img.width
+          canvas.height = img.height
+        }
+
+        // Rotate and draw
+        ctx.translate(canvas.width / 2, canvas.height / 2)
+        ctx.rotate((rotation * Math.PI) / 180)
+        ctx.drawImage(img, -img.width / 2, -img.height / 2)
+
+        // Convert to blob
+        const rotatedBlob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(blob => {
+            if (blob) resolve(blob)
+            else reject(new Error('Failed to create blob'))
+          }, 'image/jpeg', 0.9)
+        })
+
+        // Upload rotated image
+        const fileExt = 'jpg'
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
+        const filePath = `${post.user_id}/${post.id}/${fileName}`
+
+        const { error: uploadError } = await supabase.storage
+          .from('post-images')
+          .upload(filePath, rotatedBlob)
+
+        if (uploadError) throw uploadError
+
+        // Get new public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('post-images')
+          .getPublicUrl(filePath)
+
+        // Delete old image
+        const url = new URL(imageUrl)
+        const pathParts = url.pathname.split('/post-images/')
+        if (pathParts.length > 1) {
+          await supabase.storage
+            .from('post-images')
+            .remove([pathParts[1]])
+        }
+
+        processedImages.push(publicUrl)
+
+        // Clean up
+        URL.revokeObjectURL(objectUrl)
+      } catch (err) {
+        console.error('Error processing rotated image:', err)
+        // If processing fails, use original
+        processedImages.push(imageUrl)
+      }
+    }
+
+    return processedImages
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
@@ -87,6 +182,9 @@ export function EditPostClient({ post }: EditPostClientProps) {
       if (!user) {
         throw new Error('Musisz być zalogowany aby edytować ogłoszenie')
       }
+
+      // Process rotated images before updating post
+      const processedImages = await processRotatedImages(images, imageRotations)
 
       // Get category ID from slug
       let categoryId = null
@@ -111,7 +209,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
           price_min: formData.priceMin ? parseFloat(formData.priceMin) : null,
           price_max: formData.priceMax ? parseFloat(formData.priceMax) : null,
           price_type: formData.priceType,
-          images: images.length > 0 ? images : null,
+          images: processedImages.length > 0 ? processedImages : null,
         })
         .eq('id', post.id)
         .eq('user_id', user.id) // Security: only update own posts
@@ -230,6 +328,8 @@ export function EditPostClient({ post }: EditPostClientProps) {
               userId={post.user_id}
               postId={post.id}
               maxImages={6}
+              imageRotations={imageRotations}
+              onRotationsChange={setImageRotations}
             />
 
             {/* Location */}

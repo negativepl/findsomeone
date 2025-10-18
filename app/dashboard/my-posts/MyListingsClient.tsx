@@ -388,7 +388,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                     )}
                                   </div>
                                 </TooltipTrigger>
-                                <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                <TooltipContent sideOffset={5}>
                                   <p>{post.moderation_status === 'rejected'
                                     ? 'Odrzucone'
                                     : isPendingModeration(post)
@@ -480,7 +480,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                     <RefreshCw className="w-3 h-3 text-[#C44E35]" />
                                   </button>
                                 </TooltipTrigger>
-                                <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                <TooltipContent sideOffset={5}>
                                   <p>Przedłuż o 30 dni</p>
                                 </TooltipContent>
                               </Tooltip>
@@ -496,7 +496,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                   </button>
                                 </Link>
                               </TooltipTrigger>
-                              <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                              <TooltipContent sideOffset={5}>
                                 <p>Edytuj</p>
                               </TooltipContent>
                             </Tooltip>
@@ -518,7 +518,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       <PauseCircle className="w-3 h-3 text-black" />
                                     </button>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <TooltipContent sideOffset={5}>
                                     <p>Dezaktywuj</p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -537,7 +537,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       <CheckCircle className="w-3 h-3 text-black" />
                                     </button>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <TooltipContent sideOffset={5}>
                                     <p>Zakończ</p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -561,7 +561,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       <PlayCircle className="w-3 h-3 text-black" />
                                     </button>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <TooltipContent sideOffset={5}>
                                     <p>Aktywuj</p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -580,7 +580,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       <CheckCircle className="w-3 h-3 text-black" />
                                     </button>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <TooltipContent sideOffset={5}>
                                     <p>Zakończ</p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -603,7 +603,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                     <PlayCircle className="w-3 h-3 text-black" />
                                   </button>
                                 </TooltipTrigger>
-                                <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                <TooltipContent sideOffset={5}>
                                   <p>Aktywuj ponownie</p>
                                 </TooltipContent>
                               </Tooltip>
@@ -624,7 +624,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                   <Trash2 className="w-3 h-3 text-white" />
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                              <TooltipContent sideOffset={5}>
                                 <p>Usuń</p>
                               </TooltipContent>
                             </Tooltip>
@@ -683,7 +683,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                   )}
                                 </div>
                               </TooltipTrigger>
-                              <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                              <TooltipContent sideOffset={5}>
                                 <p>{post.moderation_status === 'rejected'
                                   ? 'Odrzucone'
                                   : isPendingModeration(post)
@@ -782,7 +782,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       </button>
                                     </Link>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <TooltipContent sideOffset={5}>
                                     <p>Edytuj</p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -804,7 +804,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           <PauseCircle className="w-4 h-4 text-black" />
                                         </button>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <TooltipContent sideOffset={5}>
                                         <p>Dezaktywuj</p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -823,7 +823,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           <CheckCircle className="w-4 h-4 text-black" />
                                         </button>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <TooltipContent sideOffset={5}>
                                         <p>Zakończ</p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -847,7 +847,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           <PlayCircle className="w-4 h-4 text-black" />
                                         </button>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <TooltipContent sideOffset={5}>
                                         <p>Aktywuj</p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -866,7 +866,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           <CheckCircle className="w-4 h-4 text-black" />
                                         </button>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <TooltipContent sideOffset={5}>
                                         <p>Zakończ</p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -889,7 +889,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         <PlayCircle className="w-4 h-4 text-black" />
                                       </button>
                                     </TooltipTrigger>
-                                    <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <TooltipContent sideOffset={5}>
                                       <p>Aktywuj ponownie</p>
                                     </TooltipContent>
                                   </Tooltip>
@@ -910,7 +910,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       <Trash2 className="w-4 h-4 text-white" />
                                     </button>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <TooltipContent sideOffset={5}>
                                     <p>Usuń</p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -980,7 +980,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                   )}
                                 </div>
                               </TooltipTrigger>
-                              <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                              <TooltipContent sideOffset={5}>
                                 <p>{post.moderation_status === 'rejected'
                                   ? 'Odrzucone'
                                   : isPendingModeration(post)
@@ -1070,7 +1070,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       </button>
                                     </Link>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <TooltipContent sideOffset={5}>
                                     <p>Edytuj</p>
                                   </TooltipContent>
                                 </Tooltip>
@@ -1092,7 +1092,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           <PauseCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
                                         </button>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <TooltipContent sideOffset={5}>
                                         <p>Dezaktywuj</p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -1111,7 +1111,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
                                         </button>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <TooltipContent sideOffset={5}>
                                         <p>Zakończ</p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -1135,7 +1135,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           <PlayCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
                                         </button>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <TooltipContent sideOffset={5}>
                                         <p>Aktywuj</p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -1154,7 +1154,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
                                         </button>
                                       </TooltipTrigger>
-                                      <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                      <TooltipContent sideOffset={5}>
                                         <p>Zakończ</p>
                                       </TooltipContent>
                                     </Tooltip>
@@ -1177,7 +1177,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         <PlayCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
                                       </button>
                                     </TooltipTrigger>
-                                    <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                    <TooltipContent sideOffset={5}>
                                       <p>Aktywuj ponownie</p>
                                     </TooltipContent>
                                   </Tooltip>
@@ -1198,7 +1198,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       <Trash2 className="w-3 h-3 md:w-4 md:h-4 text-white" />
                                     </button>
                                   </TooltipTrigger>
-                                  <TooltipContent className="bg-[#FAF8F3] text-black border-black/10 rounded-xl" sideOffset={5}>
+                                  <TooltipContent sideOffset={5}>
                                     <p>Usuń</p>
                                   </TooltipContent>
                                 </Tooltip>

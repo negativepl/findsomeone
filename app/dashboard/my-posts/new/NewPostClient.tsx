@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 interface Category {
   id: string
@@ -51,6 +52,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
   // Show type selection modal on mount
   const [showTypeModal, setShowTypeModal] = useState(true)
+  const [showDraftModal, setShowDraftModal] = useState(false)
+  const [hasDraft, setHasDraft] = useState(false)
 
   // Mobile multi-step state
   const [currentStep, setCurrentStepInternal] = useState(1)
@@ -75,6 +78,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   })
 
   const [images, setImages] = useState<string[]>([])
+  const [imageRotations, setImageRotations] = useState<Record<string, number>>({})
   const [userId, setUserId] = useState<string>('')
 
   // AI Category suggestion state
@@ -131,6 +135,27 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     }
   }, [])
 
+  // Check for draft on mount
+  useEffect(() => {
+    const draft = localStorage.getItem('postDraft')
+    if (draft) {
+      try {
+        const draftData = JSON.parse(draft)
+        const draftAge = Date.now() - draftData.timestamp
+        // Only show draft if it's less than 7 days old
+        if (draftAge < 7 * 24 * 60 * 60 * 1000) {
+          setHasDraft(true)
+          setShowDraftModal(true)
+          setShowTypeModal(false) // Don't show type modal if we have a draft
+        } else {
+          localStorage.removeItem('postDraft')
+        }
+      } catch (e) {
+        localStorage.removeItem('postDraft')
+      }
+    }
+  }, [])
+
   // Get user ID and categories on mount
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -147,6 +172,24 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         if (data) setCategories(data)
       })
   }, [supabase])
+
+  // Auto-save draft to localStorage
+  useEffect(() => {
+    // Don't save if form is empty
+    if (!formData.title && !formData.description && !formData.category) {
+      return
+    }
+
+    const draftData = {
+      formData,
+      images,
+      imageRotations,
+      currentStep,
+      timestamp: Date.now(),
+    }
+
+    localStorage.setItem('postDraft', JSON.stringify(draftData))
+  }, [formData, images, imageRotations, currentStep])
 
   // Fetch subcategories when category changes
   useEffect(() => {
@@ -213,8 +256,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         return hasRequiredFields && hasSubcategoryIfNeeded
       case 2: // Szczegóły
         return formData.description.trim().length > 0
-      case 3: // Zdjęcia (opcjonalne, zawsze valid)
-        return true
+      case 3: // Zdjęcia (wymagane)
+        return images.length > 0
       case 4: // Lokalizacja
         return !!formData.city.trim()
       case 5: // Budżet (opcjonalny, zawsze valid)
@@ -255,6 +298,128 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const handleTypeSelection = (type: 'seeking' | 'offering') => {
     setFormData(prev => ({ ...prev, type }))
     setShowTypeModal(false)
+  }
+
+  const loadDraft = () => {
+    const draft = localStorage.getItem('postDraft')
+    if (draft) {
+      try {
+        const draftData = JSON.parse(draft)
+        setFormData(draftData.formData)
+        setImages(draftData.images || [])
+        setImageRotations(draftData.imageRotations || {})
+        setCurrentStep(draftData.currentStep || 1)
+        setShowDraftModal(false)
+      } catch (e) {
+        console.error('Error loading draft:', e)
+        setShowDraftModal(false)
+        setShowTypeModal(true)
+      }
+    }
+  }
+
+  const discardDraft = () => {
+    localStorage.removeItem('postDraft')
+    setShowDraftModal(false)
+    setShowTypeModal(true)
+  }
+
+  const clearDraft = () => {
+    localStorage.removeItem('postDraft')
+  }
+
+  // Process rotated images before submit
+  const processRotatedImages = async (imagesToProcess: string[], rotations: Record<string, number>) => {
+    const processedImages: string[] = []
+
+    for (const imageUrl of imagesToProcess) {
+      const rotation = rotations[imageUrl] || 0
+
+      // If no rotation, keep original
+      if (rotation === 0) {
+        processedImages.push(imageUrl)
+        continue
+      }
+
+      try {
+        // Fetch the image
+        const response = await fetch(imageUrl)
+        const blob = await response.blob()
+
+        // Create image element
+        const img = document.createElement('img')
+        const objectUrl = URL.createObjectURL(blob)
+
+        await new Promise((resolve, reject) => {
+          img.onload = resolve
+          img.onerror = reject
+          img.src = objectUrl
+        })
+
+        // Create canvas with swapped dimensions for 90/270 degree rotations
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        if (!ctx) throw new Error('Canvas context not available')
+
+        // Swap width/height for 90 and 270 degree rotations
+        if (rotation === 90 || rotation === 270) {
+          canvas.width = img.height
+          canvas.height = img.width
+        } else {
+          canvas.width = img.width
+          canvas.height = img.height
+        }
+
+        // Rotate and draw
+        ctx.translate(canvas.width / 2, canvas.height / 2)
+        ctx.rotate((rotation * Math.PI) / 180)
+        ctx.drawImage(img, -img.width / 2, -img.height / 2)
+
+        // Convert to blob
+        const rotatedBlob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(blob => {
+            if (blob) resolve(blob)
+            else reject(new Error('Failed to create blob'))
+          }, 'image/jpeg', 0.9)
+        })
+
+        // Upload rotated image
+        const fileExt = 'jpg'
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`
+        const filePath = `${userId}/temp/${fileName}`
+
+        const { error: uploadError } = await supabase.storage
+          .from('post-images')
+          .upload(filePath, rotatedBlob)
+
+        if (uploadError) throw uploadError
+
+        // Get new public URL
+        const { data: { publicUrl } } = supabase.storage
+          .from('post-images')
+          .getPublicUrl(filePath)
+
+        // Delete old image
+        const url = new URL(imageUrl)
+        const pathParts = url.pathname.split('/post-images/')
+        if (pathParts.length > 1) {
+          await supabase.storage
+            .from('post-images')
+            .remove([pathParts[1]])
+        }
+
+        processedImages.push(publicUrl)
+
+        // Clean up
+        URL.revokeObjectURL(objectUrl)
+      } catch (err) {
+        console.error('Error processing rotated image:', err)
+        // If processing fails, use original
+        processedImages.push(imageUrl)
+      }
+    }
+
+    return processedImages
   }
 
   // AI-powered category suggestion
@@ -317,6 +482,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         throw new Error('Musisz być zalogowany aby dodać ogłoszenie')
       }
 
+      // Process rotated images before creating post
+      const processedImages = await processRotatedImages(images, imageRotations)
+
       // Get category ID from slug
       const { data: category } = await supabase
         .from('categories')
@@ -346,7 +514,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         price_min: formData.priceMin ? parseFloat(formData.priceMin) : null,
         price_max: formData.priceMax ? parseFloat(formData.priceMax) : null,
         price_type: formData.priceType,
-        images: images.length > 0 ? images : null,
+        images: processedImages.length > 0 ? processedImages : null,
         status: 'pending',
         moderation_status: 'checking',
       }).select().single()
@@ -369,6 +537,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         await new Promise(resolve => setTimeout(resolve, 2000))
       }
 
+      // Clear draft after successful submission
+      clearDraft()
+
       router.push('/dashboard/my-posts')
       router.refresh()
     } catch (err) {
@@ -380,9 +551,38 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
   return (
       <main className="md:container md:mx-auto px-4 md:px-6 h-full md:h-auto md:py-16 flex flex-col md:block">
+        {/* Draft Recovery Modal */}
+        {showDraftModal && (
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-lg border p-6 shadow-lg max-w-md w-full">
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold text-black mb-2">Niedokończone ogłoszenie</h2>
+                <p className="text-sm text-black/60">
+                  Znaleziono rozpoczęte wcześniej ogłoszenie. Możesz kontynuować jego tworzenie lub zacząć od początku.
+                </p>
+              </div>
+
+              <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
+                <button
+                  onClick={discardDraft}
+                  className="rounded-md border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-10 px-4 text-sm font-medium transition-colors"
+                >
+                  Zacznij od początku
+                </button>
+                <button
+                  onClick={loadDraft}
+                  className="rounded-md bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-10 px-4 text-sm font-semibold transition-colors"
+                >
+                  Kontynuuj tworzenie
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Type Selection Modal */}
         {showTypeModal && (
-          <div className="fixed inset-0 bg-gray-50/95 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-3xl p-8 md:p-12 max-w-3xl w-full">
               <div className="text-center mb-10">
                 <h2 className="text-3xl md:text-4xl font-bold text-black mb-3">Co chcesz zrobić?</h2>
@@ -404,7 +604,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <div>
                       <h3 className="text-2xl font-bold text-black mb-3">Szukam usługi</h3>
                       <p className="text-base text-black/70 leading-relaxed">
-                        Potrzebujesz kogoś do wykonania pracy? Opisz czego szukasz i znajdź specjalistów.
+                        Potrzebujesz kogoś do wykonania pracy? Opisz czego szukasz i znajdź odpowiednią osobę.
                       </p>
                     </div>
                     <div className="flex items-center gap-2 text-base font-semibold text-[#C44E35]">
@@ -430,7 +630,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <div>
                       <h3 className="text-2xl font-bold text-black mb-3">Oferuję usługi</h3>
                       <p className="text-base text-black/70 leading-relaxed">
-                        Świadczysz usługi? Opisz co oferujesz i dotrzij do klientów szukających pomocy.
+                        Świadczysz usługi? Opisz co oferujesz i znajdź klientów szukających pomocy.
                       </p>
                     </div>
                     <div className="flex items-center gap-2 text-base font-semibold text-[#C44E35]">
@@ -471,9 +671,28 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
             <div className="hidden md:block space-y-6">
               {/* Title */}
               <div className="space-y-3">
-                <Label htmlFor="title" className="text-base font-semibold text-black">
-                  Tytuł ogłoszenia *
-                </Label>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="title" className="text-base font-semibold text-black">
+                    Tytuł ogłoszenia *
+                  </Label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      <p className="font-semibold mb-1">Jak pisać dobry tytuł?</p>
+                      <ul className="space-y-0.5 text-xs">
+                        <li>• Bądź konkretny i zwięzły</li>
+                        <li>• Dodaj lokalizację jeśli istotna</li>
+                        <li>• Unikaj capslocka i spamu</li>
+                      </ul>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <div className="relative">
                   <Input
                     id="title"
@@ -573,9 +792,29 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Description */}
               <div className="space-y-3">
-                <Label className="text-base font-semibold text-black">
-                  Opis *
-                </Label>
+                <div className="flex items-center gap-2">
+                  <Label className="text-base font-semibold text-black">
+                    Opis *
+                  </Label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      <p className="font-semibold mb-1">Jak napisać dobry opis?</p>
+                      <ul className="space-y-0.5 text-xs">
+                        <li>• Opisz szczegółowo czego szukasz/co oferujesz</li>
+                        <li>• Dodaj istotne detale i wymagania</li>
+                        <li>• Bądź uczciwy i konkretny</li>
+                        <li>• Unikaj danych kontaktowych (używaj wiadomości)</li>
+                      </ul>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
                 <RichTextEditor
                   content={formData.description}
                   onChange={(content) => setFormData({ ...formData, description: content })}
@@ -593,6 +832,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 onImagesChange={setImages}
                 userId={userId}
                 maxImages={6}
+                imageRotations={imageRotations}
+                onRotationsChange={setImageRotations}
               />
 
               {/* Location */}
@@ -802,7 +1043,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {currentStep === 3 && (
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
                   <div>
-                    <p className="text-xs text-black/60">Opcjonalnie - możesz dodać do 6 zdjęć</p>
+                    <p className="text-xs text-black/60">Dodaj przynajmniej 1 zdjęcie (max 6)</p>
                   </div>
 
                   <ImageUpload
@@ -810,6 +1051,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     onImagesChange={setImages}
                     userId={userId}
                     maxImages={6}
+                    imageRotations={imageRotations}
+                    onRotationsChange={setImageRotations}
                   />
                 </div>
               )}

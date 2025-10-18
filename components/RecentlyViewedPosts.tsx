@@ -138,7 +138,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                         />
-                        <div className="absolute top-3 right-3 z-10">
+                        <div className="absolute top-3 right-3 z-10" data-no-loader="true">
                           <FavoriteButtonWrapper
                             postId={post.id}
                             initialIsFavorite={userFavorites.includes(post.id)}
