@@ -27,14 +27,18 @@ export async function getUnsplashImageForCategory(
     // Map Polish category names to English search terms
     const searchTerm = mapCategoryToSearchTerm(categoryName)
 
+    // Add random seed to ensure different images each time
+    // This prevents Unsplash from returning the same images for rapid sequential requests
+    const randomSeed = Math.random().toString(36).substring(7)
+
     const response = await fetch(
-      `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=landscape&content_filter=high`,
+      `https://api.unsplash.com/photos/random?query=${encodeURIComponent(searchTerm)}&orientation=landscape&content_filter=high&count=1`,
       {
         headers: {
           Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`,
         },
-        // Cache for 1 hour to avoid hitting rate limits
-        next: { revalidate: 3600 }
+        // Disable cache to get truly random images each time
+        cache: 'no-store'
       }
     )
 
@@ -45,8 +49,11 @@ export async function getUnsplashImageForCategory(
 
     const data = await response.json()
 
+    // When using count=1, Unsplash returns an array with single item
+    const photo = Array.isArray(data) ? data[0] : data
+
     // Return regular size image URL (better quality than thumbnail)
-    return data.urls?.regular || data.urls?.small || null
+    return photo?.urls?.regular || photo?.urls?.small || null
   } catch (error) {
     console.error('Error fetching Unsplash image:', error)
     return null

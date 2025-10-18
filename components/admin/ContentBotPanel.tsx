@@ -241,6 +241,47 @@ export default function ContentBotPanel() {
     }
   }
 
+  const handleDeleteByCategory = async () => {
+    if (selectedCategories.size === 0) {
+      alert('Wybierz kategorie, z których chcesz usunąć posty AI.')
+      return
+    }
+
+    const categoryIds = Array.from(selectedCategories)
+
+    if (!confirm(`Czy na pewno chcesz usunąć posty AI z ${categoryIds.length} wybranych kategorii?\n\nTej operacji nie można cofnąć!`)) {
+      return
+    }
+
+    setIsDeleting(true)
+
+    try {
+      const response = await fetch('/api/admin/content-bot/delete-by-category', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ categoryIds }),
+      })
+
+      const data = await response.json()
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to delete AI posts')
+      }
+
+      alert(`Usunięto ${data.deleted} ogłoszeń AI z wybranych kategorii.`)
+      await fetchAiPostsCount()
+      await fetchCategories()
+      setSelectedCategories(new Set()) // Clear selection
+    } catch (error) {
+      console.error('Error deleting AI posts by category:', error)
+      alert('Wystąpił błąd podczas usuwania ogłoszeń.')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
   const getTotalSelectedPosts = () => {
     if (selectedCategories.size === 0) {
       return categories.reduce((sum, cat) => {
@@ -496,6 +537,27 @@ export default function ContentBotPanel() {
               </>
             )}
           </Button>
+
+          {selectedCategories.size > 0 && (
+            <Button
+              onClick={handleDeleteByCategory}
+              disabled={isGenerating || isDeleting}
+              variant="outline"
+              className="w-full rounded-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700 font-semibold py-6"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Usuwanie...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="mr-2 h-5 w-5" />
+                  Usuń AI z {selectedCategories.size} wybranych
+                </>
+              )}
+            </Button>
+          )}
 
           <Button
             onClick={handleDeleteAll}

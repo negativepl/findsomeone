@@ -167,16 +167,17 @@ export async function POST(request: Request) {
                 throw new Error('Missing required fields in AI response')
               }
 
-              // Fetch image from Unsplash
-              let images: string[] = []
+              // Fetch image from Unsplash - REQUIRED
+              let imageUrl: string | null = null
               try {
-                const imageUrl = await getUnsplashImageForCategory(category.name)
-                if (imageUrl) {
-                  images = [imageUrl]
-                }
+                imageUrl = await getUnsplashImageForCategory(category.name)
               } catch (error) {
                 console.error('Error fetching Unsplash image:', error)
-                // Continue without image
+              }
+
+              // Skip post creation if no image (prevents posts without photos)
+              if (!imageUrl) {
+                throw new Error('No image available from Unsplash - skipping post')
               }
 
               // Create post using service role client (bypasses RLS)
@@ -194,7 +195,7 @@ export async function POST(request: Request) {
                   price_min: postData.price_min || null,
                   price_max: postData.price_max || null,
                   price_type: postData.price_type || 'negotiable',
-                  images: images,
+                  images: [imageUrl], // Always has image now
                   status: 'active',
                   is_ai_generated: true,
                 })
