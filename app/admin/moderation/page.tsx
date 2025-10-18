@@ -25,6 +25,13 @@ export default async function ModerationPage() {
     .select('*', { count: 'exact', head: true })
     .eq('moderation_status', 'rejected')
 
+  // Get count for pending appeals
+  const { count: appealsCount } = await supabase
+    .from('posts')
+    .select('*', { count: 'exact', head: true })
+    .eq('moderation_status', 'rejected')
+    .in('appeal_status', ['pending', 'reviewing'])
+
   return (
     <>
       <div className="mb-8">
@@ -40,6 +47,7 @@ export default async function ModerationPage() {
         checkingCount={checkingCount || 0}
         pendingCount={pendingCount || 0}
         rejectedCount={rejectedCount || 0}
+        appealsCount={appealsCount || 0}
       />
     </>
   )

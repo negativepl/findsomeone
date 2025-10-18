@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
 import { MyListingsTabs } from '@/components/MyListingsTabs'
 import {
   Tooltip,
@@ -23,9 +24,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { deletePost, updatePostStatus } from './actions'
+import { deletePost, updatePostStatus, appealRejectedPost } from './actions'
 import { useRouter } from 'next/navigation'
-import { Pencil, PauseCircle, CheckCircle, PlayCircle, Trash2, MapPin, Clock, Eye, Phone, XCircle, CalendarClock, RefreshCw, AlertCircle } from 'lucide-react'
+import { Pencil, PauseCircle, CheckCircle, PlayCircle, Trash2, MapPin, Clock, Eye, Phone, XCircle, CalendarClock, RefreshCw, AlertCircle, MessageSquare } from 'lucide-react'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
@@ -48,6 +50,9 @@ interface Post {
   status: 'active' | 'pending' | 'closed' | 'completed'
   moderation_status: 'pending' | 'checking' | 'approved' | 'rejected' | 'flagged'
   moderation_reason: string | null
+  appeal_status: 'pending' | 'reviewing' | 'approved' | 'rejected' | null
+  appeal_message: string | null
+  appealed_at: string | null
   created_at: string
   expires_at: string | null
   extended_count: number
@@ -69,6 +74,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
   const [activeTab, setActiveTab] = useState<FilterTab>('all')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [postToDelete, setPostToDelete] = useState<string | null>(null)
+  const [appealDialogOpen, setAppealDialogOpen] = useState(false)
+  const [postToAppeal, setPostToAppeal] = useState<string | null>(null)
+  const [appealMessage, setAppealMessage] = useState('')
   const [isPending, startTransition] = useTransition()
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const [sortBy, setSortBy] = useState<string>('newest')
@@ -180,11 +188,22 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
   }
 
   const handleStatusChange = async (postId: string, newStatus: 'active' | 'closed' | 'completed') => {
+    // Show confirmation for reactivation
+    if (newStatus === 'active') {
+      const confirmed = confirm(
+        'Uwaga: Po reaktywowaniu ogłoszenia zostanie ono ponownie zweryfikowane przez system moderacji i będzie widoczne publicznie dopiero po zatwierdzeniu. Czy chcesz kontynuować?'
+      )
+      if (!confirmed) return
+    }
+
     startTransition(async () => {
       const result = await updatePostStatus(postId, newStatus)
       if (result.error) {
         alert('Błąd: ' + result.error)
       } else {
+        if (newStatus === 'active') {
+          alert('Ogłoszenie zostało wysłane do ponownej weryfikacji. Będzie widoczne publicznie po zatwierdzeniu.')
+        }
         router.refresh()
       }
     })
@@ -208,6 +227,32 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
   const openDeleteDialog = (postId: string) => {
     setPostToDelete(postId)
     setDeleteDialogOpen(true)
+  }
+
+  const openAppealDialog = (postId: string) => {
+    setPostToAppeal(postId)
+    setAppealMessage('')
+    setAppealDialogOpen(true)
+  }
+
+  const handleAppeal = async () => {
+    if (!postToAppeal || !appealMessage.trim()) {
+      alert('Proszę podać powód odwołania')
+      return
+    }
+
+    startTransition(async () => {
+      const result = await appealRejectedPost(postToAppeal, appealMessage)
+      if (result.error) {
+        alert('Błąd: ' + result.error)
+      } else {
+        alert('Odwołanie zostało wysłane. Moderator sprawdzi je w ciągu 24 godzin.')
+        setAppealDialogOpen(false)
+        setPostToAppeal(null)
+        setAppealMessage('')
+        router.refresh()
+      }
+    })
   }
 
   const handleExtendPost = async (postId: string, e: React.MouseEvent) => {
@@ -264,6 +309,52 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
   const pendingModerationPosts = posts.filter(isPendingModeration)
 
+  // Helper function for Polish declension
+  const getPendingPostsText = (count: number): { title: string, description: string } => {
+    const getPostWord = (n: number): string => {
+      if (n === 1) return 'ogłoszenie'
+      const lastDigit = n % 10
+      const lastTwoDigits = n % 100
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 14) return 'ogłoszeń'
+      if (lastDigit >= 2 && lastDigit <= 4) return 'ogłoszenia'
+      return 'ogłoszeń'
+    }
+
+    const getVerbForm = (n: number): string => {
+      // Dla 1 zawsze liczba pojedyncza
+      if (n === 1) return 'oczekuje'
+
+      // Dla 2-4 (oprócz 12-14) używamy liczby mnogiej
+      const lastDigit = n % 10
+      const lastTwoDigits = n % 100
+
+      if (lastTwoDigits >= 12 && lastTwoDigits <= 14) {
+        return 'oczekuje' // 12-14, 112-114 etc. z dopełniaczem
+      }
+
+      if (lastDigit >= 2 && lastDigit <= 4) {
+        return 'oczekują' // 2-4, 22-24, 32-34 etc.
+      }
+
+      return 'oczekuje' // 5-21, 25-31 etc. z dopełniaczem
+    }
+
+    const getPronoun = (n: number): string => {
+      if (n === 1) return 'Twoje ogłoszenie jest'
+      return 'Twoje ogłoszenia są'
+    }
+
+    const getPublishForm = (n: number): string => {
+      if (n === 1) return 'Zostanie opublikowane'
+      return 'Zostaną opublikowane'
+    }
+
+    return {
+      title: `${count} ${getPostWord(count)} ${getVerbForm(count)} na zatwierdzenie`,
+      description: `${getPronoun(count)} obecnie sprawdzane przez moderatora. ${getPublishForm(count)} po pozytywnej weryfikacji.`
+    }
+  }
+
   // Don't render until we've loaded the saved preference
   if (!isLoaded) {
     return null
@@ -277,14 +368,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
           <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
             <h3 className="font-semibold text-yellow-900 mb-1">
-              {pendingModerationPosts.length === 1
-                ? 'Ogłoszenie oczekuje na zatwierdzenie'
-                : `${pendingModerationPosts.length} ogłoszeń oczekuje na zatwierdzenie`}
+              {getPendingPostsText(pendingModerationPosts.length).title}
             </h3>
             <p className="text-sm text-yellow-800">
-              {pendingModerationPosts.length === 1
-                ? 'Twoje ogłoszenie jest obecnie sprawdzane przez moderatora. Zostanie opublikowane po pozytywnej weryfikacji.'
-                : 'Twoje ogłoszenia są obecnie sprawdzane przez moderatora. Zostaną opublikowane po pozytywnej weryfikacji.'}
+              {getPendingPostsText(pendingModerationPosts.length).description}
             </p>
           </div>
         </div>
@@ -482,6 +569,43 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 </TooltipTrigger>
                                 <TooltipContent sideOffset={5}>
                                   <p>Przedłuż o 30 dni</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+
+                          {post.moderation_status === 'rejected' && !post.appeal_status && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault()
+                                      openAppealDialog(post.id)
+                                    }}
+                                    className="h-8 w-8 rounded-full border-2 border-blue-500 bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-all relative z-20"
+                                  >
+                                    <MessageSquare className="w-3 h-3 text-blue-600" />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent sideOffset={5}>
+                                  <p>Odwołaj się od decyzji</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
+                          )}
+
+                          {post.appeal_status === 'pending' && (
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <div className="h-8 px-3 rounded-full border-2 border-yellow-500 bg-yellow-50 flex items-center justify-center gap-1.5">
+                                    <Clock className="w-3 h-3 text-yellow-600" />
+                                    <span className="text-xs font-semibold text-yellow-700">Odwołanie w trakcie</span>
+                                  </div>
+                                </TooltipTrigger>
+                                <TooltipContent sideOffset={5}>
+                                  <p>Oczekuje na rozpatrzenie</p>
                                 </TooltipContent>
                               </Tooltip>
                             </TooltipProvider>
@@ -773,6 +897,43 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                             {/* Actions */}
                             <div className="flex items-center gap-2">
+                              {post.moderation_status === 'rejected' && !post.appeal_status && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault()
+                                          openAppealDialog(post.id)
+                                        }}
+                                        className="h-10 w-10 rounded-full border-2 border-blue-500 bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-all relative z-20"
+                                      >
+                                        <MessageSquare className="w-4 h-4 text-blue-600" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent sideOffset={5}>
+                                      <p>Odwołaj się od decyzji</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+
+                              {post.appeal_status === 'pending' && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <div className="h-10 px-4 rounded-full border-2 border-yellow-500 bg-yellow-50 flex items-center justify-center gap-2">
+                                        <Clock className="w-4 h-4 text-yellow-600" />
+                                        <span className="text-sm font-semibold text-yellow-700">Odwołanie w trakcie</span>
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent sideOffset={5}>
+                                      <p>Oczekuje na rozpatrzenie</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
@@ -1061,6 +1222,43 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                             {/* Actions */}
                             <div className="flex items-center gap-1.5 md:gap-2">
+                              {post.moderation_status === 'rejected' && !post.appeal_status && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault()
+                                          openAppealDialog(post.id)
+                                        }}
+                                        className="h-8 w-8 md:h-10 md:w-10 rounded-full border-2 border-blue-500 bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-all relative z-20"
+                                      >
+                                        <MessageSquare className="w-3 h-3 md:w-4 md:h-4 text-blue-600" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent sideOffset={5}>
+                                      <p>Odwołaj się</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+
+                              {post.appeal_status === 'pending' && (
+                                <TooltipProvider>
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <div className="h-8 px-2 md:h-10 md:px-3 rounded-full border-2 border-yellow-500 bg-yellow-50 flex items-center justify-center gap-1">
+                                        <Clock className="w-3 h-3 md:w-4 md:h-4 text-yellow-600" />
+                                        <span className="text-xs md:text-sm font-semibold text-yellow-700 hidden md:inline">W trakcie</span>
+                                      </div>
+                                    </TooltipTrigger>
+                                    <TooltipContent sideOffset={5}>
+                                      <p>Odwołanie oczekuje</p>
+                                    </TooltipContent>
+                                  </Tooltip>
+                                </TooltipProvider>
+                              )}
+
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
@@ -1293,6 +1491,55 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                 {isPending ? 'Usuwanie...' : 'Usuń'}
               </AlertDialogAction>
             </AlertDialogFooter>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Appeal Dialog */}
+      <AlertDialog open={appealDialogOpen} onOpenChange={setAppealDialogOpen}>
+        <AlertDialogContent className="rounded-3xl border-0 bg-white shadow-xl sm:max-w-lg">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-2xl font-bold text-black">
+              Odwołaj się od decyzji moderacji
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-black/60">
+              Jeśli uważasz, że Twoje ogłoszenie zostało niesłusznie odrzucone, możesz wysłać odwołanie. Moderator ponownie sprawdzi treść w ciągu 24 godzin.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="my-4">
+            <Label htmlFor="appeal-message" className="text-sm font-semibold text-black mb-2 block">
+              Wyjaśnij dlaczego uważasz, że odrzucenie było błędne *
+            </Label>
+            <Textarea
+              id="appeal-message"
+              value={appealMessage}
+              onChange={(e) => setAppealMessage(e.target.value)}
+              placeholder="np. Moje ogłoszenie nie zawiera treści zabronionych. Podane informacje są zgodne z regulaminem..."
+              className="rounded-2xl border-2 border-black/10 min-h-[120px] focus:border-black/30"
+              maxLength={500}
+            />
+            <p className="text-xs text-black/40 mt-1">
+              {appealMessage.length}/500 znaków
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 mt-6">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setAppealDialogOpen(false)}
+              className="w-full sm:flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11"
+              disabled={isPending}
+            >
+              Anuluj
+            </Button>
+            <Button
+              type="button"
+              onClick={handleAppeal}
+              className="w-full sm:flex-1 rounded-full bg-blue-600 hover:bg-blue-700 text-white border-0 h-11 font-semibold"
+              disabled={isPending || !appealMessage.trim()}
+            >
+              {isPending ? 'Wysyłanie...' : 'Wyślij odwołanie'}
+            </Button>
           </div>
         </AlertDialogContent>
       </AlertDialog>

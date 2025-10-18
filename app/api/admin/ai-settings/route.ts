@@ -61,10 +61,20 @@ export async function PUT(request: NextRequest) {
       category_synonym_model,
       category_synonym_max_synonyms,
       category_synonym_min_synonyms,
+      category_seo_prompt,
+      category_seo_system_message,
+      category_seo_model,
+      category_seo_max_length,
+      category_seo_min_length,
       query_expansion_enabled,
       query_expansion_prompt,
       semantic_search_enabled,
-      semantic_search_model
+      semantic_search_model,
+      content_bot_system_message,
+      content_bot_prompt,
+      content_bot_model,
+      content_bot_posts_per_category,
+      content_bot_offering_ratio
     } = body
 
     const { data, error } = await supabase
@@ -80,10 +90,20 @@ export async function PUT(request: NextRequest) {
         category_synonym_model,
         category_synonym_max_synonyms,
         category_synonym_min_synonyms,
+        category_seo_prompt,
+        category_seo_system_message,
+        category_seo_model,
+        category_seo_max_length,
+        category_seo_min_length,
         query_expansion_enabled,
         query_expansion_prompt,
         semantic_search_enabled,
-        semantic_search_model
+        semantic_search_model,
+        content_bot_system_message,
+        content_bot_prompt,
+        content_bot_model,
+        content_bot_posts_per_category,
+        content_bot_offering_ratio
       })
       .eq('id', '00000000-0000-0000-0000-000000000001')
       .select()

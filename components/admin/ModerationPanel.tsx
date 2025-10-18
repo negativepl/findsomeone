@@ -22,6 +22,9 @@ interface Post {
   moderation_score: number | null
   moderation_reason: string | null
   moderation_details: any
+  appeal_status: string | null
+  appeal_message: string | null
+  appealed_at: string | null
   created_at: string
   profiles: {
     full_name: string
@@ -38,6 +41,7 @@ interface ModerationPanelProps {
   checkingCount: number
   pendingCount: number
   rejectedCount: number
+  appealsCount: number
 }
 
 const ITEMS_PER_PAGE = 10
@@ -46,11 +50,13 @@ export function ModerationPanel({
   flaggedCount,
   checkingCount,
   pendingCount,
-  rejectedCount
+  rejectedCount,
+  appealsCount
 }: ModerationPanelProps) {
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedStatus, setSelectedStatus] = useState('flagged')
+  // Set default tab to appeals if there are any, otherwise flagged
+  const [selectedStatus, setSelectedStatus] = useState(appealsCount > 0 ? 'appeals' : 'flagged')
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [rejectReasons, setRejectReasons] = useState<Record<string, string>>({})
   const [expandedPost, setExpandedPost] = useState<string | null>(null)
@@ -74,7 +80,7 @@ export function ModerationPanel({
     loadPosts()
   }, [selectedStatus])
 
-  const handleAction = async (postId: string, action: 'approve' | 'reject' | 'delete') => {
+  const handleAction = async (postId: string, action: 'approve' | 'reject' | 'delete' | 'approve_appeal' | 'reject_appeal') => {
     if (action === 'delete' && !confirm('Czy na pewno chcesz usunąć to ogłoszenie?')) {
       return
     }
@@ -92,6 +98,7 @@ export function ModerationPanel({
           body: JSON.stringify({
             action,
             reason: action === 'reject' ? rejectReasons[postId] : null,
+            appealResponse: (action === 'approve_appeal' || action === 'reject_appeal') ? rejectReasons[postId] : null,
           }),
         })
       }
@@ -135,6 +142,16 @@ export function ModerationPanel({
   const currentPosts = posts.slice(startIndex, endIndex)
 
   const tabs = [
+    {
+      id: 'appeals',
+      label: 'Odwołania',
+      count: appealsCount,
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+      ),
+    },
     {
       id: 'flagged',
       label: 'Wymagają uwagi',
@@ -268,6 +285,21 @@ export function ModerationPanel({
                         </div>
                       )}
 
+                      {/* Appeal Message */}
+                      {post.appeal_message && (
+                        <div>
+                          <div className="text-sm font-semibold text-black mb-2">Odwołanie użytkownika:</div>
+                          <div className="text-sm text-blue-800 bg-blue-50 p-3 rounded-xl border-2 border-blue-200">
+                            {post.appeal_message}
+                          </div>
+                          {post.appealed_at && (
+                            <div className="text-xs text-black/40 mt-1">
+                              Wysłano: {new Date(post.appealed_at).toLocaleString('pl-PL')}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
                       {/* Details */}
                       {post.moderation_details && (
                         <details className="text-sm">
@@ -281,6 +313,43 @@ export function ModerationPanel({
                       )}
 
                       {/* Actions */}
+                      {selectedStatus === 'appeals' && post.appeal_status === 'pending' && (
+                        <div className="pt-4 border-t border-black/10 space-y-4">
+                          <div className="space-y-2">
+                            <Label className="text-sm text-black/60">
+                              Odpowiedź dla użytkownika (opcjonalnie)
+                            </Label>
+                            <Textarea
+                              placeholder="Podaj dodatkowe informacje..."
+                              value={rejectReasons[post.id] || ''}
+                              onChange={(e) =>
+                                setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
+                              }
+                              className="rounded-2xl border-2 border-black/10"
+                              rows={2}
+                            />
+                          </div>
+
+                          <div className="flex gap-3">
+                            <Button
+                              onClick={() => handleAction(post.id, 'approve_appeal')}
+                              disabled={actionLoading === post.id}
+                              className="rounded-full bg-green-600 hover:bg-green-700 text-white"
+                            >
+                              {actionLoading === post.id ? 'Ładowanie...' : 'Zatwierdź odwołanie'}
+                            </Button>
+                            <Button
+                              onClick={() => handleAction(post.id, 'reject_appeal')}
+                              disabled={actionLoading === post.id}
+                              variant="outline"
+                              className="rounded-full border-2 border-red-600 text-red-600 hover:bg-red-50"
+                            >
+                              Odrzuć odwołanie
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+
                       {selectedStatus === 'flagged' && (
                         <div className="pt-4 border-t border-black/10 space-y-4">
                           <div className="space-y-2">

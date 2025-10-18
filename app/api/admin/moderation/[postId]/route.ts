@@ -16,9 +16,9 @@ export async function PATCH(
     }
 
     const body = await request.json()
-    const { action, reason } = body
+    const { action, reason, appealResponse } = body
 
-    if (!['approve', 'reject'].includes(action)) {
+    if (!['approve', 'reject', 'approve_appeal', 'reject_appeal'].includes(action)) {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
 
@@ -27,7 +27,7 @@ export async function PATCH(
     // Get current post status
     const { data: post, error: fetchError } = await supabase
       .from('posts')
-      .select('moderation_status, status')
+      .select('moderation_status, status, appeal_status')
       .eq('id', postId)
       .single()
 
@@ -35,6 +35,76 @@ export async function PATCH(
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
+    // Handle appeal actions
+    if (action === 'approve_appeal') {
+      const { error: updateError } = await supabase
+        .from('posts')
+        .update({
+          moderation_status: 'approved',
+          status: 'active',
+          appeal_status: 'approved',
+          appeal_reviewed_at: new Date().toISOString(),
+          appeal_reviewed_by: user.id,
+          appeal_response: appealResponse || 'Odwołanie zaakceptowane',
+          moderated_at: new Date().toISOString(),
+          moderated_by: user.id,
+        })
+        .eq('id', postId)
+
+      if (updateError) {
+        console.error('Error updating post:', updateError)
+        return NextResponse.json({ error: 'Failed to update post' }, { status: 500 })
+      }
+
+      await supabase.from('moderation_logs').insert({
+        post_id: postId,
+        admin_id: user.id,
+        action: 'appeal_approved',
+        previous_status: 'rejected',
+        new_status: 'approved',
+        reason: appealResponse || null,
+      })
+
+      return NextResponse.json({
+        success: true,
+        action: 'approve_appeal',
+        newStatus: 'approved',
+      })
+    }
+
+    if (action === 'reject_appeal') {
+      const { error: updateError } = await supabase
+        .from('posts')
+        .update({
+          appeal_status: 'rejected',
+          appeal_reviewed_at: new Date().toISOString(),
+          appeal_reviewed_by: user.id,
+          appeal_response: appealResponse || 'Odwołanie odrzucone',
+        })
+        .eq('id', postId)
+
+      if (updateError) {
+        console.error('Error updating post:', updateError)
+        return NextResponse.json({ error: 'Failed to update post' }, { status: 500 })
+      }
+
+      await supabase.from('moderation_logs').insert({
+        post_id: postId,
+        admin_id: user.id,
+        action: 'appeal_rejected',
+        previous_status: 'rejected',
+        new_status: 'rejected',
+        reason: appealResponse || null,
+      })
+
+      return NextResponse.json({
+        success: true,
+        action: 'reject_appeal',
+        newStatus: 'rejected',
+      })
+    }
+
+    // Handle regular moderation actions
     const newModerationStatus = action === 'approve' ? 'approved' : 'rejected'
     const newStatus = action === 'approve' ? 'active' : 'pending'
 

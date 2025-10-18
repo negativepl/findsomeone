@@ -18,8 +18,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get('limit') || '20')
     const offset = (page - 1) * limit
 
-    // Get posts with specific moderation status
-    const { data: posts, error, count } = await supabase
+    // Get posts with specific moderation status or appeals
+    let query = supabase
       .from('posts')
       .select(`
         *,
@@ -32,7 +32,17 @@ export async function GET(request: NextRequest) {
           slug
         )
       `, { count: 'exact' })
-      .eq('moderation_status', status)
+
+    // Special handling for appeals tab
+    if (status === 'appeals') {
+      query = query
+        .eq('moderation_status', 'rejected')
+        .in('appeal_status', ['pending', 'reviewing'])
+    } else {
+      query = query.eq('moderation_status', status)
+    }
+
+    const { data: posts, error, count } = await query
       .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1)
 

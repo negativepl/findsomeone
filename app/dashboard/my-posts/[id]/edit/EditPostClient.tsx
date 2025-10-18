@@ -48,6 +48,13 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showModerationModal, setShowModerationModal] = useState(false)
+  const [moderationInProgress, setModerationInProgress] = useState(false)
+  const [moderationResult, setModerationResult] = useState<{
+    status: string
+    score: number
+    reasons: string[]
+  } | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
 
   const [formData, setFormData] = useState({
@@ -173,6 +180,10 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Show modal immediately
+    setShowModerationModal(true)
+    setModerationInProgress(true)
     setLoading(true)
     setError(null)
 
@@ -180,6 +191,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
       const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
+        setShowModerationModal(false)
         throw new Error('Musisz być zalogowany aby edytować ogłoszenie')
       }
 
@@ -210,19 +222,45 @@ export function EditPostClient({ post }: EditPostClientProps) {
           price_max: formData.priceMax ? parseFloat(formData.priceMax) : null,
           price_type: formData.priceType,
           images: processedImages.length > 0 ? processedImages : null,
+          // Reset moderation status - edited post needs to be re-verified
+          moderation_status: 'checking',
+          status: 'pending',
         })
         .eq('id', post.id)
         .eq('user_id', user.id) // Security: only update own posts
 
-      if (updateError) throw updateError
+      if (updateError) {
+        setShowModerationModal(false)
+        throw updateError
+      }
 
-      // Start loading bar before navigation
-      NProgress.start()
+      // Trigger moderation for edited post and wait for result
+      const moderationResponse = await fetch('/api/moderate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postId: post.id }),
+      })
+
+      if (!moderationResponse.ok) {
+        throw new Error('Błąd podczas moderacji')
+      }
+
+      const moderationData = await moderationResponse.json()
+
+      setModerationResult(moderationData)
+      setModerationInProgress(false)
+
+      // Wait 2 seconds to show result
+      await new Promise(resolve => setTimeout(resolve, 2000))
+
+      // Navigate to my posts
       router.push('/dashboard/my-posts')
       router.refresh()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Wystąpił błąd')
       setLoading(false)
+      setShowModerationModal(false)
+      setModerationInProgress(false)
     }
   }
 
@@ -234,6 +272,19 @@ export function EditPostClient({ post }: EditPostClientProps) {
           <CardDescription className="text-base text-black/60">
             Zaktualizuj informacje w swoim ogłoszeniu
           </CardDescription>
+          <div className="mt-4 bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
+            <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-yellow-900 mb-1">
+                Ponowna weryfikacja wymagana
+              </p>
+              <p className="text-sm text-yellow-800">
+                Po zapisaniu zmian, Twoje ogłoszenie zostanie ponownie zweryfikowane przez system moderacji. Ogłoszenie będzie widoczne publicznie dopiero po zatwierdzeniu.
+              </p>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -446,6 +497,86 @@ export function EditPostClient({ post }: EditPostClientProps) {
           </form>
         </CardContent>
       </Card>
+
+      {/* Moderation Modal */}
+      {showModerationModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+            {moderationInProgress ? (
+              <div className="text-center">
+                <div className="w-20 h-20 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-[#C44E35] animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-black mb-2">
+                  Sprawdzanie zmian
+                </h3>
+                <p className="text-black/60">
+                  Proszę czekać, weryfikujemy zaktualizowaną treść...
+                </p>
+              </div>
+            ) : (
+              <>
+                {moderationResult?.status === 'approved' ? (
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Zmiany zatwierdzone!
+                    </h3>
+                    <p className="text-black/60">
+                      Twoje ogłoszenie zostało zaktualizowane i jest widoczne dla wszystkich użytkowników.
+                    </p>
+                  </div>
+                ) : moderationResult?.status === 'flagged' ? (
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Wymaga weryfikacji
+                    </h3>
+                    <p className="text-black/60">
+                      Twoje zaktualizowane ogłoszenie zostanie sprawdzone przez moderatora w ciągu 24 godzin.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="text-center">
+                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Zmiany odrzucone
+                    </h3>
+                    <p className="text-black/60 mb-4">
+                      Zaktualizowana treść nie spełnia naszych wymagań. Sprawdź, czy treść jest zgodna z regulaminem.
+                    </p>
+                    {moderationResult?.reasons && moderationResult.reasons.length > 0 && (
+                      <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-left">
+                        <p className="text-sm font-semibold text-red-900 mb-2">Powody odrzucenia:</p>
+                        <ul className="text-sm text-red-800 space-y-1">
+                          {moderationResult.reasons.map((reason, idx) => (
+                            <li key={idx}>• {reason}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </main>
   )
 }
