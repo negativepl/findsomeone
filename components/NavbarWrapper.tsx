@@ -62,7 +62,7 @@ export function NavbarWrapper({ children, alwaysVisible = false }: NavbarWrapper
       style={{
         transform: !mounted || isVisible ? 'translateY(0)' : 'translateY(-100%)'
       }}
-      suppressHydrationWarning
+      suppressHydrationWarning={true}
     >
       {children}
     </div>

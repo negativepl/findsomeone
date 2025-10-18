@@ -43,14 +43,35 @@ export async function getUnsplashImageForCategory(
     )
 
     if (!response.ok) {
-      console.error('Unsplash API error:', response.status, response.statusText)
+      const errorBody = await response.text()
+      console.error('Unsplash API error:', {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorBody,
+        headers: {
+          'X-Ratelimit-Limit': response.headers.get('X-Ratelimit-Limit'),
+          'X-Ratelimit-Remaining': response.headers.get('X-Ratelimit-Remaining'),
+        }
+      })
       return null
     }
 
     const data = await response.json()
 
+    // Log rate limit info for monitoring
+    const rateLimit = {
+      limit: response.headers.get('X-Ratelimit-Limit'),
+      remaining: response.headers.get('X-Ratelimit-Remaining'),
+    }
+    console.log(`Unsplash API - Rate limit: ${rateLimit.remaining}/${rateLimit.limit} remaining for "${searchTerm}"`)
+
     // When using count=1, Unsplash returns an array with single item
     const photo = Array.isArray(data) ? data[0] : data
+
+    if (!photo) {
+      console.warn(`No image found for search term: "${searchTerm}" (category: "${categoryName}")`)
+      return null
+    }
 
     // Return regular size image URL (better quality than thumbnail)
     return photo?.urls?.regular || photo?.urls?.small || null

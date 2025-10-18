@@ -4,7 +4,14 @@ import { Footer } from '@/components/Footer'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Polityka prywatności - FindSomeone",
+  title: "Polityka prywatności | FindSomeone - RODO",
+  description: "Polityka prywatności FindSomeone. Dowiedz się jak chronimy Twoje dane osobowe, cookies, RODO. Transparentne zasady przetwarzania danych użytkowników platformy.",
+  openGraph: {
+    title: "Polityka prywatności | FindSomeone",
+    description: "Poznaj jak FindSomeone dba o bezpieczeństwo Twoich danych osobowych zgodnie z RODO.",
+    type: "website",
+    locale: "pl_PL",
+  },
 }
 
 export default async function PrivacyPage() {

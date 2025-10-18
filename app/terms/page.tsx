@@ -4,7 +4,14 @@ import { Footer } from '@/components/Footer'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Regulamin - FindSomeone",
+  title: "Regulamin serwisu | FindSomeone",
+  description: "Regulamin korzystania z platformy FindSomeone. Zasady publikowania ogłoszeń, bezpieczeństwo, prawa i obowiązki użytkowników. Aktualna wersja obowiązująca od 2024.",
+  openGraph: {
+    title: "Regulamin serwisu | FindSomeone",
+    description: "Poznaj zasady korzystania z FindSomeone - platformy lokalnej pomocy.",
+    type: "website",
+    locale: "pl_PL",
+  },
 }
 
 export default async function TermsPage() {

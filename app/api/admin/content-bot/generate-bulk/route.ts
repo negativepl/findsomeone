@@ -177,7 +177,7 @@ export async function POST(request: Request) {
 
               // Skip post creation if no image (prevents posts without photos)
               if (!imageUrl) {
-                throw new Error('No image available from Unsplash - skipping post')
+                throw new Error('No image from Unsplash (rate limit: 50/hour) - check console for details')
               }
 
               // Create post using service role client (bypasses RLS)

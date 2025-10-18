@@ -4,8 +4,14 @@ import { Metadata } from 'next'
 import { AboutPageClient } from './AboutPageClient'
 
 export const metadata: Metadata = {
-  title: "O nas - FindSomeone",
-  description: "Poznaj historię i misję FindSomeone - platformy łączącej ludzi lokalnie"
+  title: "O nas | FindSomeone - Darmowa platforma lokalnej pomocy",
+  description: "FindSomeone to darmowa polska platforma łącząca ludzi w okolicy. Pomoc przy zakupach, remoncie, sprzątaniu. Poznaj naszą misję budowania społeczności wzajemnej pomocy.",
+  openGraph: {
+    title: "O nas | FindSomeone",
+    description: "Poznaj historię i misję FindSomeone - platformy łączącej ludzi lokalnie. Budujemy społeczność wzajemnej pomocy.",
+    type: "website",
+    locale: "pl_PL",
+  },
 }
 
 export default async function AboutPage() {

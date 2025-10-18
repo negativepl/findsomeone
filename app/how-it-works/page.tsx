@@ -7,7 +7,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
-  title: "Jak to działa - FindSomeone",
+  title: "Jak to działa | FindSomeone - Przewodnik krok po kroku",
+  description: "Dowiedz się jak znaleźć lokalną pomoc w 4 prostych krokach. Rejestracja, przeglądanie ogłoszeń, kontakt i realizacja. Bezpłatna pomoc w zakupach, remoncie, sprzątaniu i więcej.",
+  openGraph: {
+    title: "Jak to działa | FindSomeone",
+    description: "Poznaj prostą instrukcję korzystania z FindSomeone. Znajdź lub oferuj lokalną pomoc w kilka minut.",
+    type: "website",
+    locale: "pl_PL",
+  },
 }
 
 export default async function HowItWorksPage() {

@@ -5,7 +5,14 @@ import { ContactForm } from '@/components/ContactForm'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Kontakt - FindSomeone",
+  title: "Kontakt | FindSomeone - Skontaktuj się z nami",
+  description: "Masz pytania? Skontaktuj się z zespołem FindSomeone. Pomożemy Ci z problemami technicznymi, pytaniami o platformę lub współpracą. Odpowiadamy w 24h.",
+  openGraph: {
+    title: "Kontakt | FindSomeone",
+    description: "Skontaktuj się z zespołem FindSomeone. Jesteśmy tu aby pomóc!",
+    type: "website",
+    locale: "pl_PL",
+  },
 }
 
 export default async function ContactPage() {

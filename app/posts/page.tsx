@@ -7,10 +7,64 @@ import { DashboardTabs } from '@/components/DashboardTabs'
 import { SearchFilters } from '@/components/SearchFilters'
 import { PostsFilters } from '@/components/PostsFilters'
 import { PostsListWrapper } from './PostsListWrapper'
+import { StructuredData } from '@/components/StructuredData'
 import { Metadata } from 'next'
 
-export const metadata: Metadata = {
-  title: "Przeglądaj ogłoszenia",
+// Dynamic metadata based on filters
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string; city?: string; category?: string; type?: string }>
+}): Promise<Metadata> {
+  const params = await searchParams
+  const { city, category, type, search } = params
+
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
+
+  // Build dynamic title and description
+  let title = 'Przeglądaj ogłoszenia'
+  let description = 'Znajdź lokalną pomoc lub oferuj swoje usługi w FindSomeone'
+
+  if (category && city) {
+    title = `${category} - ${city} | Lokalne usługi FindSomeone`
+    description = `Szukasz usług ${category} w ${city}? Znajdź zaufanych specjalistów lub oferuj swoją pomoc. Lokalna platforma pomocy.`
+  } else if (category) {
+    title = `${category} | Usługi i pomoc lokalna FindSomeone`
+    description = `Przeglądaj ogłoszenia w kategorii ${category}. Znajdź specjalistów lub oferuj swoje usługi. Darmowa platforma lokalnej pomocy.`
+  } else if (city) {
+    title = `Ogłoszenia w ${city} | FindSomeone`
+    description = `Lokalne usługi i pomoc w ${city}. Zakupy, remont, sprzątanie i więcej. Połącz się z ludźmi w okolicy.`
+  } else if (type === 'seeking') {
+    title = 'Szukam pomocy | Ogłoszenia FindSomeone`
+    description = 'Przeglądaj ogłoszenia osób szukających pomocy. Zakupy, remont, sprzątanie, opieka i inne usługi.'
+  } else if (type === 'offering') {
+    title = 'Oferuję pomoc | Ogłoszenia FindSomeone`
+    description = 'Przeglądaj ogłoszenia osób oferujących pomoc. Znajdź specjalistów w swojej okolicy.'
+  } else if (search) {
+    title = `Szukaj: "${search}" | FindSomeone`
+    description = `Wyniki wyszukiwania dla "${search}". Znajdź lokalną pomoc lub oferuj swoje usługi.`
+  }
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `${baseUrl}/posts`,
+      siteName: 'FindSomeone',
+      locale: 'pl_PL',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `${baseUrl}/posts`,
+    },
+  }
 }
 
 interface Post {
@@ -194,8 +248,22 @@ export default async function PostsPage({
       }
 
       if (categoryId) {
-        query = query.eq('category_id', categoryId)
-        countQuery = countQuery.eq('category_id', categoryId)
+        // Check if this category has subcategories
+        const { data: subcategories } = await supabase
+          .from('categories')
+          .select('id')
+          .eq('parent_id', categoryId)
+
+        if (subcategories && subcategories.length > 0) {
+          // This is a parent category - include posts from all subcategories
+          const categoryIds = [categoryId, ...subcategories.map(sub => sub.id)]
+          query = query.in('category_id', categoryIds)
+          countQuery = countQuery.in('category_id', categoryIds)
+        } else {
+          // This is a leaf category - just filter by this category
+          query = query.eq('category_id', categoryId)
+          countQuery = countQuery.eq('category_id', categoryId)
+        }
       }
     }
 
@@ -304,8 +372,22 @@ export default async function PostsPage({
       }
 
       if (categoryId) {
-        seekingQuery = seekingQuery.eq('category_id', categoryId)
-        offeringQuery = offeringQuery.eq('category_id', categoryId)
+        // Check if this category has subcategories
+        const { data: subcategories } = await supabase
+          .from('categories')
+          .select('id')
+          .eq('parent_id', categoryId)
+
+        if (subcategories && subcategories.length > 0) {
+          // This is a parent category - include posts from all subcategories
+          const categoryIds = [categoryId, ...subcategories.map(sub => sub.id)]
+          seekingQuery = seekingQuery.in('category_id', categoryIds)
+          offeringQuery = offeringQuery.in('category_id', categoryIds)
+        } else {
+          // This is a leaf category - just filter by this category
+          seekingQuery = seekingQuery.eq('category_id', categoryId)
+          offeringQuery = offeringQuery.eq('category_id', categoryId)
+        }
       }
     }
 
@@ -332,8 +414,37 @@ export default async function PostsPage({
     userFavorites = favoritesData?.map(f => f.post_id) || []
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
+
+  // Build breadcrumbs for structured data
+  const breadcrumbs = [
+    { name: 'Strona główna', url: baseUrl },
+    { name: 'Ogłoszenia', url: `${baseUrl}/posts` },
+  ]
+
+  if (categoryQuery) {
+    breadcrumbs.push({ name: categoryQuery, url: `${baseUrl}/posts?category=${encodeURIComponent(categoryQuery)}` })
+  }
+  if (cityQuery) {
+    breadcrumbs.push({ name: cityQuery, url: `${baseUrl}/posts?city=${encodeURIComponent(cityQuery)}` })
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF8F3]">
+      {/* Structured Data for SEO */}
+      <StructuredData
+        type="breadcrumb"
+        breadcrumbs={breadcrumbs}
+      />
+      {(categoryQuery || cityQuery) && (
+        <StructuredData
+          type="collection-page"
+          category={categoryQuery}
+          city={cityQuery}
+          serviceDescription={`Przeglądaj lokalne usługi ${categoryQuery ? 'w kategorii ' + categoryQuery : ''} ${cityQuery ? 'w ' + cityQuery : ''}`}
+        />
+      )}
+
       <NavbarWithHide
         user={user}
         pageTitle={searchQuery || cityQuery || categoryQuery ? 'Wyniki' : 'Ogłoszenia'}

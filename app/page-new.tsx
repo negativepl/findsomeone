@@ -7,10 +7,6 @@ import { Footer } from '@/components/Footer'
 import { SectionRenderer } from '@/lib/homepage-sections/SectionRenderer'
 import { createClient } from '@/lib/supabase/server'
 
-// Revalidate cache co 5 minut (300 sekund)
-// Można zmienić na 3600 (1h) dla większego trafficu
-export const revalidate = 300
-
 export default async function Home() {
   const supabase = await createClient()
 

@@ -142,10 +142,6 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                       : 'bg-white text-black border border-black/10 hover:bg-[#F5F1E8]'
                   }`}
                 >
-                  <CategoryIcon
-                    iconName={subcategory.icon}
-                    className={`w-5 h-5 ${isSelected ? 'text-white' : 'text-black/60'}`}
-                  />
                   <span className="font-medium">{subcategory.name}</span>
                 </button>
               )
@@ -301,10 +297,6 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                                     : 'hover:bg-[#F5F1E8] text-black'
                                 }`}
                               >
-                                <CategoryIcon
-                                  iconName={subcategory.icon}
-                                  className={`w-4 h-4 flex-shrink-0 ${isSubSelected ? 'text-white' : 'text-black/60'}`}
-                                />
                                 <span className="text-sm">{subcategory.name}</span>
                               </button>
                             )

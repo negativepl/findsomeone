@@ -7,8 +7,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = {
-  title: "FAQ - Często zadawane pytania - FindSomeone",
-  description: "Odpowiedzi na najczęściej zadawane pytania o FindSomeone",
+  title: "FAQ - Często zadawane pytania | FindSomeone",
+  description: "Odpowiedzi na najczęstsze pytania o FindSomeone. Jak znaleźć pomoc? Jak dodać ogłoszenie? Czy FindSomeone jest darmowe? Bezpieczeństwo, płatności i więcej.",
+  openGraph: {
+    title: "FAQ - Często zadawane pytania | FindSomeone",
+    description: "Znajdź odpowiedzi na pytania o platformę lokalnej pomocy FindSomeone. Dowiedz się jak działa serwis, ile kosztuje i jak zacząć.",
+    type: "website",
+    locale: "pl_PL",
+  },
 }
 
 export default async function FAQPage() {
