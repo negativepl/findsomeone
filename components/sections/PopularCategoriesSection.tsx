@@ -41,9 +41,9 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
 
           <div className="relative">
             <div className="hidden md:block">
-              <ScrollArrows containerId={`section-${section.id}`} />
+              <ScrollArrows containerId={`section-${section.id}-scroll`} />
             </div>
-            <div id={`section-${section.id}`} className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
+            <div id={`section-${section.id}-scroll`} className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
               <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
                 {categories.map((category: any) => (
                   <Link
