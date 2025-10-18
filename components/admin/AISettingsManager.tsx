@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { MODELS } from '@/lib/ai-models'
 
 interface AISettings {
@@ -387,39 +388,32 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'search' && (
         <>
       {/* Synonym Generation Settings */}
-      <Card className="border-2 border-[#C44E35]/20 rounded-3xl bg-white">
-        <CardHeader>
+      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-              </div>
-              <div>
-                <CardTitle className="text-xl">Generowanie synonimów</CardTitle>
-                <p className="text-sm text-black/60 mt-1">Konfiguracja promptu i modelu AI dla terminów wyszukiwania</p>
-              </div>
+            <div>
+              <h2 className="text-2xl font-bold text-black mb-1">Generowanie synonimów</h2>
+              <p className="text-sm text-black/60">Konfiguracja promptu i modelu AI dla terminów wyszukiwania</p>
             </div>
             <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
               {synonymModel}
             </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        </div>
+        <CardContent className="space-y-6 p-6">
           {/* Model selection */}
           <div>
             <Label htmlFor="model">Model AI</Label>
-            <select
-              id="model"
-              value={synonymModel}
-              onChange={(e) => setSynonymModel(e.target.value)}
-              className="mt-2 w-full px-4 py-2 border border-black/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20"
-            >
-              <option value={MODELS.GPT_5_NANO}>GPT-5 Nano (ultra-tani, szybki)</option>
-              <option value={MODELS.GPT_5_MINI}>GPT-5 Mini (balans)</option>
-              <option value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</option>
-            </select>
+            <Select value={synonymModel} onValueChange={setSynonymModel}>
+              <SelectTrigger className="mt-2">
+                <SelectValue placeholder="Wybierz model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={MODELS.GPT_5_NANO}>GPT-5 Nano (ultra-tani, szybki)</SelectItem>
+                <SelectItem value={MODELS.GPT_5_MINI}>GPT-5 Mini (balans)</SelectItem>
+                <SelectItem value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</SelectItem>
+              </SelectContent>
+            </Select>
             <p className="text-xs text-black/40 mt-1">
               Wybierz model - GPT-5 nano jest wystarczający dla synonimów
             </p>
@@ -537,39 +531,32 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'categories' && (
         <>
       {/* Category Synonym Generation Settings */}
-      <Card className="border-2 border-[#C44E35]/20 rounded-3xl bg-white">
-        <CardHeader>
+      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-              </div>
-              <div>
-                <CardTitle className="text-xl">Synonimy kategorii</CardTitle>
-                <p className="text-sm text-black/60 mt-1">Konfiguracja promptu i modelu AI dla kategorii usług</p>
-              </div>
+            <div>
+              <h2 className="text-2xl font-bold text-black mb-1">Synonimy kategorii</h2>
+              <p className="text-sm text-black/60">Konfiguracja promptu i modelu AI dla kategorii usług</p>
             </div>
             <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
               {categorySynonymModel}
             </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        </div>
+        <CardContent className="space-y-6 p-6">
           {/* Model selection */}
           <div>
             <Label htmlFor="categoryModel">Model AI</Label>
-            <select
-              id="categoryModel"
-              value={categorySynonymModel}
-              onChange={(e) => setCategorySynonymModel(e.target.value)}
-              className="mt-2 w-full px-4 py-2 border border-black/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20"
-            >
-              <option value={MODELS.GPT_5_NANO}>GPT-5 Nano (ultra-tani, szybki)</option>
-              <option value={MODELS.GPT_5_MINI}>GPT-5 Mini (balans)</option>
-              <option value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</option>
-            </select>
+            <Select value={categorySynonymModel} onValueChange={setCategorySynonymModel}>
+              <SelectTrigger className="mt-2">
+                <SelectValue placeholder="Wybierz model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={MODELS.GPT_5_NANO}>GPT-5 Nano (ultra-tani, szybki)</SelectItem>
+                <SelectItem value={MODELS.GPT_5_MINI}>GPT-5 Mini (balans)</SelectItem>
+                <SelectItem value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</SelectItem>
+              </SelectContent>
+            </Select>
             <p className="text-xs text-black/40 mt-1">
               Wybierz model - GPT-5 nano jest wystarczający dla synonimów kategorii
             </p>
@@ -659,33 +646,26 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'seo' && (
         <>
       {/* SEO Description Generation Settings */}
-      <Card className="border-2 border-[#C44E35]/20 rounded-3xl bg-white">
-        <CardHeader>
+      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div>
-                <CardTitle className="text-xl">Generowanie opisów SEO</CardTitle>
-                <p className="text-sm text-black/60 mt-1">Automatyczne tworzenie opisów dla kategorii i podkategorii</p>
-              </div>
+            <div>
+              <h2 className="text-2xl font-bold text-black mb-1">Generowanie opisów SEO</h2>
+              <p className="text-sm text-black/60">Automatyczne tworzenie opisów dla kategorii i podkategorii</p>
             </div>
             <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
               {seoModel}
             </Badge>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        </div>
+        <CardContent className="space-y-6 p-6">
           {/* Bulk Generate Button */}
-          <div className="p-6 rounded-2xl bg-gradient-to-br from-[#C44E35]/5 to-[#C44E35]/10 border-2 border-[#C44E35]/20">
-            <div className="flex items-start justify-between">
+          <div className="p-6 rounded-2xl bg-[#C44E35]/5 border border-[#C44E35]/20">
+            <div className="flex items-start justify-between gap-6">
               <div className="flex-1">
-                <h4 className="font-bold text-lg mb-2">Generuj/Regeneruj opisy masowo</h4>
+                <h4 className="font-bold text-lg text-black mb-2">Generuj wszystkie opisy</h4>
                 <p className="text-sm text-black/70 mb-4">
-                  Automatycznie wygeneruj lub regeneruj opisy SEO dla <strong>wszystkich</strong> kategorii i podkategorii.
+                  Automatycznie wygeneruj lub regeneruj opisy SEO dla wszystkich kategorii i podkategorii.
                   AI stworzy unikalne, zoptymalizowane pod SEO opisy (120-160 znaków).
                 </p>
 
@@ -745,16 +725,16 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
           {/* Model selection */}
           <div>
             <Label htmlFor="seoModel">Model AI</Label>
-            <select
-              id="seoModel"
-              value={seoModel}
-              onChange={(e) => setSeoModel(e.target.value)}
-              className="mt-2 w-full px-4 py-2 border border-black/10 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20"
-            >
-              <option value={MODELS.GPT_5_NANO}>GPT-5 Nano (ultra-tani, wystarczający)</option>
-              <option value={MODELS.GPT_5_MINI}>GPT-5 Mini (lepsza jakość)</option>
-              <option value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</option>
-            </select>
+            <Select value={seoModel} onValueChange={setSeoModel}>
+              <SelectTrigger className="mt-2">
+                <SelectValue placeholder="Wybierz model" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={MODELS.GPT_5_NANO}>GPT-5 Nano (ultra-tani, wystarczający)</SelectItem>
+                <SelectItem value={MODELS.GPT_5_MINI}>GPT-5 Mini (lepsza jakość)</SelectItem>
+                <SelectItem value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</SelectItem>
+              </SelectContent>
+            </Select>
             <p className="text-xs text-black/40 mt-1">
               GPT-5 Nano jest wystarczający dla krótkich opisów SEO
             </p>

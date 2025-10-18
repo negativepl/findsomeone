@@ -44,17 +44,17 @@ export function ChangeEmailDialog() {
           Zmień
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md border-0 rounded-3xl bg-white shadow-xl">
+      <DialogContent className="sm:max-w-md border-0 rounded-3xl shadow-xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-black">Zmiana adresu email</DialogTitle>
-          <DialogDescription className="text-base text-black/60">
+          <DialogTitle className="text-2xl">Zmiana adresu email</DialogTitle>
+          <DialogDescription className="text-base">
             Wprowadź nowy adres email i swoje hasło
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit}>
           <div className="space-y-5 py-4">
             <div className="space-y-3">
-              <Label htmlFor="newEmail" className="text-base font-semibold text-black">
+              <Label htmlFor="newEmail" className="text-base font-semibold">
                 Nowy adres email
               </Label>
               <Input
@@ -68,7 +68,7 @@ export function ChangeEmailDialog() {
               />
             </div>
             <div className="space-y-3">
-              <Label htmlFor="password" className="text-base font-semibold text-black">
+              <Label htmlFor="password" className="text-base font-semibold">
                 Hasło
               </Label>
               <Input
@@ -79,7 +79,7 @@ export function ChangeEmailDialog() {
                 disabled={loading}
                 className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
               />
-              <p className="text-xs text-black/50">Potwierdź swoją tożsamość</p>
+              <p className="text-xs text-muted-foreground">Potwierdź swoją tożsamość</p>
             </div>
           </div>
           <div className="mt-8 pt-6 border-t-2 border-black/5">

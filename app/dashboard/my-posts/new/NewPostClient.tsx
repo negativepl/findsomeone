@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
 interface Category {
   id: string
@@ -582,11 +583,11 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
         {/* Type Selection Modal */}
         {showTypeModal && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-3xl p-8 md:p-12 max-w-3xl w-full">
+          <Dialog open={showTypeModal} onOpenChange={setShowTypeModal}>
+            <DialogContent className="rounded-3xl p-8 md:p-12 max-w-3xl sm:max-w-3xl" showCloseButton={false}>
               <div className="text-center mb-10">
-                <h2 className="text-3xl md:text-4xl font-bold text-black mb-3">Co chcesz zrobić?</h2>
-                <p className="text-lg text-black/60">Wybierz typ ogłoszenia</p>
+                <DialogTitle className="text-3xl md:text-4xl mb-3">Co chcesz zrobić?</DialogTitle>
+                <DialogDescription className="text-lg">Wybierz typ ogłoszenia</DialogDescription>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
@@ -642,8 +643,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
                 </button>
               </div>
-            </div>
-          </div>
+            </DialogContent>
+          </Dialog>
         )}
 
         {/* Page Header - Above Card - Hidden on mobile */}

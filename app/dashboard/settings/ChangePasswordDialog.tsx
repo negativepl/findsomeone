@@ -44,17 +44,17 @@ export function ChangePasswordDialog() {
           Zmień
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md border-0 rounded-3xl bg-white shadow-xl">
+      <DialogContent className="sm:max-w-md border-0 rounded-3xl shadow-xl">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-black">Zmiana hasła</DialogTitle>
-          <DialogDescription className="text-base text-black/60">
+          <DialogTitle className="text-2xl">Zmiana hasła</DialogTitle>
+          <DialogDescription className="text-base">
             Wprowadź obecne hasło i nowe hasło
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit}>
           <div className="space-y-5 py-4">
             <div className="space-y-3">
-              <Label htmlFor="currentPassword" className="text-base font-semibold text-black">
+              <Label htmlFor="currentPassword" className="text-base font-semibold">
                 Obecne hasło
               </Label>
               <Input
@@ -67,7 +67,7 @@ export function ChangePasswordDialog() {
               />
             </div>
             <div className="space-y-3">
-              <Label htmlFor="newPassword" className="text-base font-semibold text-black">
+              <Label htmlFor="newPassword" className="text-base font-semibold">
                 Nowe hasło
               </Label>
               <Input
@@ -79,10 +79,10 @@ export function ChangePasswordDialog() {
                 disabled={loading}
                 className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
               />
-              <p className="text-xs text-black/50">Minimum 8 znaków</p>
+              <p className="text-xs text-muted-foreground">Minimum 8 znaków</p>
             </div>
             <div className="space-y-3">
-              <Label htmlFor="confirmPassword" className="text-base font-semibold text-black">
+              <Label htmlFor="confirmPassword" className="text-base font-semibold">
                 Potwierdź nowe hasło
               </Label>
               <Input

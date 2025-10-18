@@ -308,71 +308,78 @@ export default function ContentBotPanel() {
   return (
     <div className="space-y-6">
       {/* Stats Card */}
-      <div className="bg-white rounded-xl border border-black/10 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-xl font-semibold text-black">Statystyki</h2>
-            <p className="text-sm text-black/60">Ogłoszenia wygenerowane przez AI</p>
+      <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-black mb-1">Statystyki</h2>
+              <p className="text-sm text-black/60">Ogłoszenia wygenerowane przez AI</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                fetchAiPostsCount()
+                fetchCategories()
+              }}
+              disabled={isLoadingCount || isLoadingCategories}
+              className="rounded-full hover:bg-black/5"
+            >
+              <RefreshCw className={`h-4 w-4 ${isLoadingCount || isLoadingCategories ? 'animate-spin' : ''}`} />
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => {
-              fetchAiPostsCount()
-              fetchCategories()
-            }}
-            disabled={isLoadingCount || isLoadingCategories}
-            className="rounded-full"
-          >
-            <RefreshCw className={`h-4 w-4 ${isLoadingCount || isLoadingCategories ? 'animate-spin' : ''}`} />
-          </Button>
         </div>
 
-        <div className="text-4xl font-bold text-[#C44E35]">
-          {isLoadingCount ? '...' : aiPostsCount.toLocaleString()}
+        <div className="px-6 py-6">
+          <div className="text-5xl font-bold text-[#C44E35] mb-2">
+            {isLoadingCount ? '...' : aiPostsCount.toLocaleString()}
+          </div>
+          <p className="text-sm text-black/60">aktywnych ogłoszeń AI</p>
         </div>
-        <p className="text-sm text-black/60 mt-1">aktywnych ogłoszeń AI</p>
       </div>
 
       {/* Category Selection */}
-      <div className="bg-white rounded-xl border border-black/10 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-xl font-semibold text-black">Wybierz kategorie</h2>
-            <p className="text-sm text-black/60">
-              {selectedCategories.size === 0
-                ? 'Brak wyboru = wszystkie kategorie'
-                : `Wybrano: ${selectedCategories.size}`}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={selectAll}
-              disabled={isLoadingCategories}
-              className="rounded-full text-xs"
-            >
-              Zaznacz wszystkie
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={deselectAll}
-              disabled={isLoadingCategories}
-              className="rounded-full text-xs"
-            >
-              Odznacz wszystkie
-            </Button>
+      <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-black mb-1">Wybierz kategorie</h2>
+              <p className="text-sm text-black/60">
+                {selectedCategories.size === 0
+                  ? 'Brak wyboru = wszystkie kategorie'
+                  : `Wybrano: ${selectedCategories.size}`}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={selectAll}
+                disabled={isLoadingCategories}
+                className="rounded-full text-xs border-black/20 hover:bg-black/5"
+              >
+                Zaznacz wszystkie
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={deselectAll}
+                disabled={isLoadingCategories}
+                className="rounded-full text-xs border-black/20 hover:bg-black/5"
+              >
+                Odznacz wszystkie
+              </Button>
+            </div>
           </div>
         </div>
 
-        {isLoadingCategories ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-6 w-6 animate-spin text-black/40" />
-          </div>
-        ) : (
-          <div className="space-y-2 max-h-[500px] overflow-y-auto">
+        <div className="p-6">
+          {isLoadingCategories ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-6 w-6 animate-spin text-black/40" />
+            </div>
+          ) : (
+            <div className="space-y-2 max-h-[500px] overflow-y-auto">
             {categories.map((category) => (
               <div key={category.id} className="border border-black/10 rounded-lg">
                 {/* Parent Category */}
@@ -394,18 +401,18 @@ export default function ContentBotPanel() {
                     )}
                     <span className="font-semibold text-black">{category.name}</span>
                   </button>
-                  <div className="flex items-center gap-4 text-xs">
-                    <div className="text-right">
-                      <div className="text-black font-medium">{category.totalPosts}</div>
-                      <div className="text-black/40">razem</div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <div className="px-2.5 py-1.5 bg-black/5 rounded-full">
+                      <span className="text-black font-semibold">{category.totalPosts}</span>
+                      <span className="text-black/60 ml-1">razem</span>
                     </div>
-                    <div className="text-right">
-                      <div className="text-purple-600 font-medium">{category.aiPosts}</div>
-                      <div className="text-black/40">AI</div>
+                    <div className="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-full">
+                      <span className="text-purple-700 font-semibold">{category.aiPosts}</span>
+                      <span className="text-purple-600 ml-1">AI</span>
                     </div>
-                    <div className="text-right">
-                      <div className="text-green-600 font-medium">{category.humanPosts}</div>
-                      <div className="text-black/40">ludzie</div>
+                    <div className="px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-full">
+                      <span className="text-green-700 font-semibold">{category.humanPosts}</span>
+                      <span className="text-green-600 ml-1">ludzie</span>
                     </div>
                   </div>
                 </div>
@@ -423,18 +430,18 @@ export default function ContentBotPanel() {
                           onCheckedChange={() => toggleCategory(subcategory.id)}
                         />
                         <span className="text-sm text-black flex-1">{subcategory.name}</span>
-                        <div className="flex items-center gap-4 text-xs">
-                          <div className="text-right">
-                            <div className="text-black font-medium">{subcategory.totalPosts}</div>
-                            <div className="text-black/40">razem</div>
+                        <div className="flex items-center gap-2 text-xs">
+                          <div className="px-2.5 py-1.5 bg-black/5 rounded-full">
+                            <span className="text-black font-semibold">{subcategory.totalPosts}</span>
+                            <span className="text-black/60 ml-1">razem</span>
                           </div>
-                          <div className="text-right">
-                            <div className="text-purple-600 font-medium">{subcategory.aiPosts}</div>
-                            <div className="text-black/40">AI</div>
+                          <div className="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-full">
+                            <span className="text-purple-700 font-semibold">{subcategory.aiPosts}</span>
+                            <span className="text-purple-600 ml-1">AI</span>
                           </div>
-                          <div className="text-right">
-                            <div className="text-green-600 font-medium">{subcategory.humanPosts}</div>
-                            <div className="text-black/40">ludzie</div>
+                          <div className="px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-full">
+                            <span className="text-green-700 font-semibold">{subcategory.humanPosts}</span>
+                            <span className="text-green-600 ml-1">ludzie</span>
                           </div>
                         </div>
                       </div>
@@ -444,15 +451,23 @@ export default function ContentBotPanel() {
               </div>
             ))}
           </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Generation Progress */}
       {generationProgress && (
-        <div className="bg-white rounded-xl border border-[#C44E35]/20 p-6">
-          <h3 className="text-lg font-semibold text-black mb-4">Generowanie w toku...</h3>
+        <div className="bg-white rounded-3xl shadow-sm overflow-hidden border-2 border-[#C44E35]/30">
+          <div className="px-8 py-6 border-b border-black/10">
+            <div className="flex items-center gap-3">
+              <Loader2 className="h-6 w-6 animate-spin text-[#C44E35]" />
+              <div>
+                <h3 className="text-2xl font-bold text-black">Generowanie w toku...</h3>
+              </div>
+            </div>
+          </div>
 
-          <div className="space-y-3">
+          <div className="p-6 space-y-3">
             <div className="flex items-center justify-between text-sm">
               <span className="font-medium text-black">
                 Postów: {generationProgress.current} / {generationProgress.total}
@@ -514,8 +529,15 @@ export default function ContentBotPanel() {
       )}
 
       {/* Action Buttons */}
-      <div className="bg-white rounded-xl border border-black/10 p-6">
-        <h2 className="text-xl font-semibold text-black mb-4">Akcje</h2>
+      <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10">
+          <div>
+            <h2 className="text-2xl font-bold text-black mb-1">Akcje</h2>
+            <p className="text-sm text-black/60">Generuj lub usuń ogłoszenia AI</p>
+          </div>
+        </div>
+
+        <div className="p-6">
 
         <div className="space-y-3">
           <Button
@@ -579,20 +601,6 @@ export default function ContentBotPanel() {
           </Button>
         </div>
 
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-          <p className="text-sm text-blue-900">
-            <strong>ℹ️ Informacja:</strong>
-          </p>
-          <ul className="text-sm text-blue-800 mt-2 space-y-1 list-disc list-inside">
-            <li>Ogłoszenia są generowane przez AI (GPT-5 Nano)</li>
-            <li>Zdjęcia pobierane są z Unsplash</li>
-            <li>Wszystkie posty są oznaczone jako &quot;Wygenerowane przez AI&quot;</li>
-            <li>
-              {selectedCategories.size === 0
-                ? `Wygenerujesz ~${categories.reduce((sum, cat) => sum + 1 + (cat.subcategories?.length || 0), 0) * 3} ogłoszeń (może zająć 5-10 minut)`
-                : `Wygenerujesz ~${selectedCategories.size * 3} ogłoszeń dla wybranych kategorii`}
-            </li>
-          </ul>
         </div>
       </div>
     </div>

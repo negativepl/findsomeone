@@ -84,10 +84,10 @@ export function Footer() {
                 openSection === 'categories' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
               }`}
             >
-              <li><Link href="/dashboard?category=hydraulika" className="hover:text-black transition-colors inline-block py-2">Hydraulika</Link></li>
-              <li><Link href="/dashboard?category=elektryka" className="hover:text-black transition-colors inline-block py-2">Elektryka</Link></li>
-              <li><Link href="/dashboard?category=sprzątanie" className="hover:text-black transition-colors inline-block py-2">Sprzątanie</Link></li>
-              <li><Link href="/dashboard" className="hover:text-black transition-colors inline-block py-2">Zobacz wszystkie</Link></li>
+              <li><Link href="/posts?category=elektronika" className="hover:text-black transition-colors inline-block py-2">Elektronika</Link></li>
+              <li><Link href="/posts?category=dom-i-ogrod" className="hover:text-black transition-colors inline-block py-2">Dom i ogród</Link></li>
+              <li><Link href="/posts?category=sport-i-hobby" className="hover:text-black transition-colors inline-block py-2">Sport i hobby</Link></li>
+              <li><Link href="/posts" className="hover:text-black transition-colors inline-block py-2">Zobacz wszystkie</Link></li>
             </ul>
           </div>
 

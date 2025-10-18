@@ -55,8 +55,8 @@ export function ModerationPanel({
 }: ModerationPanelProps) {
   const [posts, setPosts] = useState<Post[]>([])
   const [loading, setLoading] = useState(true)
-  // Set default tab to appeals if there are any, otherwise flagged
-  const [selectedStatus, setSelectedStatus] = useState(appealsCount > 0 ? 'appeals' : 'flagged')
+  // Always start with appeals tab (most urgent items)
+  const [selectedStatus, setSelectedStatus] = useState('appeals')
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const [rejectReasons, setRejectReasons] = useState<Record<string, string>>({})
   const [expandedPost, setExpandedPost] = useState<string | null>(null)

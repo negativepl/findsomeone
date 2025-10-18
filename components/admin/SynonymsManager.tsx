@@ -449,11 +449,12 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       )}
 
       {/* Add New Synonym Manually */}
-      <Card className="border-0 rounded-3xl bg-white">
-        <CardHeader>
-          <CardTitle>Dodaj synonym ręcznie</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10 bg-gradient-to-r from-green-500/5 to-transparent">
+          <h2 className="text-2xl font-bold text-black mb-1">Dodaj synonym ręcznie</h2>
+          <p className="text-sm text-black/60">Wprowadź termin główny i jego synonim</p>
+        </div>
+        <CardContent className="p-6">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="term">Termin główny</Label>
@@ -487,11 +488,12 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       </Card>
 
       {/* Existing Synonyms */}
-      <Card className="border-0 rounded-3xl bg-white">
-        <CardHeader>
-          <CardTitle>Istniejące synonimy ({synonyms.length})</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10 bg-gradient-to-r from-blue-500/5 to-transparent">
+          <h2 className="text-2xl font-bold text-black mb-1">Istniejące synonimy ({synonyms.length})</h2>
+          <p className="text-sm text-black/60">Lista wszystkich aktywnych synonimów terminów</p>
+        </div>
+        <CardContent className="p-6">
           <div className="space-y-3">
             {Object.entries(groupedSynonyms).map(([term, syns]) => {
               const isExpanded = expandedTerms.has(term)
@@ -799,14 +801,14 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             </Card>
           )}
 
-          <Card className="border-0 rounded-3xl bg-white">
-            <CardHeader>
-              <CardTitle>Synonimy kategorii ({initialCategories.length})</CardTitle>
-              <p className="text-sm text-black/60 mt-2">
+          <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+            <div className="px-8 py-6 border-b border-black/10 bg-gradient-to-r from-purple-500/5 to-transparent">
+              <h2 className="text-2xl font-bold text-black mb-1">Synonimy kategorii ({initialCategories.length})</h2>
+              <p className="text-sm text-black/60">
                 Dodaj synonimy do kategorii aby użytkownicy łatwiej je znajdowali. Np. dla kategorii "Hydraulik" dodaj: "instalator", "monter"
               </p>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <CardContent className="p-6">
               <div className="space-y-3">
                 {initialCategories.map((category) => (
                   <div key={category.id} className="border border-black/10 rounded-2xl p-4">

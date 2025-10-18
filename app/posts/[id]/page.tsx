@@ -21,7 +21,6 @@ import { PostDetailClientWrapper } from './PostDetailClient'
 import { MobileActionDock } from './MobileActionDock'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Metadata } from 'next'
-import { AIGeneratedBadge } from '@/components/AIGeneratedBadge'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -451,11 +450,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Title */}
                 <div>
-                  <div className="flex items-start gap-3 mb-1">
-                    <h1 className="text-2xl md:text-3xl font-bold text-black leading-tight flex-1">{post.title}</h1>
-                    {post.is_ai_generated && <AIGeneratedBadge size="md" className="md:hidden mt-1" />}
-                    {post.is_ai_generated && <AIGeneratedBadge size="lg" className="hidden md:inline-flex mt-1" />}
-                  </div>
+                  <h1 className="text-2xl md:text-3xl font-bold text-black leading-tight">{post.title}</h1>
                 </div>
 
                 {/* Budget */}

@@ -20,7 +20,8 @@ export function useHomepageSections() {
       if (error) throw error
       return data as HomepageSection[]
     },
-    staleTime: 30 * 1000, // 30 seconds
+    staleTime: 5 * 60 * 1000, // 5 minutes - increase staleTime to reduce refetches
+    refetchOnWindowFocus: false, // Don't refetch when window gains focus
   })
 }
 
@@ -202,11 +203,11 @@ export function useReorderSections() {
       toast.error('Błąd podczas zmiany kolejności: ' + error.message)
     },
     onSuccess: () => {
-      toast.success('Kolejność zmieniona')
+      // Don't show toast on every reorder - it's too noisy during drag & drop
+      // toast.success('Kolejność zmieniona')
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['homepage-sections'] })
-    },
+    // Don't invalidate on settled - we use optimistic updates for better performance
+    // The data is already updated optimistically and will be correct after mutation succeeds
   })
 }
 

@@ -101,7 +101,7 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
       <DialogContent className="sm:max-w-[900px] rounded-3xl p-0 gap-0">
         <div className="p-6 pb-0">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold">Edytuj kategorię</DialogTitle>
+            <DialogTitle className="text-2xl">Edytuj kategorię</DialogTitle>
             <DialogDescription>
               Zaktualizuj dane kategorii
             </DialogDescription>
@@ -181,24 +181,28 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
             </div>
           </div>
 
-          <DialogFooter className="mt-0 pt-6 px-6 pb-6 border-t-2 border-black/5 rounded-b-3xl">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-              className="w-full sm:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
-              disabled={loading}
-            >
-              Anuluj
-            </Button>
-            <Button
-              type="submit"
-              className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold"
-              disabled={loading}
-            >
-              {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
-            </Button>
-          </DialogFooter>
+          <div className="px-6 pb-6">
+            <div className="mt-8 pt-6 border-t-2 border-black/5">
+              <DialogFooter className="gap-2 sm:gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={onClose}
+                  className="w-full sm:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+                  disabled={loading}
+                >
+                  Anuluj
+                </Button>
+                <Button
+                  type="submit"
+                  className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold"
+                  disabled={loading}
+                >
+                  {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
+                </Button>
+              </DialogFooter>
+            </div>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

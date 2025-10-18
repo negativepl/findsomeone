@@ -6,7 +6,6 @@ import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
 import { RatingDisplay } from '@/components/RatingDisplay'
-import { AIGeneratedBadge } from '@/components/AIGeneratedBadge'
 
 interface Post {
   id: string
@@ -160,12 +159,9 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                       {/* Content */}
                       <div className="flex-1 flex flex-col justify-between min-w-0 min-h-[80px]">
-                        <div className="flex items-start gap-2 mb-2">
-                          <h3 className="text-base font-bold text-black flex-1">
-                            {post.title}
-                          </h3>
-                          {post.is_ai_generated && <AIGeneratedBadge size="sm" />}
-                        </div>
+                        <h3 className="text-base font-bold text-black mb-2">
+                          {post.title}
+                        </h3>
 
                         {/* Location and Date */}
                         <div className="flex items-center justify-between gap-2 text-xs text-black/60">
@@ -276,12 +272,9 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                     <div className="flex-1 flex flex-col p-6">
                       {/* Main content area - tylko tytuł */}
                       <div className="flex-1 pb-6">
-                        <div className="flex items-start gap-2">
-                          <h3 className="text-xl font-bold text-black flex-1">
-                            {post.title}
-                          </h3>
-                          {post.is_ai_generated && <AIGeneratedBadge size="md" />}
-                        </div>
+                        <h3 className="text-xl font-bold text-black">
+                          {post.title}
+                        </h3>
                       </div>
 
                       {/* Footer - bottom of content */}
@@ -396,13 +389,9 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                   <div className="flex-1 flex flex-col min-h-0">
                     <CardHeader className="pb-4 pt-4 px-4 md:pt-6 md:px-6">
-                      <div className="flex items-start gap-2">
-                        <CardTitle className="text-base md:text-xl font-bold text-black flex-1">
-                          {post.title}
-                        </CardTitle>
-                        {post.is_ai_generated && <AIGeneratedBadge size="sm" className="md:hidden" />}
-                        {post.is_ai_generated && <AIGeneratedBadge size="md" className="hidden md:inline-flex" />}
-                      </div>
+                      <CardTitle className="text-base md:text-xl font-bold text-black">
+                        {post.title}
+                      </CardTitle>
                       {/* Mobile - Location and date in header */}
                       <div className="flex md:hidden items-center justify-between gap-2 mt-2 text-xs text-black/60">
                         <div className="flex items-center gap-1">

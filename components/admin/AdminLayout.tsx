@@ -65,7 +65,7 @@ const navItems = [
     badge: 'reportsCount',
   },
   {
-    label: 'Użytkownicy',
+    label: 'Zbanowani użytkownicy',
     href: '/admin/banned-users',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +84,7 @@ const navItems = [
     ),
   },
   {
-    label: 'Synonymy',
+    label: 'Synonimy',
     href: '/admin/synonyms',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

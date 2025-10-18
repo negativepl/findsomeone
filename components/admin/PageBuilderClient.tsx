@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import {
   DndContext,
   closestCenter,
@@ -52,14 +52,19 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
     setIsMounted(true)
   }, [])
 
+  // Memoize sensors to prevent recreating on every render
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // 8px of movement required before drag starts
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event
 
     if (over && active.id !== over.id) {
@@ -74,22 +79,25 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
       // Optimistic update via React Query
       reorderSections.mutate(newSections)
     }
-  }
+  }, [sections, reorderSections])
 
-  const handleToggleActive = (section: HomepageSection) => {
+  const handleToggleActive = useCallback((section: HomepageSection) => {
     toggleActive.mutate({
       id: section.id,
       is_active: !section.is_active,
     })
-  }
+  }, [toggleActive])
 
-  const handleDelete = (sectionId: string) => {
+  const handleDelete = useCallback((sectionId: string) => {
     if (!confirm('Czy na pewno chcesz usunąć tę sekcję?')) {
       return
     }
 
     deleteSection.mutate(sectionId)
-  }
+  }, [deleteSection])
+
+  // Memoize section IDs array for SortableContext
+  const sectionIds = useMemo(() => sections.map((s) => s.id), [sections])
 
   const handleSaveSection = (updatedSection: HomepageSection) => {
     updateSection.mutate(
@@ -136,26 +144,36 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
   if (editingSection) {
     return (
       <div className="space-y-6">
-        {/* Back button */}
-        <button
-          onClick={() => setEditingSection(null)}
-          className="flex items-center gap-2 text-black/60 hover:text-black transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Powrót do listy sekcji
-        </button>
+        {/* Header with back button */}
+        <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+          <div className="px-6 py-5 border-b border-black/10 bg-gradient-to-r from-[#C44E35]/5 to-transparent">
+            <button
+              onClick={() => setEditingSection(null)}
+              className="text-black/60 hover:text-[#C44E35] flex items-center gap-2 transition-colors mb-4"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Powrót do listy sekcji
+            </button>
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-bold text-black mb-1">Edytuj sekcję</h2>
+                <p className="text-sm text-black/60">
+                  {SECTION_TYPES[editingSection.type]?.label || editingSection.type}
+                </p>
+              </div>
+              <div className="px-4 py-2 bg-white rounded-full border border-black/10">
+                <span className="text-sm font-medium text-[#C44E35]">
+                  {SECTION_TYPES[editingSection.type]?.label}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Edit form */}
         <div className="bg-white rounded-3xl p-8 shadow-sm">
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold text-black mb-1">Edytuj sekcję</h2>
-            <p className="text-sm text-black/60">
-              {SECTION_TYPES[editingSection.type]?.label || editingSection.type}
-            </p>
-          </div>
-
           <SectionEditor
             section={editingSection}
             categories={categories}
@@ -170,12 +188,27 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
 
   return (
     <div className="space-y-6">
-      {/* Action buttons */}
-      <div className="flex items-center justify-between bg-white rounded-3xl p-6 shadow-sm">
-        <div className="flex items-center gap-4">
+      {/* Header */}
+      <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-black mb-1">Page Builder</h1>
+              <p className="text-sm text-black/60">Zarządzaj sekcjami na stronie głównej</p>
+            </div>
+            <div className="px-4 py-2 bg-black/5 rounded-full">
+              <span className="text-sm font-medium text-black/80">
+                {sections.filter((s) => s.is_active).length} / {sections.length}
+              </span>
+              <span className="text-xs text-black/60 ml-1">aktywnych</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 py-4 flex items-center justify-between">
           <Button
             onClick={() => setIsAddDialogOpen(true)}
-            className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white"
+            className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-sm"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -187,33 +220,27 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-black/60 hover:text-black underline"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#C44E35] hover:text-[#B33D2A] bg-[#C44E35]/10 hover:bg-[#C44E35]/20 rounded-full transition-colors"
           >
-            Podgląd strony głównej →
-          </a>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-black/60">
-            {sections.filter((s) => s.is_active).length} / {sections.length} aktywnych sekcji
-          </span>
-
-          <Button
-            onClick={handlePublish}
-            variant="outline"
-            className="rounded-full"
-          >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
-            Odśwież podgląd
-          </Button>
+            Podgląd strony głównej
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
         </div>
       </div>
 
       {/* Sections list with drag & drop */}
-      <div className="bg-white rounded-3xl p-6 shadow-sm">
-        <h2 className="text-2xl font-bold text-black mb-6">Sekcje strony głównej</h2>
+      <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
+        <div className="px-8 py-6 border-b border-black/10">
+          <h2 className="text-2xl font-bold text-black mb-1">Sekcje strony głównej</h2>
+          <p className="text-sm text-black/60">Przeciągnij sekcje aby zmienić kolejność</p>
+        </div>
+        <div className="p-6">
 
         {sections.length === 0 ? (
           <div className="text-center py-12 text-black/60">
@@ -244,7 +271,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={sections.map((s) => s.id)}
+              items={sectionIds}
               strategy={verticalListSortingStrategy}
             >
               <div className="space-y-4">
@@ -252,15 +279,16 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
                   <SortableSection
                     key={section.id}
                     section={section}
-                    onEdit={() => setEditingSection(section)}
-                    onToggleActive={() => handleToggleActive(section)}
-                    onDelete={() => handleDelete(section.id)}
+                    onEdit={setEditingSection}
+                    onToggleActive={handleToggleActive}
+                    onDelete={handleDelete}
                   />
                 ))}
               </div>
             </SortableContext>
           </DndContext>
         )}
+        </div>
       </div>
 
       {/* Add section dialog */}

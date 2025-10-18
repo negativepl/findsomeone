@@ -1,14 +1,16 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { createClient } from '@/lib/supabase/client'
 
 interface Category {
@@ -48,37 +50,35 @@ export function DeleteCategoryDialog({ category, onClose, onDeleted }: DeleteCat
   }
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[450px] rounded-3xl">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-red-600">Usuń kategorię</DialogTitle>
-          <DialogDescription>
+    <AlertDialog open={true} onOpenChange={onClose}>
+      <AlertDialogContent className="rounded-3xl border-0 shadow-xl sm:max-w-md">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-2xl">
+            Usuń kategorię
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-base">
             Czy na pewno chcesz usunąć kategorię <strong>{category.name}</strong>?
-            <br />
-            <br />
-            Ta operacja jest nieodwracalna. Ogłoszenia przypisane do tej kategorii nie będą miały przypisanej kategorii.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="flex gap-3 pt-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
-            disabled={loading}
-          >
-            Anuluj
-          </Button>
-          <Button
-            type="button"
-            onClick={handleDelete}
-            className="flex-1 rounded-full bg-red-600 hover:bg-red-700 text-white border-0"
-            disabled={loading}
-          >
-            {loading ? 'Usuwanie...' : 'Usuń kategorię'}
-          </Button>
+            {' '}Ta operacja jest nieodwracalna. Ogłoszenia przypisane do tej kategorii nie będą miały przypisanej kategorii.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <div className="mt-8 pt-6 border-t-2 border-black/5">
+          <AlertDialogFooter className="gap-2 sm:gap-2">
+            <AlertDialogCancel
+              className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+              disabled={loading}
+            >
+              Anuluj
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="rounded-full bg-red-600 hover:bg-red-700 text-white border-0"
+              disabled={loading}
+            >
+              {loading ? 'Usuwanie...' : 'Usuń kategorię'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
         </div>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 }

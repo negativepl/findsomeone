@@ -33,7 +33,7 @@ export default async function AdminSynonymsPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Zarządzanie synoniami</h1>
+        <h1 className="text-3xl font-bold text-black mb-2">Zarządzanie synonimami</h1>
         <p className="text-black/60">
           Dodawaj synonimy do terminów i kategorii aby poprawić wyszukiwanie
         </p>

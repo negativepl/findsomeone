@@ -165,7 +165,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
             <p className="text-black/60 mb-6">
               Kliknij serduszko na ogłoszeniu, aby dodać je do ulubionych
             </p>
-            <Link href="/dashboard">
+            <Link href="/posts">
               <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
                 Przeglądaj ogłoszenia
               </Button>

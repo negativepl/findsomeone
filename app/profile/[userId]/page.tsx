@@ -70,10 +70,10 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
     .limit(6)
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
       <NavbarWithHide user={user} pageTitle={profile.full_name || 'Profil'} />
 
-      <div className="container mx-auto px-6 py-12">
+      <div className="container mx-auto px-6 py-12 flex-1">
         {/* Profile Header */}
         <Card className="border-0 rounded-3xl bg-white shadow-sm mb-8 overflow-hidden">
           {/* Banner */}

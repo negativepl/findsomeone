@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Flag, Check, X, Eye, Trash2, AlertTriangle, Ban, Loader2 } from 'lucide-react'
@@ -38,6 +39,7 @@ const REASON_LABELS: Record<string, string> = {
 }
 
 export function ReportsList({ initialReports }: ReportsListProps) {
+  const router = useRouter()
   const [reports, setReports] = useState<Report[]>(initialReports)
   const [selectedReport, setSelectedReport] = useState<Report | null>(null)
   const [messageContent, setMessageContent] = useState<string | null>(null)
@@ -98,6 +100,9 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       setReports(reports.filter(r => r.report_id !== selectedReport.report_id))
       setSelectedReport(null)
       setActionNotes('')
+
+      // Refresh server data to ensure consistency
+      router.refresh()
     } catch (error: any) {
       alert('Błąd: ' + error.message)
     } finally {
@@ -116,6 +121,9 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       setReports(reports.filter(r => r.report_id !== selectedReport.report_id))
       setSelectedReport(null)
       setActionNotes('')
+
+      // Refresh server data to ensure consistency
+      router.refresh()
     } catch (error: any) {
       alert('Błąd: ' + error.message)
     } finally {
@@ -139,6 +147,9 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       setSelectedReport(null)
       setActionNotes('')
       setShowConfirmDelete(false)
+
+      // Refresh server data to ensure consistency
+      router.refresh()
     } catch (error: any) {
       alert('Błąd: ' + error.message)
     } finally {
@@ -169,6 +180,9 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       setActionNotes('')
       setBanReason('')
       setShowConfirmBan(false)
+
+      // Refresh server data to ensure consistency
+      router.refresh()
     } catch (error: any) {
       alert('Błąd: ' + error.message)
     } finally {
@@ -299,131 +313,114 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       {/* Details Panel */}
       <div className="lg:sticky lg:top-6 lg:self-start">
         {selectedReport ? (
-          <Card className="border-0 rounded-3xl bg-white p-6">
+          <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
             {/* Header */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
-                <Flag className="w-6 h-6 text-red-600" />
+            <div className="px-6 py-5 border-b border-black/10">
+              <div className="flex items-center justify-between gap-4 mb-2">
+                <h2 className="text-2xl font-bold text-black">Szczegóły zgłoszenia</h2>
+                <p className="text-sm font-medium text-black flex-shrink-0">
+                  {new Date(selectedReport.created_at).toLocaleString('pl-PL')}
+                </p>
               </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="text-xl font-bold text-black">
-                  Szczegóły zgłoszenia
-                </h2>
-              </div>
-            </div>
-
-            {/* ID */}
-            <div className="mb-6 pb-6 border-b border-black/10">
-              <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                <p className="text-xs font-semibold text-gray-700 mb-1.5">ID zgłoszenia</p>
-                <p className="text-xs font-mono text-gray-900 break-all leading-relaxed">
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-sm text-black/60">
+                  {REASON_LABELS[selectedReport.reason] || selectedReport.reason}
+                </p>
+                <p className="text-xs text-black/40 font-mono flex-shrink-0">
                   {selectedReport.report_id}
                 </p>
               </div>
             </div>
 
-            {/* Report Info */}
-            <div className="space-y-4 mb-6">
-              <div>
-                <label className="text-sm font-semibold text-black/70">Powód</label>
-                <p className="text-black mt-1">
-                  {REASON_LABELS[selectedReport.reason] || selectedReport.reason}
-                </p>
+            {/* Content */}
+            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+              {/* Message Content - Most Important */}
+              <div className="bg-red-50 border border-red-200 rounded-2xl p-4">
+                <label className="text-sm font-semibold text-red-900 mb-2 block">Zgłoszona wiadomość</label>
+                {isLoadingContent ? (
+                  <div className="flex items-center gap-2 py-2">
+                    <Loader2 className="w-4 h-4 animate-spin text-red-600" />
+                    <span className="text-sm text-red-700">Ładowanie...</span>
+                  </div>
+                ) : (
+                  <p className="text-red-900">{messageContent || 'Brak treści'}</p>
+                )}
               </div>
 
+              {/* People Involved */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="border border-black/10 rounded-xl p-3">
+                  <label className="text-xs font-semibold text-black/60 block mb-1">Nadawca</label>
+                  <p className="text-sm font-medium text-black">{selectedReport.sender_name}</p>
+                </div>
+                <div className="border border-black/10 rounded-xl p-3">
+                  <label className="text-xs font-semibold text-black/60 block mb-1">Odbiorca</label>
+                  <p className="text-sm font-medium text-black">{selectedReport.receiver_name}</p>
+                </div>
+                <div className="border border-black/10 rounded-xl p-3">
+                  <label className="text-xs font-semibold text-black/60 block mb-1">Zgłaszający</label>
+                  <p className="text-sm font-medium text-black">{selectedReport.reporter_name}</p>
+                </div>
+              </div>
+
+              {/* Description if exists */}
               {selectedReport.description && (
                 <div>
-                  <label className="text-sm font-semibold text-black/70">Opis</label>
-                  <p className="text-black mt-1">{selectedReport.description}</p>
+                  <label className="text-sm font-semibold text-black/70 block mb-2">Dodatkowy opis</label>
+                  <p className="text-sm text-black/80 border border-black/10 rounded-xl p-3">{selectedReport.description}</p>
                 </div>
               )}
 
+              {/* Notes */}
               <div>
-                <label className="text-sm font-semibold text-black/70">Treść wiadomości</label>
-                <div className="bg-black/5 rounded-2xl p-4 mt-1">
-                  {isLoadingContent ? (
-                    <div className="flex items-center justify-center gap-2 py-4">
-                      <Loader2 className="w-5 h-5 animate-spin text-black/60" />
-                      <span className="text-sm text-black/60">Ładowanie treści...</span>
-                    </div>
-                  ) : (
-                    <p className="text-black">{messageContent || 'Brak treści'}</p>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-semibold text-black/70">Nadawca</label>
-                <p className="text-black mt-1">{selectedReport.sender_name}</p>
-              </div>
-
-              <div>
-                <label className="text-sm font-semibold text-black/70">Odbiorca</label>
-                <p className="text-black mt-1">{selectedReport.receiver_name}</p>
-              </div>
-
-              <div>
-                <label className="text-sm font-semibold text-black/70">Zgłaszający</label>
-                <p className="text-black mt-1">{selectedReport.reporter_name}</p>
-              </div>
-
-              <div>
-                <label className="text-sm font-semibold text-black/70">Data zgłoszenia</label>
-                <p className="text-black mt-1">
-                  {new Date(selectedReport.created_at).toLocaleString('pl-PL')}
-                </p>
+                <label className="text-sm font-semibold text-black/70 block mb-2">Notatki (opcjonalnie)</label>
+                <textarea
+                  value={actionNotes}
+                  onChange={(e) => setActionNotes(e.target.value)}
+                  className="w-full px-4 py-3 rounded-2xl border border-black/10 focus:outline-none focus:ring-2 focus:ring-[#C44E35] resize-none"
+                  rows={3}
+                  placeholder="Dodaj notatki do zgłoszenia..."
+                  disabled={isProcessing}
+                />
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="space-y-3 pt-6 border-t border-black/10">
-              <label className="text-sm font-semibold text-black/70">Notatki (opcjonalnie)</label>
-              <textarea
-                value={actionNotes}
-                onChange={(e) => setActionNotes(e.target.value)}
-                className="w-full px-4 py-3 rounded-2xl border border-black/10 focus:outline-none focus:ring-2 focus:ring-[#C44E35] resize-none"
-                rows={3}
-                placeholder="Dodaj notatki do zgłoszenia..."
-                disabled={isProcessing}
-              />
-
-              <div className="grid grid-cols-2 gap-3">
+            {/* Footer with Actions */}
+            <div className="px-6 py-4 border-t border-black/10 bg-black/[0.02] space-y-2">
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   onClick={handleDismiss}
                   disabled={isProcessing}
-                  className="px-4 py-3 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="px-4 py-2.5 rounded-full bg-white border-2 border-black/10 hover:bg-black/5 text-black font-medium transition-colors disabled:opacity-50 text-sm"
                 >
-                  <X className="w-4 h-4" />
                   Odrzuć
                 </button>
-
                 <button
                   onClick={handleWarning}
                   disabled={isProcessing}
-                  className="px-4 py-3 rounded-full bg-yellow-100 hover:bg-yellow-200 text-yellow-700 font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="px-4 py-2.5 rounded-full bg-yellow-50 border-2 border-yellow-200 hover:bg-yellow-100 text-yellow-700 font-medium transition-colors disabled:opacity-50 text-sm"
                 >
-                  <AlertTriangle className="w-4 h-4" />
                   Ostrzeż
                 </button>
               </div>
 
-              <button
-                onClick={() => setShowConfirmDelete(true)}
-                disabled={isProcessing}
-                className="w-full px-4 py-3 rounded-full bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                <Trash2 className="w-4 h-4" />
-                Usuń wiadomość
-              </button>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setShowConfirmDelete(true)}
+                  disabled={isProcessing}
+                  className="px-4 py-2.5 rounded-full bg-red-600 hover:bg-red-700 text-white font-medium transition-colors disabled:opacity-50 text-sm"
+                >
+                  Usuń wiadomość
+                </button>
 
-              <button
-                onClick={() => setShowConfirmBan(true)}
-                disabled={isProcessing}
-                className="w-full px-4 py-3 rounded-full bg-black hover:bg-black/80 text-white font-semibold transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                <Ban className="w-4 h-4" />
-                Zbanuj użytkownika ({selectedReport?.sender_name})
-              </button>
+                <button
+                  onClick={() => setShowConfirmBan(true)}
+                  disabled={isProcessing}
+                  className="px-4 py-2.5 rounded-full bg-black hover:bg-black/90 text-white font-medium transition-colors disabled:opacity-50 text-sm"
+                >
+                  Zbanuj {selectedReport?.sender_name}
+                </button>
+              </div>
             </div>
 
             {/* Delete Confirmation Dialog */}
