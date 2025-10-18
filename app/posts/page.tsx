@@ -35,10 +35,10 @@ export async function generateMetadata({
     title = `Ogłoszenia w ${city} | FindSomeone`
     description = `Lokalne usługi i pomoc w ${city}. Zakupy, remont, sprzątanie i więcej. Połącz się z ludźmi w okolicy.`
   } else if (type === 'seeking') {
-    title = 'Szukam pomocy | Ogłoszenia FindSomeone`
+    title = 'Szukam pomocy | Ogłoszenia FindSomeone'
     description = 'Przeglądaj ogłoszenia osób szukających pomocy. Zakupy, remont, sprzątanie, opieka i inne usługi.'
   } else if (type === 'offering') {
-    title = 'Oferuję pomoc | Ogłoszenia FindSomeone`
+    title = 'Oferuję pomoc | Ogłoszenia FindSomeone'
     description = 'Przeglądaj ogłoszenia osób oferujących pomoc. Znajdź specjalistów w swojej okolicy.'
   } else if (search) {
     title = `Szukaj: "${search}" | FindSomeone`
