@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch'
 import { User } from '@supabase/supabase-js'
 import { toast } from 'sonner'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface Profile {
   id: string
@@ -22,6 +23,8 @@ interface Profile {
   city: string | null
   avatar_url: string | null
   banner_url: string | null
+  banner_position: number | null
+  banner_scale: number | null
   rating: number
   total_reviews: number
   verified: boolean
@@ -155,21 +158,24 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
       if (uploadError) throw uploadError
 
-      // Get public URL
+      // Get public URL with cache busting timestamp
       const { data: { publicUrl } } = supabase.storage
         .from('banners')
         .getPublicUrl(filePath)
 
-      // Update profile with new banner URL
+      // Add timestamp to bust cache
+      const cacheBustedUrl = `${publicUrl}?t=${Date.now()}`
+
+      // Update profile with new banner URL and reset position/scale to defaults
       const { error: updateError } = await supabase
         .from('profiles')
-        .update({ banner_url: publicUrl })
+        .update({ banner_url: cacheBustedUrl, banner_position: 50, banner_scale: 100 })
         .eq('id', initialUser.id)
 
       if (updateError) throw updateError
 
       // Update local state
-      setProfile({ ...profile, banner_url: publicUrl })
+      setProfile({ ...profile, banner_url: cacheBustedUrl, banner_position: 50, banner_scale: 100 })
       toast.success('Banner został zaktualizowany!')
     } catch (error) {
       console.error('Error uploading banner:', error)
@@ -445,12 +451,26 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               {/* Banner Preview */}
               <div className="mb-6">
                 {profile?.banner_url ? (
-                  <div className="relative w-full h-32 md:h-48 lg:h-56 rounded-2xl overflow-hidden group">
-                    <img
-                      src={profile.banner_url}
-                      alt="Profile banner"
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="relative w-full aspect-[3/1] rounded-2xl overflow-hidden group">
+                    <div
+                      style={{
+                        transform: `scale(${(profile.banner_scale || 100) / 100})`,
+                        transformOrigin: `center ${profile.banner_position || 50}%`,
+                        width: '100%',
+                        height: '100%',
+                        position: 'relative'
+                      }}
+                    >
+                      <Image
+                        src={profile.banner_url}
+                        alt="Profile banner"
+                        fill
+                        className="object-cover"
+                        style={{ objectPosition: `center ${profile.banner_position || 50}%` }}
+                        sizes="(max-width: 768px) 100vw, 66vw"
+                        quality={90}
+                      />
+                    </div>
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
                       <label htmlFor="banner-upload" className="cursor-pointer flex flex-col items-center">
                         <div className="bg-white rounded-full p-4 hover:bg-gray-100 transition-colors flex items-center justify-center">
@@ -473,9 +493,9 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 ) : (
                   <label
                     htmlFor="banner-upload"
-                    className="flex flex-col items-center justify-center w-full h-32 md:h-48 lg:h-56 border-2 border-dashed border-black/20 rounded-2xl cursor-pointer hover:border-black/40 hover:bg-black/5 transition-all"
+                    className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-black/20 rounded-2xl cursor-pointer hover:border-black/40 hover:bg-black/5 transition-all"
                   >
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4">
                       {uploadingBanner ? (
                         <svg className="animate-spin w-10 h-10 text-[#C44E35] mb-3" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -489,8 +509,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                           <p className="mb-2 text-sm text-black/70">
                             <span className="font-semibold">Kliknij aby dodać banner</span>
                           </p>
-                          <p className="text-xs text-black/50">PNG, JPG (max. 5MB)</p>
-                          <p className="text-xs text-black/50 mt-1">Zalecane: 1200x400px (lub 16:5 ratio)</p>
+                          <p className="text-xs text-black/50">1488×496px</p>
+                          <p className="text-xs text-black/50 mt-1">Max. 5MB</p>
                         </>
                       )}
                     </div>

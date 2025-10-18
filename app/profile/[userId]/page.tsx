@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { PhoneNumber } from '@/app/posts/[id]/PhoneNumber'
 import { UserPostsList } from './UserPostsList'
 import { VerifiedBadge } from './VerifiedBadge'
+import { BannerSection } from './BannerSection'
 
 export default async function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const supabase = await createClient()
@@ -78,13 +79,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
         <Card className="border-0 rounded-3xl bg-white shadow-sm mb-8 overflow-hidden">
           {/* Banner */}
           {profile.banner_url && (
-            <div className="w-full h-32 md:h-48 lg:h-56 relative">
-              <img
-                src={profile.banner_url}
-                alt="Profile banner"
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <BannerSection
+              bannerUrl={profile.banner_url}
+              initialPosition={profile.banner_position || 50}
+              initialScale={profile.banner_scale || 100}
+              userId={userId}
+              isOwnProfile={user?.id === userId}
+            />
           )}
           <CardContent className="p-4 md:p-8">
             <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center">
