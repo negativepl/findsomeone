@@ -11,6 +11,7 @@ import { PhoneNumber } from '@/app/posts/[id]/PhoneNumber'
 import { UserPostsList } from './UserPostsList'
 import { VerifiedBadge } from './VerifiedBadge'
 import { BannerSection } from './BannerSection'
+import { AI_BOT_USER_ID } from '@/lib/constants'
 
 export default async function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   const supabase = await createClient()
@@ -156,7 +157,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                           <PhoneNumber phone={profile.phone} postId={userId} disabled={user.id === userId} />
                         </div>
                       )}
-                      {profile.show_messages !== false && (
+                      {profile.show_messages !== false && userId !== AI_BOT_USER_ID && (
                         user.id === userId ? (
                           <Button
                             disabled

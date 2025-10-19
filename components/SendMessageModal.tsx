@@ -13,6 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { AI_BOT_USER_ID } from '@/lib/constants'
 
 interface SendMessageModalProps {
   postId: string
@@ -72,6 +73,13 @@ export function SendMessageModal({
       // Additional client-side check to prevent self-messaging
       if (user.id === receiverId) {
         setError('Nie możesz wysłać wiadomości do siebie')
+        setLoading(false)
+        return
+      }
+
+      // Prevent sending messages to AI bot
+      if (receiverId === AI_BOT_USER_ID) {
+        setError('Nie możesz wysłać wiadomości do tego użytkownika')
         setLoading(false)
         return
       }

@@ -28,14 +28,16 @@ export function BannerSection({ bannerUrl, initialPosition, initialScale, userId
   }
 
   return (
-    <div className="w-full aspect-[3/1] relative bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+    <div className="w-full relative bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden" style={{ aspectRatio: '3/1', minHeight: '200px' }}>
       <div
         style={{
           transform: mounted ? `scale(${scale / 100})` : 'scale(1)',
           transformOrigin: getObjectPosition(position),
           width: '100%',
           height: '100%',
-          position: 'relative',
+          position: 'absolute',
+          top: 0,
+          left: 0,
           transition: 'transform 0.2s ease-out'
         }}
       >
@@ -48,6 +50,7 @@ export function BannerSection({ bannerUrl, initialPosition, initialScale, userId
           sizes="100vw"
           quality={90}
           priority
+          unoptimized={process.env.NODE_ENV === 'development'}
         />
       </div>
 

@@ -21,6 +21,7 @@ import { PostDetailClientWrapper } from './PostDetailClient'
 import { MobileActionDock } from './MobileActionDock'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Metadata } from 'next'
+import { AI_BOT_USER_ID } from '@/lib/constants'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -567,8 +568,8 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   <div className="space-y-2 md:space-y-3">
                     {/* Desktop only: Show message button and phone */}
                     <div className="hidden md:block space-y-2 md:space-y-3">
-                      {/* Show message button only if user allows it */}
-                      {post.profiles?.show_messages !== false && (
+                      {/* Show message button only if user allows it and it's not AI bot */}
+                      {post.profiles?.show_messages !== false && post.user_id !== AI_BOT_USER_ID && (
                         <SendMessageModal
                           postId={post.id}
                           receiverId={post.user_id}

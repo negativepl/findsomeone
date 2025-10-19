@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Phone, MessageCircle } from 'lucide-react'
 import { SendMessageModal } from '@/components/SendMessageModal'
+import { AI_BOT_USER_ID } from '@/lib/constants'
 
 interface MobileActionDockProps {
   postId: string
@@ -112,7 +113,7 @@ export function MobileActionDock({
             )}
 
             {/* Message button */}
-            {showMessages && (
+            {showMessages && receiverId !== AI_BOT_USER_ID && (
               <div className="flex-1">
                 <SendMessageModal
                   postId={postId}

@@ -451,14 +451,16 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               {/* Banner Preview */}
               <div className="mb-6">
                 {profile?.banner_url ? (
-                  <div className="relative w-full aspect-[3/1] rounded-2xl overflow-hidden group">
+                  <div className="relative w-full rounded-2xl overflow-hidden group" style={{ aspectRatio: '3/1', minHeight: '200px' }}>
                     <div
                       style={{
                         transform: `scale(${(profile.banner_scale || 100) / 100})`,
                         transformOrigin: `center ${profile.banner_position || 50}%`,
                         width: '100%',
                         height: '100%',
-                        position: 'relative'
+                        position: 'absolute',
+                        top: 0,
+                        left: 0
                       }}
                     >
                       <Image
@@ -469,6 +471,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                         style={{ objectPosition: `center ${profile.banner_position || 50}%` }}
                         sizes="(max-width: 768px) 100vw, 66vw"
                         quality={90}
+                        unoptimized={process.env.NODE_ENV === 'development'}
                       />
                     </div>
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
