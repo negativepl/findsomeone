@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { VerifiedBadge } from '@/app/profile/[userId]/VerifiedBadge'
+import { UserBadge } from '@/components/ui/user-badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -28,6 +28,8 @@ interface Profile {
   rating: number
   total_reviews: number
   verified: boolean
+  is_company: boolean
+  is_ai_bot: boolean
   show_phone: boolean
   show_messages: boolean
   show_profile_link: boolean
@@ -44,6 +46,13 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [uploadingBanner, setUploadingBanner] = useState(false)
+
+  // Debug: sprawdź wartości plakietek
+  console.log('Profile badges:', {
+    verified: profile?.verified,
+    is_company: profile?.is_company,
+    is_ai_bot: profile?.is_ai_bot
+  })
 
   const [formData, setFormData] = useState({
     full_name: initialProfile.full_name || '',
@@ -273,8 +282,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     </div>
                   )}
 
-                  {/* Verified badge - top right of avatar */}
-                  {profile?.verified && <VerifiedBadge />}
+                  {/* Badges - stacked vertically on top right of avatar */}
+                  <div className="absolute -top-1 -right-1 flex flex-col gap-1 z-10">
+                    {profile?.verified && <UserBadge type="verified" />}
+                    {profile?.is_company && <UserBadge type="company" />}
+                    {profile?.is_ai_bot && <UserBadge type="ai_bot" />}
+                  </div>
 
                   {/* Upload button overlay */}
                   <label

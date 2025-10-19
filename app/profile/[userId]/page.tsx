@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { PhoneNumber } from '@/app/posts/[id]/PhoneNumber'
 import { UserPostsList } from './UserPostsList'
-import { VerifiedBadge } from './VerifiedBadge'
+import { UserBadge } from '@/components/ui/user-badge'
 import { BannerSection } from './BannerSection'
 import { AI_BOT_USER_ID } from '@/lib/constants'
 
@@ -108,8 +108,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                   </div>
                 )}
 
-                {/* Verified badge - top right of avatar */}
-                {profile.verified && <VerifiedBadge />}
+                {/* Badges - stacked vertically on top right of avatar */}
+                <div className="absolute -top-1 -right-1 flex flex-col gap-1 z-10">
+                  {profile.verified && <UserBadge type="verified" />}
+                  {profile.is_company && <UserBadge type="company" />}
+                  {profile.is_ai_bot && <UserBadge type="ai_bot" />}
+                </div>
               </div>
 
               {/* Profile Info */}

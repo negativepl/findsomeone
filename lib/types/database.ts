@@ -45,6 +45,8 @@ export interface Database {
           rating: number
           total_reviews: number
           verified: boolean
+          is_company: boolean
+          is_ai_bot: boolean
           created_at: string
           updated_at: string
         }
@@ -60,6 +62,8 @@ export interface Database {
           rating?: number
           total_reviews?: number
           verified?: boolean
+          is_company?: boolean
+          is_ai_bot?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -75,6 +79,8 @@ export interface Database {
           rating?: number
           total_reviews?: number
           verified?: boolean
+          is_company?: boolean
+          is_ai_bot?: boolean
           created_at?: string
           updated_at?: string
         }
