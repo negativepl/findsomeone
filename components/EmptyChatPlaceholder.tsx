@@ -1,8 +1,15 @@
 interface EmptyChatPlaceholderProps {
   userName?: string
+  onQuickMessageSelect?: (message: string) => void
 }
 
-export function EmptyChatPlaceholder({ userName }: EmptyChatPlaceholderProps) {
+export function EmptyChatPlaceholder({ userName, onQuickMessageSelect }: EmptyChatPlaceholderProps) {
+  const quickMessages = [
+    '👋 Cześć! Interesuje mnie Twoje ogłoszenie...',
+    '💬 Chciałbym dowiedzieć się więcej o...',
+    '📍 Czy ta usługa jest dostępna w mojej okolicy?'
+  ]
+
   return (
     <div className="flex flex-col items-center justify-center h-full py-20 px-4">
       <div className="w-20 h-20 rounded-full bg-[#C44E35]/10 flex items-center justify-center mb-6">
@@ -32,15 +39,15 @@ export function EmptyChatPlaceholder({ userName }: EmptyChatPlaceholderProps) {
       </p>
 
       <div className="mt-8 grid gap-3 w-full max-w-md">
-        <div className="bg-white border border-black/10 rounded-2xl p-4 hover:border-[#C44E35]/30 transition-colors cursor-pointer">
-          <p className="text-sm text-black/70">👋 Cześć! Interesuje mnie Twoje ogłoszenie...</p>
-        </div>
-        <div className="bg-white border border-black/10 rounded-2xl p-4 hover:border-[#C44E35]/30 transition-colors cursor-pointer">
-          <p className="text-sm text-black/70">💬 Chciałbym dowiedzieć się więcej o...</p>
-        </div>
-        <div className="bg-white border border-black/10 rounded-2xl p-4 hover:border-[#C44E35]/30 transition-colors cursor-pointer">
-          <p className="text-sm text-black/70">📍 Czy ta usługa jest dostępna w mojej okolicy?</p>
-        </div>
+        {quickMessages.map((message, index) => (
+          <button
+            key={index}
+            onClick={() => onQuickMessageSelect?.(message)}
+            className="bg-white border border-black/10 rounded-2xl p-4 hover:border-[#C44E35]/30 hover:bg-[#C44E35]/5 transition-all cursor-pointer text-left"
+          >
+            <p className="text-sm text-black/70">{message}</p>
+          </button>
+        ))}
       </div>
     </div>
   )

@@ -37,6 +37,7 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [isSending, setIsSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [currentMessage, setCurrentMessage] = useState('')
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
@@ -160,6 +161,11 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
     }
   }
 
+  const handleQuickMessageSelect = (message: string) => {
+    setCurrentMessage(message)
+    // Focus on input would be nice, but we'll let the user edit if needed
+  }
+
   const handleSendMessage = async (content: string) => {
     if (!content.trim() || isSending) return
 
@@ -227,6 +233,7 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
 
       if (data) {
         setMessages((prev) => [...prev, data as Message])
+        setCurrentMessage('')
         setError(null)
       }
     } catch (err: any) {
@@ -261,7 +268,10 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
               <div ref={messagesEndRef} />
             </div>
           ) : (
-            <EmptyChatPlaceholder userName={otherUser.full_name || undefined} />
+            <EmptyChatPlaceholder
+              userName={otherUser.full_name || undefined}
+              onQuickMessageSelect={handleQuickMessageSelect}
+            />
           )}
 
           {/* Typing Indicator */}
@@ -287,6 +297,8 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
               onTyping={handleTyping}
               disabled={isSending}
               placeholder={`Napisz do ${otherUser.full_name || 'użytkownika'}...`}
+              value={currentMessage}
+              onChange={setCurrentMessage}
             />
           </div>
         </div>

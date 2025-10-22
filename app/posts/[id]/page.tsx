@@ -20,6 +20,7 @@ import { ImageGallery } from './ImageGallery'
 import { PostDetailClientWrapper } from './PostDetailClient'
 import { MobileActionDock } from './MobileActionDock'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
+import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { Metadata } from 'next'
 import { AI_BOT_USER_ID } from '@/lib/constants'
 
@@ -310,6 +311,21 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
       <PostDetailClientWrapper postTitle={post.title}>
         {/* Main Content */}
         <main className="container mx-auto px-4 md:px-6 py-4 md:py-16 mb-[72px] md:mb-0">
+        {/* Breadcrumbs */}
+        <div className="hidden md:block">
+          <Breadcrumbs
+            items={[
+              { label: 'Strona główna', href: '/' },
+              { label: 'Ogłoszenia', href: '/posts' },
+              {
+                label: post.categories?.name || 'Kategoria',
+                href: post.categories?.slug ? `/posts?category=${post.categories.slug}` : undefined
+              },
+              { label: post.title }
+            ]}
+          />
+        </div>
+
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-8">
           {/* Left Column - Post Details */}
           <div className="lg:col-span-2 space-y-4 md:space-y-6">

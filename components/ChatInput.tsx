@@ -7,6 +7,8 @@ interface ChatInputProps {
   onTyping?: (isTyping: boolean) => void
   disabled?: boolean
   placeholder?: string
+  value?: string
+  onChange?: (value: string) => void
 }
 
 const MIN_MESSAGE_LENGTH = 10
@@ -16,10 +18,16 @@ export function ChatInput({
   onSend,
   onTyping,
   disabled = false,
-  placeholder = "Napisz wiadomość..."
+  placeholder = "Napisz wiadomość...",
+  value: externalValue,
+  onChange: externalOnChange
 }: ChatInputProps) {
-  const [message, setMessage] = useState('')
+  const [internalMessage, setInternalMessage] = useState('')
   const [error, setError] = useState<string | null>(null)
+
+  // Use external value if provided, otherwise use internal state
+  const message = externalValue !== undefined ? externalValue : internalMessage
+  const setMessage = externalOnChange !== undefined ? externalOnChange : setInternalMessage
 
   const handleChange = (value: string) => {
     setMessage(value)
@@ -51,7 +59,11 @@ export function ChatInput({
 
     if (!disabled) {
       onSend(trimmed)
-      setMessage('')
+
+      // Clear message - use internal state since external onChange will be called from parent
+      if (externalOnChange === undefined) {
+        setMessage('')
+      }
       setError(null)
 
       // Stop typing indicator

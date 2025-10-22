@@ -245,6 +245,24 @@ export default async function AdminPage() {
       <div>
         <h2 className="text-xl font-bold text-black mb-4">Zarządzanie</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link href="/admin/users">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Użytkownicy</h3>
+                    <p className="text-sm text-black/60">Weryfikacja i badges</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
           <Link href="/admin/categories">
             <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
               <CardContent className="py-6">

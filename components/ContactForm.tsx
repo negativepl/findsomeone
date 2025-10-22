@@ -1,6 +1,13 @@
 'use client'
 
 import { Card, CardContent } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -100,17 +107,26 @@ export function ContactForm({ userEmail }: ContactFormProps) {
               <label className="block text-sm font-medium text-black mb-2">
                 Kategoria *
               </label>
-              <select
+              <Select
                 name="category"
                 value={formData.category}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:outline-none transition-colors"
+                onValueChange={(value) => {
+                  setFormData(prev => ({
+                    ...prev,
+                    category: value
+                  }))
+                }}
                 disabled={loading}
                 required
               >
-                <option value="general">Kontakt ogólny</option>
-                <option value="support">Pomoc techniczna</option>
-              </select>
+                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-12">
+                  <SelectValue placeholder="Wybierz kategorię" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="general">Kontakt ogólny</SelectItem>
+                  <SelectItem value="support">Pomoc techniczna</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>

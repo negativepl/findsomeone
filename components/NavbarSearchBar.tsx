@@ -55,6 +55,7 @@ export function NavbarSearchBar() {
   const cityDropdownRef = useRef<HTMLDivElement>(null)
   const cityInputRef = useRef<HTMLInputElement>(null)
   const cityDebounceTimerRef = useRef<NodeJS.Timeout>()
+  const isUserTypingRef = useRef(false)
 
   // Sync with URL params (only on /posts page)
   useEffect(() => {
@@ -75,9 +76,12 @@ export function NavbarSearchBar() {
       }
     }
 
-    // Sync search query from URL if different
-    if (searchParam && searchParam !== searchQuery) {
+    // Sync search query from URL if different - but only when user is not actively typing
+    if (searchParam && searchParam !== searchQuery && !isUserTypingRef.current) {
       setSearchQuery(searchParam)
+    } else if (!searchParam && searchQuery && !isUserTypingRef.current) {
+      // Clear search query if URL param is removed and user is not typing
+      setSearchQuery('')
     }
   }, [searchParams, pathname, selectedCity, searchQuery])
 
@@ -127,8 +131,6 @@ export function NavbarSearchBar() {
     } catch (error) {
       console.error('Search error:', error)
       setResults({ suggestions: [], trending: [] })
-    } finally {
-      setIsLoading(false)
     }
   }, [])
 
@@ -149,18 +151,45 @@ export function NavbarSearchBar() {
 
   // Handle search input change
   const handleSearchChange = (value: string) => {
+    isUserTypingRef.current = true
     setSearchQuery(value)
-    setIsOpen(true)
+
+    // Only open if there's content
+    if (value.trim().length > 0) {
+      setIsOpen(true)
+    } else {
+      setIsOpen(false)
+    }
+
     setSelectedIndex(-1) // Reset selection on new input
 
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current)
     }
 
-    setIsLoading(true)
+    // Start search immediately without showing loading for fast typing
     debounceTimerRef.current = setTimeout(() => {
       performSearch(value)
-    }, 200) // Reduced from 300ms to 200ms
+      // User finished typing after debounce
+      isUserTypingRef.current = false
+    }, 150) // 150ms debounce - smooth typing
+  }
+
+  // Clear search query
+  const clearSearch = () => {
+    isUserTypingRef.current = false
+    setSearchQuery('')
+    setIsOpen(false)
+    setResults({ suggestions: [], trending: [] })
+    searchInputRef.current?.focus()
+
+    // Update URL if on /posts page
+    if (pathname === '/posts') {
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete('search')
+      const queryString = params.toString()
+      router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
+    }
   }
 
   // Handle city input change
@@ -303,17 +332,21 @@ export function NavbarSearchBar() {
   const getAllSuggestions = () => {
     if (!searchQuery) {
       // Include recent searches + trending for keyboard nav
-      return [...recentSearches, ...results.trending.map(item => item.text)]
+      return [...recentSearches, ...(results.trending || []).map(item => item.text)]
     }
-    return results.suggestions.map(item => item.text)
+    return (results.suggestions || []).map(item => item.text)
   }
 
   // Load initial trending when focusing empty input
   const handleSearchFocus = () => {
-    setIsOpen(true)
+    // Only open if there's text in the search field
+    if (searchQuery && searchQuery.trim().length > 0) {
+      setIsOpen(true)
+    }
+
     if (!searchQuery) {
       // Always show cached trending immediately if available
-      if (cachedTrending.length > 0 && results.trending.length === 0) {
+      if (cachedTrending.length > 0 && (results.trending?.length || 0) === 0) {
         setResults({ ...results, trending: cachedTrending })
       }
 
@@ -329,6 +362,7 @@ export function NavbarSearchBar() {
   // Handle form submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    isUserTypingRef.current = false
     setIsOpen(false)
 
     const params = new URLSearchParams()
@@ -345,6 +379,7 @@ export function NavbarSearchBar() {
 
   // Handle suggestion click (used in multiple places)
   const handleSuggestionClick = (text: string) => {
+    isUserTypingRef.current = false
     setSearchQuery(text)
     setIsOpen(false)
     saveRecentSearch(text)
@@ -429,17 +464,47 @@ export function NavbarSearchBar() {
     }
   }, [isOpen, selectedIndex, router, results])
 
-  // Get icon for suggestion type
-  const getSuggestionIcon = (type: string) => {
-    if (type === 'trending') {
+  // Format suggestion - simple, clean, like Google
+  const formatSuggestion = (text: string, type: string) => {
+    // Check if it's category format: "query w kategorii Category"
+    if (text.includes(' w kategorii ')) {
+      const [query, categoryPart] = text.split(' w kategorii ')
+
+      // Check if category has path (Parent > Child)
+      if (categoryPart.includes(' > ')) {
+        const [parent, child] = categoryPart.split(' > ')
+        return (
+          <span className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-sm text-black font-medium">{query}</span>
+            <span className="text-xs text-black/40">w kategorii</span>
+            <span className="text-xs text-black/50">{parent}</span>
+            <svg className="w-2.5 h-2.5 text-black/30 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+            <span className="text-sm text-black/70">{child}</span>
+          </span>
+        )
+      }
+
+      // Simple category (no parent)
       return (
-        <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-        </svg>
+        <span className="flex items-center gap-1.5 flex-wrap">
+          <span className="text-sm text-black font-medium">{query}</span>
+          <span className="text-xs text-black/40">w kategorii</span>
+          <span className="text-sm text-black/70">{categoryPart}</span>
+        </span>
       )
     }
+
+    // Regular suggestion (no category context)
+    return <span className="text-sm text-black font-normal truncate">{text}</span>
+  }
+
+  // Get icon for suggestion type - simple, uniform
+  const getSuggestionIcon = (type: string) => {
+    // All suggestions get the same search icon
     return (
-      <svg className="w-4 h-4 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
     )
@@ -447,56 +512,54 @@ export function NavbarSearchBar() {
 
   // Show dropdown when:
   // - Has suggestions/trending/recent searches
-  // - User is typing (to show loading or "no results")
-  // - Just focused input (to show empty state if nothing available)
+  // - User is typing
   const hasResults =
-    results.suggestions.length > 0 ||
-    results.trending.length > 0 ||
+    (results.suggestions?.length || 0) > 0 ||
+    (results.trending?.length || 0) > 0 ||
     results.queryCorrection ||
-    cachedTrending.length > 0 ||
-    recentSearches.length > 0 ||
-    (searchQuery && !isLoading) ||
-    (!searchQuery && isOpen) // Always show on focus, even if empty
+    (searchQuery && searchQuery.trim().length > 0) // Only show if typing
 
   return (
-    <div className="relative hidden md:flex flex-1 max-w-2xl gap-2 items-center">
-      <div ref={dropdownRef} className="relative flex-1">
-        <form onSubmit={handleSubmit} suppressHydrationWarning>
-          <div className="relative flex items-center bg-[#FAF8F3] rounded-full px-5 h-10 transition-colors">
-            <Search className="w-5 h-5 text-black/40 mr-3 flex-shrink-0" />
-            <input
-              ref={searchInputRef}
-              type="text"
-              placeholder="Szukaj ogłoszeń..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onFocus={handleSearchFocus}
-              className="flex-1 outline-none text-sm text-black placeholder:text-black/40 bg-transparent"
-              autoComplete="off"
-              suppressHydrationWarning
-            />
-            {isLoading && (
-              <div className="w-4 h-4 border-2 border-black/20 border-t-black/60 rounded-full animate-spin ml-2" />
-            )}
-          </div>
+    <div ref={dropdownRef} className="relative hidden md:flex flex-1 max-w-2xl gap-2 items-center">
+      <form onSubmit={handleSubmit} className="flex-1" suppressHydrationWarning>
+        <div className="relative flex items-center bg-[#FAF8F3] rounded-full px-5 h-10 transition-colors">
+          <Search className="w-5 h-5 text-black/40 mr-3 flex-shrink-0" />
+          <input
+            ref={searchInputRef}
+            type="text"
+            placeholder="Szukaj ogłoszeń..."
+            value={searchQuery}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={handleSearchFocus}
+            className="flex-1 outline-none text-sm text-black placeholder:text-black/40 bg-transparent"
+            autoComplete="off"
+            suppressHydrationWarning
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              {...(pathname === '/posts' && { 'data-navigate': 'true' })}
+              className="ml-2 p-1 hover:bg-black/5 rounded-full transition-colors flex-shrink-0"
+              aria-label="Wyczyść wyszukiwanie"
+            >
+              <svg className="w-4 h-4 text-black/40 hover:text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          )}
+        </div>
+      </form>
 
-        {/* Dropdown */}
-        {isOpen && (hasResults || isLoading) && (
-          <Card className="absolute top-full left-0 right-0 mt-2 border border-black/10 rounded-2xl bg-white shadow-lg max-h-[450px] z-50 flex flex-col overflow-hidden">
-            <div className="overflow-y-auto p-3">
-              {/* Loading state */}
-              {isLoading && searchQuery && (
-                <div className="flex items-center justify-center py-8">
-                  <div className="flex flex-col items-center gap-3">
-                    <div className="w-8 h-8 border-2 border-black/20 border-t-black/60 rounded-full animate-spin" />
-                    <p className="text-sm text-black/60">Szukam...</p>
-                  </div>
-                </div>
-              )}
-
-              {/* Results - show only when not loading */}
-              {!isLoading && (
-                <>
+      {/* Dropdown with animation - now spans full container width including location button */}
+      {isOpen && hasResults && (
+        <Card
+          className="absolute top-full left-0 mt-2 border border-black/10 rounded-2xl bg-white shadow-lg max-h-[450px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+          style={{ width: '100%', right: 0 }}
+        >
+          <div className="overflow-y-auto p-3">
+              {/* Results - always show (no loading state) */}
+              <>
               {/* Recent searches - show when no query */}
               {recentSearches.length > 0 && !searchQuery && (
                 <div className="mb-3">
@@ -543,6 +606,7 @@ export function NavbarSearchBar() {
                   <button
                     type="button"
                     onClick={() => {
+                      isUserTypingRef.current = false
                       setSearchQuery(results.queryCorrection!.corrected)
                       setIsOpen(false)
                       router.push(`/posts?search=${encodeURIComponent(results.queryCorrection!.corrected)}`)
@@ -556,7 +620,7 @@ export function NavbarSearchBar() {
               )}
 
               {/* Empty state - show when no recent, no trending, no query */}
-              {!searchQuery && recentSearches.length === 0 && results.trending.length === 0 && (
+              {!searchQuery && recentSearches.length === 0 && (results.trending?.length || 0) === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 px-4">
                   <div className="w-16 h-16 rounded-full bg-black/5 flex items-center justify-center mb-4">
                     <svg className="w-8 h-8 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -571,7 +635,7 @@ export function NavbarSearchBar() {
               )}
 
               {/* Trending - show when no query */}
-              {results.trending.length > 0 && !searchQuery && (
+              {(results.trending?.length || 0) > 0 && !searchQuery && (
                 <div className="mb-2">
                   <div className="px-3 py-2">
                     <p className="text-xs font-bold text-black/60 uppercase tracking-wide">Trendy</p>
@@ -605,7 +669,7 @@ export function NavbarSearchBar() {
               )}
 
               {/* No results message */}
-              {searchQuery && results.suggestions.length === 0 && !isLoading && (
+              {searchQuery && (results.suggestions?.length || 0) === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 px-4">
                   <div className="w-16 h-16 rounded-full bg-black/5 flex items-center justify-center mb-4">
                     <svg className="w-8 h-8 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -623,7 +687,7 @@ export function NavbarSearchBar() {
               )}
 
               {/* Search suggestions - show when typing */}
-              {results.suggestions.length > 0 && searchQuery && (
+              {(results.suggestions?.length || 0) > 0 && searchQuery && (
                 <div>
                   <div className="px-3 py-2">
                     <p className="text-xs font-bold text-black/60 uppercase tracking-wide">Sugestie</p>
@@ -638,15 +702,17 @@ export function NavbarSearchBar() {
                         onClick={() => handleSuggestionClick(suggestion.text)}
                         data-navigate="true"
                         className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 group ${
-                          isSelected ? 'bg-[#C44E35]/10' : 'hover:bg-black/5'
+                          isSelected ? 'bg-black/10' : 'hover:bg-black/5'
                         }`}
                       >
                         <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">
                           {getSuggestionIcon(suggestion.type)}
                         </div>
-                        <span className="text-sm text-black font-medium flex-1 truncate">{suggestion.text}</span>
+                        <span className="flex-1 min-w-0">
+                          {formatSuggestion(suggestion.text, suggestion.type)}
+                        </span>
                         {suggestion.type === 'trending' && (
-                          <Badge className="rounded-full bg-[#C44E35] text-white text-xs px-2.5 py-0.5 border-0">
+                          <Badge className="rounded-full bg-[#C44E35] text-white text-xs px-2.5 py-0.5 border-0 flex-shrink-0">
                             Trend
                           </Badge>
                         )}
@@ -657,24 +723,22 @@ export function NavbarSearchBar() {
                 </div>
               )}
               </>
-              )}
             </div>
 
-            {/* See all results button */}
-            {searchQuery && searchQuery.length >= 2 && !isLoading && (
-              <div className="p-3 bg-white border-t border-black/5">
-                <button
-                  type="submit"
-                  className="w-full text-center py-2.5 text-sm font-semibold text-[#C44E35] hover:bg-[#C44E35]/5 rounded-lg transition-all"
-                >
-                  Zobacz wszystkie wyniki
-                </button>
-              </div>
-            )}
-          </Card>
-        )}
-      </form>
-      </div>
+          {/* See all results button */}
+          {searchQuery && searchQuery.length >= 2 && (
+            <div className="p-3 bg-white border-t border-black/5">
+              <button
+                type="button"
+                onClick={handleSubmit}
+                className="w-full text-center py-2.5 text-sm font-semibold text-[#C44E35] hover:bg-[#C44E35]/5 rounded-lg transition-all"
+              >
+                Zobacz wszystkie wyniki
+              </button>
+            </div>
+          )}
+        </Card>
+      )}
 
       {/* Location Selector */}
       <div ref={cityDropdownRef} className="relative">
@@ -683,6 +747,7 @@ export function NavbarSearchBar() {
           onClick={() => {
             setIsCityDropdownOpen(!isCityDropdownOpen)
             if (!isCityDropdownOpen) handleCityFocus()
+            setIsOpen(false) // Close autocomplete when opening location
           }}
           className="flex items-center gap-2 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-full px-4 h-10 transition-colors w-full"
         >
@@ -717,7 +782,7 @@ export function NavbarSearchBar() {
 
         {/* City Dropdown */}
         {isCityDropdownOpen && (
-          <Card className="absolute top-full right-0 mt-2 w-80 border border-black/10 rounded-2xl bg-white shadow-lg max-h-[400px] z-50 flex flex-col overflow-hidden">
+          <Card className="absolute top-full right-0 mt-2 w-80 border border-black/10 rounded-2xl bg-white shadow-lg max-h-[400px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
             <div className="p-3 border-b border-black/5">
               <div className="relative flex items-center bg-[#FAF8F3] rounded-lg px-3 py-2">
                 <Search className="w-4 h-4 text-black/40 mr-2 flex-shrink-0" />

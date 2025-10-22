@@ -1,6 +1,14 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 import { rateLimit, getClientIp, RATE_LIMITS } from '@/lib/rate-limit'
+import {
+  getCachedAutocomplete,
+  setCachedAutocomplete,
+  getCachedTrending,
+  setCachedTrending,
+  getCachedPopular,
+  setCachedPopular,
+} from '@/lib/search-cache'
 
 // Popular search phrases (would be from analytics in production)
 const POPULAR_SEARCHES = [
@@ -60,54 +68,61 @@ export async function GET(request: NextRequest) {
 
   // If no query, return popular searches, trending, and smart suggestions
   if (!query || query.length === 0) {
-    // Get REAL popular searches from database
-    const { data: popularSearches } = await supabase
-      .rpc('get_popular_searches', { days_back: 7, result_limit: 8 })
+    // OPTIMIZED: Use unified autocomplete function
+    const { data: unifiedData } = await supabase
+      .rpc('get_unified_autocomplete', {
+        search_query: '',
+        user_id: user?.id || null,
+        include_smart: !!user
+      })
 
-    // Get trending searches (growing in popularity)
-    const { data: trendingSearches } = await supabase
-      .rpc('get_trending_searches', { result_limit: 5 })
+    if (unifiedData) {
+      // Parse the JSON response
+      const parsed = unifiedData as any
 
-    // Get smart suggestions for logged-in users
-    let smartSuggestions: any[] = []
-    if (user) {
-      const { data: suggestions } = await supabase
-        .rpc('get_smart_suggestions', {
-          target_user_id: user.id,
-          limit_count: 5,
-        })
-        .limit(5)
-
-      smartSuggestions = (suggestions || []).map((item: any) => ({
-        text: item.suggestion_text,
-        type: 'smart' as const,
-        score: item.relevance_score,
+      // Format and add types
+      const popular = (parsed.popular || []).map((item: any) => ({
+        text: item.text,
+        type: 'popular' as const,
       }))
+
+      const trending = (parsed.trending || []).map((item: any) => ({
+        text: item.text,
+        type: 'trending' as const,
+      }))
+
+      const smart = (parsed.smart || []).map((item: any) => ({
+        text: item.text,
+        type: 'smart' as const,
+        score: item.score,
+      }))
+
+      // Fallback to hardcoded if no data yet
+      const finalPopular = popular.length > 0 ? popular : POPULAR_SEARCHES.slice(0, 8).map(text => ({
+        text,
+        type: 'popular' as const,
+      }))
+
+      return NextResponse.json(
+        {
+          trending,
+          popular: finalPopular,
+          smart,
+          categories: [],
+          suggestions: [],
+        },
+        {
+          headers: rateLimitResult.headers,
+        }
+      )
     }
 
-    // Format popular searches
-    const popular = (popularSearches || []).map((item: any) => ({
-      text: item.query,
-      type: 'popular' as const,
-    }))
-
-    // Format trending searches
-    const trending = (trendingSearches || []).map((item: any) => ({
-      text: item.query,
-      type: 'trending' as const,
-    }))
-
-    // Fallback to hardcoded if no data yet
-    const finalPopular = popular.length > 0 ? popular : POPULAR_SEARCHES.slice(0, 8).map(text => ({
-      text,
-      type: 'popular' as const,
-    }))
-
+    // Fallback if unified function fails
     return NextResponse.json(
       {
-        trending,
-        popular: finalPopular,
-        smart: smartSuggestions,
+        trending: [],
+        popular: POPULAR_SEARCHES.slice(0, 8).map(text => ({ text, type: 'popular' as const })),
+        smart: [],
         categories: [],
         suggestions: [],
       },
@@ -117,8 +132,9 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  // If query is less than 2 chars, don't search
-  if (query.length < 2) {
+  // Allow searches from 1 character onwards for better UX
+  // (Database function handles minimum length internally)
+  if (query.length < 1) {
     return NextResponse.json({
       trending: [],
       popular: [],
@@ -132,93 +148,113 @@ export async function GET(request: NextRequest) {
   // Can be re-enabled later as separate async endpoint
   const queryCorrection = null
 
-  const lowerQuery = query.toLowerCase()
+  // CACHE CHECK: Try to get cached results first
+  const cachedResults = await getCachedAutocomplete(query, null)
 
-  // 1. Get REAL autocomplete suggestions from actual post content
-  const { data: autocompleteSuggestions } = await supabase
-    .rpc('get_autocomplete_suggestions', {
-      search_prefix: query,
-      limit_count: 8
+  if (cachedResults) {
+    console.log('[Cache HIT] Returning cached results for:', query)
+    return NextResponse.json(
+      {
+        ...cachedResults,
+        cached: true,
+      },
+      {
+        headers: rateLimitResult.headers,
+      }
+    )
+  }
+
+  // CACHE MISS: Fetch from database
+  console.log('[Cache MISS] Fetching from database for:', query)
+
+  // OPTIMIZED: Use unified autocomplete function (1 query instead of multiple)
+  const { data: unifiedData, error: autocompleteError } = await supabase
+    .rpc('get_unified_autocomplete', {
+      search_query: query,
+      user_id: null, // Don't include smart suggestions during typing (performance)
+      include_smart: false
     })
 
-  // 2. Search categories with unaccent (handles "prad" → "prąd" → "Elektryka")
-  const { data: categories } = await supabase
-    .rpc('search_categories_unaccent', {
-      search_term: query,
-      limit_count: 5
-    })
+  // Debug logging
+  if (autocompleteError) {
+    console.error('Unified autocomplete error:', autocompleteError)
+  }
 
-  // Build intelligent suggestions from REAL data
+  if (!unifiedData) {
+    // Fallback if function fails
+    return NextResponse.json(
+      {
+        trending: [],
+        popular: [],
+        categories: [],
+        suggestions: [],
+        queryCorrection: null,
+      },
+      {
+        headers: rateLimitResult.headers,
+      }
+    )
+  }
+
+  // Parse unified response
+  const parsed = unifiedData as any
+  const categories = parsed.categories || []
+  const autocompleteSuggestions = parsed.suggestions || []
+
+  console.log('Autocomplete results for:', query, '→', autocompleteSuggestions.length, 'suggestions')
+
+  // Build intelligent suggestions from unified data
   const suggestions: Array<{
     text: string
     type: 'category' | 'combo' | 'pattern' | 'popular' | 'trending' | 'post'
   }> = []
 
-  // 1. Add autocomplete from actual post TITLES only (MOST IMPORTANT!)
-  // The database function now only returns words from titles, not descriptions
+  // 1. FIRST: Add categories (HIGHEST PRIORITY - always at top)
+  if (categories && categories.length > 0) {
+    categories.forEach((cat: any) => {
+      suggestions.push({
+        text: cat.name,
+        type: 'category',
+      })
+    })
+  }
+
+  // 2. THEN: Add autocomplete suggestions with smart type detection
   if (autocompleteSuggestions && autocompleteSuggestions.length > 0) {
     autocompleteSuggestions.forEach((item: any) => {
-      if (item.suggestion && item.suggestion.length >= 3) {
+      const suggestionText = item.text || item.suggestion
+      if (suggestionText && suggestionText.length >= 2) {
+        // Skip if already added as category
+        if (categories?.some((cat: any) => cat.name.toLowerCase() === suggestionText.toLowerCase())) {
+          return
+        }
+
+        // Detect suggestion type from content
+        let type: 'category' | 'combo' | 'pattern' | 'post' = 'post'
+
+        // Check if it's formatted as "query w kategorii Category"
+        if (suggestionText.includes(' w kategorii ')) {
+          type = 'category'
+        }
+        // Check if it's a category path (includes "Parent > Child")
+        else if (suggestionText.includes(' > ')) {
+          type = 'category'
+        }
+        // Check if it contains pattern words
+        else if (SEARCH_PATTERNS.some(pattern => suggestionText.toLowerCase().includes(pattern))) {
+          type = 'pattern'
+        }
+        // Check if it looks like category + city or common phrase
+        else if (suggestionText.split(' ').length >= 2 && suggestionText.split(' ').length <= 3) {
+          type = 'combo'
+        }
+
         suggestions.push({
-          text: item.suggestion,
-          type: 'post',
+          text: suggestionText,
+          type,
         })
       }
     })
-  }
-
-  // 2. Add matching categories
-  categories?.forEach(cat => {
-    suggestions.push({
-      text: cat.name,
-      type: 'category',
-    })
-  })
-
-  // 3. Add category-based suggestions if we have categories
-  if (categories && categories.length > 0 && query.length >= 3) {
-    const mainCat = categories[0].name
-    const topCities = ['Warszawa', 'Kraków', 'Wrocław']
-
-    // Add category + city combos
-    topCities.slice(0, 2).forEach(city => {
-      suggestions.push({
-        text: `${mainCat} ${city}`,
-        type: 'combo',
-      })
-    })
-
-    // Add search patterns
-    SEARCH_PATTERNS.slice(0, 2).forEach(pattern => {
-      suggestions.push({
-        text: `${pattern} ${mainCat.toLowerCase()}`,
-        type: 'pattern',
-      })
-    })
-  }
-
-  // 4. Add matching popular searches from database
-  const { data: dbPopularSearches } = await supabase
-    .from('search_queries')
-    .select('query')
-    .ilike('query', `%${query}%`)
-    .limit(5)
-
-  if (dbPopularSearches && dbPopularSearches.length > 0) {
-    const queryCounts: Record<string, number> = {}
-    dbPopularSearches.forEach((item: any) => {
-      queryCounts[item.query] = (queryCounts[item.query] || 0) + 1
-    })
-
-    Object.entries(queryCounts)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 3)
-      .forEach(([searchQuery]) => {
-        suggestions.push({
-          text: searchQuery,
-          type: 'popular',
-        })
-      })
   }
 
   // Remove duplicates and limit results
@@ -229,16 +265,21 @@ export async function GET(request: NextRequest) {
     .filter(s => s.text.length >= 3 && s.text.length <= 100)
     .slice(0, 12)
 
-  return NextResponse.json(
-    {
-      trending: [],
-      popular: [],
-      categories: categories || [],
-      suggestions: uniqueSuggestions,
-      queryCorrection,
-    },
-    {
-      headers: rateLimitResult.headers,
-    }
-  )
+  // Build response object
+  const response = {
+    trending: [],
+    popular: [],
+    categories: categories || [],
+    suggestions: uniqueSuggestions,
+    queryCorrection,
+  }
+
+  // CACHE SET: Store results in cache for next request (fire and forget)
+  setCachedAutocomplete(query, response, null).catch(err => {
+    console.error('[Cache] Failed to cache results:', err)
+  })
+
+  return NextResponse.json(response, {
+    headers: rateLimitResult.headers,
+  })
 }

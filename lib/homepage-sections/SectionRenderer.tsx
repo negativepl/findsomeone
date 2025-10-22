@@ -68,37 +68,56 @@ export function SectionRenderer({ section, userFavorites, userId }: SectionRende
     sectionStyles.position = 'relative'
   }
 
-  // Wrapper for applying styles and visibility
+  // Wrapper for applying styles and visibility - always render consistently to avoid hydration issues
   const WrapperComponent = ({ children }: { children: React.ReactNode }) => {
-    const hasStyles = visibilityClasses.length > 0 || Object.keys(sectionStyles).length > 0 || containerClass
+    // Normalize values to prevent hydration mismatches from null/undefined/empty string differences
+    const hasBackgroundImage = Boolean(section.background_image_url)
+    const hasTextColor = Boolean(section.text_color)
+    const hasContainerClass = Boolean(containerClass)
+    const hasVisibilityClasses = visibilityClasses.length > 0
+    const hasSectionStyles = Object.keys(sectionStyles).length > 0
 
-    if (hasStyles) {
-      const sectionId = `section-${section.id}`
-      const classNames = [containerClass, ...visibilityClasses].filter(Boolean).join(' ')
+    // Determine if we need any wrapper at all
+    const hasAnyCustomization =
+      hasVisibilityClasses ||
+      hasSectionStyles ||
+      hasContainerClass ||
+      hasBackgroundImage ||
+      hasTextColor
 
-      return (
-        <div
-          id={sectionId}
-          className={classNames}
-          style={sectionStyles}
-        >
-          {/* Background overlay for background images */}
-          {section.background_image_url && section.background_overlay_opacity !== undefined && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundColor: section.background_overlay_color || '#000000',
-                opacity: section.background_overlay_opacity / 100,
-                pointerEvents: 'none',
-                zIndex: 0
-              }}
-            />
-          )}
+    // If no customization, return children directly
+    if (!hasAnyCustomization) {
+      return <>{children}</>
+    }
 
-          {/* Content wrapper with relative positioning for overlays */}
+    const sectionId = `section-${section.id}`
+    const classNames = [containerClass, ...visibilityClasses].filter(Boolean).join(' ')
+    const hasBackgroundOverlay = hasBackgroundImage && typeof section.background_overlay_opacity === 'number'
+
+    return (
+      <div
+        id={sectionId}
+        className={classNames || undefined}
+        style={hasSectionStyles ? sectionStyles : undefined}
+      >
+        {/* Background overlay for background images */}
+        {hasBackgroundOverlay && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              backgroundColor: section.background_overlay_color || '#000000',
+              opacity: (section.background_overlay_opacity ?? 0) / 100,
+              pointerEvents: 'none',
+              zIndex: 0
+            }}
+          />
+        )}
+
+        {/* Always wrap content if we have background image or text color to maintain consistent structure */}
+        {(hasBackgroundImage || hasTextColor) ? (
           <div style={{ position: 'relative', zIndex: 1 }}>
-            {section.text_color && (
+            {hasTextColor && (
               <style dangerouslySetInnerHTML={{
                 __html: `
                   #${sectionId} h1,
@@ -119,10 +138,11 @@ export function SectionRenderer({ section, userFavorites, userId }: SectionRende
             )}
             {children}
           </div>
-        </div>
-      )
-    }
-    return <>{children}</>
+        ) : (
+          children
+        )}
+      </div>
+    )
   }
 
   // Map section types to components

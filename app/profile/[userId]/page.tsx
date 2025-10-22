@@ -170,7 +170,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                             Wyślij wiadomość
                           </Button>
                         ) : (
-                          <Link href={`/dashboard/messages?user=${userId}`} className="w-full sm:w-auto">
+                          <Link href={`/dashboard/messages/${userId}`} className="w-full sm:w-auto">
                             <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-10 py-0 px-4 text-sm leading-normal min-h-0">
                               Wyślij wiadomość
                             </Button>

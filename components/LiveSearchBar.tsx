@@ -81,7 +81,11 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
   // Debounced search
   const performSearch = useCallback(async (query: string) => {
     try {
+      setIsLoading(true)
       const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`)
+      if (!response.ok) {
+        throw new Error('Search failed')
+      }
       const data = await response.json()
       setResults(data)
     } catch (error) {
@@ -169,17 +173,26 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
   // Handle search input change
   const handleSearchChange = (value: string) => {
     setSearchQuery(value)
-    setIsOpen(true)
     setSelectedIndex(-1)
 
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current)
     }
 
+    // If empty, close dropdown and show default content
+    if (!value || value.trim().length === 0) {
+      setIsOpen(false)
+      setIsLoading(false)
+      setResults({ categories: [], suggestions: [], trending: [], popular: [] })
+      return
+    }
+
+    // Show results for any input
+    setIsOpen(true)
     setIsLoading(true)
     debounceTimerRef.current = setTimeout(() => {
       performSearch(value)
-    }, 300)
+    }, 150) // Faster response - 150ms instead of 300ms
   }
 
   // Load initial popular/trending when focusing empty input
@@ -293,12 +306,30 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
     )
   }
 
+  // Format category path (e.g., "Zwierzęta > Psy" → with breadcrumb style)
+  const formatCategoryPath = (text: string) => {
+    if (!text.includes(' > ')) {
+      return <span className="text-sm text-black font-medium">{text}</span>
+    }
+
+    const parts = text.split(' > ')
+    return (
+      <span className="text-sm text-black font-medium flex items-center gap-1">
+        <span className="text-black/50">{parts[0]}</span>
+        <svg className="w-3 h-3 text-black/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+        <span>{parts[1]}</span>
+      </span>
+    )
+  }
+
   // Get icon for suggestion type
   const getSuggestionIcon = (type: string) => {
     switch (type) {
       case 'category':
         return (
-          <svg className="w-4 h-4 text-black/60 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-[#C44E35] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
         )
@@ -587,8 +618,58 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                   </div>
                 )}
 
+                {/* Loading state - show when searching */}
+                {isLoading && searchQuery && (
+                  <div className="mb-4 px-2">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center animate-pulse">
+                        <svg className="w-3.5 h-3.5 text-black/40 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                      </div>
+                      <p className="text-xs text-black/50">Wyszukiwanie...</p>
+                    </div>
+                    {/* Loading skeleton */}
+                    <div className="space-y-2 animate-pulse">
+                      {[1, 2, 3].map((i) => (
+                        <div key={i} className="flex items-center gap-3 p-3">
+                          <div className="w-8 h-8 rounded-lg bg-black/5"></div>
+                          <div className="flex-1 space-y-2">
+                            <div className="h-3 bg-black/5 rounded w-3/4"></div>
+                            <div className="h-2 bg-black/5 rounded w-1/2"></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* No results state - show when searched but no results */}
+                {!isLoading && searchQuery && results.suggestions.length === 0 && results.categories.length === 0 && (
+                  <div className="mb-4 px-4 py-12 text-center">
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-black/5 flex items-center justify-center">
+                      <svg className="w-8 h-8 text-black/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-base font-semibold text-black/80 mb-2">Brak wyników</h3>
+                    <p className="text-sm text-black/50 mb-4">
+                      Nie znaleziono wyników dla "{searchQuery}"
+                    </p>
+                    <div className="text-xs text-black/40 space-y-1">
+                      <p>Spróbuj:</p>
+                      <ul className="list-disc list-inside">
+                        <li>Użyć innych słów kluczowych</li>
+                        <li>Sprawdzić pisownię</li>
+                        <li>Użyć bardziej ogólnych fraz</li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
+
                 {/* Search suggestions - show when typing */}
-                {results.suggestions.length > 0 && searchQuery && (
+                {!isLoading && results.suggestions.length > 0 && searchQuery && (
                   <div className="mb-4">
                     <div className="flex items-center gap-2 mb-3 px-2">
                       <div className="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center">
@@ -616,17 +697,33 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             router.push(`/posts?${params}`)
                           }}
                           data-navigate="true"
-                          className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
+                          className={`w-full text-left px-3 py-3 rounded-xl transition-all flex items-center gap-3 group ${
+                            suggestion.type === 'category'
+                              ? 'hover:bg-[#C44E35]/5 border border-[#C44E35]/10'
+                              : 'hover:bg-black/5'
+                          }`}
                         >
-                          <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
+                            suggestion.type === 'category'
+                              ? 'bg-[#C44E35]/10 group-hover:bg-[#C44E35]/20'
+                              : 'bg-black/5 group-hover:bg-black/10'
+                          }`}>
                             {getSuggestionIcon(suggestion.type)}
                           </div>
-                          <span className="text-sm text-black font-medium flex-1">
-                            {highlightText(suggestion.text, searchQuery)}
+                          <span className="flex-1">
+                            {suggestion.type === 'category'
+                              ? formatCategoryPath(suggestion.text)
+                              : <span className="text-sm text-black font-medium">{highlightText(suggestion.text, searchQuery)}</span>
+                            }
                           </span>
                           {suggestion.type === 'trending' && (
                             <Badge className="rounded-full bg-[#C44E35] text-white text-xs px-2.5 py-0.5 border-0">
                               Trend
+                            </Badge>
+                          )}
+                          {suggestion.type === 'category' && (
+                            <Badge className="rounded-full bg-[#C44E35]/10 text-[#C44E35] text-xs px-2.5 py-0.5 border-0">
+                              Kategoria
                             </Badge>
                           )}
                           <svg className="w-4 h-4 text-black/30 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
