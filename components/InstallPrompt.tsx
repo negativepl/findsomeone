@@ -57,6 +57,7 @@ export function InstallPrompt() {
 
   const handleDismiss = () => {
     setShowPrompt(false)
+    setDeferredPrompt(null)
     localStorage.setItem('pwa-install-dismissed', JSON.stringify({
       timestamp: Date.now(),
       dismissed: true
