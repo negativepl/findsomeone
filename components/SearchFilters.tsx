@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { CategoryIcon } from '@/lib/category-icons'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { ChevronDown, X, Filter } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -23,9 +23,12 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mobileViewingCategory, setMobileViewingCategory] = useState<string | null>(null)
+  const [dropdownPosition, setDropdownPosition] = useState<{ [key: string]: { position: 'top' | 'bottom', maxHeight?: number } }>({})
+  const categoryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const currentCategory = searchParams.get('category') || ''
   const currentType = searchParams.get('type') || ''
@@ -50,20 +53,101 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     }
   }, [isMobileMenuOpen])
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current)
+      }
+    }
+  }, [])
+
   // Organize categories into parent-child structure
   const mainCategories = categories?.filter(cat => !cat.parent_id) || []
   const getSubcategories = (parentId: string) => {
     return categories?.filter(cat => cat.parent_id === parentId) || []
   }
 
-  const toggleCategory = (categoryId: string) => {
-    const newExpanded = new Set(expandedCategories)
-    if (newExpanded.has(categoryId)) {
-      newExpanded.delete(categoryId)
-    } else {
-      newExpanded.add(categoryId)
+  const handleCategoryHover = (categoryId: string) => {
+    // Cancel any pending close
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+      closeTimeoutRef.current = null
     }
-    setExpandedCategories(newExpanded)
+
+    // Immediately set as expanded
+    setExpandedCategory(categoryId)
+
+    // Calculate position synchronously
+    const element = categoryRefs.current[categoryId]
+    if (!element) return
+
+    const rect = element.getBoundingClientRect()
+    const subcategories = getSubcategories(categoryId)
+
+    // Calculate available space
+    const spaceBelow = window.innerHeight - rect.top - 20 // 20px margin from bottom
+    const spaceAbove = rect.bottom - 20 // 20px margin from top
+
+    // Estimate ideal dropdown height (each item ~44px + padding)
+    const idealDropdownHeight = subcategories.length * 44 + 24 // 24px for padding
+
+    // Determine best position and calculate max height
+    let position: 'top' | 'bottom' = 'bottom'
+    let maxHeight: number | undefined
+
+    if (spaceBelow >= idealDropdownHeight) {
+      // Enough space below, use bottom position
+      position = 'bottom'
+      maxHeight = undefined // No constraint needed
+    } else if (spaceAbove >= idealDropdownHeight) {
+      // Enough space above, use top position
+      position = 'top'
+      maxHeight = undefined // No constraint needed
+    } else {
+      // Not enough space in either direction, use the side with more space
+      if (spaceBelow > spaceAbove) {
+        position = 'bottom'
+        maxHeight = spaceBelow - 20 // Leave some margin
+      } else {
+        position = 'top'
+        maxHeight = spaceAbove - 20 // Leave some margin
+      }
+    }
+
+    // Update position and max height
+    setDropdownPosition(prev => ({ ...prev, [categoryId]: { position, maxHeight } }))
+  }
+
+  const handleCategoryLeave = () => {
+    // Delay closing to allow moving to next category
+    closeTimeoutRef.current = setTimeout(() => {
+      setExpandedCategory(null)
+    }, 100)
+  }
+
+  const getDropdownStyle = (categoryId: string) => {
+    const element = categoryRefs.current[categoryId]
+    if (!element) return {}
+
+    const rect = element.getBoundingClientRect()
+    const positionData = dropdownPosition[categoryId] || { position: 'bottom' }
+    const { position, maxHeight } = positionData
+
+    const style: React.CSSProperties = {
+      position: 'fixed' as const,
+      left: `${rect.right + 8}px`,
+      [position === 'top' ? 'bottom' : 'top']: position === 'top'
+        ? `${window.innerHeight - rect.bottom}px`
+        : `${rect.top}px`,
+      zIndex: 50
+    }
+
+    if (maxHeight) {
+      style.maxHeight = `${maxHeight}px`
+    }
+
+    return style
   }
 
   const updateFilter = (key: string, value: string) => {
@@ -210,11 +294,10 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   }
 
   const DesktopMenuContent = () => (
-    <div className="space-y-3">
-
+    <>
         {/* Category Filter */}
         {categories && categories.length > 0 && (
-          <div>
+          <>
             {/* All categories badge */}
             <button
               onClick={() => updateFilter('category', '')}
@@ -228,12 +311,12 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
               <span className="font-medium">Wszystkie kategorie</span>
             </button>
 
-            {/* Main categories with subcategories */}
+            {/* Main categories with subcategories - scrollable */}
             <div className="space-y-2">
               {mainCategories.map((mainCategory) => {
                 const subcategories = getSubcategories(mainCategory.id)
                 const hasSubcategories = subcategories.length > 0
-                const isExpanded = expandedCategories.has(mainCategory.id)
+                const isExpanded = expandedCategory === mainCategory.id
                 const isMainSelected = currentCategory.toLowerCase() === mainCategory.name.toLowerCase()
                 const hasSelectedSubcategory = subcategories.some(
                   sub => currentCategory.toLowerCase() === sub.name.toLowerCase()
@@ -242,14 +325,19 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                 return (
                   <div
                     key={mainCategory.id}
+                    ref={(el) => { categoryRefs.current[mainCategory.id] = el }}
                     className="relative"
-                    onMouseLeave={() => setExpandedCategories(new Set())}
+                    onMouseLeave={handleCategoryLeave}
                   >
                     {/* Main category button */}
                     <div className="border border-black/10 rounded-2xl overflow-visible bg-white">
                       <button
                         onClick={() => updateFilter('category', mainCategory.name.toLowerCase())}
-                        onMouseEnter={() => hasSubcategories && setExpandedCategories(new Set([mainCategory.id]))}
+                        onMouseEnter={() => {
+                          if (hasSubcategories) {
+                            handleCategoryHover(mainCategory.id)
+                          }
+                        }}
                         data-navigate="true"
                         className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors relative ${
                           isMainSelected
@@ -274,15 +362,33 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                       </button>
                     </div>
 
-                    {/* Dropdown menu for subcategories - appears on the right */}
+                    {/* Dropdown menu for subcategories - appears on the right using fixed positioning */}
                     {hasSubcategories && isExpanded && (
                       <div
-                        className="absolute left-full top-0 z-50 min-w-[250px]"
+                        style={getDropdownStyle(mainCategory.id)}
+                        className="min-w-[250px]"
+                        onMouseEnter={() => {
+                          // Cancel close timeout when hovering dropdown
+                          if (closeTimeoutRef.current) {
+                            clearTimeout(closeTimeoutRef.current)
+                            closeTimeoutRef.current = null
+                          }
+                        }}
+                        onMouseLeave={handleCategoryLeave}
                       >
-                        {/* Invisible bridge between category and dropdown */}
-                        <div className="absolute right-full top-0 bottom-0 w-2" />
+                        {/* Invisible bridge to connect category button with dropdown */}
+                        <div
+                          className="absolute right-full top-0 bottom-0"
+                          style={{ width: '8px' }}
+                        />
 
-                        <div className="ml-2 bg-white border border-black/10 rounded-2xl shadow-xl p-2 space-y-1">
+                        <div
+                          className="bg-white border border-black/10 rounded-2xl shadow-xl p-2 space-y-1 overflow-y-auto max-h-full"
+                          style={{
+                            scrollbarWidth: 'thin',
+                            scrollbarColor: 'rgba(0,0,0,0.1) transparent'
+                          }}
+                        >
                           {subcategories.map((subcategory) => {
                             const isSubSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
 
@@ -308,9 +414,9 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                 )
               })}
             </div>
-          </div>
+          </>
         )}
-      </div>
+      </>
   )
 
   return (
@@ -367,10 +473,10 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
         </div>
       </div>
 
-      {/* Desktop: Regular sidebar */}
-      <div className="hidden lg:block space-y-4">
+      {/* Desktop: Sticky sidebar with scroll */}
+      <div className="hidden lg:block sticky top-4 space-y-4 max-h-[calc(100vh-32px)]">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-shrink-0">
           <h3 className="text-lg font-bold text-black">Kategorie</h3>
           {hasActiveFilters && (
             <button
@@ -383,7 +489,19 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           )}
         </div>
 
-        <DesktopMenuContent />
+        {/* Scrollable content area */}
+        <div
+          className="overflow-y-auto pr-2 flex-1"
+          style={{
+            maxHeight: 'calc(100vh - 120px)',
+            scrollbarWidth: 'thin',
+            scrollbarColor: 'rgba(0,0,0,0.1) transparent',
+            paddingBottom: '32px'
+          }}
+          onScroll={() => setExpandedCategory(null)}
+        >
+          <DesktopMenuContent />
+        </div>
       </div>
     </>
   )
