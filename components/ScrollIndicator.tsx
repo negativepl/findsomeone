@@ -140,39 +140,46 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
 
   return (
     <div className="flex justify-center mt-6">
-      {/* Track container wrapper with larger hit area */}
+      {/* Track container - shows total length */}
       <div
-        className="relative cursor-pointer select-none"
+        ref={trackRef}
+        className="relative bg-black/10 rounded-full cursor-pointer select-none"
         style={{
           width: `${trackWidth}px`,
-          padding: '12px 0', // Larger vertical hit area
+          height: isDragging ? '8px' : '4px',
+          transition: 'height 200ms ease-out'
         }}
         onMouseDown={handleDragStart}
         onTouchStart={handleDragStart}
       >
-        {/* Visible track - shows total length */}
+        {/* Expanded hit area using ::before pseudo-element */}
+        <style jsx>{`
+          div {
+            position: relative;
+          }
+          div::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            bottom: -12px;
+            left: 0;
+            right: 0;
+            cursor: pointer;
+          }
+        `}</style>
+
+        {/* Active indicator - slides smoothly inside track */}
         <div
-          ref={trackRef}
-          className="relative bg-black/10 rounded-full pointer-events-none"
+          className="absolute top-0 h-full rounded-full pointer-events-none"
           style={{
-            width: `${trackWidth}px`,
-            height: isDragging ? '8px' : '4px',
-            transition: 'height 200ms ease-out'
+            left: `${scrollProgress}%`,
+            width: `${indicatorWidth}px`,
+            background: '#C44E35',
+            transform: 'translateX(-50%)',
+            boxShadow: isDragging ? '0 0 0 4px rgba(196, 78, 53, 0.2)' : 'none',
+            transition: 'box-shadow 200ms ease-out'
           }}
-        >
-          {/* Active indicator - slides smoothly inside track */}
-          <div
-            className="absolute top-0 h-full rounded-full"
-            style={{
-              left: `${scrollProgress}%`,
-              width: `${indicatorWidth}px`,
-              background: '#C44E35',
-              transform: 'translateX(-50%)',
-              boxShadow: isDragging ? '0 0 0 4px rgba(196, 78, 53, 0.2)' : 'none',
-              transition: 'box-shadow 200ms ease-out'
-            }}
-          />
-        </div>
+        />
       </div>
     </div>
   )
