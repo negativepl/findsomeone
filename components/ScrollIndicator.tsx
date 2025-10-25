@@ -75,12 +75,18 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
   }, [containerId])
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault() // Prevent default touch behavior
     setIsDragging(true)
     handleDrag(e)
   }
 
   const handleDrag = (e: React.MouseEvent | React.TouchEvent) => {
     if (!trackRef.current) return
+
+    // Prevent scrolling on touch devices
+    if ('touches' in e) {
+      e.preventDefault()
+    }
 
     const track = trackRef.current
     const rect = track.getBoundingClientRect()
@@ -104,11 +110,14 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
     if (!isDragging) return
 
     const handleMouseMove = (e: MouseEvent) => handleDrag(e as any)
-    const handleTouchMove = (e: TouchEvent) => handleDrag(e as any)
+    const handleTouchMove = (e: TouchEvent) => {
+      e.preventDefault() // Prevent scrolling while dragging
+      handleDrag(e as any)
+    }
     const handleUp = () => handleDragEnd()
 
     window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('touchmove', handleTouchMove)
+    window.addEventListener('touchmove', handleTouchMove, { passive: false })
     window.addEventListener('mouseup', handleUp)
     window.addEventListener('touchend', handleUp)
 
@@ -131,30 +140,39 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
 
   return (
     <div className="flex justify-center mt-6">
-      {/* Track container - shows total length */}
+      {/* Track container wrapper with larger hit area */}
       <div
-        ref={trackRef}
-        className="relative bg-black/10 rounded-full cursor-pointer select-none"
+        className="relative cursor-pointer select-none"
         style={{
           width: `${trackWidth}px`,
-          height: isDragging ? '8px' : '4px',
-          transition: 'height 200ms ease-out'
+          padding: '12px 0', // Larger vertical hit area
         }}
         onMouseDown={handleDragStart}
         onTouchStart={handleDragStart}
       >
-        {/* Active indicator - slides smoothly inside track */}
+        {/* Visible track - shows total length */}
         <div
-          className="absolute top-0 h-full rounded-full"
+          ref={trackRef}
+          className="relative bg-black/10 rounded-full pointer-events-none"
           style={{
-            left: `${scrollProgress}%`,
-            width: `${indicatorWidth}px`,
-            background: '#C44E35',
-            transform: 'translateX(-50%)',
-            boxShadow: isDragging ? '0 0 0 4px rgba(196, 78, 53, 0.2)' : 'none',
-            transition: 'box-shadow 200ms ease-out'
+            width: `${trackWidth}px`,
+            height: isDragging ? '8px' : '4px',
+            transition: 'height 200ms ease-out'
           }}
-        />
+        >
+          {/* Active indicator - slides smoothly inside track */}
+          <div
+            className="absolute top-0 h-full rounded-full"
+            style={{
+              left: `${scrollProgress}%`,
+              width: `${indicatorWidth}px`,
+              background: '#C44E35',
+              transform: 'translateX(-50%)',
+              boxShadow: isDragging ? '0 0 0 4px rgba(196, 78, 53, 0.2)' : 'none',
+              transition: 'box-shadow 200ms ease-out'
+            }}
+          />
+        </div>
       </div>
     </div>
   )
