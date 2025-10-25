@@ -95,6 +95,8 @@ export interface CityBasedConfig {
 export interface PopularCategoriesConfig {
   limit?: number
   layout?: 'grid' | 'carousel'
+  layout_mobile?: 'grid' | 'carousel'
+  layout_desktop?: 'grid' | 'carousel'
 }
 
 export interface RecentlyViewedConfig {
@@ -449,7 +451,8 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
     icon: 'grid',
     defaultConfig: {
       limit: 8,
-      layout: 'grid'
+      layout_mobile: 'carousel',
+      layout_desktop: 'grid'
     },
     configSchema: [
       {
@@ -459,14 +462,26 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
         default: 8
       },
       {
-        name: 'layout',
-        label: 'Układ',
+        name: 'layout_mobile',
+        label: 'Układ na mobile',
         type: 'select',
         options: [
           { value: 'grid', label: 'Siatka' },
           { value: 'carousel', label: 'Karuzela' }
         ],
-        default: 'grid'
+        default: 'carousel',
+        description: 'Układ wyświetlania na urządzeniach mobilnych'
+      },
+      {
+        name: 'layout_desktop',
+        label: 'Układ na desktop',
+        type: 'select',
+        options: [
+          { value: 'grid', label: 'Siatka' },
+          { value: 'carousel', label: 'Karuzela' }
+        ],
+        default: 'grid',
+        description: 'Układ wyświetlania na komputerach'
       }
     ]
   },

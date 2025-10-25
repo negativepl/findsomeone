@@ -63,7 +63,7 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
                   : 'bg-black text-white border-0'
               }`}
             >
-              {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
+              {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
             </Badge>
             {post.categories && (
               <Badge variant="outline" className="rounded-full border-black/10 text-black/60 text-xs">

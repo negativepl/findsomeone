@@ -21,7 +21,7 @@ export function Footer() {
               <LogoWithText />
             </Link>
             <p className="text-sm text-black/60 mt-4 leading-relaxed">
-              Znajdź pomoc w okolicy lub pomóż innym. Wszystko w jednym miejscu.
+              Platforma do wymiany przysług, wynajmu rzeczy i świadczenia lokalnych usług. Znajdź to, czego potrzebujesz w swojej okolicy lub pomóż swoim sąsiadom.
             </p>
           </div>
 

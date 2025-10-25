@@ -1,4 +1,4 @@
-# FindSomeone - Platforma lokalnych ogłoszeń usługowych
+# FindSomeone - Local Services Marketplace Platform
 
 <div align="center">
 
@@ -7,34 +7,39 @@
 ![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 ![OpenAI](https://img.shields.io/badge/OpenAI-AI-412991?style=for-the-badge&logo=openai&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT--NC-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Non--Commercial-orange?style=for-the-badge)
 
-[🌐 Live Demo](https://findsomeone.app) • [📖 Documentation](#-szczegóły-ai-features) • [🚀 Getting Started](#setup)
+[🌐 Live Demo](https://findsomeone.app) • [📖 Documentation](#-ai-features-details) • [📜 License](#-license--usage)
 
 </div>
 
 ---
 
-Nowoczesna aplikacja webowa do publikowania i przeglądania lokalnych ogłoszeń usługowych. Użytkownicy mogą szukać specjalistów (hydraulik, elektryk, etc.) lub oferować swoje usługi. Projekt wyposażony w zaawansowane funkcje AI, system moderacji, oraz panel administracyjny.
+> **📢 Important**: This code is **free for non-commercial use** - you can modify and run it for personal/educational purposes.
+> Commercial use requires a separate license. See [License & Usage](#-license--usage) for details.
 
-## 🌟 Kluczowe cechy
+A modern web application for publishing and browsing local service listings. Users can search for specialists (plumbers, electricians, etc.) or offer their services. The project features advanced AI capabilities, moderation system, and admin panel.
+
+## 🌟 Key Features
 
 ### 🧠 AI-First Architecture
-- **Semantyczne wyszukiwanie** z OpenAI embeddings + pgvector
-- **Hybrid search** (60% semantic + 40% full-text) z typo-tolerance
-- **Smart suggestions** oparte na zachowaniu użytkowników
-- **AI-generated synonyms** dla lepszej wyszukiwarki
+- **Semantic search** with OpenAI embeddings + pgvector
+- **Hybrid search** (60% semantic + 40% full-text) with typo-tolerance
+- **Smart suggestions** based on user behavior
+- **AI-generated synonyms** for better search results
 
 ### ⚡ Real-time & Performance
-- **Live messaging** z Supabase Realtime
+- **Live messaging** with Supabase Realtime
 - **Presence indicators** (online/offline status)
-- **Optimistic updates** dla lepszego UX
-- **Rate limiting** i zabezpieczenia przed abuse
+- **Optimistic updates** for better UX
+- **Rate limiting** and abuse protection
 
 ### 🛡️ Enterprise-grade Security
-- **Row Level Security (RLS)** dla każdej tabeli
-- **Admin audit logs** z tracking wszystkich akcji
-- **Content moderation** z AI validation
-- **Encrypted storage** dla wrażliwych danych
+- **Row Level Security (RLS)** for all tables
+- **Admin audit logs** tracking all actions
+- **Content moderation** with AI validation
+- **Encrypted storage** for sensitive data
 
 ### 🎨 Modern UX
 - **Framer Motion** animations
@@ -42,26 +47,26 @@ Nowoczesna aplikacja webowa do publikowania i przeglądania lokalnych ogłoszeń
 - **Gesture-based** mobile dock
 - **Accessibility** (a11y) compliant
 
-## 🎬 Demo & Screenshots
+## 🎬 Demo & Key Features
 
-> **Uwaga**: Aplikacja jest w pełni funkcjonalna i gotowa do użycia. Poniżej najważniejsze funkcje:
+> **Note**: The application is fully functional and production-ready.
 
-### Główne funkcje
-- 🔍 **AI-powered Search** - Semantyczne wyszukiwanie z wykorzystaniem OpenAI
-- 💬 **Realtime Chat** - Wiadomości na żywo z presence indicators
-- ⭐ **System ocen** - Opinie i rating użytkowników
-- 🛡️ **Panel admina** - Kompleksowa moderacja i zarządzanie
-- 📱 **Fully Responsive** - Perfekcyjne działanie na mobile i desktop
-- 🎨 **Modern UI** - Piękne animacje i przejścia (Framer Motion)
+### Main Features
+- 🔍 **AI-powered Search** - Semantic search using OpenAI embeddings
+- 💬 **Realtime Chat** - Live messaging with presence indicators
+- ⭐ **Rating System** - User reviews and ratings
+- 🛡️ **Admin Panel** - Comprehensive moderation and management
+- 📱 **Fully Responsive** - Perfect on mobile and desktop
+- 🎨 **Modern UI** - Beautiful animations and transitions (Framer Motion)
 
-### Kluczowe endpointy
-- [`/`](https://findsomeone.app) - Landing page z hero section
-- [`/dashboard`](https://findsomeone.app/dashboard) - Lista ogłoszeń z live search
-- [`/dashboard/posts/new`](https://findsomeone.app/dashboard/posts/new) - Tworzenie ogłoszenia
-- [`/dashboard/messages`](https://findsomeone.app/dashboard/messages) - System wiadomości
-- [`/dashboard/favorites`](https://findsomeone.app/dashboard/favorites) - Ulubione ogłoszenia
-- [`/dashboard/profile`](https://findsomeone.app/dashboard/profile) - Profil użytkownika
-- [`/admin`](https://findsomeone.app/admin) - Panel administratora (wymagane uprawnienia)
+### Key Routes
+- [`/`](https://findsomeone.app) - Landing page with hero section
+- [`/dashboard`](https://findsomeone.app/dashboard) - Post listings with live search
+- [`/dashboard/posts/new`](https://findsomeone.app/dashboard/posts/new) - Create a post
+- [`/dashboard/messages`](https://findsomeone.app/dashboard/messages) - Messaging system
+- [`/dashboard/favorites`](https://findsomeone.app/dashboard/favorites) - Favorite posts
+- [`/dashboard/profile`](https://findsomeone.app/dashboard/profile) - User profile
+- [`/admin`](https://findsomeone.app/admin) - Admin panel (requires permissions)
 
 ## 🚀 Tech Stack
 
@@ -69,456 +74,421 @@ Nowoczesna aplikacja webowa do publikowania i przeglądania lokalnych ogłoszeń
 - **Backend**: Supabase (PostgreSQL, Auth, Realtime, Storage)
 - **AI/ML**: OpenAI (GPT-5 nano, text-embedding-3-small), pgvector
 - **Email**: Resend
-- **Walidacja**: Zod, React Hook Form
+- **Validation**: Zod, React Hook Form
 - **UI Components**: Framer Motion, Radix UI, Sonner (toasts)
 - **Security**: Row Level Security (RLS), Rate Limiting
 
-## ✨ Funkcjonalności
+## ✨ Features
 
-### 🎯 Podstawowe funkcje
-- ✅ **Autentykacja i autoryzacja**
-  - Email/password oraz Google OAuth
-  - Row Level Security (RLS) w bazie danych
-  - Middleware dla ochrony tras
-  - Profile użytkowników z awatarami
+### 🎯 Core Features
+- ✅ **Authentication & Authorization**
+  - Email/password and Google OAuth
+  - Row Level Security (RLS) in database
+  - Middleware for route protection
+  - User profiles with avatars
 
-- ✅ **Ogłoszenia**
-  - Tworzenie ogłoszeń (szukam/oferuję)
-  - System kategorii z ikonami
-  - Edycja i usuwanie własnych ogłoszeń
-  - Upload wielu zdjęć (Supabase Storage)
-  - Budżet (min/max, typ: godzinowa/stała/negocjacja)
-  - Lokalizacja (miasto, dzielnica)
-  - Licznik wyświetleń
-  - Widok szczegółów ogłoszenia
+- ✅ **Posts**
+  - Create posts (seeking/offering)
+  - Category system with icons
+  - Edit and delete own posts
+  - Multi-image upload (Supabase Storage)
+  - Budget (min/max, type: hourly/fixed/negotiable)
+  - Location (city, district)
+  - View counter
+  - Post detail view
 
-- ✅ **Dashboard użytkownika**
-  - Przeglądanie ogłoszeń z filtrowaniem
-  - Moje ogłoszenia (aktywne/nieaktywne/archiwalne)
-  - Ulubione ogłoszenia
-  - System wiadomości prywatnych
-  - Edycja profilu i ustawienia
+- ✅ **User Dashboard**
+  - Browse posts with filtering
+  - My posts (active/inactive/archived)
+  - Favorite posts
+  - Private messaging system
+  - Profile editing and settings
 
 ### 🤖 AI-powered Features
-- ✅ **Semantyczne wyszukiwanie**
-  - OpenAI text-embedding-3-small (1536 dims)
-  - pgvector extension z HNSW indexem
+- ✅ **Semantic Search**
+  - OpenAI text-embedding-3-small (1536 dimensions)
+  - pgvector extension with HNSW index
   - Hybrid search (60% semantic + 40% full-text)
-  - Typo-tolerancja przez trigrams
+  - Typo-tolerance via trigrams
 
 - ✅ **Smart Suggestions**
-  - Personalizowane sugestie na podstawie historii
-  - Analiza preferencji użytkownika
-  - Trending queries w ulubionych kategoriach
+  - Personalized suggestions based on history
+  - User preference analysis
+  - Trending queries in favorite categories
 
-- ✅ **AI Generator synonimów**
-  - GPT-5 nano dla wyszukiwarki
-  - 3 tryby: Trending, Popular, Custom
-  - Review & approve system w panelu admin
+- ✅ **AI Synonym Generator**
+  - GPT-5 nano for search enhancement
+  - 3 modes: Trending, Popular, Custom
+  - Review & approve system in admin panel
 
 - ✅ **Search Analytics**
   - Trending queries
-  - Search history (ostatnie 90 dni)
+  - Search history (last 90 days)
   - Rate limiting (10 req/10s per IP)
 
-### 💬 System komunikacji
-- ✅ **Wiadomości prywatne**
-  - Chat między użytkownikami
+### 💬 Communication System
+- ✅ **Private Messages**
+  - Chat between users
   - Realtime updates (Supabase Realtime)
   - Presence indicators (online/offline)
-  - Licznik nieprzeczytanych wiadomości
-  - Grupowanie konwersacji
-  - Zgłaszanie wiadomości
+  - Unread message counter
+  - Conversation grouping
+  - Message reporting
 
-### ⭐ System ocen i opinii
+### ⭐ Rating & Review System
 - ✅ **Reviews**
-  - Oceny 1-5 gwiazdek
-  - Komentarze tekstowe
-  - Agregowane statystyki (średnia ocena, liczba opinii)
-  - Wyświetlanie w profilu użytkownika
+  - 1-5 star ratings
+  - Text comments
+  - Aggregated statistics (average rating, review count)
+  - Display in user profile
   - Prevent duplicate reviews
 
-### 🛡️ Panel Administracyjny
-- ✅ **Moderacja ogłoszeń**
-  - AI validation przy tworzeniu postów
+### 🛡️ Admin Panel
+- ✅ **Post Moderation**
+  - AI validation on post creation
   - Status workflow (pending/checking/flagged/approved/rejected)
   - Bulk actions
-  - Filtrowanie i paginacja
+  - Filtering and pagination
   - Audit trail
 
-- ✅ **Moderacja wiadomości**
-  - Przegląd zgłoszonych wiadomości
-  - Akceptacja/odrzucanie zgłoszeń
-  - Ban użytkowników
+- ✅ **Message Moderation**
+  - Review reported messages
+  - Accept/reject reports
+  - Ban users
 
-- ✅ **Zarządzanie kategoriami**
-  - CRUD operacje
-  - System ikon (Lucide Icons)
-  - Slugs i sortowanie
+- ✅ **Category Management**
+  - CRUD operations
+  - Icon system (Lucide Icons)
+  - Slugs and sorting
 
-- ✅ **Zarządzanie użytkownikami**
-  - Lista zbanowanych użytkowników
-  - Banowanie/odbanowywanie
-  - Przyczyna bana
+- ✅ **User Management**
+  - Banned users list
+  - Ban/unban functionality
+  - Ban reason tracking
 
 - ✅ **AI Settings**
-  - Zarządzanie embeddingami
-  - Regeneracja wektorów
-  - Generator synonimów
+  - Embedding management
+  - Vector regeneration
+  - Synonym generator
   - Search analytics
 
 - ✅ **Audit Logs**
-  - Historia wszystkich akcji admin
-  - Tracking zmian
-  - IP i user agent
+  - History of all admin actions
+  - Change tracking
+  - IP and user agent logging
 
 ### 🎨 UI/UX
-- ✅ **Responsywny design**
+- ✅ **Responsive Design**
   - Mobile-first approach
   - Adaptive navigation
-  - Mobile dock z gesture animations
+  - Mobile dock with gesture animations
 
-- ✅ **Animacje**
+- ✅ **Animations**
   - Scroll animations
   - Parallax effects
   - Floating elements
   - Geometric backgrounds
   - Smooth transitions (Framer Motion)
 
-- ✅ **Landing page**
-  - Hero section z CTA
-  - Sekcja wartości
+- ✅ **Landing Page**
+  - Hero section with CTA
+  - Value proposition section
   - Call-to-action sections
-  - Footer z linkami
+  - Footer with links
 
-### 🔐 Bezpieczeństwo
+### 🔐 Security
 - ✅ Row Level Security (RLS) policies
-- ✅ Rate limiting na endpoints
+- ✅ Rate limiting on endpoints
 - ✅ Input validation (Zod)
 - ✅ XSS protection
 - ✅ CSRF protection
 - ✅ Secure file uploads (validation, size limits)
 
-## 🔮 Szczegóły AI Features
+## 🔮 AI Features Details
 
-Projekt wykorzystuje zaawansowane AI dla lepszego doświadczenia użytkownika:
+This project uses advanced AI for better user experience:
 
-### **1. Semantyczne wyszukiwanie (Semantic Search)**
+### **1. Semantic Search**
 ```
-Technologia:
-- OpenAI text-embedding-3-small (1536 wymiarów)
-- pgvector extension w PostgreSQL
-- HNSW index dla szybkiego wyszukiwania
-- Cosine similarity dla porównywania wektorów
+Technology:
+- OpenAI text-embedding-3-small (1536 dimensions)
+- pgvector extension in PostgreSQL
+- HNSW index for fast search
+- Cosine similarity for vector comparison
 ```
 
-**Jak to działa:**
-1. Użytkownik wpisuje zapytanie (np. "instalator wody")
-2. OpenAI generuje embedding dla zapytania
-3. PostgreSQL znajduje najbardziej podobne embeddingi w bazie
-4. Zwraca posty nawet jeśli nie zawierają dokładnych słów
+**How it works:**
+1. User enters query (e.g., "water installer")
+2. OpenAI generates embedding for the query
+3. PostgreSQL finds most similar embeddings in database
+4. Returns posts even if they don't contain exact words
 
-**Przykład:**
-- Query: "instalator wody" → Znajduje: "hydraulik", "monter instalacji", "fachowiec od rur"
+**Example:**
+- Query: "water installer" → Finds: "plumber", "pipe fitter", "installation specialist"
 
 ### **2. Hybrid Search**
 ```typescript
-// Wagi wyszukiwania
-semantic_weight: 60%  // Znaczenie semantyczne
-fulltext_weight: 40%  // Dokładne dopasowanie + synonimy
+// Search weights
+semantic_weight: 60%  // Semantic meaning
+fulltext_weight: 40%  // Exact match + synonyms
 ```
 
-**Zalety:**
-- ✅ Znajduje podobne znaczeniowo (semantic)
-- ✅ Obsługuje literówki (trigrams)
-- ✅ Rozszerza query o synonimy
-- ✅ Szybkie (zoptymalizowane indeksy)
+**Benefits:**
+- ✅ Finds semantically similar results
+- ✅ Handles typos (trigrams)
+- ✅ Expands query with synonyms
+- ✅ Fast (optimized indexes)
 
 ### **3. Smart Suggestions**
-Personalizowane sugestie dla każdego użytkownika:
+Personalized suggestions for each user:
 
-**3 źródła sugestii:**
-1. **Behavioral** - Historia wyszukiwań (90 dni)
-2. **Semantic** - Podobieństwo do preferencji
-3. **Trending** - Popularne w ulubionych kategoriach
+**3 suggestion sources:**
+1. **Behavioral** - Search history (90 days)
+2. **Semantic** - Similarity to preferences
+3. **Trending** - Popular in favorite categories
 
-### **4. AI Generator Synonimów**
+### **4. AI Synonym Generator**
 ```
 Model: GPT-5 nano
-Dostęp: /admin/synonyms
-Tryby: Trending | Popular | Custom
+Access: /admin/synonyms
+Modes: Trending | Popular | Custom
 ```
 
 **Workflow:**
-1. Admin wybiera tryb generowania
-2. AI sugeruje synonimy dla popularnych fraz
-3. Admin akceptuje/odrzuca sugestie
-4. Zatwierdzone synonimy wzbogacają wyszukiwanie
+1. Admin selects generation mode
+2. AI suggests synonyms for popular phrases
+3. Admin accepts/rejects suggestions
+4. Approved synonyms enhance search
 
-### **Setup AI Features**
+### **AI Setup**
 
-Szczegółowy przewodnik: [SEMANTIC_SEARCH_SETUP.md](./SEMANTIC_SEARCH_SETUP.md)
+Detailed guide: [SEMANTIC_SEARCH_SETUP.md](./SEMANTIC_SEARCH_SETUP.md)
 
 **Quick Start:**
 ```bash
-# 1. Dodaj klucz API
+# 1. Add API key
 echo "OPENAI_API_KEY=sk-..." >> .env.local
 
-# 2. Uruchom migracje (jeśli jeszcze nie)
-# Pliki w: supabase/migrations/20250111120000_*.sql
+# 2. Run migrations (if not already done)
+# Files in: supabase/migrations/20250111120000_*.sql
 
-# 3. Wygeneruj embeddingi przez panel admin
-# Odwiedź: /admin/embeddings
-# Kliknij: "Generate Embeddings for All Posts"
+# 3. Generate embeddings via admin panel
+# Visit: /admin/embeddings
+# Click: "Generate Embeddings for All Posts"
 ```
 
-**Koszty operacyjne:**
-- Embedding 1000 postów: ~$0.01
-- 10,000 wyszukiwań/miesiąc: ~$0.30
-- **Total:** ~$0.35/miesiąc dla małego projektu
+**Operating costs:**
+- Embedding 1000 posts: ~$0.01
+- 10,000 searches/month: ~$0.30
+- **Total:** ~$0.35/month for small project
 
 **Performance:**
 - Search latency: <100ms
 - Accuracy: ~85% semantic match
-- Typo tolerance: 2-3 znaki
+- Typo tolerance: 2-3 characters
 
-## Setup
+## 📜 License & Usage
 
-### 1. Instalacja zależności
+### MIT License with Non-Commercial Clause
 
-\`\`\`bash
+This project uses a **dual-license model**:
+
+✅ **FREE for Non-Commercial Use:**
+- ✅ Use, modify, and distribute for **personal projects**
+- ✅ Run for **educational purposes** (learning, teaching)
+- ✅ Fork and experiment for **skill development**
+- ✅ Study the code for **portfolio review**
+- ✅ Use in **non-profit organizations**
+
+❌ **Commercial Use Requires License:**
+- ❌ Running a similar service for profit
+- ❌ Using in commercial products
+- ❌ Charging users for access
+- ❌ Deploying for business purposes
+
+### Why is the code public?
+
+This project is open-source to:
+1. **Build trust** - Users can verify security and privacy
+2. **Portfolio showcase** - Demonstrate technical skills
+3. **Community learning** - Help developers learn modern web dev
+4. **Transparency** - Open development process
+
+### Get a Commercial License
+
+Interested in commercial use? Contact me:
+- **GitHub**: [@marcinbaszewski](https://github.com/marcinbaszewski)
+- **Details**: See [LICENSE-COMMERCIAL.md](./LICENSE-COMMERCIAL.md)
+
+**⚖️ Full License**: [LICENSE](./LICENSE)
+
+---
+
+## 🔧 For Developers: Running Locally
+
+> **Note**: You can run this locally for **non-commercial purposes only** (learning, experimentation, portfolio review).
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- Supabase account (free tier works)
+- OpenAI API key (optional, for AI features)
+
+### Quick Start
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/marcinbaszewski/findsomeone.git
+cd findsomeone
+
+# 2. Install dependencies
 npm install
-\`\`\`
 
-### 2. Konfiguracja Supabase
+# 3. Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your credentials
 
-1. Utwórz projekt na [supabase.com](https://supabase.com)
-2. Przejdź do **SQL Editor** i wykonaj zawartość pliku `supabase/schema.sql`
-3. W **Authentication** -> **Providers** włącz:
-   - Email (domyślnie włączony)
-   - Google OAuth (opcjonalnie)
-4. Skopiuj klucze z **Project Settings** -> **API**
-
-### 3. Zmienne środowiskowe
-
-Uzupełnij plik `.env.local`:
-
-\`\`\`env
-# Supabase (wymagane)
-NEXT_PUBLIC_SUPABASE_URL=https://twoj-projekt.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=twoj-anon-key
-
-# OpenAI (wymagane dla AI features)
-OPENAI_API_KEY=sk-...
-
-# Resend (opcjonalnie, dla email notifications)
-RESEND_API_KEY=re_...
-\`\`\`
-
-### 4. Uruchomienie
-
-\`\`\`bash
+# 4. Run development server
 npm run dev
-\`\`\`
+```
 
-Aplikacja będzie dostępna pod adresem `http://localhost:3000`
+### Environment Variables
 
-**Produkcja:** [https://findsomeone.app](https://findsomeone.app)
+Create a `.env.local` file:
 
-## 📁 Struktura projektu
+```env
+# Supabase (required)
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
-\`\`\`
+# OpenAI (required for AI features)
+OPENAI_API_KEY=sk-your-key
+
+# Resend (optional, for email notifications)
+RESEND_API_KEY=re-your-key
+```
+
+### Database Setup
+
+1. Create a Supabase project at [supabase.com](https://supabase.com)
+2. Run migrations from `supabase/migrations/` in SQL Editor
+3. Enable authentication providers in Supabase Dashboard
+
+**Live Demo**: [https://findsomeone.app](https://findsomeone.app)
+
+## 📁 Project Structure
+
+```
 findsomeone/
 ├── app/                            # Next.js 15 App Router
 │   ├── page.tsx                    # Landing page
-│   ├── about/                      # Strona "O nas"
-│   ├── login/                      # Logowanie
-│   ├── signup/                     # Rejestracja
-│   ├── auth/                       # OAuth callbacks
-│   ├── dashboard/                  # Dashboard użytkownika
-│   │   ├── page.tsx                # Lista ogłoszeń
-│   │   ├── posts/                  # Zarządzanie ogłoszeniami
-│   │   │   ├── new/                # Nowe ogłoszenie
-│   │   │   └── [id]/               # Szczegóły/edycja ogłoszenia
-│   │   ├── messages/               # System wiadomości
-│   │   ├── favorites/              # Ulubione ogłoszenia
-│   │   ├── my-listings/            # Moje ogłoszenia
-│   │   ├── profile/                # Edycja profilu
-│   │   └── settings/               # Ustawienia konta
-│   └── admin/                      # Panel administratora
-│       ├── page.tsx                # Dashboard admina
-│       ├── moderation/             # Moderacja ogłoszeń
-│       ├── reports/                # Zgłoszone wiadomości
-│       ├── categories/             # Zarządzanie kategoriami
-│       ├── banned-users/           # Zbanowani użytkownicy
-│       ├── embeddings/             # Zarządzanie AI embeddings
-│       ├── synonyms/               # Generator synonimów AI
-│       ├── ai-settings/            # Ustawienia AI
-│       └── audit-logs/             # Logi działań admin
+│   ├── login/                      # Login
+│   ├── signup/                     # Registration
+│   ├── dashboard/                  # User dashboard
+│   │   ├── posts/                  # Post management
+│   │   ├── messages/               # Messaging system
+│   │   ├── favorites/              # Favorite posts
+│   │   └── profile/                # Profile editing
+│   └── admin/                      # Admin panel
+│       ├── moderation/             # Post moderation
+│       ├── reports/                # Message reports
+│       ├── categories/             # Category management
+│       ├── embeddings/             # AI embeddings
+│       └── synonyms/               # AI synonym generator
 │
-├── components/                     # Komponenty React
-│   ├── ui/                         # shadcn/ui base components
-│   ├── admin/                      # Komponenty panelu admin
-│   ├── Navbar.tsx                  # Główna nawigacja
-│   ├── Footer.tsx                  # Stopka
-│   ├── MobileDock.tsx              # Mobile navigation
-│   ├── LiveSearchBar.tsx           # AI-powered search
-│   ├── FavoriteButton.tsx          # Dodaj do ulubionych
-│   └── ...                         # Inne komponenty UI
+├── components/                     # React components
+│   ├── ui/                         # shadcn/ui components
+│   ├── admin/                      # Admin components
+│   ├── Navbar.tsx                  # Main navigation
+│   └── LiveSearchBar.tsx           # AI-powered search
 │
-├── lib/                            # Biblioteki i utility
-│   ├── supabase/
-│   │   ├── client.ts               # Client-side Supabase
-│   │   └── server.ts               # Server-side Supabase
+├── lib/                            # Libraries and utilities
+│   ├── supabase/                   # Supabase clients
 │   ├── actions/                    # Server Actions
-│   │   ├── posts.ts                # Akcje dla ogłoszeń
-│   │   ├── messages.ts             # Akcje dla wiadomości
-│   │   ├── favorites.ts            # Akcje dla ulubionych
-│   │   ├── reviews.ts              # Akcje dla opinii
-│   │   ├── admin-*.ts              # Akcje administracyjne
+│   │   ├── posts.ts                # Post actions
+│   │   ├── messages.ts             # Message actions
 │   │   └── search.ts               # AI search engine
-│   ├── types/
-│   │   └── database.ts             # TypeScript types dla DB
-│   └── utils.ts                    # Utility functions
+│   └── types/
+│       └── database.ts             # TypeScript types
 │
 ├── supabase/                       # Supabase configuration
-│   ├── migrations/                 # SQL migrations
-│   └── schema.sql                  # Schemat bazy danych
+│   └── migrations/                 # SQL migrations
 │
-├── middleware.ts                   # Auth + Rate limiting middleware
-├── .env.local                      # Zmienne środowiskowe
-└── package.json                    # Dependencies
-\`\`\`
+├── LICENSE                         # MIT + Non-Commercial
+├── LICENSE-COMMERCIAL.md           # Commercial license info
+└── README.md                       # This file
+```
 
-## 🗄️ Architektura bazy danych
+## 🗄️ Database Architecture
 
-### Główne tabele
+### Main Tables
 
 #### **profiles**
-- Profile użytkowników (rozszerzenie auth.users)
-- Pola: full_name, bio, phone, city, avatar_url, rating, total_reviews, verified, is_banned
+- User profiles (extends auth.users)
+- Fields: full_name, bio, phone, city, avatar_url, rating, total_reviews, verified, is_banned
 
 #### **categories**
-- Kategorie usług z ikonami
-- Pola: name, slug, description, icon, sort_order
+- Service categories with icons
+- Fields: name, slug, description, icon, sort_order
 
 #### **posts**
-- Ogłoszenia użytkowników
-- Pola: title, description, type (seeking/offering), city, district, price_*, images[], moderation_status, view_count, embedding (vector)
-- Indeksy: HNSW index dla semantic search, GIN index dla full-text, trigram dla typo-tolerance
+- User listings
+- Fields: title, description, type (seeking/offering), city, district, price_*, images[], moderation_status, view_count, embedding (vector)
+- Indexes: HNSW for semantic search, GIN for full-text, trigram for typo-tolerance
 
 #### **messages**
-- Wiadomości prywatne między użytkownikami
-- Pola: sender_id, receiver_id, post_id, content, read, reported, report_status
-- Realtime subscription dla live updates
+- Private messages between users
+- Fields: sender_id, receiver_id, post_id, content, read, reported, report_status
+- Realtime subscription for live updates
 
 #### **reviews**
-- Oceny i opinie o użytkownikach
-- Pola: reviewer_id, reviewee_id, post_id, rating (1-5), comment
-- Automatyczne aktualizowanie średniej w profilu
+- User ratings and reviews
+- Fields: reviewer_id, reviewee_id, post_id, rating (1-5), comment
+- Automatic average rating updates
 
 #### **favorites**
-- Zapisane ulubione ogłoszenia
-- Pola: user_id, post_id
-- Unique constraint na parę (user_id, post_id)
+- Saved favorite posts
+- Fields: user_id, post_id
+- Unique constraint on (user_id, post_id)
 
 #### **search_analytics**
-- Analytics wyszukiwania
-- Pola: user_id, query, results_count, clicked_post_id, ip_address
+- Search analytics
+- Fields: user_id, query, results_count, clicked_post_id, ip_address
 
 #### **synonyms**
-- Synonimy dla wyszukiwarki (generowane AI)
-- Pola: term, synonym, status (pending/approved/rejected), generated_by_ai
+- Search synonyms (AI-generated)
+- Fields: term, synonym, status (pending/approved/rejected), generated_by_ai
 
 #### **admin_audit_logs**
-- Historia akcji administratorów
-- Pola: admin_id, action_type, target_table, target_id, old_values, new_values, ip_address
-
-#### **banned_users**
-- Zbanowani użytkownicy
-- Pola: user_id, banned_by, reason, banned_until
+- Admin action history
+- Fields: admin_id, action_type, target_table, target_id, old_values, new_values, ip_address
 
 ### Row Level Security (RLS)
-Wszystkie tabele mają włączone RLS policies:
-- Users mogą czytać/edytować tylko swoje dane
-- Messages dostępne tylko dla sender/receiver
-- Admin ma pełen dostęp przez security definer functions
-- Public read dla posts (z filtrowaniem moderation_status)
+All tables have RLS policies:
+- Users can read/edit only their own data
+- Messages accessible only to sender/receiver
+- Admin has full access via security definer functions
+- Public read for posts (filtered by moderation_status)
 
-### Funkcje PostgreSQL
-- `get_reported_messages()` - Pobiera zgłoszone wiadomości z detalami
+### PostgreSQL Functions
+- `get_reported_messages()` - Fetch reported messages with details
 - `search_posts_hybrid()` - Hybrid search (semantic + full-text)
-- Auto-update średniej oceny w triggerach
-- Auto-increment liczników (view_count, total_reviews)
+- Auto-update average ratings in triggers
+- Auto-increment counters (view_count, total_reviews)
 
-## Dodatkowe informacje
+## 🚀 Deployment
 
-### shadcn/ui
-Projekt używa [shadcn/ui](https://ui.shadcn.com/) - komponentów zbudowanych na Radix UI i Tailwind CSS.
+Ready to deploy on **Vercel**:
 
-Dodawanie nowych komponentów:
-\`\`\`bash
-npx shadcn@latest add [nazwa-komponentu]
-\`\`\`
+1. Push to GitHub
+2. Import project in Vercel
+3. Add environment variables
+4. Deploy!
 
-### Supabase Auth
-- Email/Password - domyślnie włączone
-- Google OAuth - wymaga konfiguracji w Supabase dashboard
-- Magic Links - możliwe do włączenia
+**Note**: Deployment for commercial purposes requires a commercial license.
 
-### Deployment
-
-Projekt jest gotowy do deploy na **Vercel**:
-
-1. **Push do GitHub**
-   \`\`\`bash
-   git add .
-   git commit -m "Initial commit"
-   git push origin main
-   \`\`\`
-
-2. **Import projektu w Vercel**
-   - Zaloguj się na [vercel.com](https://vercel.com)
-   - Kliknij "New Project"
-   - Importuj repozytorium z GitHub
-
-3. **Dodaj zmienne środowiskowe**
-   - \`NEXT_PUBLIC_SUPABASE_URL\`
-   - \`NEXT_PUBLIC_SUPABASE_ANON_KEY\`
-   - \`OPENAI_API_KEY\`
-   - \`RESEND_API_KEY\` (opcjonalnie)
-
-4. **Deploy!**
-   - Kliknij "Deploy"
-   - Vercel automatycznie zbuduje i wdroży aplikację
-
-**Uwaga**: Upewnij się, że w Supabase są skonfigurowane dozwolone URL (Allowed URLs) dla produkcji.
-
-## 🚀 Roadmap / Plany rozwoju
-
-### W trakcie rozwoju
-- ⏳ System powiadomień email (Resend)
-- ⏳ Mapa z lokalizacją ogłoszeń (Google Maps / Mapbox)
-- ⏳ Advanced filtering (cena, rating, odległość)
-- ⏳ Export danych użytkownika (GDPR compliance)
-
-### Planowane funkcje
-- 📋 System subskrypcji/płatności (Stripe)
-- 📋 Premium listings (wyróżnione ogłoszenia)
-- 📋 Push notifications (PWA)
-- 📋 Multi-language support (i18n)
-- 📋 Advanced analytics dashboard
-- 📋 API dla developerów
-- 📋 Mobile app (React Native / Expo)
-
-### Performance optimizations
-- 📋 Image optimization (Sharp / Cloudinary)
-- 📋 CDN integration
-- 📋 Caching strategies (Redis)
-- 📋 Database query optimization
-- 📋 Lighthouse score 95+
-
-## 📊 Metryki projektu
+## 📊 Project Metrics
 
 - **Lines of Code**: ~15,000+
 - **Components**: 45+
@@ -529,32 +499,41 @@ Projekt jest gotowy do deploy na **Vercel**:
 
 ## 🤝 Contributing
 
-Projekt jest otwarty na sugestie i pull requesty. Jeśli chcesz dodać nową funkcję:
+While **commercial use is restricted**, I welcome:
 
-1. Fork projektu
-2. Stwórz branch z feature (\`git checkout -b feature/AmazingFeature\`)
-3. Commit zmiany (\`git commit -m 'Add some AmazingFeature'\`)
-4. Push do brancha (\`git push origin feature/AmazingFeature\`)
-5. Otwórz Pull Request
+✅ **Bug reports** - Found an issue? Open an Issue
+✅ **Feature suggestions** - Have an idea? Share in Discussions
+✅ **Security reports** - Found a vulnerability? Contact privately
+✅ **Questions** - Want to learn how something works? Ask!
 
-## 📝 Licencja
+❌ **Not accepting:**
+- Pull requests (this is a solo project)
+- Commercial use requests without proper licensing
 
-MIT - Zobacz plik LICENSE dla szczegółów
+### How to contribute:
 
-## 👤 Autor
+1. **Bug reports**: [Open an Issue](https://github.com/marcinbaszewski/findsomeone/issues)
+2. **Discussions**: Use GitHub Discussions
+3. **Security**: Contact privately for security issues
+
+## 👤 Author
 
 **Marcin Baszewski**
-- Projekt portfolio - nowoczesna aplikacja marketplace lokalnych usług
+- Portfolio project - Modern local services marketplace
 - GitHub: [@marcinbaszewski](https://github.com/marcinbaszewski)
 
-## 🙏 Podziękowania
+## 🙏 Acknowledgments
 
 - [Supabase](https://supabase.com) - Backend as a Service
-- [Vercel](https://vercel.com) - Hosting i deployment
+- [Vercel](https://vercel.com) - Hosting and deployment
 - [OpenAI](https://openai.com) - AI capabilities
 - [shadcn/ui](https://ui.shadcn.com) - Beautiful UI components
 - [Next.js](https://nextjs.org) - React framework
 
 ---
 
-**⭐ Jeśli projekt Ci się podoba, zostaw gwiazdkę!**
+**⭐ If you find this project helpful, please star it!**
+
+**📧 Questions?** Open an issue or discussion on GitHub.
+
+**💼 Commercial use?** See [LICENSE-COMMERCIAL.md](./LICENSE-COMMERCIAL.md)
