@@ -8,9 +8,10 @@ interface ScrollIndicatorProps {
 
 export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
   const [scrollProgress, setScrollProgress] = useState(0)
-  const [totalDots, setTotalDots] = useState(3) // Start with assumption of 3 pages
+  const [totalDots, setTotalDots] = useState(0)
   const [isDragging, setIsDragging] = useState(false)
   const trackRef = useRef<HTMLDivElement>(null)
+  const [initialDotsCalculated, setInitialDotsCalculated] = useState(false)
 
   const checkScroll = () => {
     const container = document.getElementById(containerId)
@@ -23,7 +24,15 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
       // Calculate number of dots based on content width
       // Each "page" is roughly the visible width
       const pages = Math.ceil(container.scrollWidth / container.clientWidth)
-      setTotalDots(Math.min(pages, 10)) // Max 10 dots
+      const newTotalDots = Math.min(pages, 10) // Max 10 dots
+
+      // Update totalDots
+      setTotalDots(newTotalDots)
+
+      // Mark as calculated on first successful check
+      if (!initialDotsCalculated && newTotalDots > 0) {
+        setInitialDotsCalculated(true)
+      }
     }
   }
 
@@ -111,8 +120,8 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
     }
   }, [isDragging, containerId])
 
-  // Don't show if only 1 page
-  if (totalDots <= 1) {
+  // Don't show if not yet calculated or only 1 page
+  if (!initialDotsCalculated || totalDots <= 1) {
     return null
   }
 
@@ -146,33 +155,7 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
             transition: 'box-shadow 200ms ease-out'
           }}
         />
-
-        {/* Preview overlay when dragging */}
-        {isDragging && (
-          <div
-            className="absolute -top-12 left-1/2 -translate-x-1/2 bg-black/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap pointer-events-none"
-            style={{
-              animation: 'scale-in 150ms ease-out'
-            }}
-          >
-            {Math.round(scrollProgress)}%
-          </div>
-        )}
       </div>
-
-      {/* CSS Animation for preview popup */}
-      <style jsx>{`
-        @keyframes scale-in {
-          0% {
-            opacity: 0;
-            transform: translate(-50%, 4px) scale(0.9);
-          }
-          100% {
-            opacity: 1;
-            transform: translate(-50%, 0) scale(1);
-          }
-        }
-      `}</style>
     </div>
   )
 }
