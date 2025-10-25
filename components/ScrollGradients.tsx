@@ -67,7 +67,7 @@ export function ScrollGradients({ containerId }: ScrollGradientsProps) {
     <>
       {/* Left gradient */}
       <div
-        className={`absolute left-0 top-0 bottom-0 w-16 md:w-24 pointer-events-none z-20 transition-opacity duration-300 ${
+        className={`absolute left-0 top-0 bottom-0 w-16 md:w-24 pointer-events-none z-10 transition-opacity duration-300 ${
           showLeftGradient ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
@@ -77,7 +77,7 @@ export function ScrollGradients({ containerId }: ScrollGradientsProps) {
 
       {/* Right gradient */}
       <div
-        className={`absolute right-0 top-0 bottom-0 w-16 md:w-24 pointer-events-none z-20 transition-opacity duration-300 ${
+        className={`absolute right-0 top-0 bottom-0 w-16 md:w-24 pointer-events-none z-10 transition-opacity duration-300 ${
           showRightGradient ? 'opacity-100' : 'opacity-0'
         }`}
         style={{

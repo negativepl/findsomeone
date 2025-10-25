@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { ScrollArrows } from '@/components/ScrollArrows'
+import { ScrollGradients } from '@/components/ScrollGradients'
+import { ScrollIndicator } from '@/components/ScrollIndicator'
 import { createClient } from '@/lib/supabase/server'
 import { HomepageSection } from '@/lib/homepage-sections/types'
 import { CategoryIcon } from '@/lib/category-icons'
@@ -38,11 +40,13 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
   // Render carousel layout
   const renderCarousel = (className = '') => (
     <div className={className}>
-      <div className="relative">
+      <div className="relative -mx-6 md:-mx-8">
         <div className="hidden md:block">
           <ScrollArrows containerId={`section-${section.id}-scroll`} />
         </div>
-        <div id={`section-${section.id}-scroll`} className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
+        <ScrollGradients containerId={`section-${section.id}-scroll`} />
+
+        <div id={`section-${section.id}-scroll`} className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
           <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
             {categories.map((category: any) => (
               <Link
@@ -62,6 +66,7 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
             ))}
           </div>
         </div>
+        <ScrollIndicator containerId={`section-${section.id}-scroll`} />
       </div>
     </div>
   )
@@ -91,7 +96,7 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
     // Render both layouts with appropriate visibility classes
     return (
       <section className="container mx-auto px-6 py-12 md:py-14">
-        <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm">
+        <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
           <div className="mb-8 md:mb-12">
             <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">{title}</h3>
             <p className="text-lg text-black/60">{subtitle}</p>
@@ -110,7 +115,7 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
   // Same layout for both mobile and desktop
   return (
     <section className="container mx-auto px-6 py-12 md:py-14">
-      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm">
+      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
         <div className="mb-8 md:mb-12">
           <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">{title}</h3>
           <p className="text-lg text-black/60">{subtitle}</p>
