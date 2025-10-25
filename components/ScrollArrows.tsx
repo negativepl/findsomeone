@@ -62,7 +62,7 @@ export function ScrollArrows({ containerId }: ScrollArrowsProps) {
         variant="outline"
         size="icon"
         onClick={scrollLeft}
-        className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-white bg-white/90 backdrop-blur-sm shadow-lg h-12 w-12 transition-all duration-300 ${
+        className={`absolute left-4 md:left-6 top-1/2 -translate-y-1/2 z-20 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-white bg-white/90 backdrop-blur-sm shadow-lg h-12 w-12 transition-all duration-300 ${
           canScrollLeft ? 'opacity-0 group-hover/section:opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         aria-label="Przewiń w lewo"
@@ -75,7 +75,7 @@ export function ScrollArrows({ containerId }: ScrollArrowsProps) {
         variant="outline"
         size="icon"
         onClick={scrollRight}
-        className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-white bg-white/90 backdrop-blur-sm shadow-lg h-12 w-12 transition-all duration-300 ${
+        className={`absolute right-4 md:right-6 top-1/2 -translate-y-1/2 z-20 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-white bg-white/90 backdrop-blur-sm shadow-lg h-12 w-12 transition-all duration-300 ${
           canScrollRight ? 'opacity-0 group-hover/section:opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         aria-label="Przewiń w prawo"

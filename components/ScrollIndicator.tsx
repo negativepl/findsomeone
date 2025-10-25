@@ -1,0 +1,178 @@
+'use client'
+
+import { useEffect, useState, useRef } from 'react'
+
+interface ScrollIndicatorProps {
+  containerId: string
+}
+
+export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [totalDots, setTotalDots] = useState(3) // Start with assumption of 3 pages
+  const [isDragging, setIsDragging] = useState(false)
+  const trackRef = useRef<HTMLDivElement>(null)
+
+  const checkScroll = () => {
+    const container = document.getElementById(containerId)
+    if (container) {
+      const scrollWidth = container.scrollWidth - container.clientWidth
+      const scrolled = container.scrollLeft
+      const progress = scrollWidth > 0 ? (scrolled / scrollWidth) * 100 : 0
+      setScrollProgress(progress)
+
+      // Calculate number of dots based on content width
+      // Each "page" is roughly the visible width
+      const pages = Math.ceil(container.scrollWidth / container.clientWidth)
+      setTotalDots(Math.min(pages, 10)) // Max 10 dots
+    }
+  }
+
+  useEffect(() => {
+    const container = document.getElementById(containerId)
+    if (container) {
+      // Check immediately
+      checkScroll()
+
+      // Check after delays for image loading
+      const timeouts = [50, 100, 200, 500].map(delay =>
+        setTimeout(checkScroll, delay)
+      )
+
+      // Add listeners
+      container.addEventListener('scroll', checkScroll)
+      window.addEventListener('resize', checkScroll)
+
+      const resizeObserver = new ResizeObserver(checkScroll)
+      resizeObserver.observe(container)
+
+      // Listen to image loads
+      const images = container.querySelectorAll('img')
+      images.forEach(img => {
+        if (!img.complete) {
+          img.addEventListener('load', checkScroll)
+        }
+      })
+
+      return () => {
+        timeouts.forEach(clearTimeout)
+        container.removeEventListener('scroll', checkScroll)
+        window.removeEventListener('resize', checkScroll)
+        resizeObserver.disconnect()
+        images.forEach(img => {
+          img.removeEventListener('load', checkScroll)
+        })
+      }
+    }
+  }, [containerId])
+
+  const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
+    setIsDragging(true)
+    handleDrag(e)
+  }
+
+  const handleDrag = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!trackRef.current) return
+
+    const track = trackRef.current
+    const rect = track.getBoundingClientRect()
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX
+    const x = clientX - rect.left
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100))
+
+    // Scroll container to this position
+    const container = document.getElementById(containerId)
+    if (container) {
+      const scrollWidth = container.scrollWidth - container.clientWidth
+      container.scrollLeft = (percentage / 100) * scrollWidth
+    }
+  }
+
+  const handleDragEnd = () => {
+    setIsDragging(false)
+  }
+
+  useEffect(() => {
+    if (!isDragging) return
+
+    const handleMouseMove = (e: MouseEvent) => handleDrag(e as any)
+    const handleTouchMove = (e: TouchEvent) => handleDrag(e as any)
+    const handleUp = () => handleDragEnd()
+
+    window.addEventListener('mousemove', handleMouseMove)
+    window.addEventListener('touchmove', handleTouchMove)
+    window.addEventListener('mouseup', handleUp)
+    window.addEventListener('touchend', handleUp)
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      window.removeEventListener('touchmove', handleTouchMove)
+      window.removeEventListener('mouseup', handleUp)
+      window.removeEventListener('touchend', handleUp)
+    }
+  }, [isDragging, containerId])
+
+  // Don't show if only 1 page
+  if (totalDots <= 1) {
+    return null
+  }
+
+  // Track bar width - proportional to number of pages
+  const trackWidth = Math.min(totalDots * 20, 200) // Max 200px
+  const indicatorWidth = trackWidth / totalDots // Each page gets equal space
+
+  return (
+    <div className="flex justify-center mt-6">
+      {/* Track container - shows total length */}
+      <div
+        ref={trackRef}
+        className="relative bg-black/10 rounded-full cursor-pointer select-none"
+        style={{
+          width: `${trackWidth}px`,
+          height: isDragging ? '8px' : '4px',
+          transition: 'height 200ms ease-out'
+        }}
+        onMouseDown={handleDragStart}
+        onTouchStart={handleDragStart}
+      >
+        {/* Active indicator - slides smoothly inside track */}
+        <div
+          className="absolute top-0 h-full rounded-full"
+          style={{
+            left: `${scrollProgress}%`,
+            width: `${indicatorWidth}px`,
+            background: '#C44E35',
+            transform: 'translateX(-50%)',
+            boxShadow: isDragging ? '0 0 0 4px rgba(196, 78, 53, 0.2)' : 'none',
+            transition: 'box-shadow 200ms ease-out'
+          }}
+        />
+
+        {/* Preview overlay when dragging */}
+        {isDragging && (
+          <div
+            className="absolute -top-12 left-1/2 -translate-x-1/2 bg-black/90 text-white px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap pointer-events-none"
+            style={{
+              animation: 'scale-in 150ms ease-out'
+            }}
+          >
+            {Math.round(scrollProgress)}%
+          </div>
+        )}
+      </div>
+
+      {/* CSS Animation for preview popup */}
+      <style jsx>{`
+        @keyframes scale-in {
+          0% {
+            opacity: 0;
+            transform: translate(-50%, 4px) scale(0.9);
+          }
+          100% {
+            opacity: 1;
+            transform: translate(-50%, 0) scale(1);
+          }
+        }
+      `}</style>
+    </div>
+  )
+}

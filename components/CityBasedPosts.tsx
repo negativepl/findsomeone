@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
 import { ScrollArrows } from '@/components/ScrollArrows'
+import { ScrollGradients } from '@/components/ScrollGradients'
+import { ScrollIndicator } from '@/components/ScrollIndicator'
 import { PostCard } from '@/components/PostCard'
 import { createClient } from '@/lib/supabase/client'
 
@@ -165,11 +167,13 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
         </div>
 
         {/* Horizontal Scroll for all devices */}
-        <div className="relative">
+        <div className="relative -mx-6 md:-mx-8">
           <div className="hidden md:block">
             <ScrollArrows containerId="city-posts-scroll" />
           </div>
-          <div id="city-posts-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
+          <ScrollGradients containerId="city-posts-scroll" />
+
+          <div id="city-posts-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {posts.map((post) => (
                 <PostCard
@@ -180,6 +184,7 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
               ))}
             </div>
           </div>
+          <ScrollIndicator containerId="city-posts-scroll" />
         </div>
       </div>
     </section>

@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import { ScrollArrows } from '@/components/ScrollArrows'
+import { ScrollGradients } from '@/components/ScrollGradients'
+import { ScrollIndicator } from '@/components/ScrollIndicator'
 import { PostCard } from '@/components/PostCard'
 import { createClient } from '@/lib/supabase/server'
 import { HomepageSection } from '@/lib/homepage-sections/types'
@@ -95,11 +97,13 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
           )}
         </div>
 
-        <div className="relative">
+        <div className="relative -mx-6 md:-mx-8">
           <div className="hidden md:block">
             <ScrollArrows containerId={`section-${section.id}-scroll`} />
           </div>
-          <div id={`section-${section.id}-scroll`} className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
+          <ScrollGradients containerId={`section-${section.id}-scroll`} />
+
+          <div id={`section-${section.id}-scroll`} className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {posts.map((post: any, index: number) => (
                 <PostCard
@@ -111,6 +115,7 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
               ))}
             </div>
           </div>
+          <ScrollIndicator containerId={`section-${section.id}-scroll`} />
         </div>
       </div>
     </section>

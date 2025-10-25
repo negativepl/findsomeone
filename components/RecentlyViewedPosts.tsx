@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
 import { RatingDisplay } from '@/components/RatingDisplay'
 import { ScrollArrows } from '@/components/ScrollArrows'
+import { ScrollGradients } from '@/components/ScrollGradients'
+import { ScrollIndicator } from '@/components/ScrollIndicator'
 import { PostCard } from '@/components/PostCard'
 import { createClient } from '@/lib/supabase/client'
 
@@ -84,11 +86,13 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
         </div>
 
         {/* Horizontal Scroll for all devices */}
-        <div className="relative">
+        <div className="relative -mx-6 md:-mx-8">
           <div className="hidden md:block">
             <ScrollArrows containerId="recently-viewed-scroll" />
           </div>
-          <div id="recently-viewed-scroll" className="overflow-x-auto scrollbar-hide -mx-6 md:-mx-8 snap-x snap-mandatory">
+          <ScrollGradients containerId="recently-viewed-scroll" />
+
+          <div id="recently-viewed-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {loading ? (
                 // Skeleton loader - show 6 placeholder cards
@@ -132,6 +136,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
               )}
             </div>
           </div>
+          <ScrollIndicator containerId="recently-viewed-scroll" />
         </div>
       </div>
     </section>
