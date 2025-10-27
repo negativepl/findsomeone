@@ -64,7 +64,8 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 md:gap-3 hover:bg-black/5 rounded-full h-10 pl-0 pr-2 md:pr-3 transition-all"
+        className="flex items-center hover:bg-black/5 rounded-full h-10 pl-0 pr-2 md:pr-3 transition-all shrink-0"
+        style={{ gap: '0.75rem' }}
       >
         {/* Avatar */}
         {profile?.avatar_url ? (
@@ -73,20 +74,26 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             alt=""
             width={40}
             height={40}
-            className="w-10 h-10 rounded-full object-cover"
+            className="w-10 h-10 rounded-full object-cover shrink-0"
           />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-[#C44E35] text-white flex items-center justify-center font-bold" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+          <div className="w-10 h-10 rounded-full bg-[#C44E35] text-white flex items-center justify-center font-bold shrink-0" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
             {getInitials()}
           </div>
         )}
-        {/* Nazwa użytkownika - ukryta na mobile */}
-        <span className="hidden md:inline text-black font-medium">
+        {/* Nazwa użytkownika - ukryta na mobile i gdy navbar scrolled */}
+        <span
+          className="hidden md:block text-black font-medium user-name-text"
+          style={{
+            maxWidth: 'calc(200px * (1 - var(--scroll-progress, 0)))',
+            opacity: `calc(1 - var(--scroll-progress, 0))`,
+          }}
+        >
           {getUserName()}
         </span>
         {/* Strzałka w dół - widoczna zawsze */}
         <svg
-          className={`w-4 h-4 text-black/60 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+          className={`w-4 h-4 text-black/60 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

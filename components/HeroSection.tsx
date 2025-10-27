@@ -14,7 +14,7 @@ export function HeroSection({ user }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="container mx-auto px-6 pt-12 pb-2 md:pt-14 md:pb-4 text-center">
+      <div className="container mx-auto px-6 pt-16 pb-2 md:pt-20 md:pb-4 text-center">
         <h2 className="text-6xl md:text-7xl font-bold mb-6 text-black leading-tight">
           {headingText.split(" ").map((word, index) => (
             <motion.span

@@ -40,10 +40,32 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
   const openTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [menuHeight, setMenuHeight] = useState<number | 'auto'>('auto')
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [isDesktop, setIsDesktop] = useState(true)
 
   // Check if mounted (for portal)
   useEffect(() => {
     setMounted(true)
+    setIsDesktop(window.innerWidth >= 768)
+  }, [])
+
+  // Track scroll state for navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50)
+    }
+
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 768)
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('resize', handleResize, { passive: true })
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
 
   // Handle opening with animation
@@ -211,10 +233,10 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current)
     }
-    // Set a short delay before closing to prevent accidental closes
+    // Set a delay before closing to allow returning to button
     closeTimeoutRef.current = setTimeout(() => {
       handleClose()
-    }, 50) // Quick close delay
+    }, 50) // Delay to allow returning to button/menu
   }
 
   const handleMenuMouseEnter = () => {
@@ -258,34 +280,12 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
     if (isOpen) {
       closeTimeoutRef.current = setTimeout(() => {
         handleClose()
-      }, 50)
+      }, 50) // Delay to allow moving to menu
     }
   }
 
-  const backdropContent = mounted ? createPortal(
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{
-            duration: 0.15,
-            ease: "easeOut"
-          }}
-          className="fixed inset-0 bg-gray-50/95 z-40"
-          onClick={() => handleClose()}
-        />
-      )}
-    </AnimatePresence>,
-    document.body
-  ) : null
-
   return (
     <>
-      {/* Backdrop via Portal - renders directly in body */}
-      {backdropContent}
-
       {/* Compact Categories Button */}
       <button
         ref={buttonRef}
@@ -298,13 +298,13 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
         }}
         onMouseEnter={handleButtonMouseEnter}
         onMouseLeave={handleButtonMouseLeave}
-        className="h-10 rounded-full bg-[#FAF8F3] hover:bg-[#F5F1E8] transition-all duration-200 px-4 gap-2 flex items-center border-0 hover:shadow-sm"
+        className="w-10 h-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-all duration-200 flex items-center justify-center border-0 hover:shadow-sm"
       >
         <div className="w-6 h-6 flex items-center justify-center">
           <div className="w-5 h-4 flex flex-col justify-between">
             {/* Top line */}
             <motion.div
-              className="w-full h-0.5 bg-[#C44E35] rounded-full"
+              className="w-full h-0.5 bg-white rounded-full"
               animate={{
                 rotate: isOpen ? 45 : 0,
                 y: isOpen ? 6 : 0,
@@ -314,7 +314,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
             />
             {/* Middle line */}
             <motion.div
-              className="w-full h-0.5 bg-[#C44E35] rounded-full"
+              className="w-full h-0.5 bg-white rounded-full"
               animate={{
                 opacity: isOpen ? 0 : 1,
                 scaleX: isOpen ? 0 : 1,
@@ -324,7 +324,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
             />
             {/* Bottom line */}
             <motion.div
-              className="w-full h-0.5 bg-[#C44E35] rounded-full"
+              className="w-full h-0.5 bg-white rounded-full"
               animate={{
                 rotate: isOpen ? -45 : 0,
                 y: isOpen ? -6 : 0,
@@ -334,23 +334,48 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
             />
           </div>
         </div>
-        <span className="text-sm font-medium hidden lg:inline text-black">Kategorie</span>
       </button>
+
+      {/* Backdrop overlay via portal - dims page content */}
+      {mounted && typeof window !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm"
+              style={{ zIndex: 9998 }}
+              onClick={handleClose}
+            />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
 
       {/* Invisible bridge between button and menu */}
       {isOpen && (
         <div
-          className="hidden md:block fixed left-0 right-0 pointer-events-auto"
-          style={{ top: '64px', height: '36px', zIndex: 45 }}
+          className="hidden md:block fixed pointer-events-auto"
+          style={{
+            top: '0',
+            left: '0',
+            width: '1240px',
+            height: isScrolled && isDesktop ? '94px' : '100px',
+            transition: 'height 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)',
+            zIndex: 9998
+          }}
           onMouseEnter={handleMenuMouseEnter}
           onMouseLeave={handleMenuMouseLeave}
         />
       )}
 
-      {/* Mega Menu Panel - positioned below navbar */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
+      {/* Mega Menu Panel via portal - positioned below navbar */}
+      {mounted && typeof window !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -358,8 +383,15 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
               duration: 0.2,
               ease: [0.25, 0.1, 0.25, 1] // Smoother, more natural easing
             }}
-            className="hidden md:block fixed left-0 right-0"
-            style={{ top: '100px', zIndex: 45 }}
+            className="hidden md:block fixed"
+            style={{
+              top: isScrolled && isDesktop ? '94px' : '100px',
+              left: isScrolled && isDesktop ? 'calc((100vw - 1488px) / 2 + 16px)' : '16px',
+              transition: 'top 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), left 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)',
+              zIndex: 9999
+            }}
+            onMouseEnter={handleMenuMouseEnter}
+            onMouseLeave={handleMenuMouseLeave}
             onClick={(e) => {
               // Close if clicking on the outer container
               if (e.target === e.currentTarget) {
@@ -367,17 +399,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
               }
             }}
           >
-            <div
-              className="container mx-auto px-6"
-              style={{ maxWidth: '1400px' }}
-              onClick={(e) => {
-                // Close if clicking on the container padding area
-                if (e.target === e.currentTarget) {
-                  handleClose()
-                }
-              }}
-            >
-              <motion.div
+            <motion.div
                 initial={{ scale: 0.98, opacity: 0 }}
                 animate={{
                   scale: 1,
@@ -394,7 +416,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                   }
                 }}
                 className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8"
-                style={{ minHeight: '550px', maxHeight: '80vh', overflowY: 'auto' }}
+                style={{ minHeight: '550px', maxHeight: '80vh', width: '1200px', overflowY: 'auto' }}
                 onClick={(e) => {
                   // Stop propagation to prevent closing when clicking inside
                   e.stopPropagation()
@@ -642,10 +664,11 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                 </div>
                 </div>
               </motion.div>
-            </div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
     </>
   )
 }
