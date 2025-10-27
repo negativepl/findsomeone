@@ -176,12 +176,12 @@ export function NavbarSearchBar() {
   }
 
   // Clear search query
-  const clearSearch = () => {
+  const clearSearch = (e?: React.MouseEvent) => {
+    e?.stopPropagation() // Prevent triggering the container's onClick
     isUserTypingRef.current = false
     setSearchQuery('')
     setIsOpen(false)
     setResults({ suggestions: [], trending: [] })
-    searchInputRef.current?.focus()
 
     // Update URL if on /posts page
     if (pathname === '/posts') {
@@ -190,6 +190,8 @@ export function NavbarSearchBar() {
       const queryString = params.toString()
       router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
     }
+
+    // Don't focus input after clearing - this prevents reopening dropdown
   }
 
   // Handle city input change
@@ -339,10 +341,8 @@ export function NavbarSearchBar() {
 
   // Load initial trending when focusing empty input
   const handleSearchFocus = () => {
-    // Only open if there's text in the search field
-    if (searchQuery && searchQuery.trim().length > 0) {
-      setIsOpen(true)
-    }
+    // Always open dropdown on focus
+    setIsOpen(true)
 
     if (!searchQuery) {
       // Always show cached trending immediately if available
@@ -516,14 +516,18 @@ export function NavbarSearchBar() {
   const hasResults =
     (results.suggestions?.length || 0) > 0 ||
     (results.trending?.length || 0) > 0 ||
+    (recentSearches.length || 0) > 0 ||
     results.queryCorrection ||
     (searchQuery && searchQuery.trim().length > 0) // Only show if typing
 
   return (
     <div ref={dropdownRef} className="relative hidden md:flex flex-1 max-w-2xl gap-2 items-center">
       <form onSubmit={handleSubmit} className="flex-1" suppressHydrationWarning>
-        <div className="relative flex items-center bg-[#FAF8F3] rounded-full px-5 h-10 transition-colors">
-          <Search className="w-5 h-5 text-black/40 mr-3 flex-shrink-0" />
+        <div
+          onClick={() => searchInputRef.current?.focus()}
+          className="relative flex items-center bg-[#FAF8F3] rounded-full pr-2 py-2 h-10 transition-colors cursor-text"
+          style={{ paddingLeft: '20px' }}
+        >
           <input
             ref={searchInputRef}
             type="text"
@@ -538,9 +542,9 @@ export function NavbarSearchBar() {
           {searchQuery && (
             <button
               type="button"
-              onClick={clearSearch}
+              onClick={(e) => clearSearch(e)}
               {...(pathname === '/posts' && { 'data-navigate': 'true' })}
-              className="ml-2 p-1 hover:bg-black/5 rounded-full transition-colors flex-shrink-0"
+              className="p-1 hover:bg-black/5 rounded-full transition-colors flex-shrink-0 -ml-3 mr-3"
               aria-label="Wyczyść wyszukiwanie"
             >
               <svg className="w-4 h-4 text-black/40 hover:text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -548,6 +552,13 @@ export function NavbarSearchBar() {
               </svg>
             </button>
           )}
+          <button
+            type="submit"
+            className="h-8 w-8 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 transition-colors flex-shrink-0 flex items-center justify-center"
+            aria-label="Szukaj"
+          >
+            <Search className="w-4 h-4" />
+          </button>
         </div>
       </form>
 

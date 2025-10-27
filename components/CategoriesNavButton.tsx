@@ -233,10 +233,23 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
       clearTimeout(closeTimeoutRef.current)
       closeTimeoutRef.current = null
     }
+
+    // Open menu on hover with slight delay
+    if (!isOpen) {
+      openTimeoutRef.current = setTimeout(() => {
+        handleOpen()
+      }, 150) // Small delay to prevent accidental opens
+    }
   }
 
   // Handle button mouse leave
   const handleButtonMouseLeave = () => {
+    // Cancel opening if hovering stopped before timeout completed
+    if (openTimeoutRef.current) {
+      clearTimeout(openTimeoutRef.current)
+      openTimeoutRef.current = null
+    }
+
     // Only start close timer if menu is open and not hovering over menu
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current)
