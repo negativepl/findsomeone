@@ -13,16 +13,8 @@ export function HeroSection({ user }: HeroSectionProps) {
   const headingText = "Znajdź pomoc w okolicy"
 
   return (
-    <section className="relative overflow-hidden pt-12 md:pt-14">
-      {/* Gradient overlay - full width with stronger visibility */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 120% 60% at 50% 0%, rgba(196, 78, 53, 0.15) 0%, rgba(196, 78, 53, 0.08) 30%, transparent 70%)'
-        }}
-      />
-
-      <div className="relative z-10 container mx-auto px-6 py-12 md:py-14 text-center">
+    <section className="relative overflow-hidden">
+      <div className="container mx-auto px-6 pt-12 pb-2 md:pt-14 md:pb-4 text-center">
         <h2 className="text-6xl md:text-7xl font-bold mb-6 text-black leading-tight">
           {headingText.split(" ").map((word, index) => (
             <motion.span

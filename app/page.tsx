@@ -88,10 +88,20 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-      <div className="min-h-screen bg-[#FAF8F3]">
-        <NavbarWithHide user={user} />
+      <div className="min-h-screen bg-[#FAF8F3] relative">
+        {/* Gradient overlay - covers entire viewport from top */}
+        <div
+          className="fixed inset-0 pointer-events-none"
+          style={{
+            background: 'radial-gradient(ellipse 120% 60% at 50% 0%, rgba(196, 78, 53, 0.15) 0%, rgba(196, 78, 53, 0.08) 30%, transparent 70%)',
+            zIndex: 0
+          }}
+        />
 
-        <HeroSection user={user} />
+        <div className="relative z-10">
+          <NavbarWithHide user={user} />
+
+          <HeroSection user={user} />
 
         {/* Features Section - Only show for non-authenticated users */}
         {!user && (
@@ -175,6 +185,7 @@ export default async function Home() {
         )}
 
         <Footer />
+        </div>
       </div>
     </>
   )
