@@ -1,0 +1,111 @@
+'use client'
+
+import Link from 'next/link'
+import { motion } from 'motion/react'
+import { Button } from '@/components/ui/button'
+import type { User } from '@supabase/supabase-js'
+
+interface HeroSectionProps {
+  user: User | null
+}
+
+export function HeroSection({ user }: HeroSectionProps) {
+  const headingText = "Znajdź pomoc w okolicy"
+
+  return (
+    <section className="relative overflow-hidden pt-12 md:pt-14">
+      {/* Gradient overlay - full width with stronger visibility */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 120% 60% at 50% 0%, rgba(196, 78, 53, 0.15) 0%, rgba(196, 78, 53, 0.08) 30%, transparent 70%)'
+        }}
+      />
+
+      <div className="relative z-10 container mx-auto px-6 py-12 md:py-14 text-center">
+        <h2 className="text-6xl md:text-7xl font-bold mb-6 text-black leading-tight">
+          {headingText.split(" ").map((word, index) => (
+            <motion.span
+              key={index}
+              initial={{ opacity: 0, filter: "blur(4px)", y: 10 }}
+              animate={{ opacity: 1, filter: "blur(0px)", y: 0 }}
+              transition={{
+                duration: 0.3,
+                delay: index * 0.1,
+                ease: "easeInOut",
+              }}
+              className="inline-block mr-2"
+            >
+              {word === "okolicy" ? (
+                <span className="relative inline-block">
+                  {word}
+                  <svg
+                    className="absolute left-0 -bottom-2 w-full"
+                    viewBox="0 0 300 12"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M2 6C50 4 100 2 150 5C200 8 250 4 298 6"
+                      stroke="#C44E35"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M2 9C50 7 100 5 150 8C200 11 250 7 298 9"
+                      stroke="#C44E35"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      opacity="0.6"
+                    />
+                  </svg>
+                </span>
+              ) : (
+                word
+              )}
+            </motion.span>
+          ))}
+        </h2>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.4 }}
+          className="text-xl text-black/60 mb-10 max-w-2xl mx-auto leading-relaxed"
+        >
+          Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu?
+          A może sam chcesz pomóc innym?{' '}
+          <span className="font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent">
+            W FindSomeone łączymy ludzi w okolicy.
+          </span>
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.6 }}
+          className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0"
+        >
+          <Link href="/posts" className="w-full md:w-auto">
+            <Button
+              size="lg"
+              variant="outline"
+              className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all min-h-[56px] md:min-w-[200px] transform hover:-translate-y-0.5"
+            >
+              Przeglądaj ogłoszenia
+            </Button>
+          </Link>
+          <Link href={user ? "/dashboard/my-posts/new" : "/signup"} className="w-full md:w-auto">
+            <Button
+              size="lg"
+              className="w-full md:w-auto text-lg px-12 py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all min-h-[56px] md:min-w-[200px] transform hover:-translate-y-0.5"
+            >
+              Dodaj ogłoszenie
+            </Button>
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  )
+}

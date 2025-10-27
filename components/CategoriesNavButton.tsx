@@ -39,6 +39,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const openTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
+  const [menuHeight, setMenuHeight] = useState<number | 'auto'>('auto')
 
   // Check if mounted (for portal)
   useEffect(() => {
@@ -83,6 +84,21 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
       setSearchQuery('')
     }
   }, [isOpen])
+
+  // Update menu height when hovered category changes
+  useEffect(() => {
+    if (!hoveredCategory || !isOpen) return
+
+    const category = categories.find(c => c.id === hoveredCategory)
+    if (category) {
+      const subcategoryCount = category.subcategories?.length || 0
+      // Base height + height per subcategory (approximately 45px per item including spacing)
+      // Adding some padding for the header and "Zobacz wszystkie" link
+      const calculatedHeight = 200 + (subcategoryCount * 45)
+      // Ensure minimum height of 550px to accommodate all category rows
+      setMenuHeight(Math.max(550, calculatedHeight))
+    }
+  }, [hoveredCategory, categories, isOpen])
 
   // Keyboard navigation
   useEffect(() => {
@@ -350,14 +366,22 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
             >
               <motion.div
                 initial={{ scale: 0.98, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
+                animate={{
+                  scale: 1,
+                  opacity: 1,
+                  height: menuHeight
+                }}
                 exit={{ scale: 0.98, opacity: 0 }}
                 transition={{
                   duration: 0.2,
-                  ease: [0.25, 0.1, 0.25, 1]
+                  ease: [0.25, 0.1, 0.25, 1],
+                  height: {
+                    duration: 0.3,
+                    ease: [0.25, 0.1, 0.25, 1]
+                  }
                 }}
                 className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8"
-                style={{ minHeight: '500px', maxHeight: '80vh', overflowY: 'auto' }}
+                style={{ minHeight: '550px', maxHeight: '80vh', overflowY: 'auto' }}
                 onClick={(e) => {
                   // Stop propagation to prevent closing when clicking inside
                   e.stopPropagation()
@@ -365,7 +389,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                 onMouseEnter={handleMenuMouseEnter}
                 onMouseLeave={handleMenuMouseLeave}
               >
-                <div className="flex gap-8" style={{ minHeight: '450px' }}>
+                <div className="flex gap-8" style={{ minHeight: '500px' }}>
                 {/* Left side - All categories grid */}
                 <div className="pr-6" style={{ flex: '0 0 65%' }}>
                   <div className="flex items-center justify-between mb-6">

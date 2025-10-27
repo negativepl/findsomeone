@@ -5,6 +5,8 @@ import { ScrollIndicator } from '@/components/ScrollIndicator'
 import { createClient } from '@/lib/supabase/server'
 import { HomepageSection } from '@/lib/homepage-sections/types'
 import { CategoryIcon } from '@/lib/category-icons'
+import { CategoryHoverCardGrid } from '@/components/CategoryHoverCardGrid'
+import { CategoryHoverCardCarousel } from '@/components/CategoryHoverCardCarousel'
 
 interface PopularCategoriesSectionProps {
   section: HomepageSection
@@ -40,55 +42,14 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
   // Render carousel layout
   const renderCarousel = (className = '') => (
     <div className={className}>
-      <div className="relative -mx-6 md:-mx-8">
-        <div className="hidden md:block">
-          <ScrollArrows containerId={`section-${section.id}-scroll`} />
-        </div>
-        <ScrollGradients containerId={`section-${section.id}-scroll`} />
-
-        <div id={`section-${section.id}-scroll`} className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
-          <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
-            {categories.map((category: any) => (
-              <Link
-                key={category.id}
-                href={`/posts?category=${category.slug}`}
-                className="flex-shrink-0 snap-center"
-                style={{ width: '280px' }}
-              >
-                <div className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all p-6 cursor-pointer h-full flex flex-col items-center justify-center text-center">
-                  <div className="w-16 h-16 rounded-full bg-[#C44E35]/10 flex items-center justify-center mb-4">
-                    <CategoryIcon iconName={category.icon} className="w-8 h-8 text-[#C44E35]" />
-                  </div>
-                  <h4 className="text-lg font-bold text-black mb-2">{category.name}</h4>
-                  <p className="text-sm text-black/60">{category.post_count} ogłoszeń</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-        <ScrollIndicator containerId={`section-${section.id}-scroll`} />
-      </div>
+      <CategoryHoverCardCarousel categories={categories} sectionId={section.id} />
     </div>
   )
 
   // Render grid layout
   const renderGrid = (className = '') => (
     <div className={className}>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {categories.map((category: any) => (
-          <Link
-            key={category.id}
-            href={`/posts?category=${category.slug}`}
-            className="border-0 rounded-3xl bg-[#F5F1E8] hover:bg-[#E5E1D8] transition-all p-6 cursor-pointer flex flex-col items-center justify-center text-center min-h-[160px]"
-          >
-            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center mb-4">
-              <CategoryIcon iconName={category.icon} className="w-8 h-8 text-[#C44E35]" />
-            </div>
-            <h4 className="text-lg font-bold text-black mb-2">{category.name}</h4>
-            <p className="text-sm text-black/60">{category.post_count} ogłoszeń</p>
-          </Link>
-        ))}
-      </div>
+      <CategoryHoverCardGrid categories={categories} />
     </div>
   )
 
