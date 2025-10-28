@@ -7,9 +7,8 @@ import { HeroSection } from '@/components/HeroSection'
 import { FeatureCard } from '@/components/FeatureCard'
 import { CTASection } from '@/components/CTASection'
 
-// Revalidate cache co 5 minut (300 sekund)
-// Można zmienić na 3600 (1h) dla większego trafficu
-export const revalidate = 300
+// Revalidate cache co 1 godzinę (3600 sekund) dla lepszej wydajności
+export const revalidate = 3600
 
 export default async function Home() {
   const supabase = await createClient()

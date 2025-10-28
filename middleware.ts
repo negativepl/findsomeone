@@ -69,6 +69,11 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    // Only run middleware on protected routes and auth pages
+    '/dashboard/:path*',
+    '/admin/:path*',
+    '/login',
+    '/signup',
+    '/posts/new/:path*',
   ],
 }
