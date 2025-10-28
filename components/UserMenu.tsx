@@ -6,11 +6,41 @@ import Image from 'next/image'
 import { createBrowserClient } from '@supabase/ssr'
 import { User } from '@supabase/supabase-js'
 import { useRouter } from 'next/navigation'
+import { LordIcon, type LordIconRef } from './LordIcon'
 
 interface UserMenuProps {
   user: User
   profile: { avatar_url: string | null; full_name: string | null } | null
   isAdmin?: boolean
+}
+
+interface MenuItemWithIconProps {
+  href: string
+  icon: string
+  children: React.ReactNode
+  onClick: () => void
+}
+
+function MenuItemWithIcon({ href, icon, children, onClick }: MenuItemWithIconProps) {
+  const iconRef = useRef<LordIconRef>(null)
+
+  const handleMouseEnter = () => {
+    if (iconRef.current) {
+      iconRef.current.trigger()
+    }
+  }
+
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-3 px-4 py-2.5 text-sm text-black hover:bg-black/5 transition-colors"
+      onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+    >
+      <LordIcon ref={iconRef} src={icon} size={20} />
+      {children}
+    </Link>
+  )
 }
 
 export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
@@ -149,29 +179,29 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
           </div>
 
           <div className="py-1">
-            <Link
+            <MenuItemWithIcon
               href="/dashboard/my-posts"
-              className="block px-4 py-2.5 text-sm text-black hover:bg-black/5 transition-colors"
+              icon="/icons/newspaper.json"
               onClick={() => setIsOpen(false)}
             >
               Moje ogłoszenia
-            </Link>
+            </MenuItemWithIcon>
 
-            <Link
+            <MenuItemWithIcon
               href="/dashboard/profile"
-              className="block px-4 py-2.5 text-sm text-black hover:bg-black/5 transition-colors"
+              icon="/icons/account.json"
               onClick={() => setIsOpen(false)}
             >
-              Profil
-            </Link>
+              Mój profil
+            </MenuItemWithIcon>
 
-            <Link
+            <MenuItemWithIcon
               href="/dashboard/settings"
-              className="block px-4 py-2.5 text-sm text-black hover:bg-black/5 transition-colors"
+              icon="/icons/settings.json"
               onClick={() => setIsOpen(false)}
             >
               Ustawienia
-            </Link>
+            </MenuItemWithIcon>
           </div>
 
           {isAdmin && (

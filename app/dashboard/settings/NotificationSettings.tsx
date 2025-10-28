@@ -56,26 +56,36 @@ export function NotificationSettings({
 
   return (
     <>
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3]">
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3] opacity-50">
         <div className="flex-1 pr-4">
-          <p className="text-base font-semibold text-black mb-1">Powiadomienia email</p>
-          <p className="text-sm text-black/60">Otrzymuj wiadomości na email</p>
+          <div className="flex items-center gap-2 mb-1">
+            <p className="text-base font-semibold text-black/60">Powiadomienia email</p>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-black/10 text-black/50 font-medium">
+              Wkrótce
+            </span>
+          </div>
+          <p className="text-sm text-black/40">Otrzymuj wiadomości na email</p>
         </div>
         <Switch
           checked={emailNotifications}
           onCheckedChange={handleEmailChange}
-          disabled={isPending}
+          disabled={true}
         />
       </div>
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3]">
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3] opacity-50">
         <div className="flex-1 pr-4">
-          <p className="text-base font-semibold text-black mb-1">Nowe wiadomości</p>
-          <p className="text-sm text-black/60">Powiadomienia o nowych wiadomościach</p>
+          <div className="flex items-center gap-2 mb-1">
+            <p className="text-base font-semibold text-black/60">Nowe wiadomości</p>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-black/10 text-black/50 font-medium">
+              Wkrótce
+            </span>
+          </div>
+          <p className="text-sm text-black/40">Powiadomienia o nowych wiadomościach</p>
         </div>
         <Switch
           checked={messageNotifications}
           onCheckedChange={handleMessageChange}
-          disabled={isPending}
+          disabled={true}
         />
       </div>
     </>

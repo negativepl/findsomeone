@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Analytics } from "@vercel/analytics/react";
+import { ConditionalAnalytics } from "@/components/ConditionalAnalytics";
 import TopLoader from "@/components/TopLoader";
 import { MobileDockWrapper } from "@/components/MobileDockWrapper";
 import { InstallPrompt } from "@/components/InstallPrompt";
@@ -99,8 +98,7 @@ export default async function RootLayout({
           <InstallPrompt />
           <CookieConsent />
         </Providers>
-        <SpeedInsights />
-        <Analytics />
+        <ConditionalAnalytics />
       </body>
     </html>
   );
