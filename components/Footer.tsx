@@ -12,7 +12,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-black/5 bg-white rounded-t-3xl mt-12 md:mt-14 pb-24 md:pb-0">
+    <footer className="border-t border-black/5 bg-white rounded-t-3xl mt-12 md:mt-14 pb-20 md:pb-0">
       <div className="container mx-auto px-6 pt-12 pb-6">
         <div className="grid md:grid-cols-4 gap-4 md:gap-8 mb-8">
           {/* Logo i opis */}
@@ -35,7 +35,7 @@ export function Footer() {
             >
               <h4 className="font-semibold text-lg text-black">Główne</h4>
               <svg
-                className={`w-5 h-5 text-black/60 transition-transform md:hidden ${
+                className={`w-5 h-5 text-black/60 transition-transform duration-200 ease-out md:hidden ${
                   openSection === 'main' ? 'rotate-180' : ''
                 }`}
                 fill="none"
@@ -47,9 +47,10 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all md:!block ${
+              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all duration-200 ease-out md:!block ${
                 openSection === 'main' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
               }`}
+              style={{ willChange: openSection === 'main' ? 'max-height' : 'auto' }}
             >
               <li><Link href="/posts" className="hover:text-black transition-colors inline-block py-2">Przeglądaj ogłoszenia</Link></li>
               <li><Link href="/how-it-works" className="hover:text-black transition-colors inline-block py-2">Jak to działa</Link></li>
@@ -68,7 +69,7 @@ export function Footer() {
             >
               <h4 className="font-semibold text-lg text-black">Kategorie</h4>
               <svg
-                className={`w-5 h-5 text-black/60 transition-transform md:hidden ${
+                className={`w-5 h-5 text-black/60 transition-transform duration-200 ease-out md:hidden ${
                   openSection === 'categories' ? 'rotate-180' : ''
                 }`}
                 fill="none"
@@ -80,9 +81,10 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all md:!block ${
+              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all duration-200 ease-out md:!block ${
                 openSection === 'categories' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
               }`}
+              style={{ willChange: openSection === 'categories' ? 'max-height' : 'auto' }}
             >
               <li><Link href="/posts?category=elektronika" className="hover:text-black transition-colors inline-block py-2">Elektronika</Link></li>
               <li><Link href="/posts?category=dom-i-ogrod" className="hover:text-black transition-colors inline-block py-2">Dom i ogród</Link></li>
@@ -101,7 +103,7 @@ export function Footer() {
             >
               <h4 className="font-semibold text-lg text-black">Firma</h4>
               <svg
-                className={`w-5 h-5 text-black/60 transition-transform md:hidden ${
+                className={`w-5 h-5 text-black/60 transition-transform duration-200 ease-out md:hidden ${
                   openSection === 'company' ? 'rotate-180' : ''
                 }`}
                 fill="none"
@@ -113,9 +115,10 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all md:!block ${
+              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all duration-200 ease-out md:!block ${
                 openSection === 'company' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
               }`}
+              style={{ willChange: openSection === 'company' ? 'max-height' : 'auto' }}
             >
               <li><Link href="/about" className="hover:text-black transition-colors inline-block py-2">O nas</Link></li>
               <li><Link href="/terms" className="hover:text-black transition-colors inline-block py-2">Regulamin</Link></li>
