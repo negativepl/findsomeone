@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import Script from 'next/script'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { SectionRenderer } from '@/lib/homepage-sections/SectionRenderer'
 import { createClient } from '@/lib/supabase/server'
 import { HeroSection } from '@/components/HeroSection'
+import { FeatureCard } from '@/components/FeatureCard'
 
 // Revalidate cache co 5 minut (300 sekund)
 // Można zmienić na 3600 (1h) dla większego trafficu
@@ -107,47 +107,23 @@ export default async function Home() {
         {!user && (
           <section className="container mx-auto px-6 py-12 md:py-14">
             <div className="grid md:grid-cols-3 gap-6">
-              <Card className="border-0 rounded-3xl bg-white shadow-sm">
-                <CardContent className="p-8">
-                  <div className="w-14 h-14 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-5">
-                    <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 text-black">Darmowe ogłoszenia</h3>
-                  <p className="text-black/60 leading-relaxed">
-                    Dodawanie ogłoszeń jest całkowicie darmowe. Bez ukrytych opłat, bez limitów. Publikuj ile chcesz!
-                  </p>
-                </CardContent>
-              </Card>
+              <FeatureCard
+                animationPath="/animations/coins.json"
+                title="Darmowe ogłoszenia"
+                description="Dodawanie ogłoszeń jest całkowicie darmowe. Bez ukrytych opłat, bez limitów. Publikuj ile chcesz!"
+              />
 
-              <Card className="border-0 rounded-3xl bg-white shadow-sm">
-                <CardContent className="p-8">
-                  <div className="w-14 h-14 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-5">
-                    <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 text-black">Szybki kontakt</h3>
-                  <p className="text-black/60 leading-relaxed">
-                    Wbudowany system wiadomości umożliwia bezpieczną komunikację. Negocjuj warunki i ustalaj szczegóły bez podawania telefonu.
-                  </p>
-                </CardContent>
-              </Card>
+              <FeatureCard
+                animationPath="/animations/conversation.json"
+                title="Szybki kontakt"
+                description="Wbudowany system wiadomości umożliwia bezpieczną komunikację. Negocjuj warunki i ustalaj szczegóły bez podawania telefonu."
+              />
 
-              <Card className="border-0 rounded-3xl bg-white shadow-sm">
-                <CardContent className="p-8">
-                  <div className="w-14 h-14 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center mb-5">
-                    <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-3 text-black">Bezpieczne i zaufane</h3>
-                  <p className="text-black/60 leading-relaxed">
-                    System ocen i opinii pomaga budować zaufanie. Moderacja AI i zgłoszenia zapewniają bezpieczeństwo platformy.
-                  </p>
-                </CardContent>
-              </Card>
+              <FeatureCard
+                animationPath="/animations/heart.json"
+                title="Bezpieczne i zaufane"
+                description="System ocen i opinii pomaga budować zaufanie. Moderacja AI i zgłoszenia zapewniają bezpieczeństwo platformy."
+              />
             </div>
           </section>
         )}
