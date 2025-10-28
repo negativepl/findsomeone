@@ -231,7 +231,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
     // Set a delay before closing to allow returning to button
     closeTimeoutRef.current = setTimeout(() => {
       handleClose()
-    }, 50) // Delay to allow returning to button/menu
+    }, 300) // Delay to allow returning to button/menu
   }
 
   const handleMenuMouseEnter = () => {
@@ -275,7 +275,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
     if (isOpen) {
       closeTimeoutRef.current = setTimeout(() => {
         handleClose()
-      }, 50) // Delay to allow moving to menu
+      }, 300) // Delay to allow moving to menu
     }
   }
 
@@ -347,7 +347,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
               />
               {/* Invisible bridge between button and menu */}
               <div
-                className="hidden md:flex fixed pointer-events-auto justify-center"
+                className="hidden md:flex fixed pointer-events-none justify-center"
                 style={{
                   top: '0',
                   left: 0,
@@ -355,10 +355,13 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                   height: '96px',
                   zIndex: 10000
                 }}
-                onMouseEnter={handleMenuMouseEnter}
-                onMouseLeave={handleMenuMouseLeave}
               >
-                <div style={{ width: 'min(1200px, calc(100vw - 32px))' }} />
+                <div
+                  className="pointer-events-auto"
+                  style={{ width: 'min(1200px, calc(100vw - 32px))' }}
+                  onMouseEnter={handleMenuMouseEnter}
+                  onMouseLeave={handleMenuMouseLeave}
+                />
               </div>
             </>
           )}
@@ -378,20 +381,12 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
               duration: 0.2,
               ease: [0.25, 0.1, 0.25, 1] // Smoother, more natural easing
             }}
-            className="hidden md:flex fixed justify-center"
+            className="hidden md:flex fixed justify-center pointer-events-none"
             style={{
               top: '108px',
               left: 0,
               right: 0,
               zIndex: 10001
-            }}
-            onMouseEnter={handleMenuMouseEnter}
-            onMouseLeave={handleMenuMouseLeave}
-            onClick={(e) => {
-              // Close if clicking on the outer container
-              if (e.target === e.currentTarget) {
-                handleClose()
-              }
             }}
           >
             <motion.div
@@ -410,12 +405,8 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                     ease: [0.25, 0.1, 0.25, 1]
                   }
                 }}
-                className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8"
+                className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8 pointer-events-auto"
                 style={{ maxHeight: '80vh', width: 'min(1200px, calc(100vw - 32px))', overflowY: 'auto' }}
-                onClick={(e) => {
-                  // Stop propagation to prevent closing when clicking inside
-                  e.stopPropagation()
-                }}
                 onMouseEnter={handleMenuMouseEnter}
                 onMouseLeave={handleMenuMouseLeave}
               >
