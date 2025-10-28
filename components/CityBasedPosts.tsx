@@ -83,62 +83,9 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
       }
     }
 
-    async function detectCityAndFetchPosts() {
-      try {
-        // Get user's location from geolocation API
-        if (!navigator.geolocation) {
-          await detectCityByIP()
-          return
-        }
-
-        navigator.geolocation.getCurrentPosition(
-          async (position) => {
-            const { latitude, longitude } = position.coords
-
-            // Reverse geocode to get city name using Nominatim (free OpenStreetMap service)
-            try {
-              const response = await fetch(
-                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=pl`,
-                {
-                  headers: {
-                    'User-Agent': 'FindSomeone/1.0'
-                  }
-                }
-              )
-              const data = await response.json()
-
-              // Extract city from address
-              const detectedCity = data.address?.city || data.address?.town || data.address?.village || null
-
-              if (detectedCity) {
-                setCity(detectedCity)
-                await fetchPostsByCity(detectedCity)
-                setLoading(false)
-              } else {
-                // Fallback to IP-based detection
-                await detectCityByIP()
-              }
-            } catch (error) {
-              await detectCityByIP()
-            }
-          },
-          async (error) => {
-            // Geolocation failed, fallback to IP-based detection
-            await detectCityByIP()
-          },
-          {
-            enableHighAccuracy: false,
-            timeout: 10000,
-            maximumAge: 300000 // Cache for 5 minutes
-          }
-        )
-      } catch (error) {
-        // Silently fail - city detection is optional feature
-        setLoading(false)
-      }
-    }
-
-    detectCityAndFetchPosts()
+    // Use IP-based detection only (no permission prompt)
+    // GPS-based geolocation should only be triggered by user action
+    detectCityByIP()
   }, [])
 
   if (loading || !city || posts.length === 0) {
