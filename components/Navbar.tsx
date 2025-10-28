@@ -53,7 +53,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
   return (
     <header className="fixed top-0 left-0 right-0 bg-white border-b border-black/5 rounded-b-3xl" style={{ zIndex: 9999 }}>
       <div className="container mx-auto px-6">
-        <nav className="flex items-center justify-between gap-3 md:gap-4 h-24">
+        <nav className="flex items-center justify-between gap-3 md:gap-4 h-16 md:h-20">
           {/* Left Section */}
           {stepInfo ? (
             <div className="flex items-center gap-3 min-w-0">
