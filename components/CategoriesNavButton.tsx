@@ -347,17 +347,19 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
               />
               {/* Invisible bridge between button and menu */}
               <div
-                className="hidden md:block fixed pointer-events-auto"
+                className="hidden md:flex fixed pointer-events-auto justify-center"
                 style={{
                   top: '0',
-                  left: '0',
-                  width: '1240px',
+                  left: 0,
+                  right: 0,
                   height: '96px',
                   zIndex: 10000
                 }}
                 onMouseEnter={handleMenuMouseEnter}
                 onMouseLeave={handleMenuMouseLeave}
-              />
+              >
+                <div style={{ width: 'min(1200px, calc(100vw - 32px))' }} />
+              </div>
             </>
           )}
         </AnimatePresence>,
@@ -376,12 +378,11 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
               duration: 0.2,
               ease: [0.25, 0.1, 0.25, 1] // Smoother, more natural easing
             }}
-            className="hidden md:block fixed"
+            className="hidden md:flex fixed justify-center"
             style={{
               top: '108px',
-              left: '16px',
-              right: '16px',
-              margin: '0 auto',
+              left: 0,
+              right: 0,
               zIndex: 10001
             }}
             onMouseEnter={handleMenuMouseEnter}
@@ -410,7 +411,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                   }
                 }}
                 className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8"
-                style={{ maxHeight: '80vh', width: 'calc(100vw - 32px)', maxWidth: '1200px', overflowY: 'auto' }}
+                style={{ maxHeight: '80vh', width: 'min(1200px, calc(100vw - 32px))', overflowY: 'auto' }}
                 onClick={(e) => {
                   // Stop propagation to prevent closing when clicking inside
                   e.stopPropagation()

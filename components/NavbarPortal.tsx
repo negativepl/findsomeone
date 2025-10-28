@@ -15,8 +15,9 @@ export function NavbarPortal({ children }: NavbarPortalProps) {
     setMounted(true)
   }, [])
 
+  // Render directly until mounted to avoid flash
   if (!mounted || typeof window === 'undefined') {
-    return null
+    return <>{children}</>
   }
 
   return createPortal(
