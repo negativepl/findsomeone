@@ -347,24 +347,6 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                 style={{ zIndex: 9998 }}
                 onClick={handleClose}
               />
-              {/* Invisible bridge between button and menu */}
-              <div
-                className="hidden md:flex fixed pointer-events-none justify-center"
-                style={{
-                  top: '0',
-                  left: 0,
-                  right: 0,
-                  height: '92px',
-                  zIndex: 10000
-                }}
-              >
-                <div
-                  className="pointer-events-auto"
-                  style={{ width: 'min(1200px, calc(100vw - 32px))' }}
-                  onMouseEnter={handleMenuMouseEnter}
-                  onMouseLeave={handleMenuMouseLeave}
-                />
-              </div>
             </>
           )}
         </AnimatePresence>,

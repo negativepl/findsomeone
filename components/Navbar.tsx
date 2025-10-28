@@ -108,7 +108,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
             {user ? (
               <>
                 {showAddButton && (
-                  <Link href="/posts/new">
+                  <Link href="/dashboard/my-posts/new">
                     <Button className="bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold rounded-full h-10 px-4 lg:px-6 transition-all border-0">
                       Dodaj ogłoszenie
                     </Button>

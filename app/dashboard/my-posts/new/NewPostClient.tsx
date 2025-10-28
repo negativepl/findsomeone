@@ -551,7 +551,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   }
 
   return (
-      <main className="md:container md:mx-auto px-4 md:px-6 h-full md:h-auto md:py-16 flex flex-col md:block">
+      <main className="md:container md:mx-auto px-4 md:px-6 h-full md:h-auto md:py-4 flex flex-col md:block">
         {/* Draft Recovery Modal */}
         {showDraftModal && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">

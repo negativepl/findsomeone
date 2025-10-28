@@ -51,7 +51,6 @@ export function Footer() {
                 openSection === 'main' ? 'block mb-4' : 'hidden md:max-h-none'
               }`}
             >
-              <li><Link href="/posts" className="hover:text-black transition-colors inline-block py-2">Przeglądaj ogłoszenia</Link></li>
               <li><Link href="/how-it-works" className="hover:text-black transition-colors inline-block py-2">Jak to działa</Link></li>
               <li><Link href="/install" className="hover:text-black transition-colors inline-block py-2">Zainstaluj aplikację</Link></li>
               <li><Link href="/faq" className="hover:text-black transition-colors inline-block py-2">FAQ</Link></li>
