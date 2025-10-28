@@ -5,10 +5,8 @@ import { UserMenu } from '@/components/UserMenu'
 import { MessagesIcon } from '@/components/MessagesIcon'
 import { FavoritesIcon } from '@/components/FavoritesIcon'
 import { MobileNavIcons } from '@/components/MobileNavIcons'
-import { NavbarSearchBar } from '@/components/NavbarSearchBar'
+import { NavbarSearchWrapper } from '@/components/NavbarSearchWrapper'
 import { CategoriesNavButton } from '@/components/CategoriesNavButton'
-import { NavbarWrapper } from '@/components/NavbarWrapper'
-import { NavbarContent } from '@/components/NavbarContent'
 import { User } from '@supabase/supabase-js'
 import { getUserRole } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -53,94 +51,95 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
     .order('name')
 
   return (
-    <NavbarWrapper>
-      <header>
-        <NavbarContent>
-        {stepInfo ? (
-          <div className="flex items-center gap-3 min-w-0">
-            {stepInfo}
-            <div className="hidden md:block shrink-0">
-              <Link href="/">
-                <LogoWithText />
-              </Link>
-            </div>
-          </div>
-        ) : pageTitle ? (
-          <>
-            <h1 className="text-xl font-bold text-black md:hidden">{pageTitle}</h1>
-            <div className="hidden md:flex gap-3 items-center min-w-0">
-              <div className="shrink-0">
-                {categories && categories.length > 0 && (
-                  <CategoriesNavButton categories={categories} />
-                )}
-              </div>
-              <Link href="/" className="shrink-0">
-                <LogoWithText />
-              </Link>
-            </div>
-          </>
-        ) : (
-          <div className="hidden md:flex gap-3 items-center min-w-0">
-            <div className="shrink-0">
-              {categories && categories.length > 0 && (
-                <CategoriesNavButton categories={categories} />
-              )}
-            </div>
-            <Link href="/" className="shrink-0">
-              <LogoWithText />
-            </Link>
-          </div>
-        )}
-
-        {/* Search Bar - Desktop (centered) */}
-        <div className="hidden md:flex items-center justify-center min-w-0">
-          <NavbarSearchBar />
-        </div>
-
-        {/* Desktop Navigation (right aligned) */}
-        <nav className="hidden md:flex gap-2 lg:gap-3 items-center justify-end min-w-0">
-          {user ? (
-            <>
-              {showAddButton && (
-                <Link href="/dashboard/my-posts/new" className="shrink-0">
-                  <Button className="h-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 text-sm px-6 whitespace-nowrap">
-                    Dodaj ogłoszenie
-                  </Button>
+    <header className="fixed top-0 left-0 right-0 bg-white border-b border-black/5 rounded-b-3xl" style={{ zIndex: 9999 }}>
+      <div className="container mx-auto px-6">
+        <nav className="flex items-center justify-between gap-3 md:gap-4 h-24">
+          {/* Left Section */}
+          {stepInfo ? (
+            <div className="flex items-center gap-3 min-w-0">
+              {stepInfo}
+              <div className="hidden md:block shrink-0">
+                <Link href="/">
+                  <LogoWithText />
                 </Link>
-              )}
-              <div className="shrink-0">
-                <FavoritesIcon user={user} />
               </div>
-              <div className="shrink-0">
-                <MessagesIcon user={user} />
-              </div>
-              <div className="shrink-0">
-                <UserMenu user={user} profile={profile} isAdmin={isAdmin} />
+            </div>
+          ) : pageTitle ? (
+            <>
+              <h1 className="text-xl font-bold text-black md:hidden">{pageTitle}</h1>
+              <div className="hidden md:flex gap-3 items-center min-w-0">
+                <div className="shrink-0">
+                  {categories && categories.length > 0 && (
+                    <CategoriesNavButton categories={categories} />
+                  )}
+                </div>
+                <Link href="/" className="shrink-0">
+                  <LogoWithText />
+                </Link>
               </div>
             </>
           ) : (
             <>
-              <Link href="/login" className="shrink-0">
-                <Button variant="ghost" className="h-10 rounded-full hover:bg-black/5 text-sm px-6 whitespace-nowrap">
-                  Zaloguj się
-                </Button>
+              {/* Mobile - Logo only */}
+              <Link href="/" className="md:hidden shrink-0">
+                <LogoWithText />
               </Link>
-              <Link href="/signup" className="shrink-0">
-                <Button className="h-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 text-sm px-6 whitespace-nowrap">
-                  Zarejestruj się
-                </Button>
-              </Link>
+              {/* Desktop - Categories + Logo */}
+              <div className="hidden md:flex gap-3 items-center min-w-0">
+                <div className="shrink-0">
+                  {categories && categories.length > 0 && (
+                    <CategoriesNavButton categories={categories} />
+                  )}
+                </div>
+                <Link href="/" className="shrink-0">
+                  <LogoWithText />
+                </Link>
+              </div>
             </>
           )}
-        </nav>
 
-        {/* Mobile Navigation - Icons only */}
-        <div className="md:hidden flex items-center gap-1.5">
-          {/* Mobile Nav Icons (Search, Messages, Favorites) */}
-          <MobileNavIcons user={user} />
-        </div>
-        </NavbarContent>
-      </header>
-    </NavbarWrapper>
+          {/* Center Section - Search Bar (Desktop only) */}
+          <div className="hidden md:flex flex-1 justify-center px-4 lg:px-8">
+            <NavbarSearchWrapper />
+          </div>
+
+          {/* Right Section - Desktop */}
+          <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
+            {user ? (
+              <>
+                {showAddButton && (
+                  <Link href="/posts/new">
+                    <Button className="bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold rounded-full h-10 px-4 lg:px-6 transition-all border-0">
+                      Dodaj ogłoszenie
+                    </Button>
+                  </Link>
+                )}
+                <FavoritesIcon user={user} />
+                <MessagesIcon user={user} />
+                <UserMenu user={user} profile={profile} isAdmin={isAdmin} />
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" className="font-semibold rounded-full h-10 px-4 lg:px-6">
+                    Zaloguj
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button className="bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold rounded-full h-10 px-4 lg:px-6 transition-all border-0">
+                    Zarejestruj
+                  </Button>
+                </Link>
+              </>
+            )}
+          </div>
+
+          {/* Right Section - Mobile */}
+          <div className="md:hidden flex items-center gap-1.5">
+            <MobileNavIcons user={user} />
+          </div>
+        </nav>
+      </div>
+    </header>
   )
 }

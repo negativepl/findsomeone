@@ -521,7 +521,7 @@ export function NavbarSearchBar() {
     (searchQuery && searchQuery.trim().length > 0) // Only show if typing
 
   return (
-    <div ref={dropdownRef} className="relative hidden md:flex flex-1 max-w-2xl gap-2 items-center">
+    <div ref={dropdownRef} className="relative hidden md:flex w-full max-w-3xl gap-2 items-center">
       <form onSubmit={handleSubmit} className="flex-1" suppressHydrationWarning>
         <div
           onClick={() => searchInputRef.current?.focus()}
@@ -760,10 +760,20 @@ export function NavbarSearchBar() {
             if (!isCityDropdownOpen) handleCityFocus()
             setIsOpen(false) // Close autocomplete when opening location
           }}
-          className="flex items-center gap-2 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-full px-4 h-10 transition-colors w-full"
+          className="flex items-center gap-2 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-full h-10 transition-colors flex-shrink-0 px-4"
         >
           <MapPin className="w-4 h-4 text-[#C44E35] flex-shrink-0" />
-          <span className="text-sm text-black font-medium truncate max-w-[120px]">
+          <style>{`
+            .location-label-text {
+              display: none;
+            }
+            @media (min-width: 1280px) {
+              .location-label-text {
+                display: inline !important;
+              }
+            }
+          `}</style>
+          <span className="location-label-text text-sm text-black font-medium truncate max-w-[140px]">
             {selectedCity || 'Lokalizacja'}
           </span>
           {selectedCity && (

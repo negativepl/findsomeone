@@ -40,32 +40,10 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
   const openTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
   const [menuHeight, setMenuHeight] = useState<number | 'auto'>('auto')
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isDesktop, setIsDesktop] = useState(true)
 
   // Check if mounted (for portal)
   useEffect(() => {
     setMounted(true)
-    setIsDesktop(window.innerWidth >= 768)
-  }, [])
-
-  // Track scroll state for navbar
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-
-    const handleResize = () => {
-      setIsDesktop(window.innerWidth >= 768)
-    }
-
-    handleScroll()
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('resize', handleResize, { passive: true })
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('resize', handleResize)
-    }
   }, [])
 
   // Handle opening with animation
@@ -109,7 +87,24 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
 
   // Update menu height when hovered category changes
   useEffect(() => {
-    if (!hoveredCategory || !isOpen) return
+    if (!isOpen) return
+
+    // Calculate minimum height needed for all categories in the grid
+    const totalCategories = categories.length
+    // Use 3 columns for calculation (worst case - md/lg breakpoints)
+    // On xl+ it's 5 columns so there will be fewer rows and extra space
+    const columnsCount = 3
+    const rowsNeeded = Math.ceil(totalCategories / columnsCount)
+    const categoryRowHeight = 140 // approximate height per row including gap
+    const headerHeight = 180 // search bar and title
+    const paddingAndMargins = 100 // p-8 padding and extra space
+    const minHeightForCategories = headerHeight + (rowsNeeded * categoryRowHeight) + paddingAndMargins
+
+    if (!hoveredCategory) {
+      // Reset to auto when no category is hovered
+      setMenuHeight('auto')
+      return
+    }
 
     const category = categories.find(c => c.id === hoveredCategory)
     if (category) {
@@ -117,8 +112,8 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
       // Base height + height per subcategory (approximately 45px per item including spacing)
       // Adding some padding for the header and "Zobacz wszystkie" link
       const calculatedHeight = 200 + (subcategoryCount * 45)
-      // Ensure minimum height of 550px to accommodate all category rows
-      setMenuHeight(Math.max(550, calculatedHeight))
+      // Ensure minimum height to accommodate all category rows
+      setMenuHeight(Math.max(minHeightForCategories, calculatedHeight))
     }
   }, [hoveredCategory, categories, isOpen])
 
@@ -340,35 +335,33 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
       {mounted && typeof window !== 'undefined' && createPortal(
         <AnimatePresence>
           {isOpen && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/20 backdrop-blur-sm"
-              style={{ zIndex: 9998 }}
-              onClick={handleClose}
-            />
+            <>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="fixed inset-0 bg-black/20 backdrop-blur-sm"
+                style={{ zIndex: 9998 }}
+                onClick={handleClose}
+              />
+              {/* Invisible bridge between button and menu */}
+              <div
+                className="hidden md:block fixed pointer-events-auto"
+                style={{
+                  top: '0',
+                  left: '0',
+                  width: '1240px',
+                  height: '96px',
+                  zIndex: 10000
+                }}
+                onMouseEnter={handleMenuMouseEnter}
+                onMouseLeave={handleMenuMouseLeave}
+              />
+            </>
           )}
         </AnimatePresence>,
         document.body
-      )}
-
-      {/* Invisible bridge between button and menu */}
-      {isOpen && (
-        <div
-          className="hidden md:block fixed pointer-events-auto"
-          style={{
-            top: '0',
-            left: '0',
-            width: '1240px',
-            height: isScrolled && isDesktop ? '94px' : '100px',
-            transition: 'height 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)',
-            zIndex: 9998
-          }}
-          onMouseEnter={handleMenuMouseEnter}
-          onMouseLeave={handleMenuMouseLeave}
-        />
       )}
 
       {/* Mega Menu Panel via portal - positioned below navbar */}
@@ -385,10 +378,11 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
             }}
             className="hidden md:block fixed"
             style={{
-              top: isScrolled && isDesktop ? '94px' : '100px',
-              left: isScrolled && isDesktop ? 'calc((100vw - 1488px) / 2 + 16px)' : '16px',
-              transition: 'top 0.4s cubic-bezier(0.4, 0.0, 0.2, 1), left 0.4s cubic-bezier(0.4, 0.0, 0.2, 1)',
-              zIndex: 9999
+              top: '108px',
+              left: '16px',
+              right: '16px',
+              margin: '0 auto',
+              zIndex: 10001
             }}
             onMouseEnter={handleMenuMouseEnter}
             onMouseLeave={handleMenuMouseLeave}
@@ -416,7 +410,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                   }
                 }}
                 className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8"
-                style={{ minHeight: '550px', maxHeight: '80vh', width: '1200px', overflowY: 'auto' }}
+                style={{ maxHeight: '80vh', width: 'calc(100vw - 32px)', maxWidth: '1200px', overflowY: 'auto' }}
                 onClick={(e) => {
                   // Stop propagation to prevent closing when clicking inside
                   e.stopPropagation()
@@ -424,7 +418,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                 onMouseEnter={handleMenuMouseEnter}
                 onMouseLeave={handleMenuMouseLeave}
               >
-                <div className="flex gap-8" style={{ minHeight: '500px' }}>
+                <div className="flex gap-8">
                 {/* Left side - All categories grid */}
                 <div className="pr-6" style={{ flex: '0 0 65%' }}>
                   <div className="flex items-center justify-between mb-6">
@@ -459,7 +453,17 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                       )}
                     </div>
                   </div>
-                  <div className="grid gap-3 relative" style={{ gridTemplateColumns: 'repeat(5, minmax(0, 1fr))' }}>
+                  <style>{`
+                    .categories-grid {
+                      grid-template-columns: repeat(3, minmax(0, 1fr));
+                    }
+                    @media (min-width: 1024px) {
+                      .categories-grid {
+                        grid-template-columns: repeat(5, minmax(0, 1fr));
+                      }
+                    }
+                  `}</style>
+                  <div className="categories-grid grid gap-3 relative">
                     {(() => {
                       // Filter by category name OR subcategory names
                       const filteredCategories = categories.filter(cat => {

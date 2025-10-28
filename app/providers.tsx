@@ -58,7 +58,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           className: 'sonner-toast',
         }}
       />
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="top-right" />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
     </QueryClientProvider>
   )
 }

@@ -1,5 +1,5 @@
 import { Navbar } from './Navbar'
-import { NavbarWrapper } from './NavbarWrapper'
+import { NavbarPortal } from './NavbarPortal'
 import { User } from '@supabase/supabase-js'
 import { ReactNode } from 'react'
 
@@ -15,10 +15,10 @@ interface NavbarWithHideProps {
 export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible = true, noRounding = false, pageTitle, stepInfo }: NavbarWithHideProps) {
   return (
     <>
-      <NavbarWrapper alwaysVisible={alwaysVisible}>
+      <NavbarPortal>
         <Navbar user={user} showAddButton={showAddButton} noRounding={noRounding} pageTitle={pageTitle} stepInfo={stepInfo} />
-      </NavbarWrapper>
-      <div className="h-16" /> {/* Spacer for fixed navbar */}
+      </NavbarPortal>
+      <div className="h-24" /> {/* Spacer for fixed navbar */}
     </>
   )
 }
