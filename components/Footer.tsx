@@ -47,10 +47,9 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all duration-200 ease-out md:!block ${
-                openSection === 'main' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
+              className={`space-y-2 text-sm text-black/60 md:!block ${
+                openSection === 'main' ? 'block mb-4' : 'hidden md:max-h-none'
               }`}
-              style={{ willChange: openSection === 'main' ? 'max-height' : 'auto' }}
             >
               <li><Link href="/posts" className="hover:text-black transition-colors inline-block py-2">Przeglądaj ogłoszenia</Link></li>
               <li><Link href="/how-it-works" className="hover:text-black transition-colors inline-block py-2">Jak to działa</Link></li>
@@ -81,10 +80,9 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all duration-200 ease-out md:!block ${
-                openSection === 'categories' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
+              className={`space-y-2 text-sm text-black/60 md:!block ${
+                openSection === 'categories' ? 'block mb-4' : 'hidden md:max-h-none'
               }`}
-              style={{ willChange: openSection === 'categories' ? 'max-height' : 'auto' }}
             >
               <li><Link href="/posts?category=elektronika" className="hover:text-black transition-colors inline-block py-2">Elektronika</Link></li>
               <li><Link href="/posts?category=dom-i-ogrod" className="hover:text-black transition-colors inline-block py-2">Dom i ogród</Link></li>
@@ -115,10 +113,9 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 overflow-hidden transition-all duration-200 ease-out md:!block ${
-                openSection === 'company' ? 'max-h-48 mb-4' : 'max-h-0 md:max-h-none'
+              className={`space-y-2 text-sm text-black/60 md:!block ${
+                openSection === 'company' ? 'block mb-4' : 'hidden md:max-h-none'
               }`}
-              style={{ willChange: openSection === 'company' ? 'max-height' : 'auto' }}
             >
               <li><Link href="/about" className="hover:text-black transition-colors inline-block py-2">O nas</Link></li>
               <li><Link href="/terms" className="hover:text-black transition-colors inline-block py-2">Regulamin</Link></li>
