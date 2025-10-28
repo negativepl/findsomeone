@@ -15,7 +15,7 @@ export function FeatureCard({ animationPath, title, description }: FeatureCardPr
 
   return (
     <Card
-      className="border-0 rounded-3xl bg-white shadow-sm transition-shadow hover:shadow-md"
+      className="border-0 rounded-3xl bg-white shadow-sm"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

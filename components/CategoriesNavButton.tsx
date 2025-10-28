@@ -294,6 +294,8 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
         onMouseEnter={handleButtonMouseEnter}
         onMouseLeave={handleButtonMouseLeave}
         className="w-10 h-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-all duration-200 flex items-center justify-center border-0 hover:shadow-sm"
+        aria-label="Kategorie"
+        aria-expanded={isOpen}
       >
         <div className="w-6 h-6 flex items-center justify-center">
           <div className="w-5 h-4 flex flex-col justify-between">

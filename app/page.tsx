@@ -1,12 +1,11 @@
-import Link from 'next/link'
 import Script from 'next/script'
-import { Button } from '@/components/ui/button'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { SectionRenderer } from '@/lib/homepage-sections/SectionRenderer'
 import { createClient } from '@/lib/supabase/server'
 import { HeroSection } from '@/components/HeroSection'
 import { FeatureCard } from '@/components/FeatureCard'
+import { CTASection } from '@/components/CTASection'
 
 // Revalidate cache co 5 minut (300 sekund)
 // Można zmienić na 3600 (1h) dla większego trafficu
@@ -121,7 +120,7 @@ export default async function Home() {
 
               <FeatureCard
                 animationPath="/animations/heart.json"
-                title="Bezpieczne i zaufane"
+                title="Bezpieczeństwo"
                 description="System ocen i opinii pomaga budować zaufanie. Moderacja AI i zgłoszenia zapewniają bezpieczeństwo platformy."
               />
             </div>
@@ -139,26 +138,7 @@ export default async function Home() {
         ))}
 
         {/* CTA Section - Only show for non-authenticated users - at bottom */}
-        {!user && (
-          <section className="container mx-auto px-6 py-12 md:py-14 text-center">
-            <div className="bg-[#1A1A1A] rounded-[3rem] p-16 text-white relative overflow-hidden">
-              {/* Dekoracyjny gradient w tle */}
-              <div className="absolute inset-0 bg-gradient-to-br from-[#F4A261]/10 to-transparent pointer-events-none" />
-
-              <div className="relative z-10">
-                <h3 className="text-5xl font-bold mb-6">Czas zacząć!</h3>
-                <p className="text-xl mb-10 text-white/70 max-w-2xl mx-auto">
-                  Dołącz do tysięcy użytkowników, którzy znajdują i oferują lokalne usługi
-                </p>
-                <Link href="/signup">
-                  <Button size="lg" className="text-lg px-10 py-6 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 transition-all">
-                    Utwórz darmowe konto
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </section>
-        )}
+        {!user && <CTASection />}
 
         <Footer />
         </div>

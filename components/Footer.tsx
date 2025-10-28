@@ -12,7 +12,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-black/5 bg-white rounded-t-3xl pb-24 md:pb-0">
+    <footer className="border-t border-black/5 bg-white rounded-t-3xl mt-12 md:mt-14 pb-24 md:pb-0">
       <div className="container mx-auto px-6 pt-12 pb-6">
         <div className="grid md:grid-cols-4 gap-4 md:gap-8 mb-8">
           {/* Logo i opis */}
