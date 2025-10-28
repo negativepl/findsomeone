@@ -125,7 +125,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
                     Zaloguj
                   </Button>
                 </Link>
-                <Link href="/register">
+                <Link href="/signup">
                   <Button className="bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold rounded-full h-10 px-4 lg:px-6 transition-all border-0">
                     Zarejestruj
                   </Button>
