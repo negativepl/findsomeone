@@ -13,16 +13,18 @@ export const revalidate = 3600
 export default async function Home() {
   const supabase = await createClient()
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
-  // Fetch active homepage sections
-  const { data: sections } = await supabase
-    .from('homepage_sections')
-    .select('*')
-    .eq('is_active', true)
-    .order('sort_order', { ascending: true })
+  // Fetch user and sections in parallel for better performance
+  const [
+    { data: { user } },
+    { data: sections }
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    supabase
+      .from('homepage_sections')
+      .select('*')
+      .eq('is_active', true)
+      .order('sort_order', { ascending: true })
+  ])
 
   // Fetch user favorites if logged in
   let userFavorites: string[] = []

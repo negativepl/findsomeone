@@ -354,7 +354,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                   top: '0',
                   left: 0,
                   right: 0,
-                  height: '76px',
+                  height: '92px',
                   zIndex: 10000
                 }}
               >
@@ -385,7 +385,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
             }}
             className="hidden md:flex fixed justify-center pointer-events-none"
             style={{
-              top: '76px',
+              top: '92px',
               left: 0,
               right: 0,
               zIndex: 10001
