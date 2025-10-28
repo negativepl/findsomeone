@@ -131,7 +131,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
         </span>
         {/* Arrow Icon */}
         <svg
-          className={`hidden lg:block w-4 h-4 text-black/60 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+          className={`hidden md:block w-4 h-4 text-black/60 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

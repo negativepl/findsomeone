@@ -39,7 +39,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const openTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const buttonRef = useRef<HTMLButtonElement>(null)
-  const [menuHeight, setMenuHeight] = useState<number | 'auto'>('auto')
+  const [menuHeight, setMenuHeight] = useState<number | 'auto'>(400)
 
   // Check if mounted (for portal)
   useEffect(() => {
@@ -91,18 +91,18 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
 
     // Calculate minimum height needed for all categories in the grid
     const totalCategories = categories.length
-    // Use 3 columns for calculation (worst case - md/lg breakpoints)
-    // On xl+ it's 5 columns so there will be fewer rows and extra space
-    const columnsCount = 3
+    // Check screen width to determine column count (md: 3 cols, lg+: 5 cols)
+    const isLargeScreen = typeof window !== 'undefined' && window.innerWidth >= 1024
+    const columnsCount = isLargeScreen ? 5 : 3
     const rowsNeeded = Math.ceil(totalCategories / columnsCount)
-    const categoryRowHeight = 140 // approximate height per row including gap
-    const headerHeight = 180 // search bar and title
-    const paddingAndMargins = 100 // p-8 padding and extra space
+    const categoryRowHeight = 100 // approximate height per row including gap
+    const headerHeight = 120 // search bar and title
+    const paddingAndMargins = 80 // p-8 padding and extra space
     const minHeightForCategories = headerHeight + (rowsNeeded * categoryRowHeight) + paddingAndMargins
 
     if (!hoveredCategory) {
-      // Reset to auto when no category is hovered
-      setMenuHeight('auto')
+      // Use minimum height when no category is hovered
+      setMenuHeight(minHeightForCategories)
       return
     }
 
@@ -352,7 +352,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
                   top: '0',
                   left: 0,
                   right: 0,
-                  height: '96px',
+                  height: '88px',
                   zIndex: 10000
                 }}
               >
@@ -383,7 +383,7 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
             }}
             className="hidden md:flex fixed justify-center pointer-events-none"
             style={{
-              top: '108px',
+              top: '88px',
               left: 0,
               right: 0,
               zIndex: 10001
