@@ -253,7 +253,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
         </p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Left sidebar - Profile Summary */}
         <div className="md:col-span-1">
           <Card className="border-0 rounded-3xl bg-white sticky top-24 overflow-visible">

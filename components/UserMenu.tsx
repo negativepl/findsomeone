@@ -180,6 +180,14 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
 
           <div className="py-1">
             <MenuItemWithIcon
+              href="/dashboard"
+              icon="/icons/home.json"
+              onClick={() => setIsOpen(false)}
+            >
+              Moje konto
+            </MenuItemWithIcon>
+
+            <MenuItemWithIcon
               href="/dashboard/my-posts"
               icon="/icons/newspaper.json"
               onClick={() => setIsOpen(false)}

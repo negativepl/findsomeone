@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
@@ -10,6 +10,7 @@ import { User } from '@supabase/supabase-js'
 import { createBrowserClient } from '@supabase/ssr'
 import { CategoryIcon } from '@/lib/category-icons'
 import { Drawer } from 'vaul'
+import { LordIcon, type LordIconRef } from './LordIcon'
 
 interface Category {
   id: string
@@ -128,32 +129,19 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
     {
       title: 'Moje ogłoszenia',
       href: '/dashboard/my-posts',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"/>
-        </svg>
-      ),
+      lordicon: '/icons/newspaper.json',
       requiresAuth: true
     },
     {
       title: 'Profil',
       href: '/dashboard/profile',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-      ),
+      lordicon: '/icons/account.json',
       requiresAuth: true
     },
     {
       title: 'Ustawienia',
       href: '/dashboard/settings',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-        </svg>
-      ),
+      lordicon: '/icons/settings.json',
       requiresAuth: true
     },
     {
@@ -222,6 +210,12 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
 
   useEffect(() => {
     setIsMounted(true)
+
+    // Preload LordIcon animations for menu items
+    const iconsToPreload = ['/icons/newspaper.json', '/icons/account.json', '/icons/settings.json']
+    iconsToPreload.forEach(icon => {
+      fetch(icon).catch(() => {}) // Preload but ignore errors
+    })
   }, [])
 
   // Pobierz inicjały użytkownika
@@ -582,6 +576,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   {menuItems.map((item, index) => {
+                    const isActive = pathname === item.href
+
                     // Handle logout separately
                     if (item.isLogout) {
                       return (
@@ -598,17 +594,49 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                       )
                     }
 
+                    // Use LordIcon if available, otherwise use icon
+                    const iconRef = useRef<LordIconRef>(null)
+
                     return (
                       <Link
                         key={`${item.href}-${index}`}
                         href={item.href}
-                        onClick={triggerHaptic}
-                        className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors duration-300 bg-[#F5F1E8] hover:bg-brand hover:text-white group"
+                        onClick={() => {
+                          triggerHaptic()
+                          if (item.lordicon && iconRef.current) {
+                            iconRef.current.trigger()
+                          }
+                        }}
+                        className={cn(
+                          "flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors duration-300 group",
+                          isActive
+                            ? "bg-[#F5F1E8] text-black ring-2 ring-[#C44E35]/20"
+                            : "bg-[#F5F1E8] text-black hover:bg-brand hover:text-white"
+                        )}
                       >
-                        <div className="text-black group-hover:text-white transition-colors duration-300">
-                          {item.icon}
+                        <div className="transition-colors duration-300">
+                          {item.lordicon ? (
+                            <div className={isActive ? "[&_svg]:text-black" : "[&_svg]:text-black group-hover:[&_svg]:text-white"}>
+                              <LordIcon
+                                ref={iconRef}
+                                src={item.lordicon}
+                                size={24}
+                                trigger="hover"
+                              />
+                            </div>
+                          ) : (
+                            <div className={cn(
+                              "transition-colors duration-300",
+                              isActive ? "text-black" : "text-black group-hover:text-white"
+                            )}>
+                              {item.icon}
+                            </div>
+                          )}
                         </div>
-                        <span className="text-sm text-black group-hover:text-white transition-colors duration-300">{item.title}</span>
+                        <span className={cn(
+                          "text-sm transition-colors duration-300",
+                          isActive ? "text-black" : "text-black group-hover:text-white"
+                        )}>{item.title}</span>
                       </Link>
                     )
                   })}
@@ -711,7 +739,6 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
                   <motion.div
-                    className="transition-colors duration-300"
                     animate={{
                       color: shouldBeWhite ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
                     }}
@@ -750,7 +777,6 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
                   <motion.div
-                    className="transition-colors duration-300"
                     animate={{
                       color: shouldBeWhite ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
                     }}
@@ -795,9 +821,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
               >
                 <motion.div
-                  className="transition-colors duration-300"
                   animate={{
-                    color: isActive && !menuOpen && !categoriesOpen ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
+                    color: isActive && !menuOpen && !categoriesOpen && !selectedCategory ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
                   }}
                   transition={{
                     duration: 0.35,

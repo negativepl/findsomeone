@@ -74,7 +74,7 @@ export default function CookieConsent() {
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/98 backdrop-blur-sm border-t border-black/10 shadow-2xl pb-[84px] md:pb-0">
       <div className="container mx-auto px-4 py-5 md:py-6 max-w-4xl">
         <div className="mb-4">
-          <h3 className="text-lg font-bold text-black">Używanie ciasteczek</h3>
+          <h3 className="text-lg font-bold text-black">Używamy ciasteczek</h3>
         </div>
 
         <p className="text-sm text-black/70 mb-4 leading-relaxed">

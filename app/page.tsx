@@ -110,7 +110,7 @@ export default async function Home() {
               <FeatureCard
                 animationPath="/animations/coins.json"
                 title="Darmowe ogłoszenia"
-                description="Dodawanie ogłoszeń jest całkowicie darmowe. Bez ukrytych opłat, bez limitów. Publikuj ile chcesz!"
+                description="Dodawanie ogłoszeń jest całkowicie darmowe. Bez ukrytych opłat, bez limitów. Publikuj ogłoszenia gdzie i ile chcesz!"
               />
 
               <FeatureCard
@@ -122,7 +122,7 @@ export default async function Home() {
               <FeatureCard
                 animationPath="/animations/heart.json"
                 title="Bezpieczeństwo"
-                description="System ocen i opinii pomaga budować zaufanie. Moderacja AI i zgłoszenia zapewniają bezpieczeństwo platformy."
+                description="Oceny i opinie pomagają Ci wybrać sprawdzone osoby. AI weryfikuje treści, a Ty możesz zgłosić podejrzane wiadomości i oferty."
               />
             </div>
           </section>

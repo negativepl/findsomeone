@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     default: "FindSomeone - Znajdź pomoc w okolicy",
     template: "%s | FindSomeone"
   },
-  description: "Platforma łącząca ludzi w Twoim mieście. Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu? Znajdź kogoś w okolicy lub oferuj swoją pomoc innym. Dla każdego - za darmo.",
-  keywords: ["pomoc w okolicy", "pomoc lokalna", "ogłoszenia w mieście", "zakupy dla seniora", "pomoc przy remoncie", "drobne usługi", "sprzątanie", "lokalne ogłoszenia", "FindSomeone", "aplikacja PWA", "pomoc w mieście"],
+  description: "Lokalna platforma ogłoszeń łącząca ludzi w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub szukaj pomocy. Wszelkie ogłoszenia w okolicy - za darmo.",
+  keywords: ["lokalne ogłoszenia", "sprzedaż w okolicy", "kupno rzeczy", "wynajem", "usługi w mieście", "pomoc w okolicy", "ogłoszenia drobne", "OLX alternatywa", "lokalna platforma", "FindSomeone", "aplikacja PWA", "ogłoszenia za darmo"],
   authors: [{ name: "FindSomeone" }],
   creator: "FindSomeone",
   publisher: "FindSomeone",
@@ -48,12 +48,12 @@ export const metadata: Metadata = {
     url: '/',
     siteName: 'FindSomeone',
     title: 'FindSomeone - Znajdź pomoc w okolicy',
-    description: 'Platforma łącząca ludzi w Twoim mieście. Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu? Znajdź kogoś w okolicy lub oferuj swoją pomoc innym za darmo.',
+    description: 'Lokalna platforma ogłoszeń łącząca ludzi w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub szukaj pomocy - wszelkie ogłoszenia w okolicy za darmo.',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'FindSomeone - Znajdź pomoc w okolicy',
-    description: 'Lokalna pomoc w Twoim mieście. Zakupy, remont, sprzątanie - znajdź pomocnika lub pomóż innym. Darmowa platforma.',
+    description: 'Lokalne ogłoszenia w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub szukaj pomocy. Darmowa platforma.',
   },
   manifest: '/manifest.json',
   appleWebApp: {

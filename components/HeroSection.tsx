@@ -66,10 +66,10 @@ export function HeroSection({ user }: HeroSectionProps) {
           transition={{ duration: 0.3, delay: 0.4 }}
           className="text-xl text-black/60 mb-10 max-w-2xl mx-auto leading-relaxed"
         >
-          Potrzebujesz pomocy przy zakupach, remoncie czy sprzątaniu?
-          A może sam chcesz pomóc innym?{' '}
+          Sprzedajesz, kupujesz, wynajmujesz? Szukasz fachowca lub oferujesz usługi?
+          A może potrzebujesz pomocy albo sam chcesz pomóc?{' '}
           <span className="font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent">
-            W FindSomeone łączymy ludzi w okolicy.
+            FindSomeone łączy ludzi i ogłoszenia w okolicy.
           </span>
         </motion.p>
 
