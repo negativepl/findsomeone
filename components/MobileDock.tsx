@@ -669,8 +669,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
           {/* Animated indicator background */}
           <motion.div
-            className="absolute"
-            style={{ backgroundColor: 'rgba(196, 78, 53, 0.1)' }}
+            className="absolute bg-[#C44E35]/10"
             initial={false}
             animate={
               passesThroughSpecial && activeIndex !== -1 && prevActiveIndex !== -1
@@ -808,9 +807,9 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 >
                   <div className="relative flex items-center justify-center">
                     {/* Pomarańczowe kółko w tle */}
-                    <div className="absolute w-11 h-11 bg-brand rounded-full shrink-0" />
+                    <div className="absolute w-11 h-11 bg-[#C44E35]/10 rounded-full shrink-0" />
                     {/* Ikona */}
-                    <div className="relative text-white">
+                    <div className="relative text-black">
                       {item.icon}
                     </div>
                   </div>
