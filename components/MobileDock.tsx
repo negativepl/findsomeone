@@ -126,29 +126,17 @@ const getDockItems = (isLoggedIn: boolean) => {
       {
         title: 'O nas',
         href: '/about',
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-        ),
+        icon: <img src="/icons/about.svg" alt="O nas" className="w-5 h-5" />,
       },
       {
         title: 'Zaloguj',
         href: '/login',
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-          </svg>
-        ),
+        icon: <img src="/icons/login.svg" alt="Zaloguj" className="w-5 h-5" />,
       },
       {
         title: 'Zarejestruj',
         href: '/signup',
-        icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-          </svg>
-        ),
+        icon: <img src="/icons/signup.svg" alt="Zarejestruj" className="w-5 h-5" />,
       },
     ]
   }
