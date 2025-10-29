@@ -669,7 +669,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
           {/* Animated indicator background */}
           <motion.div
-            className="absolute bg-brand"
+            className="absolute"
+            style={{ backgroundColor: 'lab(49.4467% 47.0741 39.6078 / .1)' }}
             initial={false}
             animate={
               passesThroughSpecial && activeIndex !== -1 && prevActiveIndex !== -1
