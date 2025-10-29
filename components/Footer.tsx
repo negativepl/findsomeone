@@ -17,7 +17,7 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-4 md:gap-8 mb-8">
           {/* Logo i opis */}
           <div className="md:col-span-1">
-            <Link href="/">
+            <Link href="/" aria-label="Strona główna">
               <LogoWithText />
             </Link>
             <p className="text-sm text-black/60 mt-4 leading-relaxed">

@@ -26,29 +26,29 @@ const getDockItems = (isLoggedIn: boolean) => {
       {
         title: 'Home',
         href: '/',
-        icon: <img src="/icons/home.svg" alt="Home" className="w-5 h-5" />,
+        icon: <img src="/icons/home.svg" alt="" className="w-5 h-5" />,
       },
       {
         title: 'Kategorie',
         href: '#',
-        icon: <img src="/icons/categories.svg" alt="Kategorie" className="w-5 h-5" />,
+        icon: <img src="/icons/categories.svg" alt="" className="w-5 h-5" />,
         isCategories: true,
       },
       {
         title: 'Dodaj',
         href: '/dashboard/my-posts/new',
-        icon: <img src="/icons/plus.svg" alt="Dodaj" className="w-5 h-5" />,
+        icon: <img src="/icons/plus.svg" alt="" className="w-5 h-5" />,
         isSpecial: true,
       },
       {
         title: 'Moje konto',
         href: '/dashboard',
-        icon: <img src="/icons/my-account.svg" alt="Moje konto" className="w-5 h-5" />,
+        icon: <img src="/icons/my-account.svg" alt="" className="w-5 h-5" />,
       },
       {
         title: 'Więcej',
         href: '#',
-        icon: <img src="/icons/menu.svg" alt="Więcej" className="w-5 h-5" />,
+        icon: <img src="/icons/menu.svg" alt="" className="w-5 h-5" />,
         isMenu: true,
       },
     ]
@@ -57,28 +57,28 @@ const getDockItems = (isLoggedIn: boolean) => {
       {
         title: 'Home',
         href: '/',
-        icon: <img src="/icons/home.svg" alt="Home" className="w-5 h-5" />,
+        icon: <img src="/icons/home.svg" alt="" className="w-5 h-5" />,
       },
       {
         title: 'Kategorie',
         href: '#',
-        icon: <img src="/icons/categories.svg" alt="Kategorie" className="w-5 h-5" />,
+        icon: <img src="/icons/categories.svg" alt="" className="w-5 h-5" />,
         isCategories: true,
       },
       {
         title: 'O nas',
         href: '/about',
-        icon: <img src="/icons/about.svg" alt="O nas" className="w-5 h-5" />,
+        icon: <img src="/icons/about.svg" alt="" className="w-5 h-5" />,
       },
       {
         title: 'Zaloguj',
         href: '/login',
-        icon: <img src="/icons/login.svg" alt="Zaloguj" className="w-5 h-5" />,
+        icon: <img src="/icons/login.svg" alt="" className="w-5 h-5" />,
       },
       {
         title: 'Zarejestruj',
         href: '/signup',
-        icon: <img src="/icons/signup.svg" alt="Zarejestruj" className="w-5 h-5" />,
+        icon: <img src="/icons/signup.svg" alt="" className="w-5 h-5" />,
       },
     ]
   }
@@ -89,19 +89,19 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
     {
       title: 'Moje ogłoszenia',
       href: '/dashboard/my-posts',
-      icon: <img src="/icons/my-posts.svg" alt="Moje ogłoszenia" className="w-6 h-6" />,
+      icon: <img src="/icons/my-posts.svg" alt="" className="w-6 h-6" />,
       requiresAuth: true
     },
     {
       title: 'Profil',
       href: '/dashboard/profile',
-      icon: <img src="/icons/profile.svg" alt="Profil" className="w-6 h-6" />,
+      icon: <img src="/icons/profile.svg" alt="" className="w-6 h-6" />,
       requiresAuth: true
     },
     {
       title: 'Ustawienia',
       href: '/dashboard/settings',
-      icon: <img src="/icons/settings.svg" alt="Ustawienia" className="w-6 h-6" />,
+      icon: <img src="/icons/settings.svg" alt="" className="w-6 h-6" />,
       requiresAuth: true
     },
     {

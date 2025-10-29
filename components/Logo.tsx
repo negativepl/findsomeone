@@ -7,6 +7,8 @@ export function Logo({ className = "w-8 h-8" }: { className?: string }) {
       viewBox="0 0 100 100"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      role="img"
+      aria-label="FindSomeone logo"
     >
       {/* Lewa sylwetka - czarna */}
       <circle cx="32" cy="28" r="11" fill="#1A1A1A" />
