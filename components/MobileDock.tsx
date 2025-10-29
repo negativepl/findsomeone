@@ -167,7 +167,6 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
   const [menuOpen, setMenuOpen] = useState(false)
   const [categoriesOpen, setCategoriesOpen] = useState(false)
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
-  const [isMounted, setIsMounted] = useState(false)
   const isLoggedIn = !!user
   const dockItems = getDockItems(isLoggedIn)
   const menuItems = getMenuItems(isLoggedIn, isAdmin)
@@ -180,8 +179,6 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
   const isMessagePage = pathname?.includes('/dashboard/messages/')
 
   useEffect(() => {
-    setIsMounted(true)
-
     // Preload LordIcon animations for menu items
     const iconsToPreload = ['/icons/newspaper.json', '/icons/account.json', '/icons/settings.json']
     iconsToPreload.forEach(icon => {
@@ -664,7 +661,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                       '8px',
                       isSpecialActive ? '8px' : '12px'
                     ],
-                    opacity: isMounted && activeIndex !== -1 ? 1 : 0,
+                    opacity: activeIndex !== -1 ? 1 : 0,
                   }
                 : {
                     left: activeIndex !== -1
@@ -674,7 +671,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     height: isSpecialActive ? '44px' : '36px',
                     borderRadius: isSpecialActive ? '50%' : '12px',
                     top: isSpecialActive ? '8px' : '12px',
-                    opacity: isMounted && activeIndex !== -1 ? 1 : 0,
+                    opacity: activeIndex !== -1 ? 1 : 0,
                   }
             }
             transition={{
