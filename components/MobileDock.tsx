@@ -670,7 +670,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
           {/* Animated indicator background */}
           <motion.div
             className="absolute"
-            style={{ backgroundColor: 'lab(49.4467% 47.0741 39.6078 / .1)' }}
+            style={{ backgroundColor: 'rgba(196, 78, 53, 0.1)' }}
             initial={false}
             animate={
               passesThroughSpecial && activeIndex !== -1 && prevActiveIndex !== -1
