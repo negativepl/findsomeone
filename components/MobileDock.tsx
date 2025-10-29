@@ -89,54 +89,19 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
     {
       title: 'Moje ogłoszenia',
       href: '/dashboard/my-posts',
-      icon: (
-        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <g clipPath="url(#N3FWNfAbPsa)">
-            <mask id="f8zVey1FfYb" width="19" height="19" x="3" y="3" maskUnits="userSpaceOnUse" style={{ maskType: 'alpha' }}>
-              <path fill="#D9D9D9" fillRule="evenodd" d="M22 3H3v19h19zm-1.5 7h-5v8a2.5 2.5 0 0 0 5 0z" clipRule="evenodd"/>
-            </mask>
-            <g mask="url(#f8zVey1FfYb)">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18 20.5H6.5A2.5 2.5 0 0 1 4 18V4h11.5v6z"/>
-            </g>
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.5 10h5v8a2.5 2.5 0 0 1-5 0zm-3-3H7v3.5h5.5zM7 13.5h5.5M7 16.56h5.5"/>
-          </g>
-          <defs>
-            <clipPath id="N3FWNfAbPsa">
-              <path fill="#fff" d="M0 0h24v24H0z"/>
-            </clipPath>
-          </defs>
-        </svg>
-      ),
+      icon: <img src="/icons/my-posts.svg" alt="Moje ogłoszenia" className="w-6 h-6" />,
       requiresAuth: true
     },
     {
       title: 'Profil',
       href: '/dashboard/profile',
-      icon: (
-        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <g fill="currentColor" fillRule="evenodd" clipRule="evenodd">
-            <path d="M12 5.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"/>
-            <path d="M12 2c5.523 0 10 4.477 10 10a9.97 9.97 0 0 1-3.316 7.436l-.012.01A9.96 9.96 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2M9.75 16.5a3.25 3.25 0 0 0-3.053 2.14A8.46 8.46 0 0 0 12 20.5a8.46 8.46 0 0 0 5.303-1.86 3.25 3.25 0 0 0-3.053-2.14zM12 3.5a8.5 8.5 0 0 0-6.45 14.032A4.75 4.75 0 0 1 9.75 15h4.5a4.75 4.75 0 0 1 4.2 2.532A8.46 8.46 0 0 0 20.5 12 8.5 8.5 0 0 0 12 3.5"/>
-          </g>
-        </svg>
-      ),
+      icon: <img src="/icons/profile.svg" alt="Profil" className="w-6 h-6" />,
       requiresAuth: true
     },
     {
       title: 'Ustawienia',
       href: '/dashboard/settings',
-      icon: (
-        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <g clipPath="url(#vx0YN8sIZ7a)">
-            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m20.652 14.43-1.61-.93c.11-.48.16-.99.16-1.5s-.05-1.02-.16-1.5l1.61-.93c.24-.13.32-.44.19-.68l-1.75-3.03a.505.505 0 0 0-.69-.18l-1.62.94c-.74-.68-1.61-1.2-2.58-1.5V3.25c0-.28-.22-.5-.5-.5h-3.5c-.28 0-.5.22-.5.5v1.87c-.97.3-1.84.82-2.58 1.5l-1.62-.94a.505.505 0 0 0-.69.18l-1.75 3.03c-.13.24-.05.55.19.68l1.61.93c-.11.48-.16.99-.16 1.5s.05 1.02.16 1.5l-1.61.93c-.24.13-.32.44-.19.68l1.75 3.03c.14.24.45.32.69.18l1.62-.94c.74.68 1.61 1.2 2.58 1.5v1.87c0 .28.22.5.5.5h3.5c.28 0 .5-.22.5-.5v-1.87c.97-.3 1.84-.82 2.58-1.5l1.62.94c.24.14.55.06.69-.18l1.75-3.03c.13-.24.05-.55-.19-.68m-5.56-1.59c-.08.27-.18.54-.33.78-.28.5-.69.91-1.19 1.19a3.15 3.15 0 0 1-1.62.44 3.15 3.15 0 0 1-1.62-.44c-.5-.28-.91-.69-1.19-1.19a3.15 3.15 0 0 1-.44-1.62 3.15 3.15 0 0 1 .44-1.62c.28-.5.69-.91 1.19-1.19a3.15 3.15 0 0 1 1.62-.44 3.15 3.15 0 0 1 1.62.44c.5.28.91.69 1.19 1.19a3.15 3.15 0 0 1 .44 1.62c0 .29-.04.57-.11.84"/>
-          </g>
-          <defs>
-            <clipPath id="vx0YN8sIZ7a">
-              <path fill="#fff" d="M0 0h24v24H0z"/>
-            </clipPath>
-          </defs>
-        </svg>
-      ),
+      icon: <img src="/icons/settings.svg" alt="Ustawienia" className="w-6 h-6" />,
       requiresAuth: true
     },
     {
