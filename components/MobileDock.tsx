@@ -26,71 +26,29 @@ const getDockItems = (isLoggedIn: boolean) => {
       {
         title: 'Home',
         href: '/',
-        icon: (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M19.5 8.329a.25.25 0 0 0-.125-.217l-7.25-4.174a.25.25 0 0 0-.25 0l-7.25 4.174a.25.25 0 0 0-.125.217V19.25c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25v-5.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v5.5c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25zM21 19.25A1.75 1.75 0 0 1 19.25 21h-4a1.75 1.75 0 0 1-1.75-1.75V14.5h-3v4.75A1.75 1.75 0 0 1 8.75 21h-4A1.75 1.75 0 0 1 3 19.25V8.33c0-.626.334-1.205.877-1.517l7.25-4.174a1.75 1.75 0 0 1 1.746 0l7.25 4.174c.543.312.877.89.877 1.517z"/>
-          </svg>
-        ),
+        icon: <img src="/icons/home.svg" alt="Home" className="w-5 h-5" />,
       },
       {
         title: 'Kategorie',
         href: '#',
-        icon: (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24">
-            <g stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" clipPath="url(#do8OSeB6mya)">
-              <path strokeLinejoin="round" d="M9.75 13.75h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1m0-10h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1m10 0h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1"/>
-              <path strokeMiterlimit="10" d="M17.5 13.75v6.5M20.75 17h-6.5"/>
-            </g>
-            <defs>
-              <clipPath id="do8OSeB6mya">
-                <path fill="#fff" d="M.5 0h24v24H.5z"/>
-              </clipPath>
-            </defs>
-          </svg>
-        ),
+        icon: <img src="/icons/categories.svg" alt="Kategorie" className="w-5 h-5" />,
         isCategories: true,
       },
       {
         title: 'Dodaj',
         href: '/dashboard/my-posts/new',
-        icon: (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M12 2.5a.75.75 0 0 1 .75.75v8h8a.75.75 0 0 1 0 1.5h-8v8a.75.75 0 0 1-1.5 0v-8h-8a.75.75 0 0 1 0-1.5h8v-8A.75.75 0 0 1 12 2.5"/>
-          </svg>
-        ),
+        icon: <img src="/icons/plus.svg" alt="Dodaj" className="w-5 h-5" />,
         isSpecial: true,
       },
       {
         title: 'Moje konto',
         href: '/dashboard',
-        icon: (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#9E5Yoke3zya)">
-              <path d="m20.25 10.25-6.5-6.5h-9c-.55 0-1 .45-1 1v14.5c0 .55.45 1 1 1h14.5c.55 0 1-.45 1-1zm-12.5 2h8.5m-8.5-3.5h4.5m-4.5 7h8.5"/>
-            </g>
-            <defs>
-              <clipPath id="9E5Yoke3zya">
-                <path fill="#fff" d="M0 0h24v24H0z"/>
-              </clipPath>
-            </defs>
-          </svg>
-        ),
+        icon: <img src="/icons/my-account.svg" alt="Moje konto" className="w-5 h-5" />,
       },
       {
         title: 'Więcej',
         href: '#',
-        icon: (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#sh--U70hTwa)">
-              <path d="M20.25 3.75H3.75v3.5h16.5zm0 6.5H3.75v3.5h16.5zm0 6.5H3.75v3.5h16.5z"/>
-            </g>
-            <defs>
-              <clipPath id="sh--U70hTwa">
-                <path fill="#fff" d="M0 0h24v24H0z"/>
-              </clipPath>
-            </defs>
-          </svg>
-        ),
+        icon: <img src="/icons/menu.svg" alt="Więcej" className="w-5 h-5" />,
         isMenu: true,
       },
     ]
@@ -99,28 +57,12 @@ const getDockItems = (isLoggedIn: boolean) => {
       {
         title: 'Home',
         href: '/',
-        icon: (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M19.5 8.329a.25.25 0 0 0-.125-.217l-7.25-4.174a.25.25 0 0 0-.25 0l-7.25 4.174a.25.25 0 0 0-.125.217V19.25c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25v-5.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v5.5c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25zM21 19.25A1.75 1.75 0 0 1 19.25 21h-4a1.75 1.75 0 0 1-1.75-1.75V14.5h-3v4.75A1.75 1.75 0 0 1 8.75 21h-4A1.75 1.75 0 0 1 3 19.25V8.33c0-.626.334-1.205.877-1.517l7.25-4.174a1.75 1.75 0 0 1 1.746 0l7.25 4.174c.543.312.877.89.877 1.517z"/>
-          </svg>
-        ),
+        icon: <img src="/icons/home.svg" alt="Home" className="w-5 h-5" />,
       },
       {
         title: 'Kategorie',
         href: '#',
-        icon: (
-          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24">
-            <g stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" clipPath="url(#do8OSeB6mya)">
-              <path strokeLinejoin="round" d="M9.75 13.75h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1m0-10h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1m10 0h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1"/>
-              <path strokeMiterlimit="10" d="M17.5 13.75v6.5M20.75 17h-6.5"/>
-            </g>
-            <defs>
-              <clipPath id="do8OSeB6mya">
-                <path fill="#fff" d="M.5 0h24v24H.5z"/>
-              </clipPath>
-            </defs>
-          </svg>
-        ),
+        icon: <img src="/icons/categories.svg" alt="Kategorie" className="w-5 h-5" />,
         isCategories: true,
       },
       {
