@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Search, Heart, MessageCircle } from 'lucide-react'
 import { User } from '@supabase/supabase-js'
 import { MobileSearchBar } from '@/components/MobileSearchBar'
 import Link from 'next/link'
@@ -129,7 +128,7 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
           className="inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
           aria-label="Wyszukaj"
         >
-          <Search className="h-4 w-4 text-white" />
+          <img src="/icons/search.svg" alt="Search" className="h-4 w-4" />
         </button>
 
         {/* Show Messages and Favorites icons only when user is logged in */}
@@ -141,7 +140,7 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
               className="relative inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
               aria-label={`Ulubione${favoritesCount > 0 ? ` (${favoritesCount})` : ''}`}
             >
-              <Heart className="h-4 w-4 text-white" />
+              <img src="/icons/heart.svg" alt="Favorites" className="h-4 w-4" />
               {favoritesCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-white text-[#C44E35] text-[10px] font-bold rounded-full border border-[#C44E35]">
                   {favoritesCount > 99 ? '99+' : favoritesCount}
@@ -155,7 +154,7 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
               className="relative inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
               aria-label={`Wiadomości${unreadCount > 0 ? ` (${unreadCount} nieprzeczytanych)` : ''}`}
             >
-              <MessageCircle className="h-4 w-4 text-white" />
+              <img src="/icons/messages.svg" alt="Messages" className="h-4 w-4" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-white text-[#C44E35] text-[10px] font-bold rounded-full border border-[#C44E35]">
                   {unreadCount > 99 ? '99+' : unreadCount}

@@ -27,8 +27,8 @@ const getDockItems = (isLoggedIn: boolean) => {
         title: 'Home',
         href: '/',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.5 8.329a.25.25 0 0 0-.125-.217l-7.25-4.174a.25.25 0 0 0-.25 0l-7.25 4.174a.25.25 0 0 0-.125.217V19.25c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25v-5.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v5.5c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25zM21 19.25A1.75 1.75 0 0 1 19.25 21h-4a1.75 1.75 0 0 1-1.75-1.75V14.5h-3v4.75A1.75 1.75 0 0 1 8.75 21h-4A1.75 1.75 0 0 1 3 19.25V8.33c0-.626.334-1.205.877-1.517l7.25-4.174a1.75 1.75 0 0 1 1.746 0l7.25 4.174c.543.312.877.89.877 1.517z"/>
           </svg>
         ),
       },
@@ -36,8 +36,16 @@ const getDockItems = (isLoggedIn: boolean) => {
         title: 'Kategorie',
         href: '#',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24">
+            <g stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" clipPath="url(#do8OSeB6mya)">
+              <path strokeLinejoin="round" d="M9.75 13.75h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1m0-10h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1m10 0h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1"/>
+              <path strokeMiterlimit="10" d="M17.5 13.75v6.5M20.75 17h-6.5"/>
+            </g>
+            <defs>
+              <clipPath id="do8OSeB6mya">
+                <path fill="#fff" d="M.5 0h24v24H.5z"/>
+              </clipPath>
+            </defs>
           </svg>
         ),
         isCategories: true,
@@ -46,8 +54,8 @@ const getDockItems = (isLoggedIn: boolean) => {
         title: 'Dodaj',
         href: '/dashboard/my-posts/new',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 2.5a.75.75 0 0 1 .75.75v8h8a.75.75 0 0 1 0 1.5h-8v8a.75.75 0 0 1-1.5 0v-8h-8a.75.75 0 0 1 0-1.5h8v-8A.75.75 0 0 1 12 2.5"/>
           </svg>
         ),
         isSpecial: true,
@@ -56,8 +64,15 @@ const getDockItems = (isLoggedIn: boolean) => {
         title: 'Moje konto',
         href: '/dashboard',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#9E5Yoke3zya)">
+              <path d="m20.25 10.25-6.5-6.5h-9c-.55 0-1 .45-1 1v14.5c0 .55.45 1 1 1h14.5c.55 0 1-.45 1-1zm-12.5 2h8.5m-8.5-3.5h4.5m-4.5 7h8.5"/>
+            </g>
+            <defs>
+              <clipPath id="9E5Yoke3zya">
+                <path fill="#fff" d="M0 0h24v24H0z"/>
+              </clipPath>
+            </defs>
           </svg>
         ),
       },
@@ -65,8 +80,15 @@ const getDockItems = (isLoggedIn: boolean) => {
         title: 'Więcej',
         href: '#',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#sh--U70hTwa)">
+              <path d="M20.25 3.75H3.75v3.5h16.5zm0 6.5H3.75v3.5h16.5zm0 6.5H3.75v3.5h16.5z"/>
+            </g>
+            <defs>
+              <clipPath id="sh--U70hTwa">
+                <path fill="#fff" d="M0 0h24v24H0z"/>
+              </clipPath>
+            </defs>
           </svg>
         ),
         isMenu: true,
@@ -78,8 +100,8 @@ const getDockItems = (isLoggedIn: boolean) => {
         title: 'Home',
         href: '/',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19.5 8.329a.25.25 0 0 0-.125-.217l-7.25-4.174a.25.25 0 0 0-.25 0l-7.25 4.174a.25.25 0 0 0-.125.217V19.25c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25v-5.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v5.5c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25zM21 19.25A1.75 1.75 0 0 1 19.25 21h-4a1.75 1.75 0 0 1-1.75-1.75V14.5h-3v4.75A1.75 1.75 0 0 1 8.75 21h-4A1.75 1.75 0 0 1 3 19.25V8.33c0-.626.334-1.205.877-1.517l7.25-4.174a1.75 1.75 0 0 1 1.746 0l7.25 4.174c.543.312.877.89.877 1.517z"/>
           </svg>
         ),
       },
@@ -87,8 +109,16 @@ const getDockItems = (isLoggedIn: boolean) => {
         title: 'Kategorie',
         href: '#',
         icon: (
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24">
+            <g stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" clipPath="url(#do8OSeB6mya)">
+              <path strokeLinejoin="round" d="M9.75 13.75h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1m0-10h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1m10 0h-4.5a1 1 0 0 0-1 1v4.5a1 1 0 0 0 1 1h4.5a1 1 0 0 0 1-1v-4.5a1 1 0 0 0-1-1"/>
+              <path strokeMiterlimit="10" d="M17.5 13.75v6.5M20.75 17h-6.5"/>
+            </g>
+            <defs>
+              <clipPath id="do8OSeB6mya">
+                <path fill="#fff" d="M.5 0h24v24H.5z"/>
+              </clipPath>
+            </defs>
           </svg>
         ),
         isCategories: true,
@@ -129,19 +159,54 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
     {
       title: 'Moje ogłoszenia',
       href: '/dashboard/my-posts',
-      lordicon: '/icons/newspaper.json',
+      icon: (
+        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <g clipPath="url(#N3FWNfAbPsa)">
+            <mask id="f8zVey1FfYb" width="19" height="19" x="3" y="3" maskUnits="userSpaceOnUse" style={{ maskType: 'alpha' }}>
+              <path fill="#D9D9D9" fillRule="evenodd" d="M22 3H3v19h19zm-1.5 7h-5v8a2.5 2.5 0 0 0 5 0z" clipRule="evenodd"/>
+            </mask>
+            <g mask="url(#f8zVey1FfYb)">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18 20.5H6.5A2.5 2.5 0 0 1 4 18V4h11.5v6z"/>
+            </g>
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.5 10h5v8a2.5 2.5 0 0 1-5 0zm-3-3H7v3.5h5.5zM7 13.5h5.5M7 16.56h5.5"/>
+          </g>
+          <defs>
+            <clipPath id="N3FWNfAbPsa">
+              <path fill="#fff" d="M0 0h24v24H0z"/>
+            </clipPath>
+          </defs>
+        </svg>
+      ),
       requiresAuth: true
     },
     {
       title: 'Profil',
       href: '/dashboard/profile',
-      lordicon: '/icons/account.json',
+      icon: (
+        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <g fill="currentColor" fillRule="evenodd" clipRule="evenodd">
+            <path d="M12 5.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"/>
+            <path d="M12 2c5.523 0 10 4.477 10 10a9.97 9.97 0 0 1-3.316 7.436l-.012.01A9.96 9.96 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2M9.75 16.5a3.25 3.25 0 0 0-3.053 2.14A8.46 8.46 0 0 0 12 20.5a8.46 8.46 0 0 0 5.303-1.86 3.25 3.25 0 0 0-3.053-2.14zM12 3.5a8.5 8.5 0 0 0-6.45 14.032A4.75 4.75 0 0 1 9.75 15h4.5a4.75 4.75 0 0 1 4.2 2.532A8.46 8.46 0 0 0 20.5 12 8.5 8.5 0 0 0 12 3.5"/>
+          </g>
+        </svg>
+      ),
       requiresAuth: true
     },
     {
       title: 'Ustawienia',
       href: '/dashboard/settings',
-      lordicon: '/icons/settings.json',
+      icon: (
+        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <g clipPath="url(#vx0YN8sIZ7a)">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m20.652 14.43-1.61-.93c.11-.48.16-.99.16-1.5s-.05-1.02-.16-1.5l1.61-.93c.24-.13.32-.44.19-.68l-1.75-3.03a.505.505 0 0 0-.69-.18l-1.62.94c-.74-.68-1.61-1.2-2.58-1.5V3.25c0-.28-.22-.5-.5-.5h-3.5c-.28 0-.5.22-.5.5v1.87c-.97.3-1.84.82-2.58 1.5l-1.62-.94a.505.505 0 0 0-.69.18l-1.75 3.03c-.13.24-.05.55.19.68l1.61.93c-.11.48-.16.99-.16 1.5s.05 1.02.16 1.5l-1.61.93c-.24.13-.32.44-.19.68l1.75 3.03c.14.24.45.32.69.18l1.62-.94c.74.68 1.61 1.2 2.58 1.5v1.87c0 .28.22.5.5.5h3.5c.28 0 .5-.22.5-.5v-1.87c.97-.3 1.84-.82 2.58-1.5l1.62.94c.24.14.55.06.69-.18l1.75-3.03c.13-.24.05-.55-.19-.68m-5.56-1.59c-.08.27-.18.54-.33.78-.28.5-.69.91-1.19 1.19a3.15 3.15 0 0 1-1.62.44 3.15 3.15 0 0 1-1.62-.44c-.5-.28-.91-.69-1.19-1.19a3.15 3.15 0 0 1-.44-1.62 3.15 3.15 0 0 1 .44-1.62c.28-.5.69-.91 1.19-1.19a3.15 3.15 0 0 1 1.62-.44 3.15 3.15 0 0 1 1.62.44c.5.28.91.69 1.19 1.19a3.15 3.15 0 0 1 .44 1.62c0 .29-.04.57-.11.84"/>
+          </g>
+          <defs>
+            <clipPath id="vx0YN8sIZ7a">
+              <path fill="#fff" d="M0 0h24v24H0z"/>
+            </clipPath>
+          </defs>
+        </svg>
+      ),
       requiresAuth: true
     },
     {
@@ -170,8 +235,15 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
       title: 'Wyloguj się',
       href: '#logout',
       icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m16 17 5-5-5-5M21 12H9M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#aZI5Ai_18ga)">
+            <path d="M16 16.25 20.25 12 16 7.75M20.25 12H8.75m4.5 8.25h-7.5c-1.1 0-2-.9-2-2V5.75c0-1.1.9-2 2-2h7.5"/>
+          </g>
+          <defs>
+            <clipPath id="aZI5Ai_18ga">
+              <path fill="#fff" d="M0 0h24v24H0z"/>
+            </clipPath>
+          </defs>
         </svg>
       ),
       requiresAuth: true,
@@ -204,6 +276,10 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
   const isLoggedIn = !!user
   const dockItems = getDockItems(isLoggedIn)
   const menuItems = getMenuItems(isLoggedIn, isAdmin)
+
+  // Create refs array for menu items - must be before any conditional returns
+  const iconRefsRef = useRef<(LordIconRef | null)[]>([])
+  iconRefsRef.current = menuItems.map((_, i) => iconRefsRef.current[i] || null)
 
   // Remove rounded corners on message pages
   const isMessagePage = pathname?.includes('/dashboard/messages/')
@@ -594,17 +670,14 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                       )
                     }
 
-                    // Use LordIcon if available, otherwise use icon
-                    const iconRef = useRef<LordIconRef>(null)
-
                     return (
                       <Link
                         key={`${item.href}-${index}`}
                         href={item.href}
                         onClick={() => {
                           triggerHaptic()
-                          if (item.lordicon && iconRef.current) {
-                            iconRef.current.trigger()
+                          if (item.lordicon && iconRefsRef.current[index]) {
+                            iconRefsRef.current[index]?.trigger()
                           }
                         }}
                         className={cn(
@@ -618,7 +691,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                           {item.lordicon ? (
                             <div className={isActive ? "[&_svg]:text-black" : "[&_svg]:text-black group-hover:[&_svg]:text-white"}>
                               <LordIcon
-                                ref={iconRef}
+                                ref={(el) => { iconRefsRef.current[index] = el }}
                                 src={item.lordicon}
                                 size={24}
                                 trigger="hover"
@@ -739,6 +812,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
                   <motion.div
+                    initial={{ color: 'rgba(0, 0, 0, 0.6)' }}
                     animate={{
                       color: shouldBeWhite ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
                     }}
@@ -777,6 +851,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
                   <motion.div
+                    initial={{ color: 'rgba(0, 0, 0, 0.6)' }}
                     animate={{
                       color: shouldBeWhite ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
                     }}
@@ -821,6 +896,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
               >
                 <motion.div
+                  initial={{ color: 'rgba(0, 0, 0, 0.6)' }}
                   animate={{
                     color: isActive && !menuOpen && !categoriesOpen && !selectedCategory ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
                   }}

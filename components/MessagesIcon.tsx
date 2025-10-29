@@ -1,20 +1,22 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import { MessageCircle } from 'lucide-react'
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
 import { useUnreadCount } from '@/lib/hooks/useMessages'
 import { useQueryClient } from '@tanstack/react-query'
+import { LottieIcon } from './LottieIcon'
 
 interface MessagesIconProps {
   user: User | null
 }
 
+
 export function MessagesIcon({ user }: MessagesIconProps) {
   const { data: unreadCount = 0 } = useUnreadCount(user?.id)
   const queryClient = useQueryClient()
+  const [isHovered, setIsHovered] = useState(false)
 
   useEffect(() => {
     if (!user) return
@@ -69,8 +71,15 @@ export function MessagesIcon({ user }: MessagesIconProps) {
       href="/dashboard/messages"
       className="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
       aria-label={`Wiadomości${unreadCount > 0 ? ` (${unreadCount} nieprzeczytanych)` : ''}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
-      <MessageCircle className="h-5 w-5 text-white" />
+      <LottieIcon
+        animationPath="/animations/messages.json"
+        fallbackSvg={<img src="/icons/messages.svg" alt="Messages" className="w-full h-full" />}
+        className="h-5 w-5"
+        isHovered={isHovered}
+      />
       {unreadCount > 0 && (
         <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-white text-[#C44E35] text-xs font-bold rounded-full border-2 border-[#C44E35]">
           {unreadCount > 99 ? '99+' : unreadCount}

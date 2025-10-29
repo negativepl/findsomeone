@@ -13,6 +13,7 @@ import { User } from '@supabase/supabase-js'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import Image from 'next/image'
+import { LottieIcon } from '@/components/LottieIcon'
 
 interface Profile {
   id: string
@@ -46,6 +47,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
   const [uploadingBanner, setUploadingBanner] = useState(false)
+  const [isAvatarHovered, setIsAvatarHovered] = useState(false)
+  const [isBannerHovered, setIsBannerHovered] = useState(false)
 
   // Debug: sprawdź wartości plakietek
   console.log('Profile badges:', {
@@ -292,6 +295,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   {/* Upload button overlay */}
                   <label
                     htmlFor="avatar-upload"
+                    onMouseEnter={() => setIsAvatarHovered(true)}
+                    onMouseLeave={() => setIsAvatarHovered(false)}
                     className="absolute bottom-0 right-0 w-10 h-10 bg-[#C44E35] hover:bg-[#B33D2A] rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg"
                   >
                     {uploading ? (
@@ -300,10 +305,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
                     ) : (
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
+                      <LottieIcon
+                        animationPath="/animations/camera.json"
+                        fallbackSvg={<img src="/icons/camera.svg" alt="Camera" className="w-full h-full" />}
+                        className="w-5 h-5 text-white"
+                        isHovered={isAvatarHovered}
+                      />
                     )}
                   </label>
                   <input
@@ -488,7 +495,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       />
                     </div>
                     <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
-                      <label htmlFor="banner-upload" className="cursor-pointer flex flex-col items-center">
+                      <label
+                        htmlFor="banner-upload"
+                        onMouseEnter={() => setIsBannerHovered(true)}
+                        onMouseLeave={() => setIsBannerHovered(false)}
+                        className="cursor-pointer flex flex-col items-center"
+                      >
                         <div className="bg-white rounded-full p-4 hover:bg-gray-100 transition-colors flex items-center justify-center">
                           {uploadingBanner ? (
                             <svg className="animate-spin w-6 h-6 text-[#C44E35]" fill="none" viewBox="0 0 24 24">
@@ -496,10 +508,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
                           ) : (
-                            <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-                            </svg>
+                            <LottieIcon
+                              animationPath="/animations/photo.json"
+                              fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
+                              className="w-6 h-6 text-[#C44E35]"
+                              isHovered={isBannerHovered}
+                            />
                           )}
                         </div>
                         <p className="text-white text-sm mt-2 font-semibold text-center">Zmień banner</p>
@@ -509,6 +523,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 ) : (
                   <label
                     htmlFor="banner-upload"
+                    onMouseEnter={() => setIsBannerHovered(true)}
+                    onMouseLeave={() => setIsBannerHovered(false)}
                     className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-black/20 rounded-2xl cursor-pointer hover:border-black/40 hover:bg-black/5 transition-all"
                   >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4">
@@ -519,9 +535,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                         </svg>
                       ) : (
                         <>
-                          <svg className="w-10 h-10 mb-3 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                          </svg>
+                          <LottieIcon
+                            animationPath="/animations/photo.json"
+                            fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
+                            className="w-10 h-10 mb-3 text-black/40"
+                            isHovered={isBannerHovered}
+                          />
                           <p className="mb-2 text-sm text-black/70">
                             <span className="font-semibold">Kliknij aby dodać banner</span>
                           </p>

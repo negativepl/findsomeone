@@ -5,6 +5,7 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { Search, MapPin } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { LottieIcon } from './LottieIcon'
 
 interface SearchResult {
   suggestions: Array<{
@@ -44,6 +45,10 @@ export function NavbarSearchBar() {
   const hasFetchedTrendingRef = useRef(false)
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [isSearchButtonHovered, setIsSearchButtonHovered] = useState(false)
+  const [isLocationButtonHovered, setIsLocationButtonHovered] = useState(false)
+  const locationOpenTimeoutRef = useRef<NodeJS.Timeout>()
+  const locationCloseTimeoutRef = useRef<NodeJS.Timeout>()
 
   // Location state
   const [selectedCity, setSelectedCity] = useState<string>('')
@@ -418,8 +423,70 @@ export function NavbarSearchBar() {
       if (cityDebounceTimerRef.current) {
         clearTimeout(cityDebounceTimerRef.current)
       }
+      if (locationOpenTimeoutRef.current) {
+        clearTimeout(locationOpenTimeoutRef.current)
+      }
+      if (locationCloseTimeoutRef.current) {
+        clearTimeout(locationCloseTimeoutRef.current)
+      }
     }
   }, [])
+
+  // Handle location button hover
+  const handleLocationButtonMouseEnter = () => {
+    setIsLocationButtonHovered(true)
+
+    // Clear any pending close timeout
+    if (locationCloseTimeoutRef.current) {
+      clearTimeout(locationCloseTimeoutRef.current)
+      locationCloseTimeoutRef.current = undefined
+    }
+
+    // Open menu on hover with slight delay
+    if (!isCityDropdownOpen) {
+      locationOpenTimeoutRef.current = setTimeout(() => {
+        setIsCityDropdownOpen(true)
+        handleCityFocus()
+        setIsOpen(false) // Close autocomplete
+      }, 150) // Small delay to prevent accidental opens
+    }
+  }
+
+  const handleLocationButtonMouseLeave = () => {
+    setIsLocationButtonHovered(false)
+
+    // Cancel opening if hovering stopped before timeout completed
+    if (locationOpenTimeoutRef.current) {
+      clearTimeout(locationOpenTimeoutRef.current)
+      locationOpenTimeoutRef.current = undefined
+    }
+
+    // Start close timer if menu is open
+    if (isCityDropdownOpen) {
+      locationCloseTimeoutRef.current = setTimeout(() => {
+        setIsCityDropdownOpen(false)
+      }, 300) // Delay to allow moving to menu
+    }
+  }
+
+  const handleLocationMenuMouseEnter = () => {
+    // Cancel closing if mouse enters the menu
+    if (locationCloseTimeoutRef.current) {
+      clearTimeout(locationCloseTimeoutRef.current)
+      locationCloseTimeoutRef.current = undefined
+    }
+  }
+
+  const handleLocationMenuMouseLeave = () => {
+    // Set a delay before closing
+    if (locationCloseTimeoutRef.current) {
+      clearTimeout(locationCloseTimeoutRef.current)
+    }
+    locationCloseTimeoutRef.current = setTimeout(() => {
+      setIsCityDropdownOpen(false)
+      setIsLocationButtonHovered(false)
+    }, 300) // Delay to allow returning to button
+  }
 
   // Keyboard navigation
   useEffect(() => {
@@ -554,10 +621,17 @@ export function NavbarSearchBar() {
           )}
           <button
             type="submit"
+            onMouseEnter={() => setIsSearchButtonHovered(true)}
+            onMouseLeave={() => setIsSearchButtonHovered(false)}
             className="h-8 w-8 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 transition-colors flex-shrink-0 flex items-center justify-center"
             aria-label="Szukaj"
           >
-            <Search className="w-4 h-4" />
+            <LottieIcon
+              animationPath="/animations/search.json"
+              fallbackSvg={<img src="/icons/search.svg" alt="Search" className="w-full h-full" />}
+              className="w-4 h-4"
+              isHovered={isSearchButtonHovered}
+            />
           </button>
         </div>
       </form>
@@ -755,16 +829,18 @@ export function NavbarSearchBar() {
       <div ref={cityDropdownRef} className="relative">
         <button
           type="button"
-          onClick={() => {
-            setIsCityDropdownOpen(!isCityDropdownOpen)
-            if (!isCityDropdownOpen) handleCityFocus()
-            setIsOpen(false) // Close autocomplete when opening location
-          }}
+          onMouseEnter={handleLocationButtonMouseEnter}
+          onMouseLeave={handleLocationButtonMouseLeave}
           className="flex items-center gap-2 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-full h-10 transition-colors flex-shrink-0 px-4"
           aria-label={selectedCity ? `Wybrana lokalizacja: ${selectedCity}` : 'Wybierz lokalizację'}
           aria-expanded={isCityDropdownOpen}
         >
-          <MapPin className="w-4 h-4 text-[#C44E35] flex-shrink-0" />
+          <LottieIcon
+            animationPath="/animations/location.json"
+            fallbackSvg={<img src="/icons/location.svg" alt="Location" className="w-full h-full" />}
+            className="w-4 h-4 text-[#C44E35] flex-shrink-0"
+            isHovered={isLocationButtonHovered}
+          />
           <style>{`
             .location-label-text {
               display: none;
@@ -805,7 +881,11 @@ export function NavbarSearchBar() {
 
         {/* City Dropdown */}
         {isCityDropdownOpen && (
-          <Card className="absolute top-full right-0 mt-2 w-80 border border-black/10 rounded-2xl bg-white shadow-lg max-h-[400px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+          <Card
+            onMouseEnter={handleLocationMenuMouseEnter}
+            onMouseLeave={handleLocationMenuMouseLeave}
+            className="absolute top-full right-0 mt-2 w-80 border border-black/10 rounded-2xl bg-white shadow-lg max-h-[400px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+          >
             <div className="p-3 border-b border-black/5">
               <div className="relative flex items-center bg-[#FAF8F3] rounded-lg px-3 py-2">
                 <Search className="w-4 h-4 text-black/40 mr-2 flex-shrink-0" />

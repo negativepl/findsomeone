@@ -9,13 +9,13 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Cpu, ShieldCheck, Building2 } from 'lucide-react';
+import { LottieIcon } from '@/components/LottieIcon';
 
 export type BadgeType = 'verified' | 'company' | 'ai_bot';
 
 interface BadgeConfig {
-  icon: React.ReactNode;
-  largeIcon: React.ReactNode;
+  animationPath: string;
+  svgPath: string;
   label: string;
   description: string;
   bgColor: string;
@@ -26,33 +26,33 @@ interface BadgeConfig {
 
 const BADGE_CONFIGS: Record<BadgeType, BadgeConfig> = {
   verified: {
-    icon: <ShieldCheck className="w-6 h-6" strokeWidth={2} />,
-    largeIcon: <ShieldCheck className="w-12 h-12" strokeWidth={2} />,
+    animationPath: '/animations/verified.json',
+    svgPath: '/icons/verified.svg',
     label: 'Użytkownik zweryfikowany',
     description: 'Ten użytkownik przeszedł proces weryfikacji tożsamości. Oznacza to, że jego dane osobowe zostały potwierdzone przez nasz zespół, co zwiększa bezpieczeństwo i wiarygodność transakcji.',
-    bgColor: 'bg-amber-100',
-    bgColorHex: '#fef3c7',
-    hoverColor: 'hover:bg-amber-200',
+    bgColor: 'bg-white',
+    bgColorHex: '#ffffff',
+    hoverColor: 'hover:bg-gray-100',
     iconColor: 'text-amber-800',
   },
   company: {
-    icon: <Building2 className="w-6 h-6" strokeWidth={2} />,
-    largeIcon: <Building2 className="w-12 h-12" strokeWidth={2} />,
+    animationPath: '/animations/company.json',
+    svgPath: '/icons/company.svg',
     label: 'Konto firmowe',
     description: 'To konto reprezentuje firmę lub przedsiębiorstwo. Konta firmowe mogą oferować usługi komercyjne i są prowadzone przez zarejestrowane podmioty gospodarcze.',
-    bgColor: 'bg-blue-100',
-    bgColorHex: '#dbeafe',
-    hoverColor: 'hover:bg-blue-200',
+    bgColor: 'bg-white',
+    bgColorHex: '#ffffff',
+    hoverColor: 'hover:bg-gray-100',
     iconColor: 'text-blue-800',
   },
   ai_bot: {
-    icon: <Cpu className="w-6 h-6" strokeWidth={2} />,
-    largeIcon: <Cpu className="w-12 h-12" strokeWidth={2} />,
+    animationPath: '/animations/ai-bot.json',
+    svgPath: '/icons/ai-bot.svg',
     label: 'Bot AI',
     description: 'To konto jest zarządzane przez sztuczną inteligencję. Bot automatycznie publikuje i aktualizuje ogłoszenia, aby pomóc w wypełnieniu strony treścią.',
-    bgColor: 'bg-purple-100',
-    bgColorHex: '#f3e8ff',
-    hoverColor: 'hover:bg-purple-200',
+    bgColor: 'bg-white',
+    bgColorHex: '#ffffff',
+    hoverColor: 'hover:bg-gray-100',
     iconColor: 'text-purple-800',
   },
 };
@@ -64,6 +64,7 @@ interface UserBadgeProps {
 
 export function UserBadge({ type, className = '' }: UserBadgeProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const config = BADGE_CONFIGS[type];
 
   return (
@@ -71,11 +72,18 @@ export function UserBadge({ type, className = '' }: UserBadgeProps) {
       {/* Badge button */}
       <button
         onClick={() => setIsOpen(true)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
         style={{ backgroundColor: config.bgColorHex }}
         className={`rounded-full p-2 cursor-pointer shadow-md transition-colors ${className}`}
         aria-label={`Informacje o ${config.label.toLowerCase()}`}
       >
-        <span className={config.iconColor}>{config.icon}</span>
+        <LottieIcon
+          animationPath={config.animationPath}
+          fallbackSvg={<img src={config.svgPath} alt={config.label} className="w-full h-full" />}
+          className="w-6 h-6"
+          isHovered={isHovered}
+        />
       </button>
 
       {/* Dialog */}
@@ -84,7 +92,12 @@ export function UserBadge({ type, className = '' }: UserBadgeProps) {
           {/* Icon */}
           <div className="flex justify-center mb-4">
             <div className="rounded-full p-4" style={{ backgroundColor: config.bgColorHex }}>
-              <span className={config.iconColor}>{config.largeIcon}</span>
+              <LottieIcon
+                animationPath={config.animationPath}
+                fallbackSvg={<img src={config.svgPath} alt={config.label} className="w-full h-full" />}
+                className="w-12 h-12"
+                isHovered={isOpen}
+              />
             </div>
           </div>
 

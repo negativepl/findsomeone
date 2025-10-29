@@ -6,11 +6,12 @@ import { LottieIcon } from '@/components/LottieIcon'
 
 interface FeatureCardProps {
   animationPath: string
+  fallbackSvg: React.ReactNode
   title: string
   description: string
 }
 
-export function FeatureCard({ animationPath, title, description }: FeatureCardProps) {
+export function FeatureCard({ animationPath, fallbackSvg, title, description }: FeatureCardProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -22,7 +23,7 @@ export function FeatureCard({ animationPath, title, description }: FeatureCardPr
       <CardContent className="p-8 text-center">
         <div className="flex flex-col items-center mb-4">
           <div className="w-20 h-20 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 mb-5">
-            <LottieIcon animationPath={animationPath} className="w-12 h-12" isHovered={isHovered} />
+            <LottieIcon animationPath={animationPath} fallbackSvg={fallbackSvg} className="w-12 h-12" isHovered={isHovered} />
           </div>
           <h3 className="text-2xl font-bold text-black">{title}</h3>
         </div>

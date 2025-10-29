@@ -15,30 +15,70 @@ interface UserMenuProps {
 }
 
 interface MenuItemWithIconProps {
-  href: string
+  href?: string
   icon: string
+  fallbackIcon: React.ReactNode
   children: React.ReactNode
   onClick: () => void
+  isButton?: boolean
+  className?: string
 }
 
-function MenuItemWithIcon({ href, icon, children, onClick }: MenuItemWithIconProps) {
+function MenuItemWithIcon({ href, icon, fallbackIcon, children, onClick, isButton = false, className = "flex items-center gap-3 px-4 py-2.5 text-sm text-black hover:bg-black/5 transition-colors" }: MenuItemWithIconProps) {
   const iconRef = useRef<LordIconRef>(null)
+  const [hasHovered, setHasHovered] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
 
   const handleMouseEnter = () => {
-    if (iconRef.current) {
-      iconRef.current.trigger()
-    }
+    setHasHovered(true)
+    setIsHovering(true)
+    // Trigger animation after a small delay to ensure LordIcon is mounted
+    setTimeout(() => {
+      if (iconRef.current) {
+        iconRef.current.trigger()
+      }
+    }, 50)
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovering(false)
+  }
+
+  const content = (
+    <>
+      <div className="w-5 h-5 flex items-center justify-center">
+        {hasHovered ? (
+          <LordIcon ref={iconRef} src={icon} size={20} trigger={isHovering ? "hover" : "none"} />
+        ) : (
+          fallbackIcon
+        )}
+      </div>
+      {children}
+    </>
+  )
+
+  if (isButton) {
+    return (
+      <button
+        className={className}
+        onClick={onClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {content}
+      </button>
+    )
   }
 
   return (
     <Link
-      href={href}
-      className="flex items-center gap-3 px-4 py-2.5 text-sm text-black hover:bg-black/5 transition-colors"
+      href={href!}
+      className={className}
       onClick={onClick}
       onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <LordIcon ref={iconRef} src={icon} size={20} />
-      {children}
+      {content}
     </Link>
   )
 }
@@ -182,6 +222,11 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             <MenuItemWithIcon
               href="/dashboard"
               icon="/icons/home.json"
+              fallbackIcon={
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M19.5 8.329a.25.25 0 0 0-.125-.217l-7.25-4.174a.25.25 0 0 0-.25 0l-7.25 4.174a.25.25 0 0 0-.125.217V19.25c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25v-5.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v5.5c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25zM21 19.25A1.75 1.75 0 0 1 19.25 21h-4a1.75 1.75 0 0 1-1.75-1.75V14.5h-3v4.75A1.75 1.75 0 0 1 8.75 21h-4A1.75 1.75 0 0 1 3 19.25V8.33c0-.626.334-1.205.877-1.517l7.25-4.174a1.75 1.75 0 0 1 1.746 0l7.25 4.174c.543.312.877.89.877 1.517z"/>
+                </svg>
+              }
               onClick={() => setIsOpen(false)}
             >
               Moje konto
@@ -190,6 +235,24 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             <MenuItemWithIcon
               href="/dashboard/my-posts"
               icon="/icons/newspaper.json"
+              fallbackIcon={
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <g clipPath="url(#N3FWNfAbPsa)">
+                    <mask id="f8zVey1FfYb" width="19" height="19" x="3" y="3" maskUnits="userSpaceOnUse" style={{ maskType: 'alpha' }}>
+                      <path fill="#D9D9D9" fillRule="evenodd" d="M22 3H3v19h19zm-1.5 7h-5v8a2.5 2.5 0 0 0 5 0z" clipRule="evenodd"/>
+                    </mask>
+                    <g mask="url(#f8zVey1FfYb)">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M18 20.5H6.5A2.5 2.5 0 0 1 4 18V4h11.5v6z"/>
+                    </g>
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M15.5 10h5v8a2.5 2.5 0 0 1-5 0zm-3-3H7v3.5h5.5zM7 13.5h5.5M7 16.56h5.5"/>
+                  </g>
+                  <defs>
+                    <clipPath id="N3FWNfAbPsa">
+                      <path fill="#fff" d="M0 0h24v24H0z"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              }
               onClick={() => setIsOpen(false)}
             >
               Moje ogłoszenia
@@ -198,6 +261,14 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             <MenuItemWithIcon
               href="/dashboard/profile"
               icon="/icons/account.json"
+              fallbackIcon={
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <g fill="currentColor" fillRule="evenodd" clipRule="evenodd">
+                    <path d="M12 5.5a4 4 0 1 1 0 8 4 4 0 0 1 0-8M12 7a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5"/>
+                    <path d="M12 2c5.523 0 10 4.477 10 10a9.97 9.97 0 0 1-3.316 7.436l-.012.01A9.96 9.96 0 0 1 12 22C6.477 22 2 17.523 2 12S6.477 2 12 2M9.75 16.5a3.25 3.25 0 0 0-3.053 2.14A8.46 8.46 0 0 0 12 20.5a8.46 8.46 0 0 0 5.303-1.86 3.25 3.25 0 0 0-3.053-2.14zM12 3.5a8.5 8.5 0 0 0-6.45 14.032A4.75 4.75 0 0 1 9.75 15h4.5a4.75 4.75 0 0 1 4.2 2.532A8.46 8.46 0 0 0 20.5 12 8.5 8.5 0 0 0 12 3.5"/>
+                  </g>
+                </svg>
+              }
               onClick={() => setIsOpen(false)}
             >
               Mój profil
@@ -206,6 +277,18 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             <MenuItemWithIcon
               href="/dashboard/settings"
               icon="/icons/settings.json"
+              fallbackIcon={
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <g clipPath="url(#vx0YN8sIZ7a)">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m20.652 14.43-1.61-.93c.11-.48.16-.99.16-1.5s-.05-1.02-.16-1.5l1.61-.93c.24-.13.32-.44.19-.68l-1.75-3.03a.505.505 0 0 0-.69-.18l-1.62.94c-.74-.68-1.61-1.2-2.58-1.5V3.25c0-.28-.22-.5-.5-.5h-3.5c-.28 0-.5.22-.5.5v1.87c-.97.3-1.84.82-2.58 1.5l-1.62-.94a.505.505 0 0 0-.69.18l-1.75 3.03c-.13.24-.05.55.19.68l1.61.93c-.11.48-.16.99-.16 1.5s.05 1.02.16 1.5l-1.61.93c-.24.13-.32.44-.19.68l1.75 3.03c.14.24.45.32.69.18l1.62-.94c.74.68 1.61 1.2 2.58 1.5v1.87c0 .28.22.5.5.5h3.5c.28 0 .5-.22.5-.5v-1.87c.97-.3 1.84-.82 2.58-1.5l1.62.94c.24.14.55.06.69-.18l1.75-3.03c.13-.24.05-.55-.19-.68m-5.56-1.59c-.08.27-.18.54-.33.78-.28.5-.69.91-1.19 1.19a3.15 3.15 0 0 1-1.62.44 3.15 3.15 0 0 1-1.62-.44c-.5-.28-.91-.69-1.19-1.19a3.15 3.15 0 0 1-.44-1.62 3.15 3.15 0 0 1 .44-1.62c.28-.5.69-.91 1.19-1.19a3.15 3.15 0 0 1 1.62-.44 3.15 3.15 0 0 1 1.62.44c.5.28.91.69 1.19 1.19a3.15 3.15 0 0 1 .44 1.62c0 .29-.04.57-.11.84"/>
+                  </g>
+                  <defs>
+                    <clipPath id="vx0YN8sIZ7a">
+                      <path fill="#fff" d="M0 0h24v24H0z"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              }
               onClick={() => setIsOpen(false)}
             >
               Ustawienia
@@ -214,23 +297,43 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
 
           {isAdmin && (
             <div className="border-t border-black/5 pt-1 mt-1">
-              <Link
+              <MenuItemWithIcon
                 href="/admin"
-                className="block px-4 py-2.5 text-sm text-[#C44E35] hover:bg-[#C44E35]/5 transition-colors font-medium"
+                icon="/icons/admin.json"
+                fallbackIcon={
+                  <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="#c44e35" strokeLinejoin="round" strokeWidth="1.5" d="M3.75 6.25S10 5 12 3.75c2 1.25 8.251 2.5 8.251 2.5-.911 6.09-2.961 10.6-8.251 14-5.25-3.4-7.6-7.91-8.25-14Z"/>
+                  </svg>
+                }
                 onClick={() => setIsOpen(false)}
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#C44E35] hover:bg-[#C44E35]/5 transition-colors font-medium"
               >
                 Panel administracyjny
-              </Link>
+              </MenuItemWithIcon>
             </div>
           )}
 
           <div className="border-t border-black/5 pt-1 mt-1">
-            <button
+            <MenuItemWithIcon
+              icon="/icons/logout.json"
+              fallbackIcon={
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <g stroke="#dc2626" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#er_gIUdBqMa)">
+                    <path d="M16 16.25 20.25 12 16 7.75M20.25 12H8.75m4.5 8.25h-7.5c-1.1 0-2-.9-2-2V5.75c0-1.1.9-2 2-2h7.5"/>
+                  </g>
+                  <defs>
+                    <clipPath id="er_gIUdBqMa">
+                      <path fill="#fff" d="M0 0h24v24H0z"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              }
               onClick={handleSignOut}
-              className="block w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              isButton={true}
+              className="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
             >
               Wyloguj się
-            </button>
+            </MenuItemWithIcon>
           </div>
         </div>
       )}
