@@ -41,8 +41,8 @@ export async function POST(request: NextRequest) {
       description: post.description,
       type: post.type,
       city: post.city,
-      price_min: post.price_min,
-      price_max: post.price_max,
+      price: post.price,
+      price: post.price,
     })
 
     const status = getModerationStatus(result)

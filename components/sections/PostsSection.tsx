@@ -42,8 +42,8 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
 
   // Apply sorting
   if (sortBy === 'price') {
-    // Sort by price_min (or price_max if min is null)
-    query = query.order('price_min', { ascending: sortOrder === 'asc', nullsFirst: false })
+    // Sort by price
+    query = query.order('price', { ascending: sortOrder === 'asc', nullsFirst: false })
   } else if (sortBy === 'views') {
     query = query.order('view_count', { ascending: sortOrder === 'asc' })
   } else {
@@ -70,13 +70,8 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
   const title = section.title
   const subtitle = section.subtitle
 
-  // Determine button link based on section type
-  let buttonLink = '/posts'
-  if (section.type === 'seeking_help') {
-    buttonLink = '/posts?type=seeking'
-  } else if (section.type === 'offering_help') {
-    buttonLink = '/posts?type=offering'
-  }
+  // All posts now redirect to the same page without type filter
+  const buttonLink = '/posts'
 
   return (
     <section className="container mx-auto px-6 py-3 md:py-14">

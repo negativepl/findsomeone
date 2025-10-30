@@ -52,8 +52,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const [categories, setCategories] = useState<Category[]>([])
   const [subcategories, setSubcategories] = useState<Category[]>([])
 
-  // Show type selection modal on mount
-  const [showTypeModal, setShowTypeModal] = useState(true)
   const [showDraftModal, setShowDraftModal] = useState(false)
   const [hasDraft, setHasDraft] = useState(false)
 
@@ -69,13 +67,11 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    type: 'seeking' as 'seeking' | 'offering',
     category: '',
     subcategory: '',
     city: '',
     district: '',
-    priceMin: '',
-    priceMax: '',
+    price: '',
     priceType: 'negotiable' as 'hourly' | 'fixed' | 'negotiable' | 'free',
   })
 
@@ -149,7 +145,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         if (draftAge < 7 * 24 * 60 * 60 * 1000) {
           setHasDraft(true)
           setShowDraftModal(true)
-          setShowTypeModal(false) // Don't show type modal if we have a draft
         } else {
           localStorage.removeItem('postDraft')
         }
@@ -253,7 +248,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1: // Podstawowe info
-        const hasRequiredFields = !!(formData.type && formData.category && formData.title.trim())
+        const hasRequiredFields = !!(formData.category && formData.title.trim())
         // If subcategories are available, subcategory must be selected
         const hasSubcategoryIfNeeded = subcategories.length === 0 || !!formData.subcategory
         return hasRequiredFields && hasSubcategoryIfNeeded
@@ -298,11 +293,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     }
   }
 
-  const handleTypeSelection = (type: 'seeking' | 'offering') => {
-    setFormData(prev => ({ ...prev, type }))
-    setShowTypeModal(false)
-  }
-
   const loadDraft = () => {
     const draft = localStorage.getItem('postDraft')
     if (draft) {
@@ -316,7 +306,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       } catch (e) {
         console.error('Error loading draft:', e)
         setShowDraftModal(false)
-        setShowTypeModal(true)
       }
     }
   }
@@ -324,7 +313,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const discardDraft = () => {
     localStorage.removeItem('postDraft')
     setShowDraftModal(false)
-    setShowTypeModal(true)
   }
 
   const clearDraft = () => {
@@ -443,7 +431,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         body: JSON.stringify({
           title: formData.title,
           description: formData.description,
-          type: formData.type,
         }),
       })
 
@@ -510,12 +497,10 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         user_id: user.id,
         title: formData.title,
         description: formData.description,
-        type: formData.type,
         category_id: subcategoryId || category?.id || null, // Use subcategory if selected, otherwise main category
         city: formData.city,
         district: formData.district || null,
-        price_min: formData.priceMin ? parseFloat(formData.priceMin) : null,
-        price_max: formData.priceMax ? parseFloat(formData.priceMax) : null,
+        price: formData.price ? parseFloat(formData.price) : null,
         price_type: formData.priceType,
         images: processedImages.length > 0 ? processedImages : null,
         status: 'pending',
@@ -583,131 +568,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
           </div>
         )}
 
-        {/* Type Selection Modal */}
-        {showTypeModal && (
-          <Dialog open={showTypeModal} onOpenChange={setShowTypeModal}>
-            <DialogContent
-              className="rounded-3xl p-5 md:p-12"
-              style={{ maxWidth: 'min(1200px, calc(100vw - 2rem))' }}
-              showCloseButton={false}
-            >
-              <div className="text-left mb-3 md:mb-6">
-                <DialogTitle className="text-xl md:text-4xl mb-1 md:mb-3">Co chcesz zrobić?</DialogTitle>
-                <DialogDescription className="text-xs md:text-lg">Wybierz typ ogłoszenia</DialogDescription>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
-                {/* Seeking Card */}
-                <button
-                  onClick={() => handleTypeSelection('seeking')}
-                  className="group bg-white border-2 border-black/10 hover:border-[#C44E35] rounded-2xl md:rounded-3xl p-3 md:p-8 text-left transition-all"
-                >
-                  {/* Mobile layout */}
-                  <div className="flex items-center gap-3 md:hidden">
-                    <div className="w-10 h-10 rounded-xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-base font-bold text-black mb-1">Szukam usługi</h3>
-                      <p className="text-xs text-black/70 leading-snug">
-                        Potrzebujesz kogoś do wykonania pracy?
-                      </p>
-                    </div>
-                    <div className="flex items-center text-[#C44E35] flex-shrink-0">
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                  {/* Desktop layout */}
-                  <div className="hidden md:flex flex-col gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center">
-                      <svg className="w-9 h-9 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-black mb-3">Szukam usługi</h3>
-                      <p className="text-base text-black/70 leading-relaxed">
-                        Potrzebujesz kogoś do wykonania pracy? Opisz czego szukasz i znajdź odpowiednią osobę.
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 text-base font-semibold text-[#C44E35]">
-                      <span>Wybierz</span>
-                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Offering Card */}
-                <button
-                  onClick={() => handleTypeSelection('offering')}
-                  className="group bg-white border-2 border-black/10 hover:border-[#C44E35] rounded-2xl md:rounded-3xl p-3 md:p-8 text-left transition-all"
-                >
-                  {/* Mobile layout */}
-                  <div className="flex items-center gap-3 md:hidden">
-                    <div className="w-10 h-10 rounded-xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-5 h-5 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-base font-bold text-black mb-1">Oferuję usługi</h3>
-                      <p className="text-xs text-black/70 leading-snug">
-                        Świadczysz usługi? Opisz co oferujesz.
-                      </p>
-                    </div>
-                    <div className="flex items-center text-[#C44E35] flex-shrink-0">
-                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                  {/* Desktop layout */}
-                  <div className="hidden md:flex flex-col gap-6">
-                    <div className="w-16 h-16 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center">
-                      <svg className="w-9 h-9 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="text-2xl font-bold text-black mb-3">Oferuję usługi</h3>
-                      <p className="text-base text-black/70 leading-relaxed">
-                        Świadczysz usługi? Opisz co oferujesz i znajdź klientów szukających pomocy.
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2 text-base font-semibold text-[#C44E35]">
-                      <span>Wybierz</span>
-                      <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
-                  </div>
-                </button>
-              </div>
-            </DialogContent>
-          </Dialog>
-        )}
-
         {/* Page Header - Above Card - Hidden on mobile */}
         <div className="hidden md:block mb-8">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-4xl font-bold text-black">Dodaj nowe ogłoszenie</h1>
-            {!showTypeModal && (
-              <span className="px-4 py-1.5 rounded-full text-sm font-semibold bg-[#C44E35]/10 text-[#C44E35] border-2 border-[#C44E35]/20">
-                {formData.type === 'seeking' ? 'Szukasz usługi' : 'Oferujesz usługę'}
-              </span>
-            )}
           </div>
           <p className="text-lg text-black/60">
-            {formData.type === 'seeking'
-              ? 'Opisz czego szukasz i znajdź odpowiednich specjalistów'
-              : 'Opisz swoje usługi i dotrzij do potencjalnych klientów'
-            }
+            Opisz swoje ogłoszenie i znajdź odpowiednich klientów lub specjalistów
           </p>
         </div>
 
@@ -744,11 +611,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <div className="relative">
                   <Input
                     id="title"
-                    placeholder={
-                      formData.type === 'seeking'
-                        ? 'np. Szukam hydraulika w Warszawie'
-                        : 'np. Oferuję usługi hydrauliczne'
-                    }
+                    placeholder="np. Hydraulik Warszawa - naprawa kranów"
                     value={formData.title}
                     onChange={(e) => {
                       setFormData({ ...formData, title: e.target.value })
@@ -866,11 +729,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <RichTextEditor
                   content={formData.description}
                   onChange={(content) => setFormData({ ...formData, description: content })}
-                  placeholder={
-                    formData.type === 'seeking'
-                      ? 'Opisz szczegółowo czego szukasz: jakie prace, kiedy, jakie wymagania...'
-                      : 'Opisz szczegółowo co oferujesz: zakres usług, doświadczenie, dostępność...'
-                  }
+                  placeholder="Opisz szczegółowo swoje ogłoszenie: zakres usług lub potrzeb, termin, wymagania..."
                 />
               </div>
 
@@ -936,33 +795,17 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </Select>
                 </div>
                 <div className="space-y-3">
-                  <Label htmlFor="priceMin" className="text-base font-semibold text-black">
-                    Cena min. (zł)
+                  <Label htmlFor="price" className="text-base font-semibold text-black">
+                    Cena (zł)
                   </Label>
                   <Input
-                    id="priceMin"
+                    id="price"
                     type="number"
                     min="0"
                     step="0.01"
                     placeholder="0"
-                    value={formData.priceMin}
-                    onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
-                    disabled={formData.priceType === 'free'}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label htmlFor="priceMax" className="text-base font-semibold text-black">
-                    Cena maks. (zł)
-                  </Label>
-                  <Input
-                    id="priceMax"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="0"
-                    value={formData.priceMax}
-                    onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     disabled={formData.priceType === 'free'}
                     className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
@@ -1016,11 +859,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <div className="relative">
                       <Input
                         id="title-mobile"
-                        placeholder={
-                          formData.type === 'seeking'
-                            ? 'np. Szukam hydraulika w Warszawie'
-                            : 'np. Oferuję usługi hydrauliczne'
-                        }
+                        placeholder="np. Hydraulik Warszawa - naprawa kranów"
                         value={formData.title}
                         onChange={(e) => {
                           setFormData({ ...formData, title: e.target.value })
@@ -1112,11 +951,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   <RichTextEditor
                     content={formData.description}
                     onChange={(content) => setFormData({ ...formData, description: content })}
-                    placeholder={
-                      formData.type === 'seeking'
-                        ? 'Opisz szczegółowo czego szukasz...'
-                        : 'Opisz szczegółowo co oferujesz...'
-                    }
+                    placeholder="Opisz szczegółowo swoje ogłoszenie..."
                     hideToolbar={true}
                     onEditorReady={setRichTextEditor}
                     noBorder={true}
@@ -1198,33 +1033,17 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   {formData.priceType !== 'free' && (
                     <>
                       <div className="space-y-2">
-                        <Label htmlFor="priceMin-mobile" className="text-base font-semibold text-black">
-                          Cena minimalna (zł) <span className="text-black/40 font-normal">(opcjonalnie)</span>
+                        <Label htmlFor="price-mobile" className="text-base font-semibold text-black">
+                          Cena (zł) <span className="text-black/40 font-normal">(opcjonalnie)</span>
                         </Label>
                         <Input
-                          id="priceMin-mobile"
+                          id="price-mobile"
                           type="number"
                           min="0"
                           step="0.01"
                           placeholder="0"
-                          value={formData.priceMin}
-                          onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
-                          className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="priceMax-mobile" className="text-base font-semibold text-black">
-                          Cena maksymalna (zł) <span className="text-black/40 font-normal">(opcjonalnie)</span>
-                        </Label>
-                        <Input
-                          id="priceMax-mobile"
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          placeholder="0"
-                          value={formData.priceMax}
-                          onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
+                          value={formData.price}
+                          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                           className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
                         />
                       </div>
@@ -1256,10 +1075,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         </button>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-black/60">
-                        <span className="font-medium">
-                          {formData.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                        </span>
-                        <span>•</span>
                         <span>{categories.find(c => c.slug === formData.category)?.name || formData.category}</span>
                       </div>
                     </div>
@@ -1350,15 +1165,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                             'Za darmo'
                           ) : (
                             <>
-                              {formData.priceMin && `${formData.priceMin} zł`}
-                              {formData.priceMin && formData.priceMax && ' - '}
-                              {formData.priceMax && `${formData.priceMax} zł`}
-                              {(formData.priceMin || formData.priceMax) && (
+                              {formData.price ? `${formData.price} zł` : ''}
+                              {formData.price && (
                                 <span className="text-black/60 ml-1">
                                   ({formData.priceType === 'hourly' ? 'za godz.' : formData.priceType === 'fixed' ? 'stała' : 'do negocjacji'})
                                 </span>
                               )}
-                              {!formData.priceMin && !formData.priceMax && (
+                              {!formData.price && (
                                 <span className="text-black/60">
                                   {formData.priceType === 'hourly' ? 'Za godzinę' : formData.priceType === 'fixed' ? 'Stała cena' : 'Do negocjacji'}
                                 </span>

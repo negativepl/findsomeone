@@ -15,8 +15,8 @@ interface PostData {
   type: string
   category?: string
   city?: string
-  price_min?: number
-  price_max?: number
+  price?: number
+  price?: number
 }
 
 // Basic validation rules (anti-spam)
@@ -291,12 +291,12 @@ export async function moderatePost(post: PostData): Promise<ModerationResult> {
 
   // Step 3: Context validation
   // Check if price makes sense
-  if (post.price_min && post.price_max) {
-    if (post.price_min > post.price_max) {
+  if (post.price && post.price) {
+    if (post.price > post.price) {
       reasons.push('Cena minimalna wyższa od maksymalnej')
       score -= 10
     }
-    if (post.price_min < 0 || post.price_max < 0) {
+    if (post.price < 0 || post.price < 0) {
       reasons.push('Cena nie może być ujemna')
       score -= 20
     }

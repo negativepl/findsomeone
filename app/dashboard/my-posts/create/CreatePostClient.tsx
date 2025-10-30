@@ -413,19 +413,10 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
         subcategoryId = subcategory?.id || null
       }
 
-      // Convert price based on priceType
-      let priceMin = null
-      let priceMax = null
-
+      // Convert price
+      let price = null
       if (formData.priceType !== 'free' && formData.price) {
-        const priceNum = parseFloat(formData.price.replace(',', '.'))
-        if (formData.priceType === 'fixed' || formData.priceType === 'hourly') {
-          priceMin = priceNum
-          priceMax = priceNum
-        } else if (formData.priceType === 'negotiable') {
-          priceMin = priceNum
-          priceMax = null
-        }
+        price = parseFloat(formData.price.replace(',', '.'))
       }
 
       // Create post
@@ -435,12 +426,10 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           user_id: user.id,
           title: formData.title,
           description: formData.description,
-          type: 'seeking', // Default type - możesz dodać wybór w przyszłości
           category_id: subcategoryId || category?.id || null,
           city: formData.city,
           district: formData.district || null,
-          price_min: priceMin,
-          price_max: priceMax,
+          price: price,
           price_type: formData.priceType,
           images: processedImages.length > 0 ? processedImages : null,
           status: 'pending',

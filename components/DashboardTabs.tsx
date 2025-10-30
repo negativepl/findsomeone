@@ -4,17 +4,14 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { AnimatedTabs } from './AnimatedTabs'
 
 interface DashboardTabsProps {
-  seekingCount: number
-  offeringCount: number
   totalCount: number
 }
 
-export function DashboardTabs({ seekingCount, offeringCount, totalCount }: DashboardTabsProps) {
+export function DashboardTabs({ totalCount }: DashboardTabsProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
 
-  const currentType = searchParams.get('type') || 'all'
   const search = searchParams.get('search') || ''
   const city = searchParams.get('city') || ''
   const category = searchParams.get('category') || ''
@@ -27,25 +24,18 @@ export function DashboardTabs({ seekingCount, offeringCount, totalCount }: Dashb
     if (city) params.set('city', city)
     if (category) params.set('category', category)
 
-    // Set type if not 'all'
-    if (value !== 'all') {
-      params.set('type', value)
-    }
-
     const queryString = params.toString()
     router.push(`${pathname}${queryString ? `?${queryString}` : ''}`)
   }
 
   const tabs = [
-    { id: 'all', label: 'Wszystkie', count: totalCount },
-    { id: 'seeking', label: 'Szukam', count: seekingCount },
-    { id: 'offering', label: 'Oferuję', count: offeringCount },
+    { id: 'all', label: 'Wszystkie ogłoszenia', count: totalCount },
   ]
 
   return (
     <AnimatedTabs
       tabs={tabs}
-      activeTab={currentType}
+      activeTab={'all'}
       onTabChange={handleTabChange}
       className="justify-center md:justify-start"
       showLoader={true}

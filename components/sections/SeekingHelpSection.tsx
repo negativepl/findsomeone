@@ -34,7 +34,6 @@ export async function SeekingHelpSection({ section, userFavorites }: SeekingHelp
     `)
     .eq('status', 'active')
     .eq('is_deleted', false)
-    .eq('type', 'seeking')
     .order('created_at', { ascending: false })
     .limit(limit)
 
@@ -61,7 +60,7 @@ export async function SeekingHelpSection({ section, userFavorites }: SeekingHelp
           </div>
           {showButton && (
             <div className="hidden md:block">
-              <Link href="/posts?type=seeking">
+              <Link href="/posts">
                 <button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-3 font-medium transition-colors">
                   Zobacz wszystkie
                 </button>

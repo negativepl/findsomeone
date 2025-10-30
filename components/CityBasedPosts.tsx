@@ -16,11 +16,9 @@ import { createClient } from '@/lib/supabase/client'
 interface Post {
   id: string
   title: string
-  type: 'seeking' | 'offering'
   city: string
   district?: string
-  price_min?: number
-  price_max?: number
+  price?: number
   price_type?: string
   images?: string[]
   profiles?: {

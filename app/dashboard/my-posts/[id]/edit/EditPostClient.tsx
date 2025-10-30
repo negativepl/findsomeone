@@ -24,11 +24,9 @@ interface Post {
   user_id: string
   title: string
   description: string
-  type: 'seeking' | 'offering'
   city: string
   district: string | null
-  price_min: number | null
-  price_max: number | null
+  price: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | null
   images: string[] | null
   categories: {
@@ -60,12 +58,10 @@ export function EditPostClient({ post }: EditPostClientProps) {
   const [formData, setFormData] = useState({
     title: post.title,
     description: post.description,
-    type: post.type,
     category: post.categories?.slug || '',
     city: post.city,
     district: post.district || '',
-    priceMin: post.price_min?.toString() || '',
-    priceMax: post.price_max?.toString() || '',
+    price: post.price?.toString() || '',
     priceType: post.price_type || 'negotiable',
   })
 
@@ -214,12 +210,10 @@ export function EditPostClient({ post }: EditPostClientProps) {
         .update({
           title: formData.title,
           description: formData.description,
-          type: formData.type,
           category_id: categoryId,
           city: formData.city,
           district: formData.district || null,
-          price_min: formData.priceMin ? parseFloat(formData.priceMin) : null,
-          price_max: formData.priceMax ? parseFloat(formData.priceMax) : null,
+          price: formData.price ? parseFloat(formData.price) : null,
           price_type: formData.priceType,
           images: processedImages.length > 0 ? processedImages : null,
           // Reset moderation status - edited post needs to be re-verified
@@ -288,8 +282,8 @@ export function EditPostClient({ post }: EditPostClientProps) {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title, Category and Type in one row */}
-            <div className="grid md:grid-cols-[1fr_280px_280px] gap-4">
+            {/* Title and Category in one row */}
+            <div className="grid md:grid-cols-[1fr_280px] gap-4">
               {/* Title */}
               <div className="space-y-3">
                 <Label htmlFor="title" className="text-base font-semibold text-black">
@@ -298,11 +292,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 <div className="relative">
                   <Input
                     id="title"
-                    placeholder={
-                      formData.type === 'seeking'
-                        ? 'np. Szukam hydraulika do naprawy kranu'
-                        : 'np. Oferuję usługi hydrauliczne - naprawy, instalacje'
-                    }
+                    placeholder="np. Hydraulik Warszawa - naprawa kranów"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     required
@@ -335,25 +325,6 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   </SelectContent>
                 </Select>
               </div>
-
-              {/* Type */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold text-black">Typ ogłoszenia *</Label>
-                <Select
-                  value={formData.type}
-                  onValueChange={(value: 'seeking' | 'offering') =>
-                    setFormData({ ...formData, type: value })
-                  }
-                >
-                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="seeking">Szukam usługi</SelectItem>
-                    <SelectItem value="offering">Oferuję usługi</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
             </div>
 
             {/* Description */}
@@ -364,11 +335,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
               <RichTextEditor
                 content={formData.description}
                 onChange={(content) => setFormData({ ...formData, description: content })}
-                placeholder={
-                  formData.type === 'seeking'
-                    ? 'Opisz szczegółowo czego szukasz: jakie prace, kiedy, jakie wymagania...'
-                    : 'Opisz szczegółowo co oferujesz: zakres usług, doświadczenie, dostępność...'
-                }
+                placeholder="Opisz szczegółowo swoje ogłoszenie: zakres usług lub potrzeb, termin, wymagania..."
               />
             </div>
 
@@ -415,34 +382,19 @@ export function EditPostClient({ post }: EditPostClientProps) {
             {/* Price */}
             <div className="space-y-3">
               <Label className="text-base font-semibold text-black">Budżet (opcjonalnie)</Label>
-              <div className="grid md:grid-cols-[1fr_1fr_280px] gap-4">
+              <div className="grid md:grid-cols-[1fr_280px] gap-4">
                 <div className="space-y-3">
-                  <Label htmlFor="priceMin" className="text-sm text-black/60">
-                    Cena minimalna (zł)
+                  <Label htmlFor="price" className="text-sm text-black/60">
+                    Cena (zł)
                   </Label>
                   <Input
-                    id="priceMin"
+                    id="price"
                     type="number"
                     min="0"
                     step="0.01"
                     placeholder="0"
-                    value={formData.priceMin}
-                    onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
-                </div>
-                <div className="space-y-3">
-                  <Label htmlFor="priceMax" className="text-sm text-black/60">
-                    Cena maksymalna (zł)
-                  </Label>
-                  <Input
-                    id="priceMax"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="0"
-                    value={formData.priceMax}
-                    onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
                   />
                 </div>

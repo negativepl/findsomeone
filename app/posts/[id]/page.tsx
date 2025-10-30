@@ -36,7 +36,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         full_name
       ),
       categories (
-        name
+        name,
+        parent_id,
+        parent:parent_id (
+          name
+        )
       )
     `)
     .eq('id', id)
@@ -56,16 +60,12 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     ?.replace(/<[^>]*>/g, '')
     .substring(0, 155) || post.title
 
-  const priceText = post.price_min && post.price_max
-    ? `${post.price_min}-${post.price_max} zł`
-    : post.price_min
-    ? `od ${post.price_min} zł`
-    : post.price_max
-    ? `do ${post.price_max} zł`
+  const priceText = post.price
+    ? `${post.price} zł`
     : 'cena do uzgodnienia'
 
   const fullTitle = `${post.title} - ${post.city} | FindSomeone`
-  const fullDescription = `${post.type === 'seeking' ? 'Szukam' : 'Oferuję'}: ${cleanDescription}. ${priceText}. Kontakt: ${post.profiles?.full_name || 'FindSomeone'}`
+  const fullDescription = `${cleanDescription}. ${priceText}. Kontakt: ${post.profiles?.full_name || 'FindSomeone'}`
 
   return {
     title: fullTitle,
@@ -75,7 +75,6 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
       post.categories?.name || '',
       post.city,
       post.district || '',
-      post.type === 'seeking' ? 'szukam' : 'oferuję',
       'usługi lokalne',
       'ogłoszenia',
     ].filter(Boolean),
@@ -147,7 +146,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
       ),
       categories (
         name,
-        slug
+        slug,
+        parent_id,
+        parent:parent_id (
+          name,
+          slug
+        )
       )
     `)
     .eq('id', id)
@@ -231,11 +235,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     .select(`
       id,
       title,
-      type,
       city,
       district,
-      price_min,
-      price_max,
+      price,
       price_type,
       images,
       views,
@@ -256,7 +258,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': post.type === 'offering' ? 'Service' : 'Demand',
+    '@type': 'Service',
     name: post.title,
     description: post.description?.replace(/<[^>]*>/g, '').substring(0, 200),
     provider: {
@@ -275,17 +277,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
       name: post.city,
       ...(post.district ? { containedInPlace: post.district } : {}),
     },
-    ...(post.price_min || post.price_max ? {
+    ...(post.price ? {
       offers: {
         '@type': 'Offer',
         priceCurrency: 'PLN',
-        ...(post.price_min && post.price_max ? {
-          price: `${post.price_min}-${post.price_max}`,
-        } : post.price_min ? {
-          price: post.price_min,
-        } : {
-          price: post.price_max,
-        }),
+        price: post.price,
       }
     } : {}),
     ...(post.images && post.images.length > 0 ? {
@@ -317,6 +313,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             items={[
               { label: 'Strona główna', href: '/' },
               { label: 'Ogłoszenia', href: '/posts' },
+              // Show parent category if exists (for subcategories)
+              ...(post.categories?.parent_id && post.categories?.parent ? [{
+                label: post.categories.parent.name,
+                href: `/posts?category=${post.categories.parent.slug}`
+              }] : []),
+              // Show current category
               {
                 label: post.categories?.name || 'Kategoria',
                 href: post.categories?.slug ? `/posts?category=${post.categories.slug}` : undefined
@@ -359,14 +361,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     })}
                   </div>
 
-                  {(post.price_min || post.price_max) && (
+                  {post.price && (
                     <div className="flex items-baseline gap-2 flex-wrap">
                       <span className="text-2xl font-bold text-black">
-                        {post.price_min && post.price_max
-                          ? `${post.price_min} - ${post.price_max} zł`
-                          : post.price_min
-                          ? `od ${post.price_min} zł`
-                          : `do ${post.price_max} zł`}
+                        {post.price} zł
                       </span>
                       {post.price_type && (
                         <span className="text-sm text-black/60">
@@ -382,24 +380,13 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
 
                 {/* Badges Section - Above Description */}
-                <div className="px-4 md:px-8 pt-2 md:pt-0 pb-3 md:pb-4">
-                  <div className="flex flex-wrap gap-2">
-                    <Badge
-                      className={`rounded-full px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm ${
-                        post.type === 'seeking'
-                          ? 'bg-[#C44E35] text-white border-0'
-                          : 'bg-black text-white border-0'
-                      }`}
-                    >
-                      {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
+                {post.categories && (
+                  <div className="px-4 md:px-8 pt-2 md:pt-0 pb-3 md:pb-4">
+                    <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm">
+                      {post.categories.name}
                     </Badge>
-                    {post.categories && (
-                      <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm">
-                        {post.categories.name}
-                      </Badge>
-                    )}
                   </div>
-                </div>
+                )}
 
                 {/* Description Section */}
                 <div className="px-4 md:px-8 pb-4 md:pb-6">
@@ -471,15 +458,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
 
                 {/* Budget */}
-                {(post.price_min || post.price_max) && (
+                {post.price && (
                   <div className="pt-4 border-t border-black/5">
                     <div className="flex items-baseline gap-2 flex-wrap">
                       <span className="text-3xl font-bold text-black">
-                        {post.price_min && post.price_max
-                          ? `${post.price_min} - ${post.price_max} zł`
-                          : post.price_min
-                          ? `od ${post.price_min} zł`
-                          : `do ${post.price_max} zł`}
+                        {post.price} zł
                       </span>
                       {post.price_type && (
                         <span className="text-base text-black/60">
@@ -662,31 +645,16 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                               {/* Content */}
                               <div className="flex flex-col gap-2">
-                                <div className="flex items-start gap-2">
-                                  <Badge
-                                    className={`rounded-full px-2 py-0.5 text-xs ${
-                                      otherPost.type === 'seeking'
-                                        ? 'bg-[#C44E35] text-white border-0'
-                                        : 'bg-black text-white border-0'
-                                    }`}
-                                  >
-                                    {otherPost.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                                  </Badge>
-                                </div>
                                 <h5 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
                                   {otherPost.title}
                                 </h5>
                                 <div className="flex items-center gap-1.5 text-xs text-black/60">
                                   <span>{otherPost.city}</span>
-                                  {(otherPost.price_min || otherPost.price_max) && (
+                                  {otherPost.price && (
                                     <>
                                       <span>•</span>
                                       <span className="font-semibold text-black">
-                                        {otherPost.price_min && otherPost.price_max
-                                          ? `${otherPost.price_min}-${otherPost.price_max} zł`
-                                          : otherPost.price_min
-                                          ? `${otherPost.price_min} zł`
-                                          : `${otherPost.price_max} zł`}
+                                        {otherPost.price} zł
                                       </span>
                                     </>
                                   )}
@@ -722,32 +690,17 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                             {/* Content */}
                             <div className="flex-1 min-w-0 flex flex-col justify-between">
                               <div>
-                                <div className="flex items-start gap-2 mb-2">
-                                  <Badge
-                                    className={`rounded-full px-2 py-0.5 text-xs ${
-                                      otherPost.type === 'seeking'
-                                        ? 'bg-[#C44E35] text-white border-0'
-                                        : 'bg-black text-white border-0'
-                                    }`}
-                                  >
-                                    {otherPost.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                                  </Badge>
-                                </div>
                                 <h5 className="text-sm font-semibold text-black mb-2 line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
                                   {otherPost.title}
                                 </h5>
                               </div>
                               <div className="flex items-center gap-2 text-xs text-black/60">
                                 <span>{otherPost.city}</span>
-                                {(otherPost.price_min || otherPost.price_max) && (
+                                {otherPost.price && (
                                   <>
                                     <span>•</span>
                                     <span className="font-semibold text-black">
-                                      {otherPost.price_min && otherPost.price_max
-                                        ? `${otherPost.price_min}-${otherPost.price_max} zł`
-                                        : otherPost.price_min
-                                        ? `${otherPost.price_min} zł`
-                                        : `${otherPost.price_max} zł`}
+                                      {otherPost.price} zł
                                     </span>
                                   </>
                                 )}

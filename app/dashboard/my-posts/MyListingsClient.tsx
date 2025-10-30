@@ -41,11 +41,9 @@ interface Post {
   id: string
   title: string
   description: string
-  type: 'seeking' | 'offering'
   city: string
   district: string | null
-  price_min: number | null
-  price_max: number | null
+  price: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | 'free' | null
   status: 'active' | 'pending' | 'closed' | 'completed'
   moderation_status: 'pending' | 'checking' | 'approved' | 'rejected' | 'flagged'
@@ -516,14 +514,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                       <div className="pt-3 pb-4 mt-3 border-t-2 border-black/5 px-4">
                         <div className="flex items-center justify-between gap-2">
                           {/* Price */}
-                          {(post.price_min || post.price_max) ? (
+                          {post.price ? (
                             <div className="text-left">
                               <p className="text-base font-bold text-black">
-                                {post.price_min && post.price_max
-                                  ? `${post.price_min}-${post.price_max} zł`
-                                  : post.price_min
-                                  ? `${post.price_min} zł`
-                                  : `${post.price_max} zł`}
+                                {post.price} zł
                               </p>
                               {post.price_type && (
                                 <p className="text-xs text-black/60">
@@ -844,14 +838,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           {/* Price and Actions */}
                           <div className="flex items-center justify-between gap-4">
                             {/* Price */}
-                            {(post.price_min || post.price_max) ? (
+                            {post.price && (
                               <div className="text-left">
                                 <p className="text-xl font-bold text-black">
-                                  {post.price_min && post.price_max
-                                    ? `${post.price_min}-${post.price_max} zł`
-                                    : post.price_min
-                                    ? `${post.price_min} zł`
-                                    : `${post.price_max} zł`}
+                                  {post.price} zł
                                 </p>
                                 {post.price_type && (
                                   <p className="text-sm text-black/60">
@@ -863,8 +853,6 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                   </p>
                                 )}
                               </div>
-                            ) : (
-                              <div></div>
                             )}
 
                             {/* Actions Container */}
@@ -1071,20 +1059,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                     {/* Content area */}
                     <div className="flex-1 flex flex-col min-w-0 p-4 md:p-6">
-                      {/* Top section - Badges and Title */}
+                      {/* Top section - Title and Status */}
                       <div className="flex-1">
                         <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
-                          <div className="flex flex-wrap items-center gap-1.5 md:gap-2">
-                            <Badge
-                              className={`rounded-full h-6 md:h-8 px-3 md:px-4 text-xs md:text-sm whitespace-nowrap flex items-center ${
-                                post.type === 'seeking'
-                                  ? 'bg-[#C44E35] text-white border-0'
-                                  : 'bg-black text-white border-0'
-                              }`}
-                            >
-                              {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                            </Badge>
-                          </div>
                           {/* Status badge in top right */}
                           {post.moderation_status === 'rejected' ? (
                             <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-red-50 border border-red-200 rounded-lg flex-shrink-0">
@@ -1155,14 +1132,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                         <div className="pt-3 md:pt-4 border-t-2 border-black/5">
                           <div className="flex items-center justify-between gap-2 md:gap-4">
                             {/* Price */}
-                            {(post.price_min || post.price_max) ? (
+                            {post.price ? (
                               <div className="text-left">
                                 <p className="text-base md:text-xl font-bold text-black">
-                                  {post.price_min && post.price_max
-                                    ? `${post.price_min}-${post.price_max} zł`
-                                    : post.price_min
-                                    ? `${post.price_min} zł`
-                                    : `${post.price_max} zł`}
+                                  {post.price} zł
                                 </p>
                                 {post.price_type && (
                                   <p className="text-xs md:text-sm text-black/60">

@@ -79,22 +79,13 @@ export function UserPostsList({ userId, initialPosts, totalCount }: UserPostsLis
               <Link key={post.id} href={`/posts/${post.id}`}>
                 <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all shadow-sm cursor-pointer">
                   <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <Badge
-                        className={`rounded-full px-3 py-1.5 ${
-                          post.type === 'seeking'
-                            ? 'bg-[#C44E35] text-white border-0'
-                            : 'bg-black text-white border-0'
-                        }`}
-                      >
-                        {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                      </Badge>
-                      {post.categories && (
+                    {post.categories && (
+                      <div className="mb-3">
                         <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-3 py-1.5">
                           {post.categories.name}
                         </Badge>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     <h3 className="text-lg font-bold text-black mb-3">
                       {post.title}

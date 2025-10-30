@@ -92,11 +92,9 @@ export interface Database {
           category_id: string | null
           title: string
           description: string
-          type: 'seeking' | 'offering'
           city: string
           district: string | null
-          price_min: number | null
-          price_max: number | null
+          price: number | null
           price_type: 'hourly' | 'fixed' | 'negotiable' | null
           images: string[] | null
           status: 'active' | 'closed' | 'completed'
@@ -110,11 +108,9 @@ export interface Database {
           category_id?: string | null
           title: string
           description: string
-          type: 'seeking' | 'offering'
           city: string
           district?: string | null
-          price_min?: number | null
-          price_max?: number | null
+          price?: number | null
           price_type?: 'hourly' | 'fixed' | 'negotiable' | null
           images?: string[] | null
           status?: 'active' | 'closed' | 'completed'
@@ -128,11 +124,9 @@ export interface Database {
           category_id?: string | null
           title?: string
           description?: string
-          type?: 'seeking' | 'offering'
           city?: string
           district?: string | null
-          price_min?: number | null
-          price_max?: number | null
+          price?: number | null
           price_type?: 'hourly' | 'fixed' | 'negotiable' | null
           images?: string[] | null
           status?: 'active' | 'closed' | 'completed'

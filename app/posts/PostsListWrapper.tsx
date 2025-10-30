@@ -9,11 +9,9 @@ interface Post {
   user_id: string
   title: string
   description: string
-  type: 'seeking' | 'offering'
   city: string
   district: string | null
-  price_min: number | null
-  price_max: number | null
+  price: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | null
   images: string[] | null
   profiles: {
@@ -36,7 +34,6 @@ interface PostsListWrapperProps {
     search?: string
     city?: string
     category?: string
-    type?: string
     sort?: string
     limit?: string
   }

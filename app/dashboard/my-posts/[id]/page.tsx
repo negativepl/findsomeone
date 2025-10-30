@@ -130,22 +130,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 {/* Header Section with Badges and Title */}
                 <div className="p-8 pb-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex flex-wrap gap-2">
-                      <Badge
-                        className={`rounded-full px-4 py-1.5 ${
-                          post.type === 'seeking'
-                            ? 'bg-[#C44E35] text-white border-0'
-                            : 'bg-black text-white border-0'
-                        }`}
-                      >
-                        {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
+                    {post.categories && (
+                      <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-4 py-1.5">
+                        {post.categories.name}
                       </Badge>
-                      {post.categories && (
-                        <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-4 py-1.5">
-                          {post.categories.name}
-                        </Badge>
-                      )}
-                    </div>
+                    )}
                     <div className="flex-shrink-0">
                       <FavoriteButton
                         postId={post.id}
@@ -222,18 +211,14 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
 
                 {/* Budget Section */}
-                {(post.price_min || post.price_max) && (
+                {post.price && (
                   <div className="px-8 pb-8">
                     <div className="border-t border-black/5 pt-6">
                       <div className="flex items-baseline gap-3">
                         <h3 className="text-sm font-semibold text-black/60 uppercase tracking-wide">Budżet</h3>
                         <div className="flex-1 flex items-baseline gap-2 flex-wrap">
                           <span className="text-2xl font-bold text-black">
-                            {post.price_min && post.price_max
-                              ? `${post.price_min} - ${post.price_max} zł`
-                              : post.price_min
-                              ? `od ${post.price_min} zł`
-                              : `do ${post.price_max} zł`}
+                            {post.price} zł
                           </span>
                           {post.price_type && (
                             <span className="text-sm text-black/50">

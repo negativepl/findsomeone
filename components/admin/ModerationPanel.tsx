@@ -16,8 +16,8 @@ interface Post {
   type: string
   city: string
   district: string | null
-  price_min: number | null
-  price_max: number | null
+  price: number | null
+  price: number | null
   moderation_status: string
   moderation_score: number | null
   moderation_reason: string | null

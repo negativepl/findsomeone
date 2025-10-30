@@ -7,11 +7,9 @@ import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
 interface Post {
   id: string
   title: string
-  type: 'seeking' | 'offering'
   city: string
   district?: string
-  price_min?: number
-  price_max?: number
+  price?: number
   price_type?: string
   images?: string[]
   categories?: {
@@ -55,22 +53,13 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
         )}
 
         <CardHeader className="pb-3 pt-4">
-          <div className="flex items-start justify-between mb-2">
-            <Badge
-              className={`rounded-full px-2 py-1 text-xs ${
-                post.type === 'seeking'
-                  ? 'bg-[#C44E35] text-white border-0'
-                  : 'bg-black text-white border-0'
-              }`}
-            >
-              {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-            </Badge>
-            {post.categories && (
+          {post.categories && (
+            <div className="mb-2">
               <Badge variant="outline" className="rounded-full border-black/10 text-black/60 text-xs">
                 {post.categories.name}
               </Badge>
-            )}
-          </div>
+            </div>
+          )}
           <CardTitle className="text-base md:text-base font-bold text-black">{post.title}</CardTitle>
         </CardHeader>
 
@@ -86,13 +75,9 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
             </div>
 
             {/* Price - Right */}
-            {(post.price_min || post.price_max) ? (
+            {post.price ? (
               <p className="text-sm font-bold text-black whitespace-nowrap">
-                {post.price_min && post.price_max
-                  ? `${post.price_min}-${post.price_max} zł`
-                  : post.price_min
-                  ? `${post.price_min} zł`
-                  : `${post.price_max} zł`}
+                {post.price} zł
               </p>
             ) : (
               post.price_type === 'negotiable' && (

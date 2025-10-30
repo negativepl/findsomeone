@@ -8,7 +8,6 @@ export async function GET(request: NextRequest) {
   const search = searchParams.get('search') || ''
   const city = searchParams.get('city') || ''
   const category = searchParams.get('category') || ''
-  const type = searchParams.get('type') || ''
   const sort = searchParams.get('sort') || 'newest'
 
   const supabase = await createClient()
@@ -39,21 +38,15 @@ export async function GET(request: NextRequest) {
         )
       }
 
-      if (type) {
-        filteredResults = filteredResults.filter((post: any) =>
-          post.type === type
-        )
-      }
-
       // Apply sorting
       filteredResults.sort((a: any, b: any) => {
         switch (sort) {
           case 'oldest':
             return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
           case 'price_asc':
-            return (a.price_min || 0) - (b.price_min || 0)
+            return (a.price || 0) - (b.price || 0)
           case 'price_desc':
-            return (b.price_min || 0) - (a.price_min || 0)
+            return (b.price || 0) - (a.price || 0)
           case 'newest':
           default:
             return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -69,11 +62,9 @@ export async function GET(request: NextRequest) {
         user_id: result.user_id,
         title: result.title,
         description: result.description,
-        type: result.type,
         city: result.city,
         district: result.district,
-        price_min: result.price_min,
-        price_max: result.price_max,
+        price: result.price,
         price_type: result.price_type,
         images: result.images,
         created_at: result.created_at,
@@ -145,19 +136,14 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // Apply type filter
-      if (type) {
-        query = query.eq('type', type)
-      }
-
       // Apply sorting
       const sortOrder = sort === 'oldest' ? { ascending: true } : { ascending: false }
       switch (sort) {
         case 'price_asc':
-          query = query.order('price_min', { ascending: true, nullsFirst: false })
+          query = query.order('price', { ascending: true, nullsFirst: false })
           break
         case 'price_desc':
-          query = query.order('price_min', { ascending: false, nullsFirst: false })
+          query = query.order('price', { ascending: false, nullsFirst: false })
           break
         case 'oldest':
         case 'newest':

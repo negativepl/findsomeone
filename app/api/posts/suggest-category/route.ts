@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
-    const { title = '', description = '', type = 'seeking' } = body
+    const { title = '', description = '' } = body
 
     if (!title && !description) {
       return NextResponse.json({
@@ -76,7 +76,6 @@ Zwracasz TYLKO czysty JSON bez dodatkowych komentarzy czy formatowania markdown.
 
 TYTUŁ: ${title}
 OPIS: ${description || '(brak opisu)'}
-TYP: ${type === 'seeking' ? 'Szukam usługi' : 'Oferuję usługę'}
 
 Dostępne kategorie:
 ${categoriesDescription}

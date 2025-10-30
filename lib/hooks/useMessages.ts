@@ -20,7 +20,7 @@ interface Conversation {
   posts: {
     id: string
     title: string
-    type: 'seeking' | 'offering'
+    
     status: string
     images: string[] | null
   }

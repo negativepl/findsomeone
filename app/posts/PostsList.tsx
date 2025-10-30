@@ -12,11 +12,9 @@ interface Post {
   user_id: string
   title: string
   description: string
-  type: 'seeking' | 'offering'
   city: string
   district: string | null
-  price_min: number | null
-  price_max: number | null
+  price: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | null
   images: string[] | null
   created_at: string
@@ -40,7 +38,6 @@ interface PostsListProps {
     search?: string
     city?: string
     category?: string
-    type?: string
     sort?: string
     limit?: string
   }
@@ -98,7 +95,6 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
         ...(searchParams.search && { search: searchParams.search }),
         ...(searchParams.city && { city: searchParams.city }),
         ...(searchParams.category && { category: searchParams.category }),
-        ...(searchParams.type && { type: searchParams.type }),
         ...(searchParams.sort && { sort: searchParams.sort }),
       })
 
@@ -215,14 +211,10 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                         </div>
 
                         {/* Price */}
-                        {(post.price_min || post.price_max) ? (
+                        {post.price ? (
                           <div className="text-right flex-shrink-0">
                             <p className="text-base font-bold text-black whitespace-nowrap">
-                              {post.price_min && post.price_max
-                                ? `${post.price_min}-${post.price_max} zł`
-                                : post.price_min
-                                ? `${post.price_min} zł`
-                                : `${post.price_max} zł`}
+                              {post.price} zł
                             </p>
                             {post.price_type && (
                               <p className="text-xs text-black/60 whitespace-nowrap">
@@ -334,14 +326,10 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                           </div>
 
                           {/* Price - right side */}
-                          {(post.price_min || post.price_max) ? (
+                          {post.price ? (
                             <div className="text-right flex-shrink-0">
                               <p className="text-xl font-bold text-black whitespace-nowrap">
-                                {post.price_min && post.price_max
-                                  ? `${post.price_min}-${post.price_max} zł`
-                                  : post.price_min
-                                  ? `${post.price_min} zł`
-                                  : `${post.price_max} zł`}
+                                {post.price} zł
                               </p>
                               {post.price_type && (
                                 <p className="text-sm text-black/60 whitespace-nowrap">
@@ -467,14 +455,10 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                         </div>
 
                         {/* Price */}
-                        {(post.price_min || post.price_max) ? (
+                        {post.price ? (
                           <div className="text-right flex-shrink-0">
                             <p className="text-base md:text-xl font-bold text-black whitespace-nowrap">
-                              {post.price_min && post.price_max
-                                ? `${post.price_min}-${post.price_max} zł`
-                                : post.price_min
-                                ? `${post.price_min} zł`
-                                : `${post.price_max} zł`}
+                              {post.price} zł
                             </p>
                             {post.price_type && (
                               <p className="text-xs md:text-sm text-black/60 whitespace-nowrap">

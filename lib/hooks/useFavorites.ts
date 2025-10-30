@@ -18,11 +18,11 @@ interface FavoritePost {
     id: string
     title: string
     description: string
-    type: 'seeking' | 'offering'
+    
     city: string
     district: string | null
-    price_min: number | null
-    price_max: number | null
+    price: number | null
+    price: number | null
     price_type: 'hourly' | 'fixed' | 'negotiable' | null
     images: string[] | null
     status: string
@@ -84,8 +84,8 @@ export function useFavorites(userId: string | null | undefined) {
             type,
             city,
             district,
-            price_min,
-            price_max,
+            price,
+            price,
             price_type,
             images,
             status,

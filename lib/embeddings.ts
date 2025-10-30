@@ -37,7 +37,7 @@ export async function generatePostEmbedding(post: {
   description: string
   category?: string
   city?: string
-  type?: 'seeking' | 'offering'
+  
 }): Promise<number[] | null> {
   // Create rich text for embedding
   const embeddingText = [
@@ -45,7 +45,6 @@ export async function generatePostEmbedding(post: {
     `Opis: ${post.description}`,
     post.category ? `Kategoria: ${post.category}` : '',
     post.city ? `Miasto: ${post.city}` : '',
-    post.type ? `Typ: ${post.type === 'seeking' ? 'Szukam' : 'Oferuję'}` : '',
   ]
     .filter(Boolean)
     .join('. ')

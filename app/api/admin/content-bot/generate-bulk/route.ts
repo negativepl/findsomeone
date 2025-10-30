@@ -69,7 +69,6 @@ export async function POST(request: Request) {
     }
 
     const postsPerCategory = aiSettings.content_bot_posts_per_category || 3
-    const offeringRatio = aiSettings.content_bot_offering_ratio || 0.5
 
     // Calculate total posts to generate
     const totalPosts = categoriesToProcess.length * postsPerCategory
@@ -102,10 +101,6 @@ export async function POST(request: Request) {
             currentPostIndex++
 
             try {
-              // Determine post type based on ratio
-              const postType = Math.random() < offeringRatio ? 'offering' : 'seeking'
-              const postTypeLabel = postType === 'seeking' ? 'Szukam' : 'Oferuję'
-
               // Send progress update
               controller.enqueue(
                 encoder.encode(`data: ${JSON.stringify({
@@ -113,7 +108,6 @@ export async function POST(request: Request) {
                   current: currentPostIndex,
                   total: totalPosts,
                   categoryName: category.name,
-                  postType: postTypeLabel,
                   postNumber: i + 1,
                   totalForCategory: postsPerCategory
                 })}\n\n`)
@@ -128,7 +122,6 @@ export async function POST(request: Request) {
               const prompt = aiSettings.content_bot_prompt
                 .replace('{categoryName}', category.name)
                 .replace('{categoryType}', categoryType)
-                .replace('{postType}', postTypeLabel)
                 .replace('{city}', city)
 
               // Generate post content with GPT-5 Nano
@@ -189,11 +182,9 @@ export async function POST(request: Request) {
                   category_id: category.id,
                   title: postData.title,
                   description: postData.description,
-                  type: postType,
                   city: city,
                   district: null,
-                  price_min: postData.price_min || null,
-                  price_max: postData.price_max || null,
+                  price: postData.price || null,
                   price_type: postData.price_type || 'negotiable',
                   images: [imageUrl], // Always has image now
                   status: 'active',
@@ -212,7 +203,6 @@ export async function POST(request: Request) {
                   type: 'success',
                   categoryName: category.name,
                   postTitle: postData.title,
-                  postType: postTypeLabel,
                   city: city
                 })}\n\n`)
               )

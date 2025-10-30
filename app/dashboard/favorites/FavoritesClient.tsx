@@ -61,22 +61,13 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
               )}
 
               <CardHeader className="pb-4 pt-6">
-                <div className="flex items-start justify-between mb-3">
-                  <Badge
-                    className={`rounded-full px-3 py-1 ${
-                      post.type === 'seeking'
-                        ? 'bg-[#C44E35] text-white border-0'
-                        : 'bg-black text-white border-0'
-                    }`}
-                  >
-                    {post.type === 'seeking' ? 'Szukam' : 'Oferuję'}
-                  </Badge>
-                  {post.categories && (
+                {post.categories && (
+                  <div className="mb-3">
                     <Badge variant="outline" className="rounded-full border-black/10 text-black/60">
                       {post.categories.name}
                     </Badge>
-                  )}
-                </div>
+                  </div>
+                )}
                 <CardTitle className="text-xl font-bold text-black">{post.title}</CardTitle>
               </CardHeader>
 
@@ -120,14 +111,10 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
                   </div>
 
                   {/* Price */}
-                  {(post.price_min || post.price_max) ? (
+                  {post.price ? (
                     <div className="text-right">
                       <p className="text-lg font-bold text-black">
-                        {post.price_min && post.price_max
-                          ? `${post.price_min}-${post.price_max} zł`
-                          : post.price_min
-                          ? `${post.price_min} zł`
-                          : `${post.price_max} zł`}
+                        {post.price} zł
                       </p>
                       {post.price_type && (
                         <p className="text-xs text-black/60">

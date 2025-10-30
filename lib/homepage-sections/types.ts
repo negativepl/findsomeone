@@ -61,7 +61,6 @@ export interface HomepageSection {
 // Configuration schemas for each section type
 export interface SeekingHelpConfig {
   limit?: number
-  post_type: 'seeking'
   show_see_all_button?: boolean
   category_filter?: string[]
   sort_by?: 'created_at' | 'price' | 'views'
@@ -70,7 +69,6 @@ export interface SeekingHelpConfig {
 
 export interface OfferingHelpConfig {
   limit?: number
-  post_type: 'offering'
   show_see_all_button?: boolean
   category_filter?: string[]
   sort_by?: 'created_at' | 'price' | 'views'
@@ -80,7 +78,6 @@ export interface OfferingHelpConfig {
 export interface NewestPostsConfig {
   limit?: number
   category_filter?: string[]
-  post_type_filter?: 'seeking' | 'offering' | 'all'
   sort_by?: 'created_at' | 'price' | 'views'
   sort_order?: 'asc' | 'desc'
 }
@@ -242,12 +239,11 @@ export interface SectionTypeMetadata {
 export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
   seeking_help: {
     type: 'seeking_help',
-    label: 'Szukają pomocy',
-    description: 'Wyświetla posty typu "szukam"',
+    label: 'Ogłoszenia',
+    description: 'Wyświetla najnowsze ogłoszenia',
     icon: 'search',
     defaultConfig: {
       limit: 8,
-      post_type: 'seeking',
       show_see_all_button: true,
       sort_by: 'created_at',
       sort_order: 'desc'
@@ -297,12 +293,11 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
   },
   offering_help: {
     type: 'offering_help',
-    label: 'Oferują pomoc',
-    description: 'Wyświetla posty typu "oferuję"',
+    label: 'Polecane ogłoszenia',
+    description: 'Wyświetla polecane ogłoszenia',
     icon: 'hand',
     defaultConfig: {
       limit: 8,
-      post_type: 'offering',
       show_see_all_button: true,
       sort_by: 'created_at',
       sort_order: 'desc'
@@ -355,7 +350,6 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
     icon: 'clock',
     defaultConfig: {
       limit: 8,
-      post_type_filter: 'all',
       sort_by: 'created_at',
       sort_order: 'desc'
     },
@@ -365,17 +359,6 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
         label: 'Liczba postów',
         type: 'number',
         default: 8
-      },
-      {
-        name: 'post_type_filter',
-        label: 'Typ postów',
-        type: 'select',
-        options: [
-          { value: 'all', label: 'Wszystkie' },
-          { value: 'seeking', label: 'Tylko szukam' },
-          { value: 'offering', label: 'Tylko oferuję' }
-        ],
-        default: 'all'
       },
       {
         name: 'sort_by',

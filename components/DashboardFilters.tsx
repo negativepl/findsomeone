@@ -77,8 +77,8 @@ export function DashboardFilters({ currentPage, itemsPerPage, totalCount }: Dash
           <SelectContent>
             <SelectItem value="created_at-desc">Najnowsze najpierw</SelectItem>
             <SelectItem value="created_at-asc">Najstarsze najpierw</SelectItem>
-            <SelectItem value="price_min-asc">Cena rosnąco</SelectItem>
-            <SelectItem value="price_max-desc">Cena malejąco</SelectItem>
+            <SelectItem value="price-asc">Cena rosnąco</SelectItem>
+            <SelectItem value="price-desc">Cena malejąco</SelectItem>
             <SelectItem value="title-asc">Tytuł A-Z</SelectItem>
             <SelectItem value="title-desc">Tytuł Z-A</SelectItem>
           </SelectContent>

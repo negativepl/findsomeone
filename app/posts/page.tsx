@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { DashboardTabs } from '@/components/DashboardTabs'
 import { SearchFilters } from '@/components/SearchFilters'
 import { PostsFilters } from '@/components/PostsFilters'
 import { PostsListWrapper } from './PostsListWrapper'
@@ -14,10 +13,10 @@ import { Metadata } from 'next'
 export async function generateMetadata({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; city?: string; category?: string; type?: string }>
+  searchParams: Promise<{ search?: string; city?: string; category?: string }>
 }): Promise<Metadata> {
   const params = await searchParams
-  const { city, category, type, search } = params
+  const { city, category, search } = params
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
 
@@ -34,12 +33,6 @@ export async function generateMetadata({
   } else if (city) {
     title = `Ogłoszenia w ${city} | FindSomeone`
     description = `Lokalne usługi i pomoc w ${city}. Zakupy, remont, sprzątanie i więcej. Połącz się z ludźmi w okolicy.`
-  } else if (type === 'seeking') {
-    title = 'Szukam pomocy | Ogłoszenia FindSomeone'
-    description = 'Przeglądaj ogłoszenia osób szukających pomocy. Zakupy, remont, sprzątanie, opieka i inne usługi.'
-  } else if (type === 'offering') {
-    title = 'Oferuję pomoc | Ogłoszenia FindSomeone'
-    description = 'Przeglądaj ogłoszenia osób oferujących pomoc. Znajdź specjalistów w swojej okolicy.'
   } else if (search) {
     title = `Szukaj: "${search}" | FindSomeone`
     description = `Wyniki wyszukiwania dla "${search}". Znajdź lokalną pomoc lub oferuj swoje usługi.`
@@ -72,11 +65,9 @@ interface Post {
   user_id: string
   title: string
   description: string
-  type: 'seeking' | 'offering'
   city: string
   district: string | null
-  price_min: number | null
-  price_max: number | null
+  price: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | null
   images: string[] | null
   created_at: string
@@ -94,7 +85,7 @@ interface Post {
 export default async function PostsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ search?: string; city?: string; category?: string; type?: string; sort?: string; page?: string; limit?: string }>
+  searchParams: Promise<{ search?: string; city?: string; category?: string; sort?: string; page?: string; limit?: string }>
 }) {
   const supabase = await createClient()
   const params = await searchParams
@@ -110,7 +101,6 @@ export default async function PostsPage({
   const searchQuery = params.search || ''
   const cityQuery = params.city || ''
   const categoryQuery = params.category || ''
-  const typeQuery = params.type || ''
   const sortQuery = params.sort || 'newest'
   const currentPage = parseInt(params.page || '1', 10)
   const itemsPerPage = parseInt(params.limit || '12', 10)
@@ -143,21 +133,15 @@ export default async function PostsPage({
       )
     }
 
-    if (typeQuery) {
-      filteredResults = filteredResults.filter((post: any) =>
-        post.type === typeQuery
-      )
-    }
-
     // Apply sorting
     filteredResults.sort((a: any, b: any) => {
       switch (sortQuery) {
         case 'oldest':
           return new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         case 'price_asc':
-          return (a.price_min || 0) - (b.price_min || 0)
+          return (a.price || 0) - (b.price || 0)
         case 'price_desc':
-          return (b.price_min || 0) - (a.price_min || 0)
+          return (b.price || 0) - (a.price || 0)
         case 'newest':
         default:
           return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -176,11 +160,9 @@ export default async function PostsPage({
       user_id: result.user_id,
       title: result.title,
       description: result.description,
-      type: result.type,
       city: result.city,
       district: result.district,
-      price_min: result.price_min,
-      price_max: result.price_max,
+      price: result.price,
       price_type: result.price_type,
       images: result.images,
       created_at: result.created_at,
@@ -267,20 +249,14 @@ export default async function PostsPage({
       }
     }
 
-    // Apply type filter
-    if (typeQuery) {
-      query = query.eq('type', typeQuery)
-      countQuery = countQuery.eq('type', typeQuery)
-    }
-
     // Apply sorting
     const sortOrder = sortQuery === 'oldest' ? { ascending: true } : { ascending: false }
     switch (sortQuery) {
       case 'price_asc':
-        query = query.order('price_min', { ascending: true, nullsFirst: false })
+        query = query.order('price', { ascending: true, nullsFirst: false })
         break
       case 'price_desc':
-        query = query.order('price_min', { ascending: false, nullsFirst: false })
+        query = query.order('price', { ascending: false, nullsFirst: false })
         break
       case 'oldest':
       case 'newest':
@@ -299,103 +275,6 @@ export default async function PostsPage({
       .range(startIndex, startIndex + itemsPerPage - 1)
 
     posts = fetchedPosts || []
-  }
-
-  // Calculate counts for tabs - need to query all posts with filters (not just current page)
-  let seekingCount = 0
-  let offeringCount = 0
-
-  if (searchQuery && searchQuery.trim().length >= 2) {
-    // For search results, count from filtered results
-    const { data: searchResults } = await supabase
-      .rpc('search_posts', {
-        search_query: searchQuery.trim(),
-        limit_count: 1000
-      })
-
-    let filteredResults = searchResults || []
-
-    if (cityQuery) {
-      filteredResults = filteredResults.filter((post: any) =>
-        post.city?.toLowerCase().includes(cityQuery.toLowerCase()) ||
-        post.district?.toLowerCase().includes(cityQuery.toLowerCase())
-      )
-    }
-
-    if (categoryQuery) {
-      filteredResults = filteredResults.filter((post: any) =>
-        post.category_name?.toLowerCase().includes(categoryQuery.toLowerCase())
-      )
-    }
-
-    seekingCount = filteredResults.filter((post: any) => post.type === 'seeking').length
-    offeringCount = filteredResults.filter((post: any) => post.type === 'offering').length
-  } else {
-    // For regular queries, count separately with filters
-    let seekingQuery = supabase
-      .from('posts')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'active')
-      .eq('type', 'seeking')
-
-    let offeringQuery = supabase
-      .from('posts')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'active')
-      .eq('type', 'offering')
-
-    // Apply city filter to both
-    if (cityQuery) {
-      seekingQuery = seekingQuery.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
-      offeringQuery = offeringQuery.or(`city.ilike.%${cityQuery}%,district.ilike.%${cityQuery}%`)
-    }
-
-    // Apply category filter to both
-    if (categoryQuery) {
-      const { data: category } = await supabase
-        .from('categories')
-        .select('id')
-        .ilike('name', categoryQuery)
-        .single()
-
-      let categoryId = category?.id
-
-      if (!categoryId) {
-        const { data: categorySynonym } = await supabase
-          .from('category_synonyms')
-          .select('category_id')
-          .ilike('synonym', categoryQuery)
-          .limit(1)
-          .single()
-
-        categoryId = categorySynonym?.category_id
-      }
-
-      if (categoryId) {
-        // Check if this category has subcategories
-        const { data: subcategories } = await supabase
-          .from('categories')
-          .select('id')
-          .eq('parent_id', categoryId)
-
-        if (subcategories && subcategories.length > 0) {
-          // This is a parent category - include posts from all subcategories
-          const categoryIds = [categoryId, ...subcategories.map(sub => sub.id)]
-          seekingQuery = seekingQuery.in('category_id', categoryIds)
-          offeringQuery = offeringQuery.in('category_id', categoryIds)
-        } else {
-          // This is a leaf category - just filter by this category
-          seekingQuery = seekingQuery.eq('category_id', categoryId)
-          offeringQuery = offeringQuery.eq('category_id', categoryId)
-        }
-      }
-    }
-
-    const { count: seekingCountResult } = await seekingQuery
-    const { count: offeringCountResult } = await offeringQuery
-
-    seekingCount = seekingCountResult || 0
-    offeringCount = offeringCountResult || 0
   }
 
   // Calculate pagination values
@@ -470,15 +349,6 @@ export default async function PostsPage({
           </p>
         </div>
 
-        {/* Tabs */}
-        <div className="mb-4">
-          <DashboardTabs
-            seekingCount={seekingCount}
-            offeringCount={offeringCount}
-            totalCount={seekingCount + offeringCount}
-          />
-        </div>
-
         {/* Two Column Layout: Sidebar + Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
           {/* Left Sidebar - Filters */}
@@ -499,7 +369,6 @@ export default async function PostsPage({
                   search: searchQuery,
                   city: cityQuery,
                   category: categoryQuery,
-                  type: typeQuery,
                   sort: sortQuery,
                   limit: String(itemsPerPage),
                 }}
@@ -509,7 +378,7 @@ export default async function PostsPage({
                 <div className="max-w-md mx-auto">
                   <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/5 flex items-center justify-center">
                     <svg className="w-10 h-10 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      {searchQuery || cityQuery || categoryQuery || typeQuery ? (
+                      {searchQuery || cityQuery || categoryQuery ? (
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       ) : (
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
