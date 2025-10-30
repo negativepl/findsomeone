@@ -51,6 +51,11 @@ function SortableSectionComponent({
     if (Object.keys(section.config).length === 0) return null
 
     return Object.entries(section.config).map(([key, value]) => {
+      // Skip html_content for custom_html sections - too large to display
+      if (section.type === 'custom_html' && key === 'html_content') {
+        return null
+      }
+
       if (typeof value === 'boolean') {
         return value ? (
           <span key={key} className="px-2.5 py-1 bg-[#C44E35]/10 text-[#C44E35] rounded-full font-medium">
@@ -74,7 +79,7 @@ function SortableSectionComponent({
       }
       return null
     })
-  }, [section.config])
+  }, [section.config, section.type])
 
   return (
     <div

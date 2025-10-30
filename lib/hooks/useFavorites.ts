@@ -62,6 +62,29 @@ export function useFavoriteIds(userId: string | null | undefined) {
   })
 }
 
+// Get favorites count
+export function useFavoritesCount(userId: string | null | undefined) {
+  const supabase = createClient()
+
+  return useQuery({
+    queryKey: ['favorites', 'count', userId],
+    queryFn: async () => {
+      if (!userId) return 0
+
+      const { count, error } = await supabase
+        .from('favorites')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+
+      if (error) throw error
+
+      return count || 0
+    },
+    enabled: !!userId,
+    staleTime: 60 * 1000, // 1 minute
+  })
+}
+
 // Fetch user's favorite posts with full details
 export function useFavorites(userId: string | null | undefined) {
   const supabase = createClient()
@@ -173,6 +196,7 @@ export function useAddFavorite() {
       // Invalidate to refetch fresh data
       queryClient.invalidateQueries({ queryKey: ['favorites', userId] })
       queryClient.invalidateQueries({ queryKey: ['favorites', 'ids', userId] })
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'count', userId] })
     },
   })
 }
@@ -214,6 +238,7 @@ export function useRemoveFavorite() {
       // Invalidate to refetch fresh data
       queryClient.invalidateQueries({ queryKey: ['favorites', userId] })
       queryClient.invalidateQueries({ queryKey: ['favorites', 'ids', userId] })
+      queryClient.invalidateQueries({ queryKey: ['favorites', 'count', userId] })
     },
   })
 }

@@ -87,10 +87,14 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
 
         {/* Horizontal Scroll for all devices */}
         <div className="relative -mx-6 md:-mx-8">
-          <div className="hidden md:block">
-            <ScrollArrows containerId="recently-viewed-scroll" />
-          </div>
-          <ScrollGradients containerId="recently-viewed-scroll" />
+          {posts.length > 1 && (
+            <>
+              <div className="hidden md:block">
+                <ScrollArrows containerId="recently-viewed-scroll" />
+              </div>
+              <ScrollGradients containerId="recently-viewed-scroll" />
+            </>
+          )}
 
           <div id="recently-viewed-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
@@ -136,7 +140,9 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
               )}
             </div>
           </div>
-          <ScrollIndicator containerId="recently-viewed-scroll" />
+          {posts.length > 1 && (
+            <ScrollIndicator containerId="recently-viewed-scroll" />
+          )}
         </div>
       </div>
     </section>

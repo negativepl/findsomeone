@@ -26,18 +26,16 @@ interface MenuItemWithIconProps {
 
 function MenuItemWithIcon({ href, icon, fallbackIcon, children, onClick, isButton = false, className = "flex items-center gap-3 px-4 py-2.5 text-sm text-black hover:bg-black/5 transition-colors" }: MenuItemWithIconProps) {
   const iconRef = useRef<LordIconRef>(null)
-  const [hasHovered, setHasHovered] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
 
   const handleMouseEnter = () => {
-    setHasHovered(true)
     setIsHovering(true)
     // Trigger animation after a small delay to ensure LordIcon is mounted
     setTimeout(() => {
       if (iconRef.current) {
         iconRef.current.trigger()
       }
-    }, 50)
+    }, 10)
   }
 
   const handleMouseLeave = () => {
@@ -46,12 +44,21 @@ function MenuItemWithIcon({ href, icon, fallbackIcon, children, onClick, isButto
 
   const content = (
     <>
-      <div className="w-5 h-5 flex items-center justify-center">
-        {hasHovered ? (
-          <LordIcon ref={iconRef} src={icon} size={20} trigger={isHovering ? "hover" : "none"} />
-        ) : (
-          fallbackIcon
-        )}
+      <div className="w-5 h-5 flex items-center justify-center relative">
+        {/* SVG fallback icon - visible by default */}
+        <div
+          className="absolute inset-0 flex items-center justify-center transition-opacity duration-200"
+          style={{ opacity: isHovering ? 0 : 1 }}
+        >
+          {fallbackIcon}
+        </div>
+        {/* Lottie icon - hidden by default, visible on hover */}
+        <div
+          className="absolute inset-0 flex items-center justify-center transition-opacity duration-200"
+          style={{ opacity: isHovering ? 1 : 0 }}
+        >
+          <LordIcon ref={iconRef} src={icon} size={20} />
+        </div>
       </div>
       {children}
     </>
@@ -88,6 +95,21 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
   const menuRef = useRef<HTMLDivElement>(null)
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const router = useRouter()
+
+  // Preload LordIcon animations on mount
+  useEffect(() => {
+    const iconsToPreload = [
+      '/icons/home.json',
+      '/icons/newspaper.json',
+      '/icons/account.json',
+      '/icons/settings.json',
+      '/icons/logout.json',
+      '/icons/admin.json'
+    ]
+    iconsToPreload.forEach(icon => {
+      fetch(icon).catch(() => {}) // Preload but ignore errors
+    })
+  }, [])
 
   // Get user initials
   const getInitials = () => {

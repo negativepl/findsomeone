@@ -5,6 +5,7 @@ import { User } from '@supabase/supabase-js'
 import { MobileSearchBar } from '@/components/MobileSearchBar'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { useFavoritesCount } from '@/lib/hooks/useFavorites'
 
 interface MobileNavIconsProps {
   user: User | null
@@ -13,20 +14,17 @@ interface MobileNavIconsProps {
 export function MobileNavIcons({ user }: MobileNavIconsProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
-  const [favoritesCount, setFavoritesCount] = useState(0)
   const [isHydrated, setIsHydrated] = useState(false)
 
+  // Use the same hook as desktop for favorites count
+  const { data: favoritesCount = 0 } = useFavoritesCount(user?.id)
+
   useEffect(() => {
-    // Load cached counts after hydration
+    // Load cached unread count after hydration
     if (user && typeof window !== 'undefined') {
       const cachedUnread = localStorage.getItem(`unread_count_${user.id}`)
       if (cachedUnread) {
         setUnreadCount(parseInt(cachedUnread, 10))
-      }
-
-      const cachedFavorites = localStorage.getItem(`favorites_count_${user.id}`)
-      if (cachedFavorites) {
-        setFavoritesCount(parseInt(cachedFavorites, 10))
       }
 
       setIsHydrated(true)
@@ -38,7 +36,7 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
 
     const supabase = createClient()
 
-    // Fetch initial counts
+    // Fetch initial unread count
     const fetchUnreadCount = async () => {
       const { count } = await supabase
         .from('messages')
@@ -51,21 +49,9 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
       localStorage.setItem(`unread_count_${user.id}`, newCount.toString())
     }
 
-    const fetchFavoritesCount = async () => {
-      const { count } = await supabase
-        .from('favorites')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-
-      const newCount = count || 0
-      setFavoritesCount(newCount)
-      localStorage.setItem(`favorites_count_${user.id}`, newCount.toString())
-    }
-
     fetchUnreadCount()
-    fetchFavoritesCount()
 
-    // Subscribe to real-time changes
+    // Subscribe to real-time changes for messages
     const messagesChannel = supabase
       .channel('mobile-unread-messages')
       .on(
@@ -97,25 +83,8 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
       )
       .subscribe()
 
-    const favoritesChannel = supabase
-      .channel('mobile-favorites-count')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'favorites',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          fetchFavoritesCount()
-        }
-      )
-      .subscribe()
-
     return () => {
       supabase.removeChannel(messagesChannel)
-      supabase.removeChannel(favoritesChannel)
     }
   }, [user?.id, isHydrated])
 

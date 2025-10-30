@@ -1,82 +1,49 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
-import { createClient } from '@/lib/supabase/client'
 import { LottieIcon } from './LottieIcon'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useFavoritesCount } from '@/lib/hooks/useFavorites'
 
 interface FavoritesIconProps {
   user: User | null
 }
 
 export function FavoritesIcon({ user }: FavoritesIconProps) {
-  const [favoritesCount, setFavoritesCount] = useState(0)
-  const [isHydrated, setIsHydrated] = useState(false)
+  const { data: favoritesCount = 0 } = useFavoritesCount(user?.id)
   const [isHovered, setIsHovered] = useState(false)
+  const [hasChanged, setHasChanged] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+  const prevCountRef = useRef(0)
 
+  // Fix hydration mismatch
   useEffect(() => {
-    // Load cached count after hydration
-    if (user && typeof window !== 'undefined') {
-      const cached = localStorage.getItem(`favorites_count_${user.id}`)
-      if (cached) {
-        setFavoritesCount(parseInt(cached, 10))
-      }
-      setIsHydrated(true)
-    }
-  }, [user])
+    setIsMounted(true)
+  }, [])
 
+  // Trigger animation when count changes
   useEffect(() => {
-    if (!user || !isHydrated) return
-
-    const supabase = createClient()
-
-    // Fetch initial count
-    const fetchFavoritesCount = async () => {
-      const { count } = await supabase
-        .from('favorites')
-        .select('*', { count: 'exact', head: true })
-        .eq('user_id', user.id)
-
-      const newCount = count || 0
-      setFavoritesCount(newCount)
-      // Cache the count in localStorage
-      localStorage.setItem(`favorites_count_${user.id}`, newCount.toString())
+    if (isMounted && prevCountRef.current !== favoritesCount && prevCountRef.current !== 0) {
+      setHasChanged(true)
+      const timer = setTimeout(() => setHasChanged(false), 600)
+      return () => clearTimeout(timer)
     }
-
-    fetchFavoritesCount()
-
-    // Subscribe to real-time changes
-    const channel = supabase
-      .channel('favorites-count')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'favorites',
-          filter: `user_id=eq.${user.id}`,
-        },
-        () => {
-          fetchFavoritesCount()
-        }
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(channel)
-    }
-  }, [user?.id, isHydrated])
+    prevCountRef.current = favoritesCount
+  }, [favoritesCount, isMounted])
 
   if (!user) {
     return null
   }
 
+  const displayCount = isMounted ? favoritesCount : 0
+
   return (
     <Link
       href="/dashboard/favorites"
       className="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
-      aria-label={`Ulubione${favoritesCount > 0 ? ` (${favoritesCount})` : ''}`}
+      aria-label={`Ulubione${displayCount > 0 ? ` (${displayCount})` : ''}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -86,11 +53,26 @@ export function FavoritesIcon({ user }: FavoritesIconProps) {
         className="h-5 w-5"
         isHovered={isHovered}
       />
-      {favoritesCount > 0 && (
-        <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-white text-[#C44E35] text-xs font-bold rounded-full border-2 border-[#C44E35]">
-          {favoritesCount > 99 ? '99+' : favoritesCount}
-        </span>
-      )}
+      <AnimatePresence mode="wait">
+        {isMounted && displayCount > 0 && (
+          <motion.span
+            key={displayCount}
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{
+              scale: hasChanged ? [1, 1.3, 1] : 1,
+              opacity: 1
+            }}
+            exit={{ scale: 0.8, opacity: 0 }}
+            transition={{
+              duration: hasChanged ? 0.4 : 0.2,
+              ease: [0.34, 1.56, 0.64, 1]
+            }}
+            className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-white text-[#C44E35] text-xs font-bold rounded-full border-2 border-[#C44E35]"
+          >
+            {displayCount > 99 ? '99+' : displayCount}
+          </motion.span>
+        )}
+      </AnimatePresence>
     </Link>
   )
 }

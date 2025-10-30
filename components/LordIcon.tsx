@@ -33,22 +33,23 @@ export const LordIcon = forwardRef<LordIconRef, LordIconProps>(
       }
     }))
 
-    if (!animationData) {
-      return <div style={{ width: size, height: size }} />
-    }
-
     return (
       <div
         className={`inline-flex items-center justify-center ${className}`}
         style={{ width: size, height: size }}
       >
-        <Lottie
-          lottieRef={lottieRef}
-          animationData={animationData}
-          loop={false}
-          autoplay={false}
-          style={{ width: size, height: size }}
-        />
+        {animationData ? (
+          <Lottie
+            lottieRef={lottieRef}
+            animationData={animationData}
+            loop={false}
+            autoplay={false}
+            style={{ width: size, height: size }}
+          />
+        ) : (
+          // Placeholder during loading - invisible but maintains space
+          <div style={{ width: size, height: size, opacity: 0 }} />
+        )}
       </div>
     )
   }

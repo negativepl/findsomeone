@@ -31,17 +31,7 @@ export function LogoWithText({ className = "" }: { className?: string }) {
   return (
     <div className={`flex items-center gap-3 ${className}`}>
       <Logo className="w-9 h-9 flex-shrink-0" />
-      <style>{`
-        .logo-text-wrapper {
-          display: none;
-        }
-        @media (min-width: 1024px) {
-          .logo-text-wrapper {
-            display: flex !important;
-          }
-        }
-      `}</style>
-      <div className="logo-text-wrapper flex-col -mt-1">
+      <div className="flex flex-col -mt-1">
         <span className="text-xl font-bold text-black leading-none">FindSomeone</span>
         <span className="text-xs text-black/60 mt-0.5 leading-none text-left">Łączymy ludzi lokalnie</span>
       </div>
