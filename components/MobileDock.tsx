@@ -693,7 +693,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     {/* Biała ikona - overlay */}
                     <motion.div
                       className="absolute inset-0"
-                      initial={{ opacity: 0 }}
+                      initial={false}
                       animate={{
                         opacity: shouldBeWhite ? 1 : 0
                       }}
@@ -741,7 +741,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     {/* Biała ikona - overlay */}
                     <motion.div
                       className="absolute inset-0"
-                      initial={{ opacity: 0 }}
+                      initial={false}
                       animate={{
                         opacity: shouldBeWhite ? 1 : 0
                       }}
@@ -801,7 +801,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   {/* Biała ikona - overlay */}
                   <motion.div
                     className="absolute inset-0"
-                    initial={{ opacity: 0 }}
+                    initial={false}
                     animate={{
                       opacity: isActive && !menuOpen && !categoriesOpen && !selectedCategory ? 1 : 0
                     }}

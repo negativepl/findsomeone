@@ -71,7 +71,7 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
               </Badge>
             )}
           </div>
-          <CardTitle className="text-lg font-bold text-black">{post.title}</CardTitle>
+          <CardTitle className="text-base md:text-base font-bold text-black">{post.title}</CardTitle>
         </CardHeader>
 
         <CardContent className="pb-4 mt-auto">
