@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { ReportMessageDialog } from './ReportMessageDialog'
 import { reportMessage } from '@/lib/actions/report-message'
 
@@ -33,7 +34,23 @@ export function MessageBubble({
   }
 
   return (
-    <div className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : 'flex-row'} mb-4`}>
+    <motion.div
+      className={`flex gap-3 ${isOwn ? 'flex-row-reverse' : 'flex-row'} mb-4`}
+      initial={{
+        opacity: 0,
+        y: 20,
+        x: isOwn ? 20 : -20
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        x: 0
+      }}
+      transition={{
+        duration: 0.4,
+        ease: [0.23, 1, 0.32, 1]
+      }}
+    >
       {/* Avatar */}
       {!isOwn && (
         <div className="flex-shrink-0">
@@ -98,6 +115,6 @@ export function MessageBubble({
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }

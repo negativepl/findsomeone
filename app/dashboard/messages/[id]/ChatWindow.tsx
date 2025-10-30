@@ -250,6 +250,8 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
     <div className="flex-1 flex flex-col">
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto pb-32">
+        {/* Spacer for desktop header */}
+        <div className="hidden md:block h-24"></div>
         <div className="container mx-auto px-4 md:px-6 py-6">
           {messages.length > 0 ? (
             <div className="max-w-4xl mx-auto">

@@ -7,6 +7,7 @@ import { FavoritesIcon } from '@/components/FavoritesIcon'
 import { MobileNavIcons } from '@/components/MobileNavIcons'
 import { NavbarSearchWrapper } from '@/components/NavbarSearchWrapper'
 import { CategoriesNavButton } from '@/components/CategoriesNavButton'
+import { PresenceIndicator } from '@/components/PresenceIndicator'
 import { User } from '@supabase/supabase-js'
 import { getUserRole } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -18,9 +19,11 @@ interface NavbarProps {
   noRounding?: boolean
   pageTitle?: string
   stepInfo?: ReactNode
+  backUrl?: string
+  otherUserId?: string
 }
 
-export async function Navbar({ user, showAddButton = true, noRounding = false, pageTitle, stepInfo }: NavbarProps) {
+export async function Navbar({ user, showAddButton = true, noRounding = false, pageTitle, stepInfo, backUrl, otherUserId }: NavbarProps) {
   const userRole = user ? await getUserRole() : null
   const isAdmin = userRole === 'admin'
 
@@ -51,9 +54,9 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
     .order('name')
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-white border-b border-black/5 rounded-b-3xl" style={{ zIndex: 9999 }}>
+    <header className={`fixed top-0 left-0 right-0 bg-white border-b border-black/5 ${noRounding ? '' : 'rounded-b-3xl'}`} style={{ zIndex: 9999 }}>
       <div className="container mx-auto px-6">
-        <nav className="flex items-center justify-between gap-3 md:gap-4 h-16 md:h-20">
+        <nav className="flex items-center justify-between gap-3 md:gap-4 h-16 md:h-24">
           {/* Left Section */}
           {stepInfo ? (
             <div className="flex items-center gap-3 min-w-0">
@@ -66,7 +69,26 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
             </div>
           ) : pageTitle ? (
             <>
-              <h1 className="text-xl font-bold text-black md:hidden">{pageTitle}</h1>
+              {/* Mobile - Title with optional back button and presence */}
+              <div className="flex items-center gap-2 md:hidden min-w-0">
+                {backUrl && (
+                  <Link
+                    href={backUrl}
+                    className="flex-shrink-0 hover:bg-black/5 rounded-full p-2 transition-colors -ml-2"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </Link>
+                )}
+                <div className="min-w-0 flex-1 flex items-center gap-2">
+                  <h1 className="text-lg font-bold text-black truncate">{pageTitle}</h1>
+                  {otherUserId && (
+                    <PresenceIndicator userId={otherUserId} showText={true} size="sm" />
+                  )}
+                </div>
+              </div>
+              {/* Desktop */}
               <div className="hidden md:flex gap-3 items-center min-w-0">
                 <div className="shrink-0">
                   {categories && categories.length > 0 && (

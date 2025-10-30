@@ -80,12 +80,19 @@ export default async function ConversationPage({
 
   return (
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
-      <NavbarWithHide user={user} alwaysVisible={true} noRounding={true} pageTitle={otherUser.full_name || 'Czat'} />
+      <NavbarWithHide
+        user={user}
+        alwaysVisible={true}
+        noRounding={true}
+        pageTitle={otherUser.full_name || 'Czat'}
+        backUrl="/dashboard/messages"
+        otherUserId={otherUser.id}
+      />
 
-      {/* Chat Header - Fixed */}
-      <div className="fixed top-[81px] left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
-        <div className="container mx-auto px-2 md:px-6 py-2 md:pt-6 md:pb-4">
-          <div className="flex items-center gap-2 md:gap-4">
+      {/* Chat Header - Fixed (Desktop only) */}
+      <div className="hidden md:block fixed top-[97px] left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
+        <div className="container mx-auto">
+          <div className="flex items-center gap-4">
             <Link
               href="/dashboard/messages"
               className="flex-shrink-0 hover:bg-black/5 rounded-full p-2 transition-colors"
@@ -113,7 +120,7 @@ export default async function ConversationPage({
                 </div>
               )}
 
-              <div className="min-w-0">
+              <div className="min-w-0 flex items-center gap-2">
                 <h2 className="text-base md:text-lg font-semibold text-black truncate">
                   {otherUser.full_name || 'Użytkownik'}
                 </h2>
@@ -123,9 +130,6 @@ export default async function ConversationPage({
           </div>
         </div>
       </div>
-
-      {/* Spacer for fixed header (navbar height + chat header height) */}
-      <div className="h-[155px] md:h-[168px]" />
 
       {/* Chat Window */}
       <ChatWindow

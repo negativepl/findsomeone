@@ -10,13 +10,15 @@ interface NavbarWithHideProps {
   noRounding?: boolean
   pageTitle?: string
   stepInfo?: ReactNode
+  backUrl?: string
+  otherUserId?: string
 }
 
-export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible = true, noRounding = false, pageTitle, stepInfo }: NavbarWithHideProps) {
+export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible = true, noRounding = false, pageTitle, stepInfo, backUrl, otherUserId }: NavbarWithHideProps) {
   return (
     <>
       <NavbarPortal>
-        <Navbar user={user} showAddButton={showAddButton} noRounding={noRounding} pageTitle={pageTitle} stepInfo={stepInfo} />
+        <Navbar user={user} showAddButton={showAddButton} noRounding={noRounding} pageTitle={pageTitle} stepInfo={stepInfo} backUrl={backUrl} otherUserId={otherUserId} />
       </NavbarPortal>
       <div className="h-16 md:h-24" /> {/* Spacer for fixed navbar */}
     </>

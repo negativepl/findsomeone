@@ -23,7 +23,7 @@ export default async function FavoritesPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 md:px-6 py-2 md:py-4 flex-1">
-        <div className="mb-8 hidden md:block">
+        <div className="mb-4 hidden md:block">
           <h2 className="text-2xl md:text-4xl font-bold mb-3 text-black">
             Ulubione ogłoszenia
           </h2>

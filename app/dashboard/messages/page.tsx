@@ -144,16 +144,16 @@ export default async function MessagesPage() {
 
       <main className="container mx-auto px-4 md:px-6 py-2 md:py-4 flex-1">
         {/* Header */}
-        <div className="mb-8 hidden md:block">
+        <div className="mb-4 hidden md:block">
           <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Wiadomości</h1>
           <p className="text-base md:text-lg text-black/60">
             Twoje rozmowy z innymi użytkownikami
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Left Column - Conversations List */}
-          <div className="md:col-span-1">
+          <div className="md:col-span-1 lg:col-span-1">
             {conversations && conversations.length > 0 ? (
             <Card className="border-0 rounded-3xl bg-white overflow-hidden">
               <div className="divide-y divide-black/5">
@@ -164,22 +164,22 @@ export default async function MessagesPage() {
                     <Link
                       key={conversation.id}
                       href={`/dashboard/messages/${conversation.id}`}
-                      className={`block p-6 hover:bg-[#F5F1E8] transition-all ${
+                      className={`block p-4 md:p-5 lg:p-6 hover:bg-[#F5F1E8] transition-all ${
                         isUnread ? 'bg-[#FFF9F5]' : ''
                       }`}
                     >
-                      <div className="flex items-start gap-4">
+                      <div className="flex items-start gap-3 md:gap-4">
                         {/* Avatar */}
                         <div className="flex-shrink-0 relative">
                           {conversation.other_user.avatar_url ? (
                             <img
                               src={conversation.other_user.avatar_url}
                               alt=""
-                              className="w-14 h-14 rounded-full object-cover"
+                              className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
                             />
                           ) : (
-                            <div className="w-14 h-14 rounded-full bg-[#C44E35] flex items-center justify-center">
-                              <span className="text-xl font-semibold text-white">
+                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#C44E35] flex items-center justify-center">
+                              <span className="text-lg md:text-xl font-semibold text-white">
                                 {conversation.other_user.full_name?.charAt(0) || 'U'}
                               </span>
                             </div>
@@ -192,11 +192,11 @@ export default async function MessagesPage() {
 
                         {/* Message Info */}
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-4 mb-1">
-                            <h3 className={`text-lg font-semibold text-black ${isUnread ? 'font-bold' : ''}`}>
+                          <div className="flex items-start justify-between gap-2 mb-1">
+                            <h3 className={`text-base md:text-lg font-semibold text-black truncate ${isUnread ? 'font-bold' : ''}`}>
                               {conversation.other_user.full_name || 'Użytkownik'}
                             </h3>
-                            <span className="text-sm text-black/60 flex-shrink-0">
+                            <span className="text-xs md:text-sm text-black/60 flex-shrink-0 whitespace-nowrap">
                               {new Date(conversation.last_message.created_at).toLocaleDateString('pl-PL', {
                                 day: 'numeric',
                                 month: 'short',
@@ -207,15 +207,15 @@ export default async function MessagesPage() {
                           </div>
 
                           {conversation.post && (
-                            <div className="text-sm text-[#C44E35] mb-1 flex items-center gap-1">
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div className="text-xs md:text-sm text-[#C44E35] mb-1 flex items-center gap-1 truncate">
+                              <svg className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                               </svg>
-                              {conversation.post.title}
+                              <span className="truncate">{conversation.post.title}</span>
                             </div>
                           )}
 
-                          <p className={`text-black/70 line-clamp-2 ${isUnread ? 'font-semibold' : ''}`}>
+                          <p className={`text-sm md:text-base text-black/70 line-clamp-2 ${isUnread ? 'font-semibold' : ''}`}>
                             {conversation.last_message.sender_id === user.id && (
                               <span className="text-black/50">Ty: </span>
                             )}
@@ -232,7 +232,7 @@ export default async function MessagesPage() {
                         </div>
 
                         {/* Arrow */}
-                        <div className="flex-shrink-0 text-black/40">
+                        <div className="hidden lg:block flex-shrink-0 text-black/40">
                           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
@@ -268,7 +268,7 @@ export default async function MessagesPage() {
           </div>
 
           {/* Right Column - Placeholder */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-1 lg:col-span-2">
             <Card className="border-0 rounded-3xl bg-white">
               <div className="p-12 text-center">
                 <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-black/5 flex items-center justify-center">
