@@ -14,6 +14,7 @@ import { RichTextEditor } from '@/components/RichTextEditor'
 import { RichTextToolbar } from '@/components/RichTextToolbar'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Switch } from '@/components/ui/switch'
 
 interface Category {
   id: string
@@ -72,7 +73,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     city: '',
     district: '',
     price: '',
-    priceType: 'negotiable' as 'hourly' | 'fixed' | 'negotiable' | 'free',
+    priceType: 'fixed' as 'hourly' | 'fixed' | 'free',
+    priceNegotiable: false,
   })
 
   const [images, setImages] = useState<string[]>([])
@@ -502,6 +504,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         district: formData.district || null,
         price: formData.price ? parseFloat(formData.price) : null,
         price_type: formData.priceType,
+        price_negotiable: formData.priceNegotiable,
         images: processedImages.length > 0 ? processedImages : null,
         status: 'pending',
         moderation_status: 'checking',
@@ -569,7 +572,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         )}
 
         {/* Page Header - Above Card - Hidden on mobile */}
-        <div className="hidden md:block mb-8">
+        <div className="hidden md:block mb-4">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-4xl font-bold text-black">Dodaj nowe ogłoszenie</h1>
           </div>
@@ -778,7 +781,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   <Label className="text-base font-semibold text-black">Typ ceny *</Label>
                   <Select
                     value={formData.priceType}
-                    onValueChange={(value: 'hourly' | 'fixed' | 'negotiable' | 'free') =>
+                    onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
                       setFormData({ ...formData, priceType: value })
                     }
                     required
@@ -787,10 +790,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="free">Za darmo</SelectItem>
-                      <SelectItem value="hourly">Za godzinę</SelectItem>
                       <SelectItem value="fixed">Stała cena</SelectItem>
-                      <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                      <SelectItem value="hourly">Za godzinę</SelectItem>
+                      <SelectItem value="free">Za darmo</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -798,17 +800,33 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   <Label htmlFor="price" className="text-base font-semibold text-black">
                     Cena (zł)
                   </Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="0"
-                    value={formData.price}
-                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    disabled={formData.priceType === 'free'}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed"
-                  />
+                  <div className="flex items-center gap-3">
+                    <Input
+                      id="price"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="0"
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      disabled={formData.priceType === 'free'}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                    />
+
+                    {/* Negotiable switch */}
+                    {formData.priceType !== 'free' && (
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <Switch
+                          id="priceNegotiable"
+                          checked={formData.priceNegotiable}
+                          onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
+                        />
+                        <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none whitespace-nowrap">
+                          Cena do negocjacji
+                        </label>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1013,7 +1031,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <Label className="text-base font-semibold text-black">Typ ceny *</Label>
                     <Select
                       value={formData.priceType}
-                      onValueChange={(value: 'hourly' | 'fixed' | 'negotiable' | 'free') =>
+                      onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
                         setFormData({ ...formData, priceType: value })
                       }
                       required
@@ -1022,10 +1040,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="free">Za darmo</SelectItem>
-                        <SelectItem value="hourly">Za godzinę</SelectItem>
                         <SelectItem value="fixed">Stała cena</SelectItem>
-                        <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                        <SelectItem value="hourly">Za godzinę</SelectItem>
+                        <SelectItem value="free">Za darmo</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1036,16 +1053,30 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <Label htmlFor="price-mobile" className="text-base font-semibold text-black">
                           Cena (zł) <span className="text-black/40 font-normal">(opcjonalnie)</span>
                         </Label>
-                        <Input
-                          id="price-mobile"
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          placeholder="0"
-                          value={formData.price}
-                          onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                          className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
-                        />
+                        <div className="flex items-center gap-3">
+                          <Input
+                            id="price-mobile"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="0"
+                            value={formData.price}
+                            onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                            className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
+                          />
+
+                          {/* Negotiable switch */}
+                          <div className="flex items-center gap-2 flex-shrink-0">
+                            <Switch
+                              id="priceNegotiable-mobile"
+                              checked={formData.priceNegotiable}
+                              onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
+                            />
+                            <label htmlFor="priceNegotiable-mobile" className="text-sm text-black/70 cursor-pointer select-none whitespace-nowrap">
+                              Cena do negocjacji
+                            </label>
+                          </div>
+                        </div>
                       </div>
                     </>
                   )}

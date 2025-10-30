@@ -15,7 +15,8 @@ interface Post {
   city: string
   district: string | null
   price: number | null
-  price_type: 'hourly' | 'fixed' | 'negotiable' | null
+  price_type: 'hourly' | 'fixed' | 'free' | null
+  price_negotiable: boolean | null
   images: string[] | null
   created_at: string
   is_ai_generated?: boolean
@@ -214,25 +215,21 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                         {post.price ? (
                           <div className="text-right flex-shrink-0">
                             <p className="text-base font-bold text-black whitespace-nowrap">
-                              {post.price} zł
+                              {post.price} zł{post.price_negotiable ? '*' : ''}
                             </p>
-                            {post.price_type && (
-                              <p className="text-xs text-black/60 whitespace-nowrap">
-                                {post.price_type === 'hourly'
-                                  ? 'za godzinę'
-                                  : post.price_type === 'fixed'
-                                  ? 'cena stała'
-                                  : 'do negocjacji'}
-                              </p>
-                            )}
+                            <p className="text-xs text-black/60 whitespace-nowrap">
+                              {post.price_negotiable
+                                ? 'do negocjacji'
+                                : post.price_type === 'hourly'
+                                ? 'za godzinę'
+                                : 'cena stała'}
+                            </p>
                           </div>
-                        ) : (
-                          post.price_type === 'negotiable' && (
-                            <div className="text-right flex-shrink-0">
-                              <p className="text-sm text-black/60 whitespace-nowrap">Do negocjacji</p>
-                            </div>
-                          )
-                        )}
+                        ) : post.price_type === 'free' ? (
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-base font-bold text-green-600 whitespace-nowrap">Za darmo</p>
+                          </div>
+                        ) : null}
                       </div>
                       </div>
                     </div>
@@ -331,23 +328,19 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                               <p className="text-xl font-bold text-black whitespace-nowrap">
                                 {post.price} zł
                               </p>
-                              {post.price_type && (
-                                <p className="text-sm text-black/60 whitespace-nowrap">
-                                  {post.price_type === 'hourly'
-                                    ? 'za godzinę'
-                                    : post.price_type === 'fixed'
-                                    ? 'cena stała'
-                                    : 'do negocjacji'}
-                                </p>
-                              )}
+                              <p className="text-sm text-black/60 whitespace-nowrap">
+                                {post.price_negotiable
+                                  ? 'do negocjacji'
+                                  : post.price_type === 'hourly'
+                                  ? 'za godzinę'
+                                  : 'cena stała'}
+                              </p>
                             </div>
-                          ) : (
-                            post.price_type === 'negotiable' && (
-                              <div className="text-right flex-shrink-0">
-                                <p className="text-base text-black/60 whitespace-nowrap">Do negocjacji</p>
-                              </div>
-                            )
-                          )}
+                          ) : post.price_type === 'free' ? (
+                            <div className="text-right flex-shrink-0">
+                              <p className="text-lg font-bold text-green-600 whitespace-nowrap">Za darmo</p>
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     </div>
@@ -460,23 +453,19 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                             <p className="text-base md:text-xl font-bold text-black whitespace-nowrap">
                               {post.price} zł
                             </p>
-                            {post.price_type && (
-                              <p className="text-xs md:text-sm text-black/60 whitespace-nowrap">
-                                {post.price_type === 'hourly'
-                                  ? 'za godzinę'
-                                  : post.price_type === 'fixed'
-                                  ? 'cena stała'
-                                  : 'do negocjacji'}
-                              </p>
-                            )}
+                            <p className="text-xs md:text-sm text-black/60 whitespace-nowrap">
+                              {post.price_negotiable
+                                ? 'do negocjacji'
+                                : post.price_type === 'hourly'
+                                ? 'za godzinę'
+                                : 'cena stała'}
+                            </p>
                           </div>
-                        ) : (
-                          post.price_type === 'negotiable' && (
-                            <div className="text-right flex-shrink-0">
-                              <p className="text-sm md:text-base text-black/60 whitespace-nowrap">Do negocjacji</p>
-                            </div>
-                          )
-                        )}
+                        ) : post.price_type === 'free' ? (
+                          <div className="text-right flex-shrink-0">
+                            <p className="text-sm md:text-base font-bold text-green-600 whitespace-nowrap">Za darmo</p>
+                          </div>
+                        ) : null}
                       </div>
                     </CardContent>
                   </div>

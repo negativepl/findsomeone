@@ -44,7 +44,8 @@ interface Post {
   city: string
   district: string | null
   price: number | null
-  price_type: 'hourly' | 'fixed' | 'negotiable' | 'free' | null
+  price_type: 'hourly' | 'fixed' | 'free' | null
+  price_negotiable: boolean | null
   status: 'active' | 'pending' | 'closed' | 'completed'
   moderation_status: 'pending' | 'checking' | 'approved' | 'rejected' | 'flagged'
   moderation_reason: string | null

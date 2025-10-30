@@ -185,7 +185,8 @@ export async function POST(request: Request) {
                   city: city,
                   district: null,
                   price: postData.price || null,
-                  price_type: postData.price_type || 'negotiable',
+                  price_type: postData.price_type || 'fixed',
+                  price_negotiable: postData.price_negotiable || false,
                   images: [imageUrl], // Always has image now
                   status: 'active',
                   is_ai_generated: true,

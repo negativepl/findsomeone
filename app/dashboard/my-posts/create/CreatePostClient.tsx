@@ -13,6 +13,7 @@ import { MapPin, Loader2, Tag, FileText, ImageIcon, DollarSign } from 'lucide-re
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { StepLottieIcon } from '@/components/StepLottieIcon'
+import { Switch } from '@/components/ui/switch'
 
 interface Category {
   id: string
@@ -46,8 +47,9 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
     description: '',
     city: '',
     district: '',
-    priceType: 'fixed', // 'fixed', 'negotiable', 'hourly', 'free'
+    priceType: 'fixed', // 'fixed', 'hourly', 'free'
     price: '',
+    priceNegotiable: false,
   })
 
   const [subcategories, setSubcategories] = useState<Category[]>([])
@@ -245,9 +247,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
   const getPriceDisplay = (): string => {
     if (formData.priceType === 'free') return 'Za darmo'
-    if (formData.priceType === 'negotiable') return `${formData.price} PLN (do uzgodnienia)`
-    if (formData.priceType === 'hourly') return `${formData.price} PLN/godz.`
-    return `${formData.price} PLN`
+    const basePrice = formData.priceType === 'hourly' ? `${formData.price} PLN/godz.` : `${formData.price} PLN`
+    return formData.priceNegotiable ? `${basePrice} (do negocjacji)` : basePrice
   }
 
   const isStepValid = (step: number): boolean => {
@@ -265,7 +266,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
       case 5:
         // If free, always valid
         if (formData.priceType === 'free') return true
-        // If fixed, negotiable or hourly, must have a price > 0
+        // If fixed or hourly, must have a price > 0
         const priceNum = parseFloat(formData.price.replace(',', '.'))
         return !isNaN(priceNum) && priceNum > 0
       default:
@@ -431,6 +432,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           district: formData.district || null,
           price: price,
           price_type: formData.priceType,
+          price_negotiable: formData.priceNegotiable,
           images: processedImages.length > 0 ? processedImages : null,
           status: 'pending',
           moderation_status: 'checking',
@@ -784,22 +786,6 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 </div>
               </button>
 
-              {/* Negotiable Price */}
-              <button
-                type="button"
-                onClick={() => setFormData({ ...formData, priceType: 'negotiable' })}
-                className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
-                  formData.priceType === 'negotiable'
-                    ? 'border-[#C44E35] bg-[#C44E35]/5'
-                    : 'border-black/10 bg-white hover:border-black/20'
-                }`}
-              >
-                <div className="flex-1">
-                  <div className="font-semibold text-black">Do uzgodnienia</div>
-                  <div className="text-sm text-black/60 mt-0.5">Cena jest negocjowalna</div>
-                </div>
-              </button>
-
               {/* Free */}
               <button
                 type="button"
@@ -821,7 +807,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             {formData.priceType !== 'free' && (
               <div className="space-y-2">
                 <Label htmlFor="price" className="text-base text-black">
-                  Cena {formData.priceType === 'negotiable' ? '(orientacyjna) ' : formData.priceType === 'hourly' ? 'za godzinę ' : ''}<span className="text-red-500">*</span>
+                  Cena {formData.priceType === 'hourly' ? 'za godzinę ' : ''}<span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
                   <Input
@@ -843,16 +829,23 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     PLN
                   </span>
                 </div>
-                {formData.priceType === 'negotiable' && (
-                  <p className="text-xs text-black/50">
-                    Podana cena jest orientacyjna i może być negocjowana z zainteresowanymi
-                  </p>
-                )}
                 {formData.priceType === 'hourly' && (
                   <p className="text-xs text-black/50">
                     Podaj stawkę za godzinę pracy
                   </p>
                 )}
+
+                {/* Negotiable switch */}
+                <div className="flex items-center gap-2 pt-2">
+                  <Switch
+                    id="priceNegotiable"
+                    checked={formData.priceNegotiable}
+                    onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
+                  />
+                  <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none">
+                    Cena do negocjacji
+                  </label>
+                </div>
               </div>
             )}
           </div>

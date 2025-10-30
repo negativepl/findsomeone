@@ -62,7 +62,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
   const priceText = post.price
     ? `${post.price} zł`
-    : 'cena do uzgodnienia'
+    : 'cena do negocjacji'
 
   const fullTitle = `${post.title} - ${post.city} | FindSomeone`
   const fullDescription = `${cleanDescription}. ${priceText}. Kontakt: ${post.profiles?.full_name || 'FindSomeone'}`
@@ -361,22 +361,22 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     })}
                   </div>
 
-                  {post.price && (
+                  {post.price ? (
                     <div className="flex items-baseline gap-2 flex-wrap">
                       <span className="text-2xl font-bold text-black">
-                        {post.price} zł
+                        {post.price} zł{post.price_negotiable ? '*' : ''}
                       </span>
-                      {post.price_type && (
-                        <span className="text-sm text-black/60">
-                          {post.price_type === 'hourly'
-                            ? '/ za godzinę'
-                            : post.price_type === 'fixed'
-                            ? '/ stała cena'
-                            : '/ do negocjacji'}
-                        </span>
-                      )}
+                      <span className="text-sm text-black/60">
+                        {post.price_negotiable
+                          ? '/ do negocjacji'
+                          : post.price_type === 'hourly'
+                          ? '/ za godzinę'
+                          : '/ stała cena'}
+                      </span>
                     </div>
-                  )}
+                  ) : post.price_type === 'free' ? (
+                    <div className="text-2xl font-bold text-green-600">Za darmo</div>
+                  ) : null}
                 </div>
 
                 {/* Badges Section - Above Description */}
@@ -458,24 +458,26 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
 
                 {/* Budget */}
-                {post.price && (
+                {post.price ? (
                   <div className="pt-4 border-t border-black/5">
                     <div className="flex items-baseline gap-2 flex-wrap">
                       <span className="text-3xl font-bold text-black">
-                        {post.price} zł
+                        {post.price} zł{post.price_negotiable ? '*' : ''}
                       </span>
-                      {post.price_type && (
-                        <span className="text-base text-black/60">
-                          {post.price_type === 'hourly'
-                            ? '/ za godzinę'
-                            : post.price_type === 'fixed'
-                            ? '/ stała cena'
-                            : '/ do negocjacji'}
-                        </span>
-                      )}
+                      <span className="text-base text-black/60">
+                        {post.price_negotiable
+                          ? '/ do negocjacji'
+                          : post.price_type === 'hourly'
+                          ? '/ za godzinę'
+                          : '/ stała cena'}
+                      </span>
                     </div>
                   </div>
-                )}
+                ) : post.price_type === 'free' ? (
+                  <div className="pt-4 border-t border-black/5">
+                    <div className="text-3xl font-bold text-green-600">Za darmo</div>
+                  </div>
+                ) : null}
               </CardContent>
             </Card>
 

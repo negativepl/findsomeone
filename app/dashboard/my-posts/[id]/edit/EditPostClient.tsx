@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
 import NProgress from 'nprogress'
+import { Switch } from '@/components/ui/switch'
 
 interface Category {
   id: string
@@ -27,7 +28,8 @@ interface Post {
   city: string
   district: string | null
   price: number | null
-  price_type: 'hourly' | 'fixed' | 'negotiable' | null
+  price_type: 'hourly' | 'fixed' | 'free' | null
+  price_negotiable: boolean | null
   images: string[] | null
   categories: {
     id: string
@@ -62,7 +64,8 @@ export function EditPostClient({ post }: EditPostClientProps) {
     city: post.city,
     district: post.district || '',
     price: post.price?.toString() || '',
-    priceType: post.price_type || 'negotiable',
+    priceType: post.price_type || 'fixed',
+    priceNegotiable: post.price_negotiable || false,
   })
 
   const [images, setImages] = useState<string[]>(post.images || [])
@@ -215,6 +218,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
           district: formData.district || null,
           price: formData.price ? parseFloat(formData.price) : null,
           price_type: formData.priceType,
+          price_negotiable: formData.priceNegotiable,
           images: processedImages.length > 0 ? processedImages : null,
           // Reset moderation status - edited post needs to be re-verified
           moderation_status: 'checking',
@@ -402,7 +406,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   <Label className="text-sm text-black/60">Typ ceny</Label>
                   <Select
                     value={formData.priceType}
-                    onValueChange={(value: 'hourly' | 'fixed' | 'negotiable') =>
+                    onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
                       setFormData({ ...formData, priceType: value })
                     }
                   >
@@ -410,12 +414,26 @@ export function EditPostClient({ post }: EditPostClientProps) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="hourly">Za godzinę</SelectItem>
                       <SelectItem value="fixed">Stała cena</SelectItem>
-                      <SelectItem value="negotiable">Do negocjacji</SelectItem>
+                      <SelectItem value="hourly">Za godzinę</SelectItem>
+                      <SelectItem value="free">Za darmo</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+
+                {/* Negotiable switch */}
+                {formData.priceType !== 'free' && (
+                  <div className="flex items-center gap-2 pt-2">
+                    <Switch
+                      id="priceNegotiable"
+                      checked={formData.priceNegotiable}
+                      onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
+                    />
+                    <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none">
+                      Cena do negocjacji
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -114,25 +114,21 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
                   {post.price ? (
                     <div className="text-right">
                       <p className="text-lg font-bold text-black">
-                        {post.price} zł
+                        {post.price} zł{post.price_negotiable ? '*' : ''}
                       </p>
-                      {post.price_type && (
-                        <p className="text-xs text-black/60">
-                          {post.price_type === 'hourly'
-                            ? 'za godzinę'
-                            : post.price_type === 'fixed'
-                            ? 'cena stała'
-                            : 'do negocjacji'}
-                        </p>
-                      )}
+                      <p className="text-xs text-black/60">
+                        {post.price_negotiable
+                          ? 'do negocjacji'
+                          : post.price_type === 'hourly'
+                          ? 'za godzinę'
+                          : 'cena stała'}
+                      </p>
                     </div>
-                  ) : (
-                    post.price_type === 'negotiable' && (
-                      <div className="text-right">
-                        <p className="text-sm text-black/60">Do negocjacji</p>
-                      </div>
-                    )
-                  )}
+                  ) : post.price_type === 'free' ? (
+                    <div className="text-right">
+                      <p className="text-sm font-bold text-green-600">Za darmo</p>
+                    </div>
+                  ) : null}
                 </div>
               </CardContent>
             </Card>
