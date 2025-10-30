@@ -107,40 +107,21 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
     {
       title: 'Logowanie',
       href: '/login',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
-        </svg>
-      ),
+      icon: <img src="/icons/login.svg" alt="" className="w-6 h-6" />,
       requiresAuth: false,
       hideWhenLoggedIn: true
     },
     {
       title: 'Rejestracja',
       href: '/signup',
-      icon: (
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-        </svg>
-      ),
+      icon: <img src="/icons/signup.svg" alt="" className="w-6 h-6" />,
       requiresAuth: false,
       hideWhenLoggedIn: true
     },
     {
       title: 'Wyloguj się',
       href: '#logout',
-      icon: (
-        <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#aZI5Ai_18ga)">
-            <path d="M16 16.25 20.25 12 16 7.75M20.25 12H8.75m4.5 8.25h-7.5c-1.1 0-2-.9-2-2V5.75c0-1.1.9-2 2-2h7.5"/>
-          </g>
-          <defs>
-            <clipPath id="aZI5Ai_18ga">
-              <path fill="#fff" d="M0 0h24v24H0z"/>
-            </clipPath>
-          </defs>
-        </svg>
-      ),
+      icon: <img src="/icons/logout.svg" alt="" className="w-6 h-6" />,
       requiresAuth: true,
       isLogout: true
     },
@@ -632,7 +613,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
           {/* Animated indicator background */}
           <motion.div
-            className="absolute bg-[#C44E35]/10"
+            className="absolute bg-[#C44E35]"
             initial={false}
             animate={
               passesThroughSpecial && activeIndex !== -1 && prevActiveIndex !== -1
@@ -704,18 +685,27 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   className="flex flex-col items-center justify-center gap-4 flex-1 relative py-2"
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
-                  <motion.div
-                    initial={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                    animate={{
-                      color: shouldBeWhite ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
-                    }}
-                    transition={{
-                      duration: 0.35,
-                      ease: [0.34, 1.15, 0.64, 1]
-                    }}
-                  >
-                    {item.icon}
-                  </motion.div>
+                  <div className="relative">
+                    {/* Czarna ikona - bazowa */}
+                    <div style={{ filter: 'brightness(0) saturate(100%)' }}>
+                      {item.icon}
+                    </div>
+                    {/* Biała ikona - overlay */}
+                    <motion.div
+                      className="absolute inset-0"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: shouldBeWhite ? 1 : 0
+                      }}
+                      transition={{
+                        duration: 0.35,
+                        ease: [0.34, 1.15, 0.64, 1]
+                      }}
+                      style={{ filter: 'brightness(0) invert(1)' }}
+                    >
+                      {item.icon}
+                    </motion.div>
+                  </div>
                   <span className="text-xs leading-none text-black/60">{item.title}</span>
                 </button>
               )
@@ -743,18 +733,27 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   className="flex flex-col items-center justify-center gap-4 flex-1 relative py-2"
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
-                  <motion.div
-                    initial={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                    animate={{
-                      color: shouldBeWhite ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
-                    }}
-                    transition={{
-                      duration: 0.35,
-                      ease: [0.34, 1.15, 0.64, 1]
-                    }}
-                  >
-                    {item.icon}
-                  </motion.div>
+                  <div className="relative">
+                    {/* Czarna ikona - bazowa */}
+                    <div style={{ filter: 'brightness(0) saturate(100%)' }}>
+                      {item.icon}
+                    </div>
+                    {/* Biała ikona - overlay */}
+                    <motion.div
+                      className="absolute inset-0"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: shouldBeWhite ? 1 : 0
+                      }}
+                      transition={{
+                        duration: 0.35,
+                        ease: [0.34, 1.15, 0.64, 1]
+                      }}
+                      style={{ filter: 'brightness(0) invert(1)' }}
+                    >
+                      {item.icon}
+                    </motion.div>
+                  </div>
                   <span className="text-xs leading-none text-black/60">{item.title}</span>
                 </button>
               )
@@ -770,11 +769,17 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 >
                   <div className="relative flex items-center justify-center">
                     {/* Pomarańczowe kółko w tle */}
-                    <div className="absolute w-11 h-11 bg-[#C44E35]/10 rounded-full shrink-0" />
+                    <div className="absolute w-11 h-11 bg-[#C44E35] rounded-full shrink-0" />
                     {/* Ikona */}
-                    <div className="relative text-black">
+                    <motion.div
+                      className="relative"
+                      initial={{ filter: 'brightness(0) invert(1)' }}
+                      animate={{
+                        filter: 'brightness(0) invert(1)'
+                      }}
+                    >
                       {item.icon}
-                    </div>
+                    </motion.div>
                   </div>
                   <span className="text-xs leading-none text-black/60">{item.title}</span>
                 </Link>
@@ -788,18 +793,27 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 onClick={triggerHaptic}
                 className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
               >
-                <motion.div
-                  initial={{ color: 'rgba(0, 0, 0, 0.6)' }}
-                  animate={{
-                    color: isActive && !menuOpen && !categoriesOpen && !selectedCategory ? 'rgb(255, 255, 255)' : 'rgba(0, 0, 0, 0.6)'
-                  }}
-                  transition={{
-                    duration: 0.35,
-                    ease: [0.34, 1.15, 0.64, 1]
-                  }}
-                >
-                  {item.icon}
-                </motion.div>
+                <div className="relative">
+                  {/* Czarna ikona - bazowa */}
+                  <div style={{ filter: 'brightness(0) saturate(100%)' }}>
+                    {item.icon}
+                  </div>
+                  {/* Biała ikona - overlay */}
+                  <motion.div
+                    className="absolute inset-0"
+                    initial={{ opacity: 0 }}
+                    animate={{
+                      opacity: isActive && !menuOpen && !categoriesOpen && !selectedCategory ? 1 : 0
+                    }}
+                    transition={{
+                      duration: 0.35,
+                      ease: [0.34, 1.15, 0.64, 1]
+                    }}
+                    style={{ filter: 'brightness(0) invert(1)' }}
+                  >
+                    {item.icon}
+                  </motion.div>
+                </div>
                 <span className="text-xs leading-none text-black/60">{item.title}</span>
               </Link>
             )
