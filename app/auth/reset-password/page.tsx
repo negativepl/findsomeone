@@ -80,8 +80,8 @@ function ResetPasswordForm() {
       <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6">
         <Card className="w-full max-w-md border-0 rounded-3xl bg-white shadow-lg">
           <CardHeader className="text-center pb-8">
-            <CardTitle className="text-2xl font-bold text-black">Weryfikacja...</CardTitle>
-            <CardDescription className="text-base text-black/60 mt-2">
+            <CardTitle className="text-xl md:text-2xl font-bold text-black">Weryfikacja...</CardTitle>
+            <CardDescription className="text-sm md:text-base text-black/60 mt-2">
               Sprawdzamy Twój link resetowania hasła...
             </CardDescription>
           </CardHeader>
@@ -100,8 +100,8 @@ function ResetPasswordForm() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <CardTitle className="text-2xl font-bold text-black">Hasło zmienione!</CardTitle>
-            <CardDescription className="text-base text-black/60 mt-2">
+            <CardTitle className="text-xl md:text-2xl font-bold text-black">Hasło zmienione!</CardTitle>
+            <CardDescription className="text-sm md:text-base text-black/60 mt-2">
               Twoje hasło zostało pomyślnie zmienione. Za chwilę zostaniesz przekierowany do panelu.
             </CardDescription>
           </CardHeader>
@@ -129,8 +129,8 @@ function ResetPasswordForm() {
 
         <Card className="border-0 rounded-3xl bg-white shadow-lg">
           <CardHeader className="pb-6">
-            <CardTitle className="text-2xl font-bold text-black text-center">Ustaw nowe hasło</CardTitle>
-            <CardDescription className="text-base text-black/60 text-center">
+            <CardTitle className="text-xl md:text-2xl font-bold text-black text-center">Ustaw nowe hasło</CardTitle>
+            <CardDescription className="text-sm md:text-base text-black/60 text-center">
               Wprowadź nowe hasło dla swojego konta
             </CardDescription>
           </CardHeader>
@@ -202,8 +202,8 @@ export default function ResetPasswordPage() {
       <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6">
         <Card className="w-full max-w-md border-0 rounded-3xl bg-white shadow-lg">
           <CardHeader className="text-center pb-8">
-            <CardTitle className="text-2xl font-bold text-black">Ładowanie...</CardTitle>
-            <CardDescription className="text-base text-black/60 mt-2">
+            <CardTitle className="text-xl md:text-2xl font-bold text-black">Ładowanie...</CardTitle>
+            <CardDescription className="text-sm md:text-base text-black/60 mt-2">
               Przygotowywanie formularza resetowania hasła...
             </CardDescription>
           </CardHeader>

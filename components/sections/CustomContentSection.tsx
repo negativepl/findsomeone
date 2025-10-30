@@ -25,11 +25,11 @@ export function CustomContentSection({ section }: CustomContentSectionProps) {
       <div className="container mx-auto px-6">
         {section.title && (
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-black mb-3">
+            <h2 className="text-2xl md:text-4xl font-bold text-black mb-3">
               {section.title}
             </h2>
             {section.subtitle && (
-              <p className="text-lg text-black/60">
+              <p className="text-sm md:text-lg text-black/60">
                 {section.subtitle}
               </p>
             )}

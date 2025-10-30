@@ -171,7 +171,7 @@ export function SectionRenderer({ section, userFavorites, userId }: SectionRende
       const cssClasses = config.css_classes || ''
 
       return (
-        <section className="py-12 md:py-14">
+        <section className="py-3 md:py-14">
           <div className="container mx-auto px-6">
             {section.title && (
               <div className="text-center mb-12">

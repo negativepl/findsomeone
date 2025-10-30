@@ -64,7 +64,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8">
           <DashboardStatsCard
             href="/dashboard/my-posts"
             title="Moje ogłoszenia"
@@ -103,7 +103,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <Card className="border-0 rounded-3xl bg-white">
             <CardHeader className="pb-4">
-              <CardTitle className="text-2xl font-bold text-black">Szybkie akcje</CardTitle>
+              <CardTitle className="text-xl md:text-2xl font-bold text-black">Szybkie akcje</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Link href="/dashboard/my-posts/new" className="block">
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
 
           <Card className="border-0 rounded-3xl bg-white">
             <CardHeader className="pb-4">
-              <CardTitle className="text-2xl font-bold text-black">Twoje konto</CardTitle>
+              <CardTitle className="text-xl md:text-2xl font-bold text-black">Twoje konto</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <Link href="/dashboard/profile" className="block">

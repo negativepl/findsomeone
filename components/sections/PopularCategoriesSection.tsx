@@ -56,11 +56,11 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
   if (showBothLayouts) {
     // Render both layouts with appropriate visibility classes
     return (
-      <section className="container mx-auto px-6 py-12 md:py-14">
+      <section className="container mx-auto px-6 py-3 md:py-14">
         <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
           <div className="mb-8 md:mb-12">
-            <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">{title}</h3>
-            <p className="text-lg text-black/60">{subtitle}</p>
+            <h3 className="text-2xl md:text-4xl font-bold text-black mb-2">{title}</h3>
+            <p className="text-sm md:text-lg text-black/60">{subtitle}</p>
           </div>
 
           {/* Mobile layout */}
@@ -75,11 +75,11 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
 
   // Same layout for both mobile and desktop
   return (
-    <section className="container mx-auto px-6 py-12 md:py-14">
+    <section className="container mx-auto px-6 py-3 md:py-14">
       <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
         <div className="mb-8 md:mb-12">
-          <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">{title}</h3>
-          <p className="text-lg text-black/60">{subtitle}</p>
+          <h3 className="text-2xl md:text-4xl font-bold text-black mb-2">{title}</h3>
+          <p className="text-sm md:text-lg text-black/60">{subtitle}</p>
         </div>
 
         {layoutMobile === 'carousel' ? renderCarousel() : renderGrid()}

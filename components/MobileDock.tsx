@@ -36,7 +36,7 @@ const getDockItems = (isLoggedIn: boolean) => {
       },
       {
         title: 'Dodaj',
-        href: '/dashboard/my-posts/new',
+        href: '/dashboard/my-posts/create',
         icon: <img src="/icons/plus.svg" alt="" className="w-5 h-5" />,
         isSpecial: true,
       },
@@ -617,6 +617,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         initial={false}
         animate={{ y: 0 }}
         transition={{ duration: 0.3, ease: [0.34, 1.25, 0.35, 1] }}
+        data-mobile-dock
         className={cn(
           "md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-black/5",
           !isMessagePage && "rounded-t-3xl"

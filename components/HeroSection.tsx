@@ -14,8 +14,8 @@ export function HeroSection({ user }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="container mx-auto px-6 pt-10 pb-1 md:pt-14 md:pb-2 text-center">
-        <h2 className="text-6xl md:text-7xl font-bold mb-6 text-black leading-tight">
+      <div className="container mx-auto px-6 py-3 md:pt-14 md:pb-2 text-center">
+        <h2 className="text-4xl md:text-7xl font-bold mb-4 md:mb-6 text-black leading-tight">
           {headingText.split(" ").map((word, index) => (
             <motion.span
               key={index}
@@ -64,7 +64,7 @@ export function HeroSection({ user }: HeroSectionProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.4 }}
-          className="text-xl text-black/60 mb-10 max-w-2xl mx-auto leading-relaxed"
+          className="text-base md:text-xl text-black/60 mb-6 md:mb-10 max-w-2xl mx-auto leading-relaxed"
         >
           Sprzedajesz, kupujesz, wynajmujesz? Szukasz fachowca lub oferujesz usługi?
           A może potrzebujesz pomocy albo sam chcesz pomóc?{' '}
@@ -77,21 +77,19 @@ export function HeroSection({ user }: HeroSectionProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.6 }}
-          className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0"
+          className="flex flex-row gap-2 md:gap-6 justify-center items-center w-full md:w-auto px-4 md:px-0"
         >
-          <Link href="/posts" className="w-full md:w-auto">
+          <Link href="/posts" className="flex-1 md:flex-none md:w-auto">
             <Button
-              size="lg"
               variant="outline"
-              className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all min-h-[56px] md:min-w-[200px] transform hover:-translate-y-0.5"
+              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all h-[44px] md:h-[56px] md:min-w-[200px] transform hover:-translate-y-0.5"
             >
               Przeglądaj ogłoszenia
             </Button>
           </Link>
-          <Link href={user ? "/dashboard/my-posts/new" : "/signup"} className="w-full md:w-auto">
+          <Link href={user ? "/dashboard/my-posts/new" : "/signup"} className="flex-1 md:flex-none md:w-auto">
             <Button
-              size="lg"
-              className="w-full md:w-auto text-lg px-12 py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all min-h-[56px] md:min-w-[200px] transform hover:-translate-y-0.5"
+              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all h-[44px] md:h-[56px] md:min-w-[200px] transform hover:-translate-y-0.5"
             >
               Dodaj ogłoszenie
             </Button>

@@ -245,7 +245,7 @@ export default async function MessagesPage() {
             </Card>
             ) : (
             <Card className="border-0 rounded-3xl bg-white">
-              <div className="p-12">
+              <div className="p-12 text-center">
                 <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/5 flex items-center justify-center">
                   <svg className="w-10 h-10 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
@@ -257,8 +257,8 @@ export default async function MessagesPage() {
                 <p className="text-black/60 mb-6">
                   Nie masz jeszcze żadnych rozmów. Skontaktuj się z kimś przez ogłoszenie!
                 </p>
-                <Link href="/dashboard">
-                  <button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8 py-3 font-semibold transition-colors">
+                <Link href="/posts" className="block">
+                  <button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8 py-3 font-semibold transition-colors">
                     Przeglądaj ogłoszenia
                   </button>
                 </Link>
@@ -280,7 +280,8 @@ export default async function MessagesPage() {
                   Wybierz wiadomość
                 </h3>
                 <p className="text-black/60">
-                  Kliknij na konwersację po lewej, aby ją przeczytać
+                  <span className="md:hidden">Kliknij na konwersację na górze, aby ją przeczytać</span>
+                  <span className="hidden md:inline">Kliknij na konwersację po lewej, aby ją przeczytać</span>
                 </p>
               </div>
             </Card>

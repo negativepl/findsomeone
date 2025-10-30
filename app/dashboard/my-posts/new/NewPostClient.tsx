@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
+import { RichTextToolbar } from '@/components/RichTextToolbar'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
@@ -81,6 +82,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const [images, setImages] = useState<string[]>([])
   const [imageRotations, setImageRotations] = useState<Record<string, number>>({})
   const [userId, setUserId] = useState<string>('')
+  const [richTextEditor, setRichTextEditor] = useState<any>(null)
 
   // AI Category suggestion state
   const [suggestingCategory, setSuggestingCategory] = useState(false)
@@ -551,7 +553,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   }
 
   return (
-      <main className="md:container md:mx-auto px-4 md:px-6 h-full md:h-auto md:py-4 flex flex-col md:block">
+      <main className="md:container md:mx-auto md:px-6 h-full md:h-auto md:py-4 flex flex-col md:block">
         {/* Draft Recovery Modal */}
         {showDraftModal && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -584,19 +586,43 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         {/* Type Selection Modal */}
         {showTypeModal && (
           <Dialog open={showTypeModal} onOpenChange={setShowTypeModal}>
-            <DialogContent className="rounded-3xl p-8 md:p-12 max-w-3xl sm:max-w-3xl" showCloseButton={false}>
-              <div className="text-center mb-10">
-                <DialogTitle className="text-3xl md:text-4xl mb-3">Co chcesz zrobić?</DialogTitle>
-                <DialogDescription className="text-lg">Wybierz typ ogłoszenia</DialogDescription>
+            <DialogContent
+              className="rounded-3xl p-5 md:p-12"
+              style={{ maxWidth: 'min(1200px, calc(100vw - 2rem))' }}
+              showCloseButton={false}
+            >
+              <div className="text-left mb-3 md:mb-6">
+                <DialogTitle className="text-xl md:text-4xl mb-1 md:mb-3">Co chcesz zrobić?</DialogTitle>
+                <DialogDescription className="text-xs md:text-lg">Wybierz typ ogłoszenia</DialogDescription>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                 {/* Seeking Card */}
                 <button
                   onClick={() => handleTypeSelection('seeking')}
-                  className="group bg-white border-2 border-black/10 hover:border-[#C44E35] rounded-3xl p-8 text-left transition-all"
+                  className="group bg-white border-2 border-black/10 hover:border-[#C44E35] rounded-2xl md:rounded-3xl p-3 md:p-8 text-left transition-all"
                 >
-                  <div className="flex flex-col gap-6">
+                  {/* Mobile layout */}
+                  <div className="flex items-center gap-3 md:hidden">
+                    <div className="w-10 h-10 rounded-xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-base font-bold text-black mb-1">Szukam usługi</h3>
+                      <p className="text-xs text-black/70 leading-snug">
+                        Potrzebujesz kogoś do wykonania pracy?
+                      </p>
+                    </div>
+                    <div className="flex items-center text-[#C44E35] flex-shrink-0">
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Desktop layout */}
+                  <div className="hidden md:flex flex-col gap-6">
                     <div className="w-16 h-16 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center">
                       <svg className="w-9 h-9 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -620,9 +646,29 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 {/* Offering Card */}
                 <button
                   onClick={() => handleTypeSelection('offering')}
-                  className="group bg-white border-2 border-black/10 hover:border-[#C44E35] rounded-3xl p-8 text-left transition-all"
+                  className="group bg-white border-2 border-black/10 hover:border-[#C44E35] rounded-2xl md:rounded-3xl p-3 md:p-8 text-left transition-all"
                 >
-                  <div className="flex flex-col gap-6">
+                  {/* Mobile layout */}
+                  <div className="flex items-center gap-3 md:hidden">
+                    <div className="w-10 h-10 rounded-xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-5 h-5 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="text-base font-bold text-black mb-1">Oferuję usługi</h3>
+                      <p className="text-xs text-black/70 leading-snug">
+                        Świadczysz usługi? Opisz co oferujesz.
+                      </p>
+                    </div>
+                    <div className="flex items-center text-[#C44E35] flex-shrink-0">
+                      <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </div>
+                  {/* Desktop layout */}
+                  <div className="hidden md:flex flex-col gap-6">
                     <div className="w-16 h-16 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center">
                       <svg className="w-9 h-9 text-[#C44E35]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
@@ -665,9 +711,10 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
           </p>
         </div>
 
-      <Card className="border-0 md:rounded-3xl bg-white md:mx-0 -mx-4 flex-1 md:flex-none overflow-hidden mt-8 md:mt-0">
-        <CardContent className="pt-4 md:pt-6 px-0 md:px-6 h-full md:h-auto flex flex-col">
-          <form onSubmit={handleSubmit} className="space-y-6 h-full md:h-auto flex flex-col md:block">
+      {/* Desktop: Card wrapper */}
+      <Card className="hidden md:block border-0 rounded-3xl bg-white">
+        <CardContent className="pt-6 px-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Desktop: All fields visible */}
             <div className="hidden md:block space-y-6">
               {/* Title */}
@@ -923,11 +970,45 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               </div>
             </div>
 
-            {/* Mobile: Step-by-step */}
-            <div className="md:hidden flex-1 flex flex-col overflow-hidden">
+            {/* Desktop footer */}
+            <div className="hidden md:block mt-8 pt-6 border-t-2 border-black/5">
+              <div className="flex flex-row gap-3 justify-end">
+                <Link href="/dashboard">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 px-6 text-sm"
+                  >
+                    Anuluj
+                  </Button>
+                </Link>
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
+                >
+                  {loading ? 'Dodawanie...' : 'Opublikuj ogłoszenie'}
+                </Button>
+              </div>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Mobile: Form without Card wrapper */}
+      <form onSubmit={handleSubmit} className="md:hidden flex-1 flex flex-col overflow-hidden bg-white">
+        {/* Sticky Toolbar for Step 2 */}
+        {currentStep === 2 && (
+          <div className="sticky top-[124px] z-20 flex-shrink-0">
+            <RichTextToolbar editor={richTextEditor} />
+          </div>
+        )}
+
+        {/* Mobile: Step-by-step */}
+        <div className="flex-1 flex flex-col overflow-hidden">
               {/* Step 1: Podstawowe informacje */}
               {currentStep === 1 && (
-                <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 bg-white">
                   <div className="space-y-2">
                     <Label htmlFor="title-mobile" className="text-base font-semibold text-black">
                       Tytuł ogłoszenia *
@@ -1026,7 +1107,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 2: Opis */}
               {currentStep === 2 && (
-                <div className="animate-in fade-in duration-300 px-3 pb-4 flex flex-col flex-1 overflow-hidden">
+                <div className="animate-in fade-in duration-300 flex flex-col flex-1 overflow-y-auto">
+                  {/* Editor Content */}
                   <RichTextEditor
                     content={formData.description}
                     onChange={(content) => setFormData({ ...formData, description: content })}
@@ -1035,18 +1117,17 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         ? 'Opisz szczegółowo czego szukasz...'
                         : 'Opisz szczegółowo co oferujesz...'
                     }
-                    className="flex-1 flex flex-col"
+                    hideToolbar={true}
+                    onEditorReady={setRichTextEditor}
+                    noBorder={true}
+                    className="h-full flex flex-col"
                   />
                 </div>
               )}
 
               {/* Step 3: Zdjęcia */}
               {currentStep === 3 && (
-                <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
-                  <div>
-                    <p className="text-xs text-black/60">Dodaj przynajmniej 1 zdjęcie (max 6)</p>
-                  </div>
-
+                <div className="animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto bg-white flex flex-col items-center">
                   <ImageUpload
                     images={images}
                     onImagesChange={setImages}
@@ -1060,7 +1141,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 4: Lokalizacja */}
               {currentStep === 4 && (
-                <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="space-y-2">
                     <Label htmlFor="city-mobile" className="text-base font-semibold text-black">
                       Miasto *
@@ -1071,7 +1152,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       value={formData.city}
                       onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                       required
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
                     />
                   </div>
 
@@ -1084,7 +1165,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       placeholder="np. Śródmieście"
                       value={formData.district}
                       onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
                     />
                   </div>
                 </div>
@@ -1092,7 +1173,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 5: Budżet */}
               {currentStep === 5 && (
-                <div className="space-y-3 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="space-y-2">
                     <Label className="text-base font-semibold text-black">Typ ceny *</Label>
                     <Select
@@ -1102,7 +1183,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       }
                       required
                     >
-                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
+                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base bg-white">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -1128,7 +1209,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           placeholder="0"
                           value={formData.priceMin}
                           onChange={(e) => setFormData({ ...formData, priceMin: e.target.value })}
-                          className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                          className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
                         />
                       </div>
 
@@ -1144,7 +1225,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           placeholder="0"
                           value={formData.priceMax}
                           onChange={(e) => setFormData({ ...formData, priceMax: e.target.value })}
-                          className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base"
+                          className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
                         />
                       </div>
                     </>
@@ -1154,7 +1235,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 6: Podsumowanie */}
               {currentStep === 6 && (
-                <div className="space-y-4 animate-in fade-in duration-300 px-3 pb-4 overflow-y-auto">
+                <div className="space-y-4 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="text-center mb-4">
                     <h3 className="text-xl font-bold text-black mb-1">Sprawdź swoje ogłoszenie</h3>
                     <p className="text-sm text-black/60">Upewnij się, że wszystko jest poprawne</p>
@@ -1297,38 +1378,14 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
                 </div>
               )}
-            </div>
 
             {error && (
-              <div className="bg-red-50 border-2 border-red-200 text-red-600 p-4 rounded-2xl text-sm">
+              <div className="bg-red-50 border-2 border-red-200 text-red-600 p-4 rounded-2xl text-sm mx-3">
                 {error}
               </div>
             )}
-
-            {/* Desktop buttons */}
-            <div className="hidden md:block mt-8 pt-6 border-t-2 border-black/5">
-              <div className="flex flex-row gap-3 justify-end">
-                <Link href="/dashboard">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 px-6 text-sm"
-                  >
-                    Anuluj
-                  </Button>
-                </Link>
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
-                >
-                  {loading ? 'Dodawanie...' : 'Opublikuj ogłoszenie'}
-                </Button>
-              </div>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+        </form>
 
       {/* Mobile: Fixed bottom action bar */}
       <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-white z-30 pb-[72px] border-t border-black/10 overflow-hidden transition-transform duration-300 ${

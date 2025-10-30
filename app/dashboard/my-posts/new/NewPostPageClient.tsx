@@ -18,10 +18,18 @@ function StepIndicator() {
   const { currentStep, totalSteps, stepTitle } = stepContext
 
   return (
-    <div className="md:hidden fixed top-[60px] left-0 right-0 z-30 bg-white border-b border-black/5 px-4 py-3">
-      <h1 className="text-base font-semibold text-black">{stepTitle}</h1>
-      <p className="text-xs text-black/60">Krok {currentStep}/{totalSteps}</p>
-    </div>
+    <>
+      {/* White background extension above step indicator */}
+      <div className="md:hidden fixed top-0 left-0 right-0 h-[60px] z-30 bg-white" />
+
+      {/* Step indicator */}
+      <div className="md:hidden fixed top-[60px] left-0 right-0 z-30 bg-white border-b border-black/5 px-4 py-3">
+        <div className="flex items-center justify-between">
+          <h1 className="text-lg font-semibold text-black">{stepTitle}</h1>
+          <p className="text-base font-semibold text-black/60">Krok {currentStep}/{totalSteps}</p>
+        </div>
+      </div>
+    </>
   )
 }
 
@@ -50,7 +58,6 @@ export function NewPostPageClient({ user }: NewPostPageClientProps) {
   return (
     <StepContext.Provider value={stepContextValue}>
       <StepIndicator />
-      <div className="md:hidden h-[56px]" />
       <NewPostClient onStepChange={setCurrentStep} />
     </StepContext.Provider>
   )

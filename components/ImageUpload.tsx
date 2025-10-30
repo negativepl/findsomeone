@@ -69,7 +69,7 @@ function SortableThumbnail({
       style={style}
       {...attributes}
       {...listeners}
-      className="relative group rounded-2xl bg-black/5 h-32 w-32 cursor-grab active:cursor-grabbing"
+      className="relative group rounded-2xl bg-white border-2 border-black/10 h-40 w-40 md:h-32 md:w-32 cursor-grab active:cursor-grabbing"
     >
       <div className="absolute inset-0 rounded-2xl overflow-hidden">
         <Image
@@ -255,46 +255,14 @@ export function ImageUpload({
   }
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-base font-semibold text-black">Zdjęcia *</h3>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button type="button" className="text-black/40 hover:text-black/60 transition-colors">
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right" className="max-w-xs">
-                <p className="font-semibold mb-1">Jakie zdjęcia dodawać?</p>
-                <ul className="space-y-0.5 text-xs">
-                  <li>• Dodaj wyraźne, dobrze oświetlone zdjęcia</li>
-                  <li>• Unikaj zdjęć nieostrych lub zbyt ciemnych</li>
-                  <li>• Nie dodawaj zdjęć z danymi osobowymi</li>
-                  <li>• Pierwsze zdjęcie będzie miniaturą</li>
-                </ul>
-              </TooltipContent>
-            </Tooltip>
-          </div>
-          <p className="text-sm text-black/60">
-            Dodaj do {maxImages} zdjęć (max 5MB każde)
-          </p>
-        </div>
-        <span className="text-sm text-black/60">
-          {images.length}/{maxImages}
-        </span>
-      </div>
-
+    <div className="space-y-4 w-full">
       {/* Image Grid with Upload Slots */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3 justify-center md:justify-start">
           {/* Hidden file input */}
           <input
             type="file"
@@ -325,7 +293,7 @@ export function ImageUpload({
             <label
               key={`empty-${index}`}
               htmlFor="image-upload"
-              className="rounded-2xl border-2 border-dashed border-black/20 hover:border-black/40 hover:bg-black/5 cursor-pointer transition-colors flex items-center justify-center h-32 w-32"
+              className="rounded-2xl border-2 border-dashed border-black/20 hover:border-black/40 bg-white hover:bg-black/5 cursor-pointer transition-colors flex items-center justify-center h-40 w-40 md:h-32 md:w-32"
             >
               {uploading && index === 0 ? (
                 <div className="w-8 h-8 border-2 border-black/20 border-t-black/60 rounded-full animate-spin" />

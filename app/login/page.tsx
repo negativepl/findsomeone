@@ -108,8 +108,8 @@ export default function LoginPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <CardTitle className="text-2xl font-bold text-black">Email wysłany!</CardTitle>
-                <CardDescription className="text-base text-black/60 mt-2">
+                <CardTitle className="text-xl md:text-2xl font-bold text-black">Email wysłany!</CardTitle>
+                <CardDescription className="text-sm md:text-base text-black/60 mt-2">
                   Sprawdź swoją skrzynkę email. Wysłaliśmy Ci link do resetowania hasła.
                 </CardDescription>
               </CardHeader>
@@ -150,8 +150,8 @@ export default function LoginPage() {
 
           <Card className="border-0 rounded-3xl bg-white shadow-lg">
             <CardHeader className="text-center pb-8">
-              <CardTitle className="text-3xl font-bold text-black">Zresetuj hasło</CardTitle>
-              <CardDescription className="text-base text-black/60 mt-2">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Zresetuj hasło</CardTitle>
+              <CardDescription className="text-sm md:text-base text-black/60 mt-2">
                 Podaj swój adres email, a wyślemy Ci link do resetowania hasła
               </CardDescription>
             </CardHeader>
@@ -221,8 +221,8 @@ export default function LoginPage() {
 
         <Card className="border-0 rounded-3xl bg-white shadow-lg">
           <CardHeader className="pb-6">
-            <CardTitle className="text-2xl font-bold text-black text-center">Witaj ponownie!</CardTitle>
-            <CardDescription className="text-base text-black/60 text-center">
+            <CardTitle className="text-xl md:text-2xl font-bold text-black text-center">Witaj ponownie!</CardTitle>
+            <CardDescription className="text-sm md:text-base text-black/60 text-center">
               Wprowadź swoje dane, aby się zalogować
             </CardDescription>
           </CardHeader>

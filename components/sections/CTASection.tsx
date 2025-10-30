@@ -32,7 +32,7 @@ export function CTASection({ section }: CTASectionProps) {
   const alignClass = alignmentClasses[textAlignment as keyof typeof alignmentClasses] || alignmentClasses.center
 
   return (
-    <section className="py-16 md:py-20">
+    <section className="py-3 md:py-20">
       <div className="container mx-auto px-6">
         <div className={`flex flex-col gap-6 ${alignClass}`}>
           {subheading && (

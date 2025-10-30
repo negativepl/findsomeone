@@ -1,0 +1,1144 @@
+'use client'
+
+import { useState, useEffect, useRef, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { RichTextEditor } from '@/components/RichTextEditor'
+import { RichTextToolbar } from '@/components/RichTextToolbar'
+import { ImageUpload } from '@/components/ImageUpload'
+import { MapPin, Loader2, Tag, FileText, ImageIcon, DollarSign } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import Image from 'next/image'
+import { StepLottieIcon } from '@/components/StepLottieIcon'
+
+interface Category {
+  id: string
+  name: string
+  slug: string
+}
+
+interface City {
+  name: string
+  slug: string
+  voivodeship?: string
+  popular?: boolean
+}
+
+interface CreatePostClientProps {
+  categories: Category[]
+}
+
+export function CreatePostClient({ categories }: CreatePostClientProps) {
+  const router = useRouter()
+  const supabase = createClient()
+
+  const [currentStep, setCurrentStep] = useState(1)
+  const totalSteps = 6
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
+  const [formData, setFormData] = useState({
+    title: '',
+    category: '',
+    subcategory: '',
+    description: '',
+    city: '',
+    district: '',
+    priceType: 'fixed', // 'fixed', 'negotiable', 'hourly', 'free'
+    price: '',
+  })
+
+  const [subcategories, setSubcategories] = useState<Category[]>([])
+  const [richTextEditor, setRichTextEditor] = useState<any>(null)
+  const [images, setImages] = useState<string[]>([])
+  const [imageRotations, setImageRotations] = useState<Record<string, number>>({})
+  const [userId, setUserId] = useState<string>('')
+
+  // City selection state
+  const [cityQuery, setCityQuery] = useState('')
+  const [cities, setCities] = useState<City[]>([])
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false)
+  const [isLoadingCities, setIsLoadingCities] = useState(false)
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false)
+  const cityInputRef = useRef<HTMLInputElement>(null)
+  const cityDropdownRef = useRef<HTMLDivElement>(null)
+  const cityDebounceTimerRef = useRef<NodeJS.Timeout>()
+
+  // Moderation states
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showModerationModal, setShowModerationModal] = useState(false)
+  const [moderationInProgress, setModerationInProgress] = useState(false)
+  const [moderationResult, setModerationResult] = useState<any>(null)
+
+  // Get user ID on mount
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) setUserId(user.id)
+    })
+  }, [supabase])
+
+  // Get animation paths for current step
+  const getStepAnimationPaths = (step: number) => {
+    const paths = {
+      1: { animation: '/lottie/step1-document.json', svg: '/lottie/step1-document.svg' },
+      2: { animation: '/lottie/step2-edit.json', svg: '/lottie/step2-edit.svg' },
+      3: { animation: '/lottie/step3-camera.json', svg: '/lottie/step3-camera.svg' },
+      4: { animation: '/lottie/step4-location.json', svg: '/lottie/step4-location.svg' },
+      5: { animation: '/lottie/step5-money.json', svg: '/lottie/step5-money.svg' },
+      6: { animation: '/lottie/step6-success.json', svg: '/lottie/step6-success.svg' },
+    }
+    return paths[step as keyof typeof paths] || paths[1]
+  }
+
+  // Close city dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        cityInputRef.current && !cityInputRef.current.contains(event.target as Node) &&
+        cityDropdownRef.current && !cityDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCityDropdownOpen(false)
+      }
+    }
+
+    if (isCityDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isCityDropdownOpen])
+
+  // Fetch subcategories when category changes
+  useEffect(() => {
+    if (formData.category) {
+      const selectedCategory = categories.find(cat => cat.slug === formData.category)
+      if (selectedCategory) {
+        supabase
+          .from('categories')
+          .select('id, name, slug, parent_id')
+          .eq('parent_id', selectedCategory.id)
+          .order('name')
+          .then(({ data }) => {
+            if (data) {
+              setSubcategories(data)
+            } else {
+              setSubcategories([])
+            }
+          })
+      }
+    } else {
+      setSubcategories([])
+      setFormData(prev => ({ ...prev, subcategory: '' }))
+    }
+  }, [formData.category, categories, supabase])
+
+  // Fetch cities from API
+  const fetchCities = useCallback(async (query: string) => {
+    try {
+      setIsLoadingCities(true)
+      const response = await fetch(`/api/cities?q=${encodeURIComponent(query)}`)
+      const data = await response.json()
+      setCities(data.cities || [])
+    } catch (error) {
+      console.error('Cities fetch error:', error)
+      setCities([])
+    } finally {
+      setIsLoadingCities(false)
+    }
+  }, [])
+
+  // Handle city input change
+  const handleCityChange = (value: string) => {
+    setCityQuery(value)
+
+    if (cityDebounceTimerRef.current) {
+      clearTimeout(cityDebounceTimerRef.current)
+    }
+
+    cityDebounceTimerRef.current = setTimeout(() => {
+      fetchCities(value)
+    }, 200)
+  }
+
+  // Handle city selection
+  const handleCitySelect = (cityName: string) => {
+    setFormData({ ...formData, city: cityName })
+    setCityQuery('')
+    setIsCityDropdownOpen(false)
+  }
+
+  // Detect location
+  const detectLocation = async () => {
+    if (!navigator.geolocation) {
+      alert('Twoja przeglądarka nie obsługuje wykrywania lokalizacji')
+      return
+    }
+
+    setIsDetectingLocation(true)
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords
+
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=pl`
+          )
+          const data = await response.json()
+
+          const city = data.address?.city ||
+                      data.address?.town ||
+                      data.address?.village ||
+                      data.address?.municipality ||
+                      null
+
+          if (city) {
+            handleCitySelect(city)
+          } else {
+            alert('Nie udało się określić miasta na podstawie Twojej lokalizacji')
+          }
+        } catch (error) {
+          console.error('Błąd podczas wykrywania lokalizacji:', error)
+          alert('Wystąpił błąd podczas wykrywania lokalizacji')
+        } finally {
+          setIsDetectingLocation(false)
+        }
+      },
+      (error) => {
+        console.error('Błąd geolokalizacji:', error)
+        setIsDetectingLocation(false)
+
+        if (error.code === error.PERMISSION_DENIED) {
+          alert('Odmówiono dostępu do lokalizacji. Sprawdź ustawienia przeglądarki.')
+        } else {
+          alert('Wystąpił błąd podczas wykrywania lokalizacji')
+        }
+      }
+    )
+  }
+
+  const getStepTitle = (step: number): string => {
+    switch (step) {
+      case 1: return 'Podstawowe informacje'
+      case 2: return 'Opis'
+      case 3: return 'Zdjęcia'
+      case 4: return 'Lokalizacja'
+      case 5: return 'Cena'
+      case 6: return 'Podsumowanie'
+      default: return ''
+    }
+  }
+
+  const getCategoryName = (slug: string): string => {
+    const category = categories.find(cat => cat.slug === slug)
+    return category?.name || slug
+  }
+
+  const getSubcategoryName = (slug: string): string => {
+    const subcat = subcategories.find(sub => sub.slug === slug)
+    return subcat?.name || slug
+  }
+
+  const getPriceDisplay = (): string => {
+    if (formData.priceType === 'free') return 'Za darmo'
+    if (formData.priceType === 'negotiable') return `${formData.price} PLN (do uzgodnienia)`
+    if (formData.priceType === 'hourly') return `${formData.price} PLN/godz.`
+    return `${formData.price} PLN`
+  }
+
+  const isStepValid = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        const hasRequiredFields = !!(formData.category && formData.title.trim())
+        const hasSubcategoryIfNeeded = subcategories.length === 0 || !!formData.subcategory
+        return hasRequiredFields && hasSubcategoryIfNeeded
+      case 2:
+        return formData.description.trim().length > 0
+      case 3:
+        return images.length > 0
+      case 4:
+        return formData.city.trim().length > 0
+      case 5:
+        // If free, always valid
+        if (formData.priceType === 'free') return true
+        // If fixed, negotiable or hourly, must have a price > 0
+        const priceNum = parseFloat(formData.price.replace(',', '.'))
+        return !isNaN(priceNum) && priceNum > 0
+      default:
+        return true // Placeholder steps are always valid for now
+    }
+  }
+
+  const nextStep = () => {
+    if (currentStep < totalSteps && isStepValid(currentStep)) {
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentStep(currentStep + 1)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        setTimeout(() => setIsTransitioning(false), 50)
+      }, 200)
+    }
+  }
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentStep(currentStep - 1)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        setTimeout(() => setIsTransitioning(false), 50)
+      }, 200)
+    }
+  }
+
+  const handleCancel = () => {
+    router.push('/dashboard')
+  }
+
+  // Process rotated images before submit
+  const processRotatedImages = async (imagesToProcess: string[], rotations: Record<string, number>) => {
+    const processedImages: string[] = []
+
+    for (const imageUrl of imagesToProcess) {
+      const rotation = rotations[imageUrl] || 0
+
+      // If no rotation, keep original
+      if (rotation === 0) {
+        processedImages.push(imageUrl)
+        continue
+      }
+
+      try {
+        // Fetch the image
+        const response = await fetch(imageUrl)
+        const blob = await response.blob()
+
+        // Create image element
+        const img = document.createElement('img')
+        const objectUrl = URL.createObjectURL(blob)
+
+        await new Promise((resolve, reject) => {
+          img.onload = resolve
+          img.onerror = reject
+          img.src = objectUrl
+        })
+
+        // Create canvas with swapped dimensions for 90/270 degree rotations
+        const canvas = document.createElement('canvas')
+        const ctx = canvas.getContext('2d')
+        if (!ctx) throw new Error('Canvas context not available')
+
+        // Swap width/height for 90 and 270 degree rotations
+        if (rotation === 90 || rotation === 270) {
+          canvas.width = img.height
+          canvas.height = img.width
+        } else {
+          canvas.width = img.width
+          canvas.height = img.height
+        }
+
+        // Rotate and draw
+        ctx.translate(canvas.width / 2, canvas.height / 2)
+        ctx.rotate((rotation * Math.PI) / 180)
+        ctx.drawImage(img, -img.width / 2, -img.height / 2)
+
+        // Convert to blob
+        const rotatedBlob = await new Promise<Blob>((resolve, reject) => {
+          canvas.toBlob(blob => {
+            if (blob) resolve(blob)
+            else reject(new Error('Failed to create blob'))
+          }, 'image/jpeg', 0.9)
+        })
+
+        // Upload rotated image
+        const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`
+        const filePath = `${userId}/rotated/${fileName}`
+
+        const { error: uploadError } = await supabase.storage
+          .from('post-images')
+          .upload(filePath, rotatedBlob)
+
+        if (uploadError) throw uploadError
+
+        const { data: { publicUrl } } = supabase.storage
+          .from('post-images')
+          .getPublicUrl(filePath)
+
+        processedImages.push(publicUrl)
+        URL.revokeObjectURL(objectUrl)
+
+      } catch (error) {
+        console.error('Error processing rotated image:', error)
+        // If rotation fails, use original
+        processedImages.push(imageUrl)
+      }
+    }
+
+    return processedImages
+  }
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true)
+    setShowModerationModal(true)
+    setModerationInProgress(true)
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        throw new Error('Musisz być zalogowany aby dodać ogłoszenie')
+      }
+
+      // Process rotated images
+      const processedImages = await processRotatedImages(images, imageRotations)
+
+      // Get category ID from slug
+      const { data: category } = await supabase
+        .from('categories')
+        .select('id')
+        .eq('slug', formData.category)
+        .single()
+
+      // Get subcategory ID if selected
+      let subcategoryId = null
+      if (formData.subcategory) {
+        const { data: subcategory } = await supabase
+          .from('categories')
+          .select('id')
+          .eq('slug', formData.subcategory)
+          .single()
+        subcategoryId = subcategory?.id || null
+      }
+
+      // Convert price based on priceType
+      let priceMin = null
+      let priceMax = null
+
+      if (formData.priceType !== 'free' && formData.price) {
+        const priceNum = parseFloat(formData.price.replace(',', '.'))
+        if (formData.priceType === 'fixed' || formData.priceType === 'hourly') {
+          priceMin = priceNum
+          priceMax = priceNum
+        } else if (formData.priceType === 'negotiable') {
+          priceMin = priceNum
+          priceMax = null
+        }
+      }
+
+      // Create post
+      const { data: newPost, error: insertError } = await supabase
+        .from('posts')
+        .insert({
+          user_id: user.id,
+          title: formData.title,
+          description: formData.description,
+          type: 'seeking', // Default type - możesz dodać wybór w przyszłości
+          category_id: subcategoryId || category?.id || null,
+          city: formData.city,
+          district: formData.district || null,
+          price_min: priceMin,
+          price_max: priceMax,
+          price_type: formData.priceType,
+          images: processedImages.length > 0 ? processedImages : null,
+          status: 'pending',
+          moderation_status: 'checking',
+        })
+        .select()
+        .single()
+
+      if (insertError) throw insertError
+
+      // Trigger moderation
+      if (newPost) {
+        const moderationResponse = await fetch('/api/moderate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ postId: newPost.id }),
+        })
+
+        const moderationData = await moderationResponse.json()
+        setModerationResult(moderationData)
+        setModerationInProgress(false)
+
+        // Wait 2 seconds to show result before redirecting
+        setTimeout(() => {
+          if (moderationData.status === 'approved') {
+            router.push(`/dashboard/my-posts`)
+          } else if (moderationData.status === 'rejected') {
+            // Stay on modal to show rejection
+          } else {
+            // Flagged - redirect to my posts
+            router.push(`/dashboard/my-posts`)
+          }
+        }, 2000)
+      }
+    } catch (error) {
+      console.error('Error creating post:', error)
+      setModerationInProgress(false)
+      setModerationResult({
+        success: false,
+        status: 'error',
+        reasons: [error instanceof Error ? error.message : 'Wystąpił błąd'],
+      })
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className={`min-h-screen flex flex-col ${currentStep === 2 ? 'bg-white' : 'bg-[#FAF8F3]'}`}>
+      {/* Progress bar - całkiem na górze */}
+      <div className="h-1 bg-black/5 sticky top-0 z-50">
+        <div
+          className="h-full bg-[#C44E35] transition-all duration-300 ease-out"
+          style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+        />
+      </div>
+
+      {/* Header - zaokrąglony */}
+      <header className="bg-white border-b border-black/10 sticky top-1 z-40 shadow-sm rounded-b-3xl">
+        <div className="flex items-center justify-between h-16 px-4">
+          {/* Title on the left with Lottie icon */}
+          <div
+            className={`flex items-center gap-2 transition-all duration-200 ${
+              isTransitioning ? 'opacity-0 blur-sm scale-95' : 'opacity-100 blur-0 scale-100'
+            }`}
+          >
+            <StepLottieIcon
+              step={currentStep}
+              animationPath={getStepAnimationPaths(currentStep).animation}
+              svgPath={getStepAnimationPaths(currentStep).svg}
+              className="w-8 h-8 flex-shrink-0"
+            />
+            <h1 className="text-xl font-bold text-black">{getStepTitle(currentStep)}</h1>
+          </div>
+          {/* Step counter on the right */}
+          <p
+            className={`text-lg text-black/60 font-semibold transition-all duration-200 ${
+              isTransitioning ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'
+            }`}
+          >
+            {currentStep}/{totalSteps}
+          </p>
+        </div>
+      </header>
+
+      {/* Sticky Toolbar for Step 2 */}
+      {currentStep === 2 && richTextEditor && (
+        <div className="sticky top-[65px] z-30 bg-white shadow-sm">
+          <RichTextToolbar editor={richTextEditor} />
+        </div>
+      )}
+
+      {/* Content */}
+      <main
+        className={`flex-1 flex flex-col ${currentStep === 2 ? '' : 'overflow-y-auto'} ${
+          currentStep === 2 ? 'pb-16' : 'pb-24'
+        } transition-all duration-200 ${isTransitioning ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'}`}
+      >
+        {/* Step 1: Podstawowe informacje */}
+        {currentStep === 1 && (
+          <div className="p-4 space-y-6 animate-in fade-in duration-300">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="title" className="text-base text-black">
+                  Tytuł ogłoszenia *
+                </Label>
+                <span className="text-xs text-black/40 font-medium">
+                  {formData.title.length}/80
+                </span>
+              </div>
+              <Input
+                id="title"
+                placeholder="np. Szukam hydraulika w Warszawie"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                required
+                maxLength={80}
+                className="rounded-2xl border border-black/10 h-12 focus:border-black/30 text-base bg-white"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-base text-black">Wybierz kategorię *</Label>
+              <Select
+                value={formData.category}
+                onValueChange={(value) => {
+                  setFormData({ ...formData, category: value, subcategory: '' })
+                }}
+                required
+              >
+                <SelectTrigger className="rounded-2xl border border-black/10 !h-12 w-full text-base bg-white">
+                  <SelectValue placeholder="Wybierz kategorię" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.slug}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {subcategories.length > 0 && (
+              <div className="space-y-2">
+                <Label className="text-base text-black">Wybierz podkategorię *</Label>
+                <Select
+                  value={formData.subcategory}
+                  onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
+                  required
+                >
+                  <SelectTrigger className="rounded-2xl border border-black/10 !h-12 w-full text-base bg-white">
+                    <SelectValue placeholder="Wybierz podkategorię" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {subcategories.map((subcat) => (
+                      <SelectItem key={subcat.id} value={subcat.slug}>
+                        {subcat.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Step 2: Opis */}
+        {currentStep === 2 && (
+          <div
+            className="flex-1 bg-white overflow-auto cursor-text"
+            onClick={() => richTextEditor?.commands.focus()}
+          >
+            <RichTextEditor
+              content={formData.description}
+              onChange={(content) => setFormData({ ...formData, description: content })}
+              placeholder="Opisz szczegółowo czego szukasz lub co oferujesz..."
+              hideToolbar={true}
+              onEditorReady={setRichTextEditor}
+              noBorder={true}
+              className="h-full min-h-full"
+            />
+          </div>
+        )}
+
+        {/* Step 3: Zdjęcia */}
+        {currentStep === 3 && (
+          <div className="p-4 animate-in fade-in duration-300">
+            <ImageUpload
+              images={images}
+              onImagesChange={setImages}
+              userId={userId}
+              maxImages={6}
+              imageRotations={imageRotations}
+              onRotationsChange={setImageRotations}
+            />
+          </div>
+        )}
+
+        {/* Step 4: Lokalizacja */}
+        {currentStep === 4 && (
+          <div className="p-4 space-y-6 animate-in fade-in duration-300">
+            {/* Detect Location Button */}
+            <Button
+              type="button"
+              onClick={detectLocation}
+              disabled={isDetectingLocation}
+              className="w-full rounded-full bg-white border-2 border-black/10 hover:border-[#C44E35] hover:bg-[#C44E35]/5 text-black h-12 text-sm font-semibold transition-colors"
+            >
+              {isDetectingLocation ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Wykrywanie lokalizacji...
+                </>
+              ) : (
+                <>
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Wykryj moją lokalizację
+                </>
+              )}
+            </Button>
+
+            {/* City Input */}
+            <div className="space-y-2 relative">
+              <Label className="text-base text-black">Miasto *</Label>
+              <div className="relative">
+                <Input
+                  ref={cityInputRef}
+                  type="text"
+                  placeholder="Szukaj miasta..."
+                  value={formData.city || cityQuery}
+                  onChange={(e) => {
+                    if (formData.city) {
+                      setFormData({ ...formData, city: '' })
+                    }
+                    handleCityChange(e.target.value)
+                    setIsCityDropdownOpen(true)
+                  }}
+                  onFocus={() => {
+                    setIsCityDropdownOpen(true)
+                    if (cities.length === 0) {
+                      fetchCities('')
+                    }
+                  }}
+                  className="rounded-2xl border border-black/10 h-12 focus:border-black/30 text-base bg-white pr-10"
+                />
+                {isLoadingCities && (
+                  <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-black/40" />
+                )}
+              </div>
+
+              {/* Cities Dropdown */}
+              {isCityDropdownOpen && cities.length > 0 && (
+                <div ref={cityDropdownRef} className="absolute z-10 w-full mt-1 bg-white border border-black/10 rounded-2xl shadow-lg max-h-64 overflow-y-auto">
+                  {/* Popular Cities */}
+                  {cities.some(c => c.popular) && (
+                    <div className="p-2">
+                      <p className="text-xs font-semibold text-black/40 px-3 py-2">POPULARNE</p>
+                      {cities.filter(c => c.popular).map((city) => (
+                        <button
+                          key={city.slug}
+                          type="button"
+                          onClick={() => handleCitySelect(city.name)}
+                          className="w-full text-left px-3 py-2 hover:bg-black/5 rounded-lg text-sm transition-colors"
+                        >
+                          <div className="font-medium text-black">{city.name}</div>
+                          {city.voivodeship && (
+                            <div className="text-xs text-black/60">{city.voivodeship}</div>
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Cities by Voivodeship */}
+                  {Object.entries(
+                    cities.filter(c => !c.popular).reduce((acc, city) => {
+                      const voivodeship = city.voivodeship || 'Inne'
+                      if (!acc[voivodeship]) acc[voivodeship] = []
+                      acc[voivodeship].push(city)
+                      return acc
+                    }, {} as Record<string, City[]>)
+                  ).map(([voivodeship, voivodeshipCities]) => (
+                    <div key={voivodeship} className="p-2">
+                      <p className="text-xs font-semibold text-black/40 px-3 py-2">{voivodeship.toUpperCase()}</p>
+                      {voivodeshipCities.map((city) => (
+                        <button
+                          key={city.slug}
+                          type="button"
+                          onClick={() => handleCitySelect(city.name)}
+                          className="w-full text-left px-3 py-2 hover:bg-black/5 rounded-lg text-sm transition-colors"
+                        >
+                          {city.name}
+                        </button>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* District Input (Optional) */}
+            <div className="space-y-2">
+              <Label className="text-base text-black">Dzielnica <span className="text-black/40 font-normal">(opcjonalnie)</span></Label>
+              <Input
+                type="text"
+                placeholder="np. Śródmieście"
+                value={formData.district}
+                onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                className="rounded-2xl border border-black/10 h-12 focus:border-black/30 text-base bg-white"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Step 5: Cena */}
+        {currentStep === 5 && (
+          <div className="p-4 space-y-6 animate-in fade-in duration-300">
+            {/* Price Type Selection */}
+            <div className="space-y-3">
+              <Label className="text-base text-black">Typ ceny <span className="text-red-500">*</span></Label>
+
+              {/* Fixed Price */}
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, priceType: 'fixed' })}
+                className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
+                  formData.priceType === 'fixed'
+                    ? 'border-[#C44E35] bg-[#C44E35]/5'
+                    : 'border-black/10 bg-white hover:border-black/20'
+                }`}
+              >
+                <div className="flex-1">
+                  <div className="font-semibold text-black">Stała cena</div>
+                  <div className="text-sm text-black/60 mt-0.5">Podaj konkretną kwotę</div>
+                </div>
+              </button>
+
+              {/* Hourly Rate */}
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, priceType: 'hourly' })}
+                className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
+                  formData.priceType === 'hourly'
+                    ? 'border-[#C44E35] bg-[#C44E35]/5'
+                    : 'border-black/10 bg-white hover:border-black/20'
+                }`}
+              >
+                <div className="flex-1">
+                  <div className="font-semibold text-black">Za godzinę</div>
+                  <div className="text-sm text-black/60 mt-0.5">Stawka godzinowa</div>
+                </div>
+              </button>
+
+              {/* Negotiable Price */}
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, priceType: 'negotiable' })}
+                className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
+                  formData.priceType === 'negotiable'
+                    ? 'border-[#C44E35] bg-[#C44E35]/5'
+                    : 'border-black/10 bg-white hover:border-black/20'
+                }`}
+              >
+                <div className="flex-1">
+                  <div className="font-semibold text-black">Do uzgodnienia</div>
+                  <div className="text-sm text-black/60 mt-0.5">Cena jest negocjowalna</div>
+                </div>
+              </button>
+
+              {/* Free */}
+              <button
+                type="button"
+                onClick={() => setFormData({ ...formData, priceType: 'free' })}
+                className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
+                  formData.priceType === 'free'
+                    ? 'border-[#C44E35] bg-[#C44E35]/5'
+                    : 'border-black/10 bg-white hover:border-black/20'
+                }`}
+              >
+                <div className="flex-1">
+                  <div className="font-semibold text-black">Za darmo</div>
+                  <div className="text-sm text-black/60 mt-0.5">Usługa lub produkt bezpłatny</div>
+                </div>
+              </button>
+            </div>
+
+            {/* Price Input - Show only if not free */}
+            {formData.priceType !== 'free' && (
+              <div className="space-y-2">
+                <Label htmlFor="price" className="text-base text-black">
+                  Cena {formData.priceType === 'negotiable' ? '(orientacyjna) ' : formData.priceType === 'hourly' ? 'za godzinę ' : ''}<span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="price"
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="0,00"
+                    value={formData.price}
+                    onChange={(e) => {
+                      const value = e.target.value
+                      // Allow only numbers, comma and dot
+                      if (value === '' || /^[\d,\.]+$/.test(value)) {
+                        setFormData({ ...formData, price: value })
+                      }
+                    }}
+                    className="rounded-2xl border border-black/10 h-12 focus:border-black/30 text-base bg-white pr-12"
+                  />
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base text-black/60 font-medium">
+                    PLN
+                  </span>
+                </div>
+                {formData.priceType === 'negotiable' && (
+                  <p className="text-xs text-black/50">
+                    Podana cena jest orientacyjna i może być negocjowana z zainteresowanymi
+                  </p>
+                )}
+                {formData.priceType === 'hourly' && (
+                  <p className="text-xs text-black/50">
+                    Podaj stawkę za godzinę pracy
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Step 6: Podsumowanie */}
+        {currentStep === 6 && (
+          <div className="p-4 space-y-4 animate-in fade-in duration-300">
+            {/* Title */}
+            <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+              <h2 className="text-xl font-bold text-black mb-1">{formData.title}</h2>
+              <div className="flex items-center gap-2 text-sm text-black/60">
+                <Tag className="w-4 h-4" />
+                <span>
+                  {getCategoryName(formData.category)}
+                  {formData.subcategory && ` → ${getSubcategoryName(formData.subcategory)}`}
+                </span>
+              </div>
+            </div>
+
+            {/* Description */}
+            <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <FileText className="w-5 h-5 text-black/60" />
+                <h3 className="font-semibold text-black">Opis</h3>
+              </div>
+              <div
+                className="prose prose-sm max-w-none text-black/80"
+                dangerouslySetInnerHTML={{ __html: formData.description }}
+              />
+            </div>
+
+            {/* Images */}
+            {images.length > 0 && (
+              <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <ImageIcon className="w-5 h-5 text-black/60" />
+                  <h3 className="font-semibold text-black">Zdjęcia ({images.length})</h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {images.map((imageUrl, index) => (
+                    <div key={imageUrl} className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-black/10">
+                      <Image
+                        src={imageUrl}
+                        alt={`Zdjęcie ${index + 1}`}
+                        fill
+                        className="object-cover"
+                        style={{ transform: `rotate(${imageRotations[imageUrl] || 0}deg)` }}
+                      />
+                      {index === 0 && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[9px] font-bold py-0.5 text-center">
+                          GŁÓWNE
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Location */}
+            <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin className="w-5 h-5 text-black/60" />
+                <h3 className="font-semibold text-black">Lokalizacja</h3>
+              </div>
+              <p className="text-base text-black">
+                {formData.city}
+                {formData.district && `, ${formData.district}`}
+              </p>
+            </div>
+
+            {/* Price */}
+            <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <DollarSign className="w-5 h-5 text-black/60" />
+                <h3 className="font-semibold text-black">Cena</h3>
+              </div>
+              <p className="text-xl font-bold text-[#C44E35]">{getPriceDisplay()}</p>
+            </div>
+
+            {/* Info */}
+            <div className="bg-[#C44E35]/5 border-2 border-[#C44E35]/20 rounded-2xl p-4">
+              <p className="text-sm text-black/70 text-center">
+                Sprawdź dokładnie wszystkie informacje przed opublikowaniem ogłoszenia
+              </p>
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Footer - Fixed at bottom */}
+      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-black/10 h-16 z-40 rounded-t-3xl shadow-lg flex items-center px-4">
+        <div className="flex gap-3 w-full">
+          {currentStep === 1 ? (
+            <button
+              onClick={handleCancel}
+              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold text-black transition-colors"
+            >
+              Anuluj
+            </button>
+          ) : (
+            <button
+              onClick={prevStep}
+              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold text-black transition-colors"
+            >
+              Wstecz
+            </button>
+          )}
+
+          {currentStep < totalSteps ? (
+            <button
+              onClick={nextStep}
+              disabled={!isStepValid(currentStep)}
+              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Dalej
+            </button>
+          ) : (
+            <button
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Publikowanie...' : 'Opublikuj'}
+            </button>
+          )}
+        </div>
+      </footer>
+
+      {/* Hide MobileDock using CSS */}
+      <style jsx global>{`
+        [data-mobile-dock] {
+          display: none !important;
+        }
+        /* Full height editor for step 2 */
+        .ProseMirror {
+          height: 100%;
+          min-height: 100%;
+        }
+      `}</style>
+
+      {/* Moderation Modal */}
+      {showModerationModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+            {moderationInProgress ? (
+              <div className="text-center">
+                <div className="w-20 h-20 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-[#C44E35] animate-spin" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold text-black mb-2">
+                  Sprawdzanie ogłoszenia
+                </h3>
+                <p className="text-black/60">
+                  Proszę czekać, weryfikujemy treść...
+                </p>
+              </div>
+            ) : (
+              <div className="text-center">
+                {moderationResult?.status === 'approved' && (
+                  <>
+                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Ogłoszenie zatwierdzone!
+                    </h3>
+                    <p className="text-black/60 mb-6">
+                      Twoje ogłoszenie zostało pomyślnie opublikowane i jest już widoczne dla innych użytkowników.
+                    </p>
+                    <Button
+                      onClick={() => router.push('/dashboard/my-posts')}
+                      className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11"
+                    >
+                      Zobacz moje ogłoszenia
+                    </Button>
+                  </>
+                )}
+
+                {moderationResult?.status === 'flagged' && (
+                  <>
+                    <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Wymaga weryfikacji
+                    </h3>
+                    <p className="text-black/60 mb-4">
+                      Twoje ogłoszenie zostało dodane, ale wymaga weryfikacji przez moderatora przed publikacją.
+                    </p>
+                    {moderationResult.reasons && moderationResult.reasons.length > 0 && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-6 text-left">
+                        <p className="text-sm font-semibold text-yellow-800 mb-2">Powody:</p>
+                        <ul className="text-sm text-yellow-700 space-y-1">
+                          {moderationResult.reasons.map((reason: string, i: number) => (
+                            <li key={i}>• {reason}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    <Button
+                      onClick={() => router.push('/dashboard/my-posts')}
+                      className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11"
+                    >
+                      Rozumiem
+                    </Button>
+                  </>
+                )}
+
+                {moderationResult?.status === 'rejected' && (
+                  <>
+                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Ogłoszenie odrzucone
+                    </h3>
+                    <p className="text-black/60 mb-4">
+                      Niestety, Twoje ogłoszenie nie spełnia naszych wytycznych i nie może zostać opublikowane.
+                    </p>
+                    {moderationResult.reasons && moderationResult.reasons.length > 0 && (
+                      <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 text-left">
+                        <p className="text-sm font-semibold text-red-800 mb-2">Powody odrzucenia:</p>
+                        <ul className="text-sm text-red-700 space-y-1">
+                          {moderationResult.reasons.map((reason: string, i: number) => (
+                            <li key={i}>• {reason}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    <Button
+                      onClick={() => setShowModerationModal(false)}
+                      className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11"
+                    >
+                      Popraw ogłoszenie
+                    </Button>
+                  </>
+                )}
+
+                {moderationResult?.status === 'error' && (
+                  <>
+                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-2xl font-bold text-black mb-2">
+                      Wystąpił błąd
+                    </h3>
+                    <p className="text-black/60 mb-6">
+                      {moderationResult.reasons?.[0] || 'Nie udało się opublikować ogłoszenia. Spróbuj ponownie.'}
+                    </p>
+                    <Button
+                      onClick={() => setShowModerationModal(false)}
+                      className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11"
+                    >
+                      Spróbuj ponownie
+                    </Button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}

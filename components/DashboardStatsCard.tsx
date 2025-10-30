@@ -50,24 +50,24 @@ export function DashboardStatsCard({ href, title, count, subtitle, iconType }: D
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <CardContent className="p-6">
-          <div className="flex items-start justify-between h-full">
-            <div className="flex-1 min-h-[80px] flex flex-col justify-between">
-              <p className="text-sm text-black/60 mb-2">{title}</p>
-              <div>
-                <p className="text-3xl font-bold text-black leading-none">{count}</p>
-                {subtitle && (
-                  <p className="text-xs text-black/60 mt-1">{subtitle}</p>
-                )}
-              </div>
-            </div>
-            <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 ml-4">
+        <CardContent className="p-3 md:p-6">
+          <div className="flex items-center gap-2 md:gap-4 h-full min-h-[80px] md:min-h-[100px]">
+            <div className="w-12 h-12 md:w-16 md:h-16 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
               <LottieIcon
                 animationPath={iconConfig.animationPath}
                 fallbackSvg={iconConfig.fallbackSvg}
-                className="w-6 h-6 text-[#C44E35]"
+                className="w-6 h-6 md:w-8 md:h-8 text-[#C44E35]"
                 isHovered={isHovered}
               />
+            </div>
+            <div className="flex-1 flex flex-col justify-center gap-1">
+              <p className="text-xs md:text-sm text-black/60 mb-1">{title}</p>
+              <div>
+                <p className="text-xl md:text-3xl font-bold text-black leading-none">{count}</p>
+                {subtitle && (
+                  <p className="text-[10px] md:text-xs text-black/60 mt-1">{subtitle}</p>
+                )}
+              </div>
             </div>
           </div>
         </CardContent>

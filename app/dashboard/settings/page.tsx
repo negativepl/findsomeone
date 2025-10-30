@@ -48,8 +48,8 @@ export default async function SettingsPage() {
           {/* Account Settings */}
           <Card className="border-0 rounded-3xl bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-black">Konto</CardTitle>
-              <CardDescription className="text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Konto</CardTitle>
+              <CardDescription className="text-sm md:text-base text-black/60">
                 Zarządzaj swoimi danymi i bezpieczeństwem konta
               </CardDescription>
             </CardHeader>
@@ -74,8 +74,8 @@ export default async function SettingsPage() {
           {/* Notifications */}
           <Card className="border-0 rounded-3xl bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-black">Powiadomienia</CardTitle>
-              <CardDescription className="text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Powiadomienia</CardTitle>
+              <CardDescription className="text-sm md:text-base text-black/60">
                 Dostosuj preferencje powiadomień
               </CardDescription>
             </CardHeader>
@@ -90,8 +90,8 @@ export default async function SettingsPage() {
           {/* Preferences */}
           <Card className="border-0 rounded-3xl bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-black">Preferencje</CardTitle>
-              <CardDescription className="text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Preferencje</CardTitle>
+              <CardDescription className="text-sm md:text-base text-black/60">
                 Dostosuj wygląd i działanie aplikacji
               </CardDescription>
             </CardHeader>
@@ -107,8 +107,8 @@ export default async function SettingsPage() {
         {/* Danger Zone */}
         <Card className="border-0 rounded-3xl bg-white shadow-sm mt-8">
           <CardHeader>
-            <CardTitle className="text-3xl font-bold text-red-600">Strefa zagrożenia</CardTitle>
-            <CardDescription className="text-base text-red-700">
+            <CardTitle className="text-2xl md:text-3xl font-bold text-red-600">Strefa zagrożenia</CardTitle>
+            <CardDescription className="text-sm md:text-base text-red-700">
               Nieodwracalne akcje - zachowaj ostrożność
             </CardDescription>
           </CardHeader>

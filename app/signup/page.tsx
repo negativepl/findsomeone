@@ -83,8 +83,8 @@ export default function SignupPage() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 19v-8.93a2 2 0 01.89-1.664l7-4.666a2 2 0 012.22 0l7 4.666A2 2 0 0121 10.07V19M3 19a2 2 0 002 2h14a2 2 0 002-2M3 19l6.75-4.5M21 19l-6.75-4.5M3 10l6.75 4.5M21 10l-6.75 4.5m0 0l-1.14.76a2 2 0 01-2.22 0l-1.14-.76" />
               </svg>
             </div>
-            <CardTitle className="text-2xl font-bold text-black">Sprawdź swoją skrzynkę!</CardTitle>
-            <CardDescription className="text-base text-black/60 mt-2">
+            <CardTitle className="text-xl md:text-2xl font-bold text-black">Sprawdź swoją skrzynkę!</CardTitle>
+            <CardDescription className="text-sm md:text-base text-black/60 mt-2">
               Wysłaliśmy link aktywacyjny na adres <strong className="text-black">{email}</strong>
             </CardDescription>
           </CardHeader>
@@ -127,8 +127,8 @@ export default function SignupPage() {
 
         <Card className="border-0 rounded-3xl bg-white shadow-lg">
           <CardHeader className="pb-6">
-            <CardTitle className="text-2xl font-bold text-black text-center">Utwórz konto</CardTitle>
-            <CardDescription className="text-base text-black/60 text-center">
+            <CardTitle className="text-xl md:text-2xl font-bold text-black text-center">Utwórz konto</CardTitle>
+            <CardDescription className="text-sm md:text-base text-black/60 text-center">
               Wypełnij formularz, aby założyć darmowe konto
             </CardDescription>
           </CardHeader>

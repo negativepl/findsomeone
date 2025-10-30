@@ -10,9 +10,12 @@ interface RichTextEditorProps {
   onChange: (content: string) => void
   placeholder?: string
   className?: string
+  hideToolbar?: boolean
+  onEditorReady?: (editor: any) => void
+  noBorder?: boolean
 }
 
-export function RichTextEditor({ content, onChange, placeholder, className }: RichTextEditorProps) {
+export function RichTextEditor({ content, onChange, placeholder, className, hideToolbar, onEditorReady, noBorder }: RichTextEditorProps) {
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -39,13 +42,21 @@ export function RichTextEditor({ content, onChange, placeholder, className }: Ri
     }
   }, [content, editor])
 
+  // Notify parent when editor is ready
+  useEffect(() => {
+    if (editor && onEditorReady) {
+      onEditorReady(editor)
+    }
+  }, [editor, onEditorReady])
+
   if (!editor) {
     return null
   }
 
   return (
-    <div className={`border-2 border-black/10 rounded-2xl overflow-hidden focus-within:border-black/30 transition-colors ${className || ''}`}>
+    <div className={`${noBorder ? 'h-full flex flex-col' : 'border-2 border-black/10 rounded-2xl focus-within:border-black/30 transition-colors'} overflow-hidden ${className || ''}`}>
       {/* Toolbar */}
+      {!hideToolbar && (
       <div className="border-b border-black/10 bg-black/5 p-1 md:p-2 flex md:flex-wrap gap-0.5 md:gap-1 overflow-x-auto md:overflow-x-visible scrollbar-hide snap-x snap-mandatory">
         <style jsx global>{`
           .scrollbar-hide::-webkit-scrollbar {
@@ -167,10 +178,14 @@ export function RichTextEditor({ content, onChange, placeholder, className }: Ri
           ─ Linia
         </button>
       </div>
+      )}
 
       {/* Editor */}
-      <div className="flex-1 overflow-auto bg-white">
-        <EditorContent editor={editor} className="h-full" />
+      <div className={`${noBorder ? 'flex-1 h-full' : 'flex-1 overflow-auto'} bg-white`}>
+        <EditorContent
+          editor={editor}
+          className={noBorder ? 'h-full [&_.tiptap]:h-full [&_.tiptap]:p-4 [&_.tiptap]:cursor-text' : 'h-full'}
+        />
       </div>
     </div>
   )

@@ -363,8 +363,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
         <div className="md:col-span-2">
           <Card className="border-0 rounded-3xl bg-white">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-black">Edytuj profil</CardTitle>
-              <CardDescription className="text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Edytuj profil</CardTitle>
+              <CardDescription className="text-sm md:text-base text-black/60">
                 Zaktualizuj swoje dane i informacje kontaktowe
               </CardDescription>
             </CardHeader>
@@ -462,8 +462,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
           {/* Profile Banner Card */}
           <Card className="border-0 rounded-3xl bg-white mt-6">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-black">Banner profilu</CardTitle>
-              <CardDescription className="text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Banner profilu</CardTitle>
+              <CardDescription className="text-sm md:text-base text-black/60">
                 Dodaj banner do swojego profilu - idealny dla firm (logo, zdjęcie lokalu, itp.)
               </CardDescription>
             </CardHeader>
@@ -598,8 +598,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
           {/* Privacy Settings Card */}
           <Card className="border-0 rounded-3xl bg-white mt-6">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-black">Ustawienia prywatności</CardTitle>
-              <CardDescription className="text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Ustawienia prywatności</CardTitle>
+              <CardDescription className="text-sm md:text-base text-black/60">
                 Kontroluj, jakie informacje są widoczne w Twoich ogłoszeniach
               </CardDescription>
             </CardHeader>

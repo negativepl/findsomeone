@@ -94,7 +94,7 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
                   {section.title}
                 </h2>
                 {section.subtitle && (
-                  <p className="text-lg text-black/60">
+                  <p className="text-sm md:text-lg text-black/60">
                     {section.subtitle}
                   </p>
                 )}
@@ -223,7 +223,7 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
                   {section.title}
                 </h2>
                 {section.subtitle && (
-                  <p className="text-lg text-black/60">
+                  <p className="text-sm md:text-lg text-black/60">
                     {section.subtitle}
                   </p>
                 )}
@@ -348,7 +348,7 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
                 {section.title}
               </h2>
               {section.subtitle && (
-                <p className="text-lg text-black/60">
+                <p className="text-sm md:text-lg text-black/60">
                   {section.subtitle}
                 </p>
               )}

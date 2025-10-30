@@ -9,7 +9,7 @@ export function CTASection() {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <section className="container mx-auto px-6 py-12 md:py-14">
+    <section className="container mx-auto px-6 py-3 md:py-14">
       <div
         className="bg-[#1A1A1A] rounded-[3rem] p-12 md:p-16 text-white relative overflow-hidden"
         onMouseEnter={() => setIsHovered(true)}

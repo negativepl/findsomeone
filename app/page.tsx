@@ -105,7 +105,7 @@ export default async function Home() {
 
         {/* Features Section - Only show for non-authenticated users */}
         {!user && (
-          <section className="container mx-auto px-6 py-12 md:py-14">
+          <section className="container mx-auto px-6 py-3 md:py-14">
             <div className="grid md:grid-cols-3 gap-6">
               <FeatureCard
                 animationPath="/animations/coins.json"
