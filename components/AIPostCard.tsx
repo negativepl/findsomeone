@@ -34,23 +34,22 @@ export function AIPostCard({
     <motion.div
       initial={{
         opacity: 0,
-        y: 20,
-        scale: 0.95
+        x: -10,
       }}
       animate={{
         opacity: 1,
-        y: 0,
-        scale: 1
+        x: 0,
       }}
       transition={{
-        duration: 0.3,
-        delay: index * 0.1,
+        duration: 0.2,
+        delay: index * 0.05,
         ease: [0.16, 1, 0.3, 1]
       }}
+      className="h-full w-full"
     >
       <Link
         href={url}
-        className="block group bg-white rounded-2xl border border-black/10 hover:border-[#C44E35]/30 hover:shadow-lg transition-all overflow-hidden"
+        className="flex flex-col h-full group bg-white rounded-xl border border-black/10 hover:border-[#C44E35]/40 hover:bg-[#C44E35]/[0.02] transition-all overflow-hidden"
       >
         {/* Image */}
         {image && (
@@ -60,62 +59,38 @@ export function AIPostCard({
               alt={title}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 400px) 100vw, 400px"
+              sizes="280px"
             />
           </div>
         )}
 
-        <div className="p-3">
-          {/* Category badge */}
-          {categoryName && (
-            <div className="mb-2">
-              <span className="inline-block px-2 py-0.5 bg-black/5 text-black/60 text-xs rounded-full">
-                {categoryName}
-              </span>
-            </div>
-          )}
-
+        <div className="flex flex-col flex-1 p-3.5">
           {/* Title */}
-          <h4 className="font-semibold text-black text-sm mb-2 line-clamp-2 group-hover:text-[#C44E35] transition-colors">
+          <h4 className="font-semibold text-black text-base mb-3 pb-3 border-b border-black/5 group-hover:text-[#C44E35] transition-colors">
             {title}
           </h4>
 
-          {/* Footer */}
-          <div className="flex items-center justify-between pt-2 border-t border-black/5">
-            {/* Author */}
-            <div className="flex items-center gap-1.5">
-              {authorAvatar ? (
-                <div className="relative w-5 h-5 rounded-full overflow-hidden bg-black/5">
-                  <Image
-                    src={authorAvatar}
-                    alt={authorName}
-                    fill
-                    className="object-cover"
-                    sizes="20px"
-                  />
-                </div>
-              ) : (
-                <div className="w-5 h-5 rounded-full bg-[#C44E35] flex items-center justify-center">
-                  <span className="text-xs text-white font-medium">
-                    {authorName.charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
-              <span className="text-xs text-black/60 truncate max-w-[100px]">
-                {authorName}
-              </span>
-            </div>
-
-            {/* Price & Location */}
-            <div className="text-right">
-              <div className="text-xs font-semibold text-[#C44E35]">
-                {price}
-              </div>
-              <div className="text-xs text-black/40">
-                {city}
-              </div>
-            </div>
+        {/* Meta info */}
+        <div className="flex items-center justify-between text-[15px] mt-auto">
+          <div className="flex items-center gap-1.5">
+            <svg width="16" height="16" viewBox="0 0 430 430" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="14" strokeWidth="12">
+                <path stroke="#121331" d="M104.199 215.4c-3.8-11.7-6-24.1-6-37 0-67.1 56.5-120.9 124.6-116.5 57.7 3.7 104.6 50.3 108.7 107.9 1.1 15-.8 29.5-4.8 43-18.8 62.9-111.7 155.6-111.7 155.6s-87.4-80.6-110.8-153"/>
+                <path stroke="#c44e35" d="M270 178.4c0 30.4-24.6 55-55 55s-55-24.6-55-55 24.6-55 55-55 55 24.6 55 55"/>
+              </g>
+            </svg>
+            <span className="text-black/70">{city}</span>
           </div>
+          <div className="flex items-center gap-1.5">
+            <svg width="16" height="16" viewBox="0 0 430 430" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g strokeLinecap="round" strokeLinejoin="round">
+                <path stroke="#121331" strokeWidth="12" d="M375 189.251 185.594 380 50 244.406 240.749 55H375z"/>
+                <path stroke="#c44e35" strokeWidth="18" d="M327.453 102.547h.021"/>
+              </g>
+            </svg>
+            <span className="font-semibold text-black/70">{price}</span>
+          </div>
+        </div>
         </div>
       </Link>
     </motion.div>

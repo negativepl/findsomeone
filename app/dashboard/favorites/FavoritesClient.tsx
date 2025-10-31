@@ -68,7 +68,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
                     </Badge>
                   </div>
                 )}
-                <CardTitle className="text-xl font-bold text-black">{post.title}</CardTitle>
+                <CardTitle className="text-base md:text-base font-bold text-black">{post.title}</CardTitle>
               </CardHeader>
 
               <CardContent className="pb-6 mt-auto space-y-3">

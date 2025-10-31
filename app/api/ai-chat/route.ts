@@ -61,6 +61,17 @@ export async function POST(request: NextRequest) {
     // Get site structure and info for context
     const supabase = await createClient()
 
+    // NOTE: We NO LONGER pre-filter "site questions" by keywords because:
+    // 1. Keywords are too broad and cause false positives (e.g., "jakiegoś" triggers "jak")
+    // 2. AI is smart enough to detect INFO_INTENT vs SEARCH_INTENT on its own
+    // 3. If AI needs site knowledge, it will request it via INFO_INTENT
+    //
+    // The prompt now handles two intents:
+    // - INFO_INTENT: Questions about the platform (AI will use knowledge base if available)
+    // - SEARCH_INTENT: Search for posts/services (AI will return structured search)
+    //
+    // This way, AI decides the intent based on context, not rigid keyword matching.
+
     // Get AI settings from database
     const { data: aiSettings } = await supabase
       .from('ai_settings')
@@ -122,25 +133,53 @@ export async function POST(request: NextRequest) {
     console.log('Has search intent:', hasSearchIntent)
 
     if (hasSearchIntent) {
-      // Parse the structured response
-      const queryMatch = assistantMessage.match(/QUERY:\s*([^\n]+)/i)
-      const cityMatch = assistantMessage.match(/CITY:\s*([^\n]*)/i)
-      const priceMinMatch = assistantMessage.match(/PRICE_MIN:\s*([^\n]*)/i)
-      const priceMaxMatch = assistantMessage.match(/PRICE_MAX:\s*([^\n]*)/i)
-      const sortMatch = assistantMessage.match(/SORT:\s*([^\n]*)/i)
-      const responseMatch = assistantMessage.match(/RESPONSE:\s*([^\n]+(?:\n(?!SEARCH_INTENT|QUERY|CITY|PRICE_MIN|PRICE_MAX|SORT|RESPONSE)[^\n]+)*)/i)
+      // Parse the structured response - each field is on its own line
+      // Match field name, then capture everything until newline, but exclude next field names
+      const lines = assistantMessage.split('\n')
 
-      const searchQuery = queryMatch?.[1]?.trim() || ''
-      const searchCity = cityMatch?.[1]?.trim() || ''
-      const priceMin = priceMinMatch?.[1]?.trim() || ''
-      const priceMax = priceMaxMatch?.[1]?.trim() || ''
-      const sortBy = sortMatch?.[1]?.trim() || ''
-      let naturalResponse = responseMatch?.[1]?.trim() || 'Oto ogłoszenia które mogą Cię zainteresować:'
+      let searchQuery = ''
+      let searchCity = ''
+      let priceValue = ''
+      let sortBy = ''
+      let naturalResponse = ''
 
-      // Clean up the natural response - remove any metadata/instructions after colon
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim()
+
+        if (line.startsWith('QUERY:')) {
+          searchQuery = line.substring(6).trim()
+        } else if (line.startsWith('CITY:')) {
+          const value = line.substring(5).trim()
+          searchCity = value === '""' || value === "''" ? '' : value
+        } else if (line.startsWith('PRICE:')) {
+          priceValue = line.substring(6).trim()
+        } else if (line.startsWith('SORT:')) {
+          sortBy = line.substring(5).trim()
+        } else if (line.startsWith('RESPONSE:')) {
+          // Response might be multiline, gather rest of lines
+          naturalResponse = line.substring(9).trim()
+          // Add following lines until we hit another field
+          for (let j = i + 1; j < lines.length; j++) {
+            const nextLine = lines[j].trim()
+            if (nextLine.match(/^(SEARCH_INTENT|QUERY|CITY|PRICE|SORT|RESPONSE):/)) {
+              break
+            }
+            if (nextLine) {
+              naturalResponse += ' ' + nextLine
+            }
+          }
+          break
+        }
+      }
+
+      if (!naturalResponse) {
+        naturalResponse = 'Oto ogłoszenia które mogą Cię zainteresować:'
+      }
+
+      // Clean up the natural response
       naturalResponse = naturalResponse.split(/(?:Jeśli|If you want)/i)[0].trim()
 
-      console.log('Parsed search intent:', { searchQuery, searchCity, priceMin, priceMax, sortBy, naturalResponse })
+      console.log('Parsed search intent:', { searchQuery, searchCity, price: priceValue, sortBy, naturalResponse })
 
       // If AI is asking for city, return just the question without searching
       if (searchCity === 'ASK' || searchCity.toUpperCase() === 'ASK') {
@@ -160,8 +199,7 @@ export async function POST(request: NextRequest) {
             body: JSON.stringify({
               query: searchQuery,
               city: searchCity || undefined,
-              priceMin: priceMin ? parseInt(priceMin) : undefined,
-              priceMax: priceMax ? parseInt(priceMax) : undefined,
+              price: priceValue ? parseInt(priceValue) : undefined,
               sortBy: sortBy || undefined,
               limit: aiSettings?.chat_assistant_max_results || 6
             })
@@ -173,14 +211,15 @@ export async function POST(request: NextRequest) {
             // Check if we found any posts
             if (!searchData.posts || searchData.posts.length === 0) {
               // No posts found - return apologetic message with suggestions
-              const noResultsMessage = `Przepraszam, nie znalazłem żadnych ogłoszeń dla "${searchQuery}"${searchCity ? ` w ${searchCity}` : ''}. Spróbuj wyszukać w innej kategorii lub usuń filtry.`
+              const cityText = searchCity && searchCity.trim() ? ` w ${searchCity}` : ''
+              const noResultsMessage = `Przepraszam, nie znalazłem żadnych ogłoszeń dla "${searchQuery}"${cityText}. Spróbuj wyszukać w innej kategorii lub usuń filtry.`
 
               return NextResponse.json({
                 message: noResultsMessage,
                 posts: [],
                 suggestions: searchData.suggestions || [],
                 searchQuery,
-                searchCity: searchCity || null,
+                searchCity: searchCity && searchCity.trim() ? searchCity : null,
               })
             }
 
@@ -219,6 +258,38 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Check if AI detected info intent (question about the platform)
+    const hasInfoIntent = /INFO_INTENT:\s*tak/i.test(assistantMessage)
+
+    if (hasInfoIntent) {
+      // Parse INFO_INTENT response to extract just the RESPONSE part
+      const lines = assistantMessage.split('\n')
+      let naturalResponse = ''
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim()
+        if (line.startsWith('RESPONSE:')) {
+          naturalResponse = line.substring(9).trim()
+          // Add following lines until we hit another field
+          for (let j = i + 1; j < lines.length; j++) {
+            const nextLine = lines[j].trim()
+            if (nextLine.match(/^(INFO_INTENT|QUERY|RESPONSE):/)) {
+              break
+            }
+            if (nextLine) {
+              naturalResponse += ' ' + nextLine
+            }
+          }
+          break
+        }
+      }
+
+      return NextResponse.json({
+        message: naturalResponse || assistantMessage,
+      })
+    }
+
+    // Fallback: return full message if no intent detected
     return NextResponse.json({
       message: assistantMessage,
     })

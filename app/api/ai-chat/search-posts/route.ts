@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { query, city, priceMin, priceMax, sortBy, limit = 6 } = await request.json()
+    const { query, city, price, sortBy, limit = 6 } = await request.json()
 
     if (!query || query.trim().length < 2) {
       return NextResponse.json({ posts: [], suggestions: [] })
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // SEMANTIC SEARCH: Generate embedding for query
     const searchTerm = query.trim()
-    console.log('[AI Chat Search] Query:', searchTerm, 'City:', city || 'none')
+    console.log('[AI Chat Search] Query:', searchTerm, 'City:', city || 'none', 'Price:', price || 'none')
 
     const queryEmbedding = await generateQueryEmbedding(searchTerm)
 
@@ -121,16 +121,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    if (priceMin && !isNaN(priceMin)) {
-      posts = posts.filter((post: any) =>
-        (post.price || 0) >= priceMin
-      )
-    }
-
-    if (priceMax && !isNaN(priceMax)) {
-      posts = posts.filter((post: any) =>
-        (post.price || 0) <= priceMax
-      )
+    // Filter by max price if provided
+    if (price && !isNaN(price)) {
+      posts = posts.filter((post: any) => {
+        const postPrice = post.price || 0
+        // Only filter if post has a price > 0
+        return postPrice === 0 || postPrice <= price
+      })
     }
 
     // Sort by rating if requested

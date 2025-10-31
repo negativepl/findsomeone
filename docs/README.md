@@ -1,33 +1,56 @@
-# FindSomeone - Dokumentacja
+# 📚 Dokumentacja FindSomeone
 
-Kompletna dokumentacja projektu FindSomeone.
+Witaj w dokumentacji projektu FindSomeone - polskiej platformy ogłoszeń usługowych.
 
-## 📚 Struktura Dokumentacji
+## 📂 Struktura dokumentacji
 
-### 🤖 AI & Machine Learning (`/ai`)
-Dokumentacja funkcji AI i uczenia maszynowego:
-- [AI Features](./ai/AI_FEATURES.md) - Przegląd funkcji AI w projekcie
-- [AI Setup Guide](./ai/AI_SETUP_GUIDE.md) - Instrukcja konfiguracji AI
-- [Content Bot](./ai/CONTENT_BOT_README.md) - Dokumentacja bota generującego treści
-- [Semantic Search](./ai/SEMANTIC_SEARCH_SETUP.md) - Konfiguracja wyszukiwania semantycznego
+### 📁 Meta
+- [`ORGANIZATION_SUMMARY.md`](./ORGANIZATION_SUMMARY.md) - Jak zorganizowano projekt (pełne podsumowanie)
 
-### ⚙️ Setup & Configuration (`/setup`)
-Przewodniki konfiguracji i optymalizacji:
-- [Implementation Guide](./setup/IMPLEMENTATION_GUIDE.md) - Główny przewodnik implementacji
-- [Search Optimization](./setup/SEARCH_OPTIMIZATION.md) - Optymalizacja wyszukiwarki
-- [Rate Limiting](./setup/RATE_LIMITING.md) - Konfiguracja limitów żądań
+### 🏗️ Architektura
+- [`architecture/PROJECT_STRUCTURE.md`](./architecture/PROJECT_STRUCTURE.md) - Struktura projektu i organizacja kodu
 
-### 🔒 Compliance & Privacy (`/compliance`)
-Dokumentacja zgodności i prywatności:
-- [Compliance Summary](./compliance/COMPLIANCE_SUMMARY.md) - Podsumowanie zgodności z przepisami
-- [Privacy & Moderation Guidelines](./compliance/PRIVACY_AND_MODERATION_GUIDELINES.md) - Wytyczne prywatności i moderacji
+### 🧪 Testy i Analizy
+- [`tests/TEST_CHATBOT_ANALYSIS.md`](./tests/TEST_CHATBOT_ANALYSIS.md) - **[NAJNOWSZY]** Kompleksowa analiza AI chatbota (2025-10-31)
+- [`tests/CHATBOT_ANALYSIS.md`](./tests/CHATBOT_ANALYSIS.md) - Wcześniejsza analiza chatbota
+- [`tests/TEST_REPORT_2.md`](./tests/TEST_REPORT_2.md) - Raport testów funkcjonalnych
+- [`tests/TEST_ANALYSIS.md`](./tests/TEST_ANALYSIS.md) - Analiza testów
 
-## 🚀 Szybki Start
+### 🤖 AI & Embeddings
+- [`ai/`](./ai/) - Dokumentacja AI features i semantic search
 
-1. Przeczytaj [Implementation Guide](./setup/IMPLEMENTATION_GUIDE.md)
-2. Skonfiguruj AI zgodnie z [AI Setup Guide](./ai/AI_SETUP_GUIDE.md)
-3. Zapoznaj się z [Privacy Guidelines](./compliance/PRIVACY_AND_MODERATION_GUIDELINES.md)
+### ⚖️ Compliance
+- [`compliance/`](./compliance/) - Zgodność prawna i moderacja
 
-## 📖 Główna Dokumentacja
+### ⚙️ Setup & Configuration
+- [`setup/`](./setup/) - Przewodniki konfiguracji
 
-Główny README projektu znajduje się w [katalogu głównym](../README.md).
+---
+
+## 🚀 Quick Links
+
+### Dla developerów
+- [README.md](../README.md) - Główny README projektu
+- [Struktura projektu](./architecture/PROJECT_STRUCTURE.md)
+
+### Testy chatbota
+- [Najnowsza analiza chatbota](./tests/TEST_CHATBOT_ANALYSIS.md) ⭐ **Zacznij tutaj**
+
+---
+
+## 📝 Konwencje
+
+### Nazewnictwo plików
+- `PROJECT_*` - Dokumentacja architektury i struktury
+- `TEST_*` - Raporty testów i analizy
+- `*_ANALYSIS` - Szczegółowe analizy funkcjonalności
+
+### Status dokumentów
+- ⭐ - Aktualny i polecany
+- 📋 - Archiwalny, zachowany jako referencja
+
+---
+
+## 🔄 Ostatnia aktualizacja
+**Data:** 2025-10-31
+**Zmiany:** Reorganizacja struktury docs/, dodanie najnowszej analizy chatbota

@@ -34,6 +34,8 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   async headers() {
+    const isDev = process.env.NODE_ENV === 'development'
+
     return [
       {
         source: '/:path*',
@@ -42,6 +44,11 @@ const nextConfig: NextConfig = {
             key: 'X-Frame-Options',
             value: 'DENY',
           },
+          // W development wyłącz cache
+          ...(isDev ? [{
+            key: 'Cache-Control',
+            value: 'no-store, no-cache, must-revalidate, max-age=0',
+          }] : []),
         ],
       },
       {
@@ -54,7 +61,7 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: isDev ? 'no-cache' : 'public, max-age=31536000, immutable',
           },
         ],
       },
@@ -80,7 +87,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: isDev ? 'no-cache' : 'public, max-age=31536000, immutable',
           },
         ],
       },
@@ -100,7 +107,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: isDev ? 'no-cache' : 'public, max-age=31536000, immutable',
           },
         ],
       },
@@ -110,7 +117,7 @@ const nextConfig: NextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable',
+            value: isDev ? 'no-cache' : 'public, max-age=31536000, immutable',
           },
         ],
       },

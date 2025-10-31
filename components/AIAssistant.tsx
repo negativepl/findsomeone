@@ -42,6 +42,7 @@ export function AIAssistant() {
   const [isHovered, setIsHovered] = useState(false)
   const [showGradient, setShowGradient] = useState(false)
   const [settings, setSettings] = useState<ChatSettings | null>(null)
+  const [isLoadingSettings, setIsLoadingSettings] = useState(true)
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
@@ -70,6 +71,8 @@ export function AIAssistant() {
         }
       } catch (error) {
         console.error('Failed to fetch chat settings:', error)
+      } finally {
+        setIsLoadingSettings(false)
       }
     }
     fetchSettings()
@@ -268,13 +271,31 @@ export function AIAssistant() {
       {/* Chat Panel - Mobile: Fixed, Desktop: Absolute */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
-            animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-            exit={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-0 left-0 right-0 bottom-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-white md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col md:border md:border-black/10"
-          >
+          <>
+            {/* Backdrop for mobile - visible dark overlay */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-black/50 z-[9998] md:hidden"
+              onClick={() => setIsOpen(false)}
+            />
+
+            {/* Backdrop for desktop - invisible but clickable */}
+            <div
+              className="hidden md:block fixed inset-0 z-40"
+              onClick={() => setIsOpen(false)}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
+              animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+              exit={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed top-0 left-0 right-0 bottom-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-white md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col md:border md:border-black/10"
+              onClick={(e) => e.stopPropagation()}
+            >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-black/5">
               <div className="flex items-center gap-2">
@@ -306,8 +327,10 @@ export function AIAssistant() {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-black">Asystent FindSomeone</h3>
-                  <p className="text-xs text-black/60">Zadaj mi pytanie</p>
+                  <h3 className="font-semibold text-black">Nawigatorek</h3>
+                  <p className="text-[10px] text-black/40 leading-tight">
+                    wersja zapoznawcza, może popełniać błędy
+                  </p>
                 </div>
               </div>
               <button
@@ -329,41 +352,97 @@ export function AIAssistant() {
                 }`}
               />
 
+              {/* Gradient mask at bottom - always visible */}
+              <div
+                className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"
+              />
+
               <div
                 ref={messagesContainerRef}
                 onScroll={handleScroll}
                 className="h-full overflow-y-auto p-4 space-y-4"
                 style={{ touchAction: 'auto', WebkitOverflowScrolling: 'touch' }}
               >
-              {messages.length === 0 ? (
-                <div className="flex flex-col text-center px-4">
-                  <div className="mb-4 whitespace-pre-line">
-                    {settings?.welcomeMessage?.split('\n').map((line, i) => (
-                      <p key={i} className={i === 0 ? 'font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent mb-2' : 'text-sm text-black/60'}>
-                        {line}
-                      </p>
-                    )) || (
-                      <>
-                        <h4 className="font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent mb-2">Cześć! Jestem tu aby pomóc</h4>
-                        <p className="text-sm text-black/60">
-                          Mogę pomóc Ci w nawigacji, odpowiedzieć na pytania o FindSomeone lub pomóc znaleźć odpowiednie ogłoszenia.
-                        </p>
-                      </>
-                    )}
-                  </div>
-                  <div className="space-y-2 w-full">
-                    {(settings?.suggestions || ['Jak dodać ogłoszenie?', 'Jak znaleźć specjalistę?', 'Jak działają opinie?']).map((suggestion, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setInput(suggestion)}
-                        className="w-full text-left px-4 py-3 rounded-2xl bg-black/5 hover:bg-[#C44E35]/10 hover:text-[#C44E35] transition-all text-sm"
-                      >
-                        {suggestion}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
+              <AnimatePresence mode="wait">
+                {messages.length === 0 ? (
+                  isLoadingSettings ? (
+                    <motion.div
+                      key="loader"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="flex flex-col items-center justify-center py-12"
+                    >
+                      <div className="flex gap-1">
+                        <motion.div
+                          className="w-2 h-2 bg-black/40 rounded-full"
+                          animate={{ y: [0, -8, 0] }}
+                          transition={{
+                            duration: 0.6,
+                            repeat: Infinity,
+                            ease: "easeInOut"
+                          }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-black/40 rounded-full"
+                          animate={{ y: [0, -8, 0] }}
+                          transition={{
+                            duration: 0.6,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 0.15
+                          }}
+                        />
+                        <motion.div
+                          className="w-2 h-2 bg-black/40 rounded-full"
+                          animate={{ y: [0, -8, 0] }}
+                          transition={{
+                            duration: 0.6,
+                            repeat: Infinity,
+                            ease: "easeInOut",
+                            delay: 0.3
+                          }}
+                        />
+                      </div>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="welcome"
+                      initial={{ opacity: 0, filter: 'blur(10px)', y: 10 }}
+                      animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
+                      exit={{ opacity: 0, filter: 'blur(10px)' }}
+                      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                      className="flex flex-col text-center px-4"
+                    >
+                      <div className="mb-4 whitespace-pre-line">
+                        {settings?.welcomeMessage?.split('\n').map((line, i) => (
+                          <p key={i} className={i === 0 ? 'font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent mb-2' : 'text-sm text-black/60'}>
+                            {line}
+                          </p>
+                        )) || (
+                          <>
+                            <h4 className="font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent mb-2">Cześć! Jestem tu aby pomóc</h4>
+                            <p className="text-sm text-black/60">
+                              Mogę pomóc Ci w nawigacji, odpowiedzieć na pytania o FindSomeone lub pomóc znaleźć odpowiednie ogłoszenia.
+                            </p>
+                          </>
+                        )}
+                      </div>
+                      <div className="space-y-2 w-full">
+                        {(settings?.suggestions || ['Jak dodać ogłoszenie?', 'Jak znaleźć specjalistę?', 'Jak działają opinie?']).map((suggestion, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setInput(suggestion)}
+                            className="w-full text-left px-4 py-3 rounded-2xl bg-black/5 hover:bg-[#C44E35]/10 hover:text-[#C44E35] transition-all text-sm"
+                          >
+                            {suggestion}
+                          </button>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )
+                ) : (
                 <>
                   <AnimatePresence mode="popLayout">
                     {messages.map((message) => (
@@ -426,14 +505,17 @@ export function AIAssistant() {
 
                         {/* Show posts if available */}
                         {message.posts && message.posts.length > 0 && (
-                          <div className="w-full mt-3 grid grid-cols-1 gap-3">
-                            {message.posts.map((post, idx) => (
-                              <AIPostCard
-                                key={post.id}
-                                {...post}
-                                index={idx}
-                              />
-                            ))}
+                          <div className="w-full mt-3 -mx-4">
+                            <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory px-[calc(50%-140px)]">
+                              {message.posts.map((post, idx) => (
+                                <div key={post.id} className="flex flex-shrink-0 w-[280px] snap-center">
+                                  <AIPostCard
+                                    {...post}
+                                    index={idx}
+                                  />
+                                </div>
+                              ))}
+                            </div>
                           </div>
                         )}
 
@@ -516,11 +598,12 @@ export function AIAssistant() {
                   <div ref={messagesEndRef} />
                 </>
               )}
+              </AnimatePresence>
               </div>
             </div>
 
             {/* Input - Fixed at bottom on mobile */}
-            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-4 bg-white border-t border-black/5">
+            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-4 bg-white border-t border-black/5 md:rounded-b-3xl">
               <div className="flex gap-2 items-center">
                 <input
                   type="text"
@@ -543,6 +626,7 @@ export function AIAssistant() {
               </div>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
     </div>
