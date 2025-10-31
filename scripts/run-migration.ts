@@ -10,7 +10,7 @@ const supabase = createClient(supabaseUrl, supabaseServiceKey)
 async function runMigration() {
   const migrationPath = path.join(
     process.cwd(),
-    'supabase/migrations/20250131000000_fix_search_posts_columns.sql'
+    'supabase/migrations/20250131000005_fix_search_posts_hybrid.sql'
   )
 
   console.log('Reading migration file...')

@@ -8,6 +8,7 @@ import { MobileNavIcons } from '@/components/MobileNavIcons'
 import { NavbarSearchWrapper } from '@/components/NavbarSearchWrapper'
 import { CategoriesNavButton } from '@/components/CategoriesNavButton'
 import { PresenceIndicator } from '@/components/PresenceIndicator'
+import { AIAssistant } from '@/components/AIAssistant'
 import { User } from '@supabase/supabase-js'
 import { getUserRole } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -136,6 +137,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
                     </Button>
                   </Link>
                 )}
+                <AIAssistant />
                 <FavoritesIcon user={user} />
                 <MessagesIcon user={user} />
                 <UserMenu user={user} profile={profile} isAdmin={isAdmin} />
