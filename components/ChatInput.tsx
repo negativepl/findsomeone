@@ -98,7 +98,7 @@ export function ChatInput({
               disabled={disabled}
               rows={1}
               maxLength={MAX_MESSAGE_LENGTH}
-              className="w-full resize-none rounded-2xl border border-black/10 px-4 pr-20 text-sm focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] disabled:bg-black/5 disabled:cursor-not-allowed max-h-32 overflow-y-auto flex items-center"
+              className="w-full resize-none rounded-2xl border border-black/10 px-4 pr-20 text-base focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] disabled:bg-black/5 disabled:cursor-not-allowed max-h-32 overflow-y-auto flex items-center"
               style={{
                 minHeight: '44px',
                 maxHeight: '128px',

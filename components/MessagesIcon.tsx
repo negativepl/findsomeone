@@ -23,35 +23,52 @@ export function MessagesIcon({ user }: MessagesIconProps) {
   const [hasChanged, setHasChanged] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const prevCountRef = useRef(0)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const audioUnlockedRef = useRef(false)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const audioBufferRef = useRef<AudioBuffer | null>(null)
+  const audioArrayBufferRef = useRef<ArrayBuffer | null>(null)
   const notificationAnimationRef = useRef<any>(null)
 
   // Fix hydration mismatch
   useEffect(() => {
     setIsMounted(true)
-    // Initialize audio
+    // Load audio file (but don't create AudioContext yet - iOS requires user interaction)
     if (typeof window !== 'undefined') {
-      audioRef.current = new Audio('/sounds/message-notification.mp3')
-      audioRef.current.volume = 0.5 // 50% volume
+      // Pre-load audio file as ArrayBuffer
+      fetch('/sounds/message-notification.mp3')
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => {
+          audioArrayBufferRef.current = arrayBuffer
+        })
+        .catch(() => {})
 
-      // Unlock audio on first user interaction
-      const unlockAudio = () => {
-        if (audioRef.current && !audioUnlockedRef.current) {
-          audioRef.current.play().then(() => {
-            audioRef.current!.pause()
-            audioRef.current!.currentTime = 0
-            audioUnlockedRef.current = true
-          }).catch(() => {
-            // Ignore - audio will unlock on next interaction
-          })
+      // Initialize AudioContext on first user interaction (required by iOS)
+      const initAudio = () => {
+        if (!audioContextRef.current) {
+          try {
+            audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+
+            // Decode audio if we have the ArrayBuffer
+            if (audioArrayBufferRef.current && !audioBufferRef.current) {
+              audioContextRef.current.decodeAudioData(audioArrayBufferRef.current)
+                .then(audioBuffer => {
+                  audioBufferRef.current = audioBuffer
+                })
+                .catch(() => {})
+            }
+
+            // Resume if suspended
+            if (audioContextRef.current.state === 'suspended') {
+              audioContextRef.current.resume()
+            }
+          } catch (err) {
+            // Silent fail
+          }
         }
       }
 
-      // Try to unlock on various user interactions
-      document.addEventListener('click', unlockAudio, { once: true })
-      document.addEventListener('touchstart', unlockAudio, { once: true })
-      document.addEventListener('keydown', unlockAudio, { once: true })
+      document.addEventListener('click', initAudio, { once: true })
+      document.addEventListener('touchstart', initAudio, { once: true })
+      document.addEventListener('keydown', initAudio, { once: true })
     }
     // Preload Lottie animation
     fetch('/animations/message-notification.json')
@@ -82,15 +99,43 @@ export function MessagesIcon({ user }: MessagesIconProps) {
           // New message received - invalidate to refetch count
           queryClient.invalidateQueries({ queryKey: ['messages', 'unread', user.id] })
 
-          // Play notification sound
-          if (audioRef.current) {
-            try {
-              audioRef.current.currentTime = 0
-              await audioRef.current.play()
-            } catch (err) {
-              console.error('Error playing notification sound:', err)
+          // Play notification sound using Web Audio API
+          const playSound = async () => {
+            // If AudioContext doesn't exist yet but we have the ArrayBuffer, decode it now
+            if (!audioContextRef.current && audioArrayBufferRef.current) {
+              try {
+                audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)()
+                const audioBuffer = await audioContextRef.current.decodeAudioData(audioArrayBufferRef.current)
+                audioBufferRef.current = audioBuffer
+              } catch (err) {
+                return
+              }
+            }
+
+            if (audioContextRef.current && audioBufferRef.current) {
+              try {
+                // Resume context if suspended
+                if (audioContextRef.current.state === 'suspended') {
+                  await audioContextRef.current.resume()
+                }
+
+                const source = audioContextRef.current.createBufferSource()
+                source.buffer = audioBufferRef.current
+
+                // Create gain node for volume control (0.5 = 50%)
+                const gainNode = audioContextRef.current.createGain()
+                gainNode.gain.value = 0.5
+
+                source.connect(gainNode)
+                gainNode.connect(audioContextRef.current.destination)
+                source.start(0)
+              } catch (err) {
+                // Silent fail
+              }
             }
           }
+
+          playSound()
 
           // Fetch sender details
           const newMessage = payload.new as any
