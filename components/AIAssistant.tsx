@@ -195,6 +195,25 @@ export function AIAssistant() {
     }
   }, [logoAnimationData, showLogoLottie])
 
+  // Block body scroll when chat is open on mobile
+  useEffect(() => {
+    if (isOpen) {
+      // Prevent body scroll but allow chat scroll
+      document.body.style.overflow = 'hidden'
+      document.body.style.touchAction = 'none'
+    } else {
+      // Restore body scroll
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+    }
+
+    return () => {
+      // Cleanup on unmount
+      document.body.style.overflow = ''
+      document.body.style.touchAction = ''
+    }
+  }, [isOpen])
+
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
@@ -254,7 +273,7 @@ export function AIAssistant() {
             animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
             exit={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed top-0 left-0 right-0 bottom-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-white md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col border border-black/10"
+            className="fixed top-0 left-0 right-0 bottom-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-white md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col md:border md:border-black/10"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-black/5">
@@ -314,6 +333,7 @@ export function AIAssistant() {
                 ref={messagesContainerRef}
                 onScroll={handleScroll}
                 className="h-full overflow-y-auto p-4 space-y-4"
+                style={{ touchAction: 'auto', WebkitOverflowScrolling: 'touch' }}
               >
               {messages.length === 0 ? (
                 <div className="flex flex-col text-center px-4">
@@ -500,8 +520,8 @@ export function AIAssistant() {
             </div>
 
             {/* Input - Fixed at bottom on mobile */}
-            <div className="bg-white border-t border-black/5">
-              <div className="flex gap-2 items-center px-4 pt-4 pb-4 safe-area-inset-bottom md:pb-4">
+            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-4 bg-white border-t border-black/5">
+              <div className="flex gap-2 items-center">
                 <input
                   type="text"
                   value={input}
