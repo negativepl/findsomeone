@@ -513,16 +513,14 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     <h4 className="text-lg md:text-xl font-bold text-black">
                       {post.profiles?.full_name || 'Anonymous'}
                     </h4>
-                    {post.profiles?.rating > 0 && post.profiles?.total_reviews > 0 && (
-                      <div className="flex justify-center md:justify-start">
-                        <RatingDisplay
-                          userId={post.user_id}
-                          rating={post.profiles.rating}
-                          reviewCount={post.profiles.total_reviews}
-                          clickable={post.profiles.show_profile_link !== false}
-                        />
-                      </div>
-                    )}
+                    <div className="flex justify-center md:justify-start">
+                      <RatingDisplay
+                        userId={post.user_id}
+                        rating={post.profiles?.rating || 0}
+                        reviewCount={post.profiles?.total_reviews || 0}
+                        clickable={post.profiles?.show_profile_link !== false}
+                      />
+                    </div>
                   </div>
                 </div>
 

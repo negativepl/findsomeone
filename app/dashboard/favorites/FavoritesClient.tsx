@@ -102,10 +102,12 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
                       <p className="text-sm font-semibold text-black">
                         {post.profiles?.full_name || 'Anonymous'}
                       </p>
-                      {post.profiles?.rating && post.profiles.rating > 0 && (
+                      {post.profiles?.rating && post.profiles.rating > 0 ? (
                         <p className="text-xs text-black/60">
-                          ★ {post.profiles.rating.toFixed(1)}
+                          ★ {post.profiles.rating.toFixed(1)} ({post.profiles.total_reviews || 0} {post.profiles.total_reviews === 1 ? 'opinia' : 'opinii'})
                         </p>
+                      ) : (
+                        <p className="text-xs text-black/40 italic">Brak opinii</p>
                       )}
                     </div>
                   </div>

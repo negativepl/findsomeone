@@ -160,7 +160,6 @@ export async function POST(request: NextRequest) {
         title,
         description,
         city,
-        type,
         categories!inner(name)
       `)
       .eq('status', 'active')
@@ -202,7 +201,6 @@ export async function POST(request: NextRequest) {
               description: post.description,
               category: (post.categories as any)?.name,
               city: post.city,
-              type: post.type,
             })
 
             if (embedding) {

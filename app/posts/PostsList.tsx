@@ -199,15 +199,13 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                             <p className="text-sm font-semibold text-black truncate">
                               {post.profiles?.full_name || 'Anonymous'}
                             </p>
-                            {post.profiles?.rating && post.profiles.rating > 0 && (
-                              <RatingDisplay
-                                userId={post.user_id}
-                                rating={post.profiles.rating}
-                                reviewCount={post.profiles.total_reviews || 0}
-                                className="text-xs"
-                                clickable={false}
-                              />
-                            )}
+                            <RatingDisplay
+                              userId={post.user_id}
+                              rating={post.profiles?.rating || 0}
+                              reviewCount={post.profiles?.total_reviews || 0}
+                              className="text-xs"
+                              clickable={false}
+                            />
                           </div>
                         </div>
 
@@ -310,15 +308,13 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                               <p className="text-base font-semibold text-black truncate">
                                 {post.profiles?.full_name || 'Anonymous'}
                               </p>
-                              {post.profiles?.rating && post.profiles.rating > 0 && (
-                                <RatingDisplay
-                                  userId={post.user_id}
-                                  rating={post.profiles.rating}
-                                  reviewCount={post.profiles.total_reviews || 0}
-                                  className="text-sm"
-                                  clickable={false}
-                                />
-                              )}
+                              <RatingDisplay
+                                userId={post.user_id}
+                                rating={post.profiles?.rating || 0}
+                                reviewCount={post.profiles?.total_reviews || 0}
+                                className="text-sm"
+                                clickable={false}
+                              />
                             </div>
                           </div>
 
@@ -435,15 +431,13 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                               {post.profiles?.full_name || 'Anonymous'}
                             </p>
                             {/* Rating - all devices */}
-                            {post.profiles?.rating && post.profiles.rating > 0 && (
-                              <RatingDisplay
-                                userId={post.user_id}
-                                rating={post.profiles.rating}
-                                reviewCount={post.profiles.total_reviews || 0}
-                                className="text-xs md:text-sm"
-                                clickable={false}
-                              />
-                            )}
+                            <RatingDisplay
+                              userId={post.user_id}
+                              rating={post.profiles?.rating || 0}
+                              reviewCount={post.profiles?.total_reviews || 0}
+                              className="text-xs md:text-sm"
+                              clickable={false}
+                            />
                           </div>
                         </div>
 

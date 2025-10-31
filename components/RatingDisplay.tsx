@@ -10,15 +10,15 @@ interface RatingDisplayProps {
   clickable?: boolean
 }
 
-export function RatingDisplay({ userId, rating, reviewCount = 1, className = '', clickable = true }: RatingDisplayProps) {
-  if (rating <= 0) return null
-
-  const content = (
+export function RatingDisplay({ userId, rating, reviewCount = 0, className = '', clickable = true }: RatingDisplayProps) {
+  const content = rating > 0 ? (
     <>
       <span className="text-[#C44E35]">★</span>
       <span className="font-semibold">{rating.toFixed(1)}</span>
-      <span>({reviewCount} {reviewCount === 1 ? 'opinii' : 'opinii'})</span>
+      <span>({reviewCount} {reviewCount === 1 ? 'opinia' : 'opinii'})</span>
     </>
+  ) : (
+    <span className="text-black/40 italic">Brak opinii</span>
   )
 
   if (!clickable) {

@@ -37,7 +37,6 @@ export async function generatePostEmbedding(post: {
   description: string
   category?: string
   city?: string
-  
 }): Promise<number[] | null> {
   // Create rich text for embedding
   const embeddingText = [

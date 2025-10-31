@@ -141,17 +141,21 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                 {/* Row 3: Rating left, Contact Buttons right */}
                 <div className="flex flex-col md:flex-row items-center justify-center md:justify-start gap-4">
                   {/* Rating */}
-                  {profile.rating > 0 && (
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="flex items-center gap-1 text-xl md:text-2xl">
-                        <span className="text-[#C44E35]">★</span>
-                        <span className="font-bold text-black">{profile.rating.toFixed(1)}</span>
-                      </div>
-                      <span className="text-sm md:text-base text-black/60">
-                        ({profile.total_reviews} {profile.total_reviews === 1 ? 'opinia' : 'opinii'})
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-center justify-center gap-2">
+                    {profile.rating > 0 ? (
+                      <>
+                        <div className="flex items-center gap-1 text-xl md:text-2xl">
+                          <span className="text-[#C44E35]">★</span>
+                          <span className="font-bold text-black">{profile.rating.toFixed(1)}</span>
+                        </div>
+                        <span className="text-sm md:text-base text-black/60">
+                          ({profile.total_reviews} {profile.total_reviews === 1 ? 'opinia' : 'opinii'})
+                        </span>
+                      </>
+                    ) : (
+                      <span className="text-sm md:text-base text-black/40 italic">Brak opinii</span>
+                    )}
+                  </div>
 
                   {/* Contact Buttons */}
                   {user && (

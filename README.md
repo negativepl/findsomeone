@@ -10,7 +10,7 @@
 ![License](https://img.shields.io/badge/License-MIT--NC-blue?style=for-the-badge)
 ![Status](https://img.shields.io/badge/Status-Non--Commercial-orange?style=for-the-badge)
 
-[🌐 Live Demo](https://findsomeone.app) • [📖 Documentation](#-ai-features-details) • [📜 License](#-license--usage)
+[🌐 Live Demo](https://findsomeone.app) • [📖 Documentation](./docs/README.md) • [📁 Project Structure](./PROJECT_STRUCTURE.md) • [📜 License](#-license--usage)
 
 </div>
 
