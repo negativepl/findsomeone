@@ -1,10 +1,10 @@
-# 🤖 AI Features - Dokumentacja
+# Funkcje AI - dokumentacja
 
-## Generator Synonimów AI (GPT-5 nano)
+## Generator synonimów AI (GPT-5 nano)
 
 System automatycznego generowania synonimów dla wyszukiwarki wykorzystując GPT-5 nano od OpenAI.
 
-### 🎯 Funkcjonalności
+### Funkcjonalności
 
 1. **Auto-generowanie synonimów** - AI analizuje terminy i generuje kontekstowe synonymy
 2. **3 tryby pracy:**
@@ -16,7 +16,7 @@ System automatycznego generowania synonimów dla wyszukiwarki wykorzystując GPT
 4. **Batch Processing** - możliwość zatwierdzenia wielu synonimów jednocześnie
 5. **Inteligentny kontekst** - AI rozumie polski język i lokalne nazewnictwo
 
-### 🚀 Jak używać?
+### Jak używać?
 
 1. **Przejdź do panelu admina:** `/admin/synonyms`
 2. **Wybierz tryb generowania:**
@@ -32,7 +32,7 @@ System automatycznego generowania synonimów dla wyszukiwarki wykorzystując GPT
 5. **Zaznacz wybrane propozycje** (lub "Zaznacz wszystkie")
 6. **Kliknij "Zastosuj wybrane"**
 
-### 🔧 Konfiguracja
+### Konfiguracja
 
 #### Wymagania:
 - Klucz API OpenAI (GPT-5 nano)
@@ -45,7 +45,7 @@ OPENAI_API_KEY=sk-proj-...
 
 2. Pobierz klucz z: https://platform.openai.com/api-keys
 
-### 💰 Koszty
+### Koszty
 
 GPT-5 nano to najtańszy model GPT-5:
 - **Input:** $0.05 / 1M tokens
@@ -55,7 +55,7 @@ Przykładowe koszty:
 - 10 terminów: ~$0.01 - $0.02
 - 100 terminów: ~$0.10 - $0.15
 
-### 📊 API Endpoints
+### Endpointy API
 
 #### POST `/api/admin/synonyms/generate`
 Generuje synonymy AI dla wybranych terminów.
@@ -108,7 +108,7 @@ Zatwierdza i zapisuje wybrane synonymy do bazy.
 }
 ```
 
-### 🎨 UI Components
+### Komponenty UI
 
 **Generator AI Panel** (`/components/admin/SynonymsManager.tsx`):
 - Przełączniki trybów (Trendy/Popularne/Własny)
@@ -117,7 +117,7 @@ Zatwierdza i zapisuje wybrane synonymy do bazy.
 - Checkboxy do wyboru synonimów
 - Batch actions (zaznacz wszystkie, zastosuj wybrane)
 
-### 🔮 Przyszłe funkcje AI
+### Przyszłe funkcje AI
 
 Planowane rozszerzenia:
 1. **Query Expansion** - automatyczne rozszerzanie zapytań
@@ -126,7 +126,7 @@ Planowane rozszerzenia:
 4. **Category Prediction** - automatyczne dopasowanie kategorii
 5. **Intent Recognition** - rozpoznawanie intencji użytkownika
 
-### 🐛 Troubleshooting
+### Rozwiązywanie problemów
 
 **Problem:** Błąd "Failed to generate synonyms"
 - **Rozwiązanie:** Sprawdź czy `OPENAI_API_KEY` jest poprawnie ustawiony w `.env.local`
@@ -137,7 +137,7 @@ Planowane rozszerzenia:
 **Problem:** Błąd parsowania JSON
 - **Rozwiązanie:** Model czasem zwraca nieprawidłowy format - odśwież i spróbuj ponownie
 
-### 📝 Notatki techniczne
+### Notatki techniczne
 
 - Model: `gpt-5-nano`
 - Temperature: `0.7` (balans kreatywności i precyzji)
@@ -145,7 +145,7 @@ Planowane rozszerzenia:
 - Context window: 272K tokens input, 128K output
 - Timeout: 30s (można zwiększyć dla większych batch'y)
 
-### 🔐 Bezpieczeństwo
+### Bezpieczeństwo
 
 - Endpoint wymaga uprawnień **admin**
 - Weryfikacja użytkownika przez Supabase Auth

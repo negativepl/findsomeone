@@ -20,11 +20,11 @@
    - Podejrzenie działalności przestępczej (oszustwa, handel nielegalnymi towarami)
    - Tylko po konsultacji prawnej
 
-### NIGDY nie przeglądamy wiadomości:
-- ❌ Z ciekawości
-- ❌ Do celów marketingowych
-- ❌ Do analiz użytkowników (bez anonimizacji)
-- ❌ Na żądanie osób trzecich (bez nakazu)
+### Nigdy nie przeglądamy wiadomości:
+- Z ciekawości
+- Do celów marketingowych
+- Do analiz użytkowników (bez anonimizacji)
+- Na żądanie osób trzecich (bez nakazu)
 
 ## 2. System zgłaszania wiadomości
 
@@ -51,25 +51,25 @@
 - **Zgłoszenia**: 2 lata od rozstrzygnięcia
 
 ### Prawa użytkowników (RODO):
-- ✅ Prawo dostępu do swoich danych
-- ✅ Prawo do usunięcia danych (prawo do bycia zapomnianym)
-- ✅ Prawo do przenoszenia danych
-- ✅ Prawo do sprzeciwu wobec przetwarzania
+- Prawo dostępu do swoich danych
+- Prawo do usunięcia danych (prawo do bycia zapomnianym)
+- Prawo do przenoszenia danych
+- Prawo do sprzeciwu wobec przetwarzania
 
 ## 4. Zabezpieczenia techniczne
 
 ### Obecne zabezpieczenia:
-- ✅ Row Level Security (RLS) - tylko nadawca i odbiorca widzą wiadomości
-- ✅ Szyfrowanie podczas transmisji (HTTPS)
-- ✅ Rate limiting (anty-spam)
-- ✅ Walidacja treści
-- ✅ Audit logs dla dostępu adminów
+- Row Level Security (RLS) - tylko nadawca i odbiorca widzą wiadomości
+- Szyfrowanie podczas transmisji (HTTPS)
+- Rate limiting (anty-spam)
+- Walidacja treści
+- Audit logs dla dostępu adminów
 
 ### Rekomendowane dodatkowe zabezpieczenia:
-- 🔄 End-to-end encryption (opcjonalnie dla bardzo wrażliwych wiadomości)
-- 🔄 Automatyczne usuwanie starych wiadomości (np. po 2 latach)
-- 🔄 2FA dla kont administratorów
-- 🔄 Monitoring nietypowej aktywności
+- End-to-end encryption (opcjonalnie dla bardzo wrażliwych wiadomości)
+- Automatyczne usuwanie starych wiadomości (np. po 2 latach)
+- 2FA dla kont administratorów
+- Monitoring nietypowej aktywności
 
 ## 5. Procedury dla zespołu
 

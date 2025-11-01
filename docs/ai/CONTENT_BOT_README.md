@@ -1,4 +1,4 @@
-# Content Bot - Automatyczne Generowanie Ogłoszeń
+# Content bot - automatyczne generowanie ogłoszeń
 
 ## Przegląd
 
@@ -10,23 +10,23 @@ Content Bot to system automatycznego generowania przykładowych ogłoszeń przy 
 
 ## Funkcje
 
-✅ **Automatyczne generowanie postów**
+**Automatyczne generowanie postów**
 - Tytuły i opisy generowane przez GPT-5 Nano
 - Losowe miasta z całej Polski
 - Realistyczne ceny dla danej kategorii
 - Mix postów "Szukam" i "Oferuję" (konfigurowalny ratio)
 
-✅ **Integracja ze zdjęciami**
+**Integracja ze zdjęciami**
 - Automatyczne pobieranie zdjęć z Unsplash API
 - Dopasowanie zdjęć do kategorii (np. dla "Hydraulika" → zdjęcia narzędzi hydraulicznych)
 - Fallback bez zdjęć jeśli API niedostępne
 
-✅ **Panel administracyjny**
+**Panel administracyjny**
 - Live progress bar podczas generowania
 - Statystyki wygenerowanych postów
 - Możliwość usunięcia wszystkich postów AI jednym kliknięciem
 
-✅ **Wizualne oznaczenie AI**
+**Wizualne oznaczenie AI**
 - Fioletowo-różowy badge "AI" z ikoną Sparkles
 - Widoczny na listach postów i stronie szczegółów
 - Responsywne rozmiary (sm/md/lg)
@@ -75,7 +75,7 @@ npm run dev
 
 ## Użycie
 
-### Panel Administracyjny
+### Panel administracyjny
 
 Przejdź do: **`https://twoja-domena.app/admin/content-bot`**
 

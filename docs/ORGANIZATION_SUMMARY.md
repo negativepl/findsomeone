@@ -1,45 +1,40 @@
-# 📁 Podsumowanie organizacji projektu
+# Podsumowanie organizacji projektu
 
-**Data:** 2025-10-31
-**Status:** ✅ Uporządkowane
+**Data:** 2025-11-01
+**Status:** Uporządkowane
 
 ---
 
-## 🎯 Co zostało zrobione
+## Co zostało zrobione
 
 ### 1. Utworzono strukturę `docs/`
 
 ```
 docs/
-├── README.md                    # 📚 Główny index dokumentacji
-├── architecture/                # 🏗️ Architektura
-│   └── PROJECT_STRUCTURE.md
-├── tests/                       # 🧪 Raporty testów
-│   ├── TEST_CHATBOT_ANALYSIS.md     ⭐ NAJNOWSZY
-│   ├── CHATBOT_ANALYSIS.md
-│   ├── TEST_REPORT_2.md
-│   └── TEST_ANALYSIS.md
-├── ai/                          # 🤖 Dokumentacja AI
-├── compliance/                  # ⚖️ Zgodność prawna
-├── guides/                      # 📖 Przewodniki
-└── setup/                       # ⚙️ Setup & konfiguracja
+├── README.md                    # Główny index dokumentacji
+├── tests/                       # Raporty testów
+│   └── TEST_CHATBOT_ANALYSIS.md     (Analiza chatbota Nawigatorka)
+├── ai/                          # Dokumentacja AI
+├── compliance/                  # Zgodność prawna
+├── guides/                      # Przewodniki
+└── setup/                       # Setup i konfiguracja
 ```
 
 ### 2. Uporządkowano `scripts/`
 
 ```
 scripts/
-├── README.md                    # 🛠️ Dokumentacja skryptów
-├── tests/                       # 🧪 Skrypty testowe
-│   ├── test-chatbot-quick.js        ⭐ POLECANY
+├── README.md                    # Dokumentacja skryptów
+├── tests/                       # Skrypty testowe
+│   ├── test-chatbot-quick.js        (POLECANY)
 │   ├── test-chatbot-comprehensive.js
 │   ├── test-chatbot.js
 │   └── test-diverse-queries.js
-├── utils/                       # 🔧 Narzędzia
+├── utils/                       # Narzędzia
 │   ├── check-ai-settings.js
 │   ├── check-ai-prompt.js
 │   └── check-posts.js
-└── [produkcyjne]                # 🚀 Skrypty produkcyjne
+└── [produkcyjne]                # Skrypty produkcyjne
     ├── generate-site-embeddings.ts
     ├── setup-site-embeddings.ts
     └── ...
@@ -47,37 +42,38 @@ scripts/
 
 ### 3. Oczyszczono root
 
-Tylko **1 plik MD** w root: `README.md` ✅
+Kluczowe pliki w root:
+- `README.md` - Główny README projektu
+- `PROJECT_STRUCTURE.md` - Szczegółowa struktura projektu
+- `LICENSE` - Licencja (MIT z klauzulą niekomercyjną, po polsku)
 
-Wszystkie inne dokumenty przeniesione do `docs/`
+Wszystkie pozostałe dokumenty przeniesione do `docs/`
 
 ---
 
-## 📚 Quick Links
+## Quick links
 
-### Dla developerów
-- **Start tutaj:** [`README.md`](./README.md)
-- **Dokumentacja:** [`docs/README.md`](./docs/README.md)
-- **Skrypty:** [`scripts/README.md`](./scripts/README.md)
+### Dla deweloperów
+- **Start tutaj:** [`README.md`](../README.md)
+- **Struktura projektu:** [`PROJECT_STRUCTURE.md`](../PROJECT_STRUCTURE.md)
+- **Dokumentacja:** [`docs/README.md`](./README.md)
+- **Skrypty:** [`scripts/README.md`](../scripts/README.md)
 
 ### Testowanie chatbota
-- **Najnowsza analiza:** [`docs/tests/TEST_CHATBOT_ANALYSIS.md`](./docs/tests/TEST_CHATBOT_ANALYSIS.md) ⭐
+- **Najnowsza analiza:** [`docs/tests/TEST_CHATBOT_ANALYSIS.md`](./tests/TEST_CHATBOT_ANALYSIS.md)
 - **Szybki test:** `node scripts/tests/test-chatbot-quick.js`
-
-### Architektura
-- **Struktura projektu:** [`docs/architecture/PROJECT_STRUCTURE.md`](./docs/architecture/PROJECT_STRUCTURE.md)
 
 ---
 
-## 🎨 Konwencje
+## Konwencje
 
 ### Lokalizacja plików
 
 | Typ | Lokalizacja | Przykład |
 |-----|-------------|----------|
-| Dokumentacja ogólna | `docs/` | README, przewodniki |
+| Dokumentacja główna | root | README.md, PROJECT_STRUCTURE.md |
+| Dokumentacja szczegółowa | `docs/` | README, przewodniki |
 | Testy i analizy | `docs/tests/` | Raporty testów |
-| Architektura | `docs/architecture/` | Struktura projektu |
 | Skrypty testowe | `scripts/tests/` | test-chatbot-quick.js |
 | Narzędzia | `scripts/utils/` | check-ai-settings.js |
 | Skrypty produkcyjne | `scripts/` (root) | generate-embeddings.ts |
@@ -92,43 +88,45 @@ Wszystkie inne dokumenty przeniesione do `docs/`
 
 ---
 
-## ✅ Rezultat
+## Rezultat
 
 ### Przed
 ```
 /
-├── CHATBOT_ANALYSIS.md          ❌ Bałagan
-├── TEST_ANALYSIS.md             ❌
-├── TEST_REPORT_2.md             ❌
-├── TEST_CHATBOT_ANALYSIS.md     ❌
-├── PROJECT_STRUCTURE.md         ❌
-├── test-chatbot.js              ❌
-├── test-chatbot-quick.js        ❌
-├── check-ai-settings.js         ❌
-└── ...                          ❌ Chaos!
+├── CHATBOT_ANALYSIS.md          Bałagan w root
+├── TEST_ANALYSIS.md
+├── TEST_REPORT_2.md
+├── TEST_CHATBOT_ANALYSIS.md
+├── PROJECT_STRUCTURE.md
+├── test-chatbot.js
+├── check-ai-settings.js
+└── ...                          Chaos!
 ```
 
 ### Po
 ```
 /
-├── README.md                    ✅ Tylko główny README
-├── docs/                        ✅ Cała dokumentacja
+├── README.md                    Główny README
+├── PROJECT_STRUCTURE.md         Struktura projektu
+├── LICENSE                      Licencja (PL)
+├── docs/                        Cała dokumentacja
 │   ├── README.md
-│   ├── tests/                   ✅ Raporty testów
-│   └── architecture/            ✅ Architektura
-└── scripts/                     ✅ Skrypty zorganizowane
+│   ├── tests/                   Raporty testów
+│   └── ...
+└── scripts/                     Skrypty zorganizowane
     ├── README.md
-    ├── tests/                   ✅ Testy
-    └── utils/                   ✅ Narzędzia
+    ├── tests/                   Testy
+    └── utils/                   Narzędzia
 ```
 
 ---
 
-## 🚀 Co dalej?
+## Co dalej?
 
 1. **Czytaj dokumentację:**
-   - Start: [`docs/README.md`](./docs/README.md)
-   - Chatbot: [`docs/tests/TEST_CHATBOT_ANALYSIS.md`](./docs/tests/TEST_CHATBOT_ANALYSIS.md)
+   - Start: [`docs/README.md`](./README.md)
+   - Struktura: [`PROJECT_STRUCTURE.md`](../PROJECT_STRUCTURE.md)
+   - Chatbot: [`docs/tests/TEST_CHATBOT_ANALYSIS.md`](./tests/TEST_CHATBOT_ANALYSIS.md)
 
 2. **Testuj:**
    ```bash
@@ -142,4 +140,4 @@ Wszystkie inne dokumenty przeniesione do `docs/`
 
 ---
 
-**Miłej pracy!** 🎉
+**Miłej pracy!**

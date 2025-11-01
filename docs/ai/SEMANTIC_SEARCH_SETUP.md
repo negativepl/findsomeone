@@ -1,34 +1,34 @@
-# 🔮 Semantic Search & Smart Suggestions - Setup Guide
+# Semantic search i smart suggestions - instrukcja konfiguracji
 
-## ✅ Co zostało zaimplementowane:
+## Co zostało zaimplementowane:
 
-### 1. **Database (PostgreSQL + pgvector)**
-- ✅ Kolumna `embedding` w tabeli `posts` (vector 1536 dims)
-- ✅ Indeks HNSW dla ultra-szybkiego wyszukiwania
-- ✅ Funkcje SQL dla semantic search i hybrid search
-- ✅ Tabela `user_search_preferences` dla personalizacji
-- ✅ Rozszerzona tabela `search_queries` z embeddingami
+### 1. Database (PostgreSQL + pgvector)
+- Kolumna `embedding` w tabeli `posts` (vector 1536 dims)
+- Indeks HNSW dla ultra-szybkiego wyszukiwania
+- Funkcje SQL dla semantic search i hybrid search
+- Tabela `user_search_preferences` dla personalizacji
+- Rozszerzona tabela `search_queries` z embeddingami
 
-### 2. **API Endpoints**
-- ✅ `/api/search/semantic` - Wyszukiwanie semantyczne z embeddingami
-- ✅ `/api/search/suggestions` - Smart suggestions oparte na AI
-- ✅ Zaktualizowany `/api/search` - Dodane smart suggestions dla zalogowanych
+### 2. Endpointy API
+- `/api/search/semantic` - Wyszukiwanie semantyczne z embeddingami
+- `/api/search/suggestions` - Smart suggestions oparte na AI
+- Zaktualizowany `/api/search` - Dodane smart suggestions dla zalogowanych
 
-### 3. **UI Components**
-- ✅ `LiveSearchBar` - Pokazuje smart AI suggestions dla zalogowanych
-- ✅ `EmbeddingsManager` - Panel admina do generowania embeddingów
-- ✅ `/admin/embeddings` - Strona zarządzania embeddingami
+### 3. Komponenty UI
+- `LiveSearchBar` - Pokazuje smart AI suggestions dla zalogowanych
+- `EmbeddingsManager` - Panel admina do generowania embeddingów
+- `/admin/embeddings` - Strona zarządzania embeddingami
 
-### 4. **Helper Functions**
-- ✅ `/lib/embeddings.ts` - Funkcje do generowania i zarządzania embeddingami
-- ✅ Batch processing dla efektywności
-- ✅ Cost estimation
+### 4. Funkcje pomocnicze
+- `/lib/embeddings.ts` - Funkcje do generowania i zarządzania embeddingami
+- Batch processing dla efektywności
+- Cost estimation
 
 ---
 
-## 🚀 Setup (Krok po kroku):
+## Setup (krok po kroku):
 
-### **Krok 1: Uruchom migracje bazy danych**
+### Krok 1: Uruchom migracje bazy danych
 
 Musisz wykonać migracje SQL w Supabase:
 
@@ -52,7 +52,7 @@ Musisz wykonać migracje SQL w Supabase:
 supabase db push
 ```
 
-### **Krok 2: Weryfikuj że OpenAI API key jest ustawiony**
+### Krok 2: Weryfikuj że OpenAI API key jest ustawiony
 
 ```bash
 # Sprawdź .env.local
@@ -64,7 +64,7 @@ Powinno być:
 OPENAI_API_KEY=sk-proj-twój-klucz...
 ```
 
-### **Krok 3: Wygeneruj embeddingi dla istniejących postów**
+### Krok 3: Wygeneruj embeddingi dla istniejących postów
 
 1. Przejdź do panelu admina: `http://localhost:3000/admin/embeddings`
 2. Kliknij **"Wygeneruj Embeddingi dla Postów"**
@@ -79,7 +79,7 @@ curl -X POST http://localhost:3000/api/search/semantic \
   -d '{}'
 ```
 
-### **Krok 4: Testuj!**
+### Krok 4: Testuj!
 
 #### Test 1: Semantic Search
 ```bash
@@ -102,9 +102,9 @@ curl "http://localhost:3000/api/search/suggestions" \
 
 ---
 
-## 💡 Jak to działa?
+## Jak to działa?
 
-### **Semantic Search (Wyszukiwanie semantyczne)**
+### Semantic search (wyszukiwanie semantyczne)
 
 1. **Użytkownik wpisuje:** "instalator wody"
 2. **System generuje embedding** dla zapytania (wektor 1536 liczb)
@@ -114,7 +114,7 @@ curl "http://localhost:3000/api/search/suggestions" \
    - 40% - Full-text search (trigrams + synonyms)
 5. **Wyniki:** Posty z "hydraulik", "monter instalacji", "fachowiec" też się pojawią!
 
-### **Smart Suggestions (Inteligentne sugestie)**
+### Smart suggestions (inteligentne sugestie)
 
 System analizuje:
 1. **Behavioral (Behawioralne):**
@@ -131,7 +131,7 @@ System analizuje:
    - Popularne wyszukiwania w ulubionych kategoriach użytkownika
    - Z ostatnich 7 dni
 
-### **Przykład:**
+### Przykład:
 
 **Użytkownik często szuka:**
 - "hydraulik Warszawa"
@@ -139,15 +139,15 @@ System analizuje:
 - "naprawa rur"
 
 **System AI proponuje:**
-- ✨ "montaż grzejników" (semantycznie podobne)
-- ✨ "serwis centralnego ogrzewania" (ta sama kategoria)
-- ✨ "hydraulik Kraków" (inne miasto, ta sama usługa)
+- "montaż grzejników" (semantycznie podobne)
+- "serwis centralnego ogrzewania" (ta sama kategoria)
+- "hydraulik Kraków" (inne miasto, ta sama usługa)
 
 ---
 
-## 📊 Monitoring i Analytics
+## Monitoring i analytics
 
-### **Sprawdź pokrycie embeddingów:**
+### Sprawdź pokrycie embeddingów:
 
 ```sql
 -- Ile postów ma embeddingi?
@@ -160,7 +160,7 @@ FROM posts
 WHERE status = 'active';
 ```
 
-### **Testuj semantic search:**
+### Testuj semantic search:
 
 ```sql
 -- Znajdź posty semantycznie podobne do "hydraulik"
@@ -173,7 +173,7 @@ ORDER BY embedding <=> '[0.1,0.2,...]'::vector
 LIMIT 10;
 ```
 
-### **Sprawdź user preferences:**
+### Sprawdź user preferences:
 
 ```sql
 -- Zobacz preferencje użytkowników
@@ -190,28 +190,28 @@ LIMIT 10;
 
 ---
 
-## 💰 Koszty
+## Koszty
 
-### **OpenAI Embeddings (text-embedding-3-small)**
+### OpenAI Embeddings (text-embedding-3-small)
 - **Cena:** $0.02 / 1M tokenów
 - **Przykładowe koszty:**
   - 100 postów: ~$0.01-0.02
   - 1000 postów: ~$0.10-0.15
   - 10000 postów: ~$1.00-1.50
 
-### **Szacunkowe zużycie:**
+### Szacunkowe zużycie:
 - Średni post: ~100-200 tokenów
 - 1 search query: ~10-20 tokenów
 - **Miesięcznie (1000 postów + 10k searches):**
   - Posty: $0.15
   - Queries: $0.20
-  - **TOTAL: ~$0.35/miesiąc** 🎉
+  - **TOTAL: ~$0.35/miesiąc**
 
 ---
 
-## 🔧 Konfiguracja (Opcjonalna)
+## Konfiguracja (opcjonalna)
 
-### **1. Threshold dla semantic search**
+### 1. Threshold dla semantic search
 
 W `/app/api/search/semantic/route.ts`:
 ```typescript
@@ -221,7 +221,7 @@ const threshold = parseFloat(searchParams.get('threshold') || '0.7')
 // Wyżej = mniej wyników (bardziej precyzyjne)
 ```
 
-### **2. Wagi w hybrid search**
+### 2. Wagi w hybrid search
 
 W `supabase/migrations/20250111120000_add_embeddings.sql`:
 ```sql
@@ -235,7 +235,7 @@ W `supabase/migrations/20250111120000_add_embeddings.sql`:
 )
 ```
 
-### **3. Limit smart suggestions**
+### 3. Limit smart suggestions
 
 W `/app/api/search/suggestions/route.ts`:
 ```typescript
@@ -244,7 +244,7 @@ const limit = parseInt(searchParams.get('limit') || '10')
 
 ---
 
-## 🐛 Troubleshooting
+## Rozwiązywanie problemów
 
 ### **"extension vector does not exist"**
 **Problem:** pgvector nie jest zainstalowany
@@ -276,7 +276,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 
 ---
 
-## 🚀 Przyszłe rozszerzenia
+## Przyszłe rozszerzenia
 
 Możliwe ulepszenia:
 
@@ -302,7 +302,7 @@ Możliwe ulepszenia:
 
 ---
 
-## 📝 Pliki dodane/zmienione
+## Pliki dodane/zmienione
 
 ### Nowe pliki:
 ```
@@ -325,7 +325,7 @@ Możliwe ulepszenia:
 
 ---
 
-## ✅ Checklist
+## Checklist
 
 Przed uruchomieniem na produkcji:
 
@@ -341,13 +341,13 @@ Przed uruchomieniem na produkcji:
 
 ---
 
-## 🎉 Gotowe!
+## Gotowe!
 
 System jest teraz w pełni funkcjonalny! Użytkownicy będą mieli:
 
-- 🔮 **Semantyczne wyszukiwanie** - znajduje podobne znaczenia
-- 💡 **Smart suggestions** - personalizowane na podstawie AI
-- ⚡ **Ultra-szybkie** - dzięki HNSW index
-- 🎯 **Precyzyjne** - hybrid ranking (semantic + full-text)
+- **Semantyczne wyszukiwanie** - znajduje podobne znaczenia
+- **Smart suggestions** - personalizowane na podstawie AI
+- **Ultra-szybkie** - dzięki HNSW index
+- **Precyzyjne** - hybrid ranking (semantic + full-text)
 
 **Pytania?** Sprawdź `/admin/embeddings` w panelu admina!

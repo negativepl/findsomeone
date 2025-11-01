@@ -1,44 +1,41 @@
-# 📚 Dokumentacja FindSomeone
+# Dokumentacja FindSomeone
 
-Witaj w dokumentacji projektu FindSomeone - polskiej platformy ogłoszeń usługowych.
+Witaj w dokumentacji projektu FindSomeone - polskiej platformy ogłoszeń lokalnych.
 
-## 📂 Struktura dokumentacji
+## Struktura dokumentacji
 
-### 📁 Meta
+### Meta
 - [`ORGANIZATION_SUMMARY.md`](./ORGANIZATION_SUMMARY.md) - Jak zorganizowano projekt (pełne podsumowanie)
 
-### 🏗️ Architektura
-- [`architecture/PROJECT_STRUCTURE.md`](./architecture/PROJECT_STRUCTURE.md) - Struktura projektu i organizacja kodu
+### Architektura
+- [`PROJECT_STRUCTURE.md`](../PROJECT_STRUCTURE.md) - Szczegółowa struktura projektu i organizacja kodu
 
-### 🧪 Testy i Analizy
-- [`tests/TEST_CHATBOT_ANALYSIS.md`](./tests/TEST_CHATBOT_ANALYSIS.md) - **[NAJNOWSZY]** Kompleksowa analiza AI chatbota (2025-10-31)
-- [`tests/CHATBOT_ANALYSIS.md`](./tests/CHATBOT_ANALYSIS.md) - Wcześniejsza analiza chatbota
-- [`tests/TEST_REPORT_2.md`](./tests/TEST_REPORT_2.md) - Raport testów funkcjonalnych
-- [`tests/TEST_ANALYSIS.md`](./tests/TEST_ANALYSIS.md) - Analiza testów
+### Testy i analizy
+- [`tests/TEST_CHATBOT_ANALYSIS.md`](./tests/TEST_CHATBOT_ANALYSIS.md) - Kompleksowa analiza AI chatbota Nawigatorka
 
-### 🤖 AI & Embeddings
-- [`ai/`](./ai/) - Dokumentacja AI features i semantic search
+### AI i wyszukiwanie
+- [`ai/`](./ai/) - Dokumentacja funkcji AI i wyszukiwania semantycznego
+  - Semantic Search (pgvector + OpenAI embeddings)
+  - AI Navigator - chatbot Nawigatorek
+  - Hugging Face - moderacja treści
 
-### ⚖️ Compliance
-- [`compliance/`](./compliance/) - Zgodność prawna i moderacja
+### Zgodność prawna
+- [`compliance/`](./compliance/) - Zgodność prawna i moderacja treści
 
-### ⚙️ Setup & Configuration
+### Konfiguracja
 - [`setup/`](./setup/) - Przewodniki konfiguracji
 
----
+## Quick links
 
-## 🚀 Quick Links
-
-### Dla developerów
+### Dla deweloperów
 - [README.md](../README.md) - Główny README projektu
-- [Struktura projektu](./architecture/PROJECT_STRUCTURE.md)
+- [Struktura projektu](../PROJECT_STRUCTURE.md) - Pełna struktura katalogów i tabel
+- [LICENSE](../LICENSE) - Licencja projektu (MIT z klauzulą niekomercyjną)
 
-### Testy chatbota
-- [Najnowsza analiza chatbota](./tests/TEST_CHATBOT_ANALYSIS.md) ⭐ **Zacznij tutaj**
+### Najnowsze testy
+- [Analiza chatbota Nawigatorka](./tests/TEST_CHATBOT_ANALYSIS.md) - Zacznij tutaj
 
----
-
-## 📝 Konwencje
+## Konwencje
 
 ### Nazewnictwo plików
 - `PROJECT_*` - Dokumentacja architektury i struktury
@@ -46,11 +43,21 @@ Witaj w dokumentacji projektu FindSomeone - polskiej platformy ogłoszeń usług
 - `*_ANALYSIS` - Szczegółowe analizy funkcjonalności
 
 ### Status dokumentów
-- ⭐ - Aktualny i polecany
-- 📋 - Archiwalny, zachowany jako referencja
+- Aktualny - Najnowsza wersja dokumentu
+- Archiwalny - Zachowany jako referencja historyczna
 
----
+## Technologie
 
-## 🔄 Ostatnia aktualizacja
-**Data:** 2025-10-31
-**Zmiany:** Reorganizacja struktury docs/, dodanie najnowszej analizy chatbota
+Projekt wykorzystuje:
+- **Next.js 16** - App Router, Server Components
+- **Supabase** - PostgreSQL, Auth, Realtime, Storage
+- **OpenAI** - GPT (chatbot), text-embedding-3-small (semantic search)
+- **Hugging Face** - Moderacja treści
+- **pgvector** - Wyszukiwanie wektorowe
+- **Lordicon** - Animowane ikony
+- **Framer Motion** - Animacje UI
+
+## Ostatnia aktualizacja
+
+**Data:** 2025-11-01
+**Zmiany:** Aktualizacja do Next.js 16, reorganizacja struktury, przepisanie dokumentacji

@@ -17,18 +17,18 @@
 
 ## O projekcie
 
-FindSomeone to aplikacja webowa umożliwiająca publikowanie i przeglądanie lokalnych ogłoszeń. Platforma pozwala na wystawianie różnorodnych ogłoszeń - sprzedaż aut, wynajęm mieszkań, poszukiwanie pracy, wynajem urządzeń, oferowanie usług i wiele więcej. Projekt wyróżnia się zaawansowanymi funkcjami AI, systemem moderacji i panelem administracyjnym.
+FindSomeone to aplikacja webowa umożliwiająca publikowanie i przeglądanie lokalnych ogłoszeń. Platforma pozwala na wystawianie różnorodnych ogłoszeń - sprzedaż aut, wynajem mieszkań, poszukiwanie pracy, wynajem urządzeń, oferowanie usług i wiele więcej. Projekt wyróżnia się zaawansowanymi funkcjami takimi jak: półauomatycznym sprawdzaniem ogłoszeń przed publikacją, inteligentnym botem Nawigatorkiem, botem Wypełniaczkiem i przepięknym UX / UI.
 
 **Wersja live:** [findsomeone.app](https://findsomeone.app)
 
 ## Kluczowe funkcje
 
-**AI Navigator - chatbot asystent**
+**Chatbot - Nawigatorek**
 - Inteligentny chatbot, który pomaga znaleźć idealne ogłoszenie poprzez naturalną rozmowę
-- Zadawaj pytania w swoim języku, a AI zrozumie Twoje potrzeby i znajdzie najlepsze dopasowania
+- Zadawaj pytania w języku polskim, a AI zrozumie Twoje potrzeby i znajdzie najlepsze dopasowania
 - Kontekstowa rozmowa - bot pamięta całą historię konwersacji
 - Integracja z wyszukiwaniem semantycznym dla precyzyjnych wyników
-- Dostępny dla wszystkich użytkowników, bez potrzeby logowania
+- Dostępny tylko dla zalogowanych użytkowników
 
 **Komunikacja**
 - Wiadomości w czasie rzeczywistym (Supabase Realtime)
@@ -57,18 +57,18 @@ FindSomeone to aplikacja webowa umożliwiająca publikowanie i przeglądanie lok
 - Tailwind CSS
 - shadcn/ui
 - Framer Motion
-- Lordicon (animowane ikony)
+- Lordicon
 
 **Backend:**
 - Supabase (PostgreSQL, Auth, Realtime, Storage)
 - OpenAI (embeddings, GPT)
-- Hugging Face (modele językowe do moderacji i wykrywania niepoprawnych ogłoszeń)
+- Hugging Face
 - pgvector
 - Row Level Security (RLS)
 
 **Dodatkowe:**
-- Resend (email)
-- Zod (walidacja)
+- Resend
+- Zod
 - React Hook Form
 
 ## Instalacja lokalna

@@ -1,41 +1,41 @@
-# 📊 Podsumowanie Compliance RODO - System Wiadomości
+# Podsumowanie compliance RODO - system wiadomości
 
-## ✅ Co mamy (GOTOWE)
+## Co mamy (gotowe)
 
-### 1. **Infrastruktura techniczna**
-- ✅ Tabela `admin_message_access_logs` - przechowuje każdy dostęp admina
-- ✅ Funkcja `log_admin_message_access()` - automatycznie loguje dostęp
-- ✅ RLS (Row Level Security) - tylko nadawca i odbiorca widzą wiadomości
-- ✅ Funkcja `get_reported_messages()` - tylko dla adminów, automatycznie loguje dostęp
+### 1. Infrastruktura techniczna
+- Tabela `admin_message_access_logs` - przechowuje każdy dostęp admina
+- Funkcja `log_admin_message_access()` - automatycznie loguje dostęp
+- RLS (Row Level Security) - tylko nadawca i odbiorca widzą wiadomości
+- Funkcja `get_reported_messages()` - tylko dla adminów, automatycznie loguje dostęp
 
-### 2. **System zgłaszania**
-- ✅ Przycisk "Zgłoś" w czacie (`/components/ReportMessageDialog.tsx`)
-- ✅ Panel zgłoszeń dla adminów (`/app/admin/reports/page.tsx`)
-- ✅ 5 kategorii zgłoszeń: spam, molestowanie, treść niestosowna, oszustwo, inne
-- ✅ Akcje moderacyjne: odrzuć, ostrzeż, usuń wiadomość, zbanuj użytkownika
+### 2. System zgłaszania
+- Przycisk "Zgłoś" w czacie (`/components/ReportMessageDialog.tsx`)
+- Panel zgłoszeń dla adminów (`/app/admin/reports/page.tsx`)
+- 5 kategorii zgłoszeń: spam, molestowanie, treść niestosowna, oszustwo, inne
+- Akcje moderacyjne: odrzuć, ostrzeż, usuń wiadomość, zbanuj użytkownika
 
-### 3. **Panel Audit Logs** ⭐ NOWE
-- ✅ Strona `/admin/audit-logs` - historia dostępów adminów
-- ✅ Funkcja `get_admin_access_logs()` - pobiera logi dla panelu
-- ✅ Funkcja `get_user_audit_logs(user_id)` - użytkownik może zobaczyć kto przeglądał jego wiadomości
-- ✅ Funkcja `cleanup_old_audit_logs()` - usuwa logi starsze niż 2 lata
-- ✅ Statystyki: liczba logów, uniqualni admini, dostępy ze zgłoszeń
+### 3. Panel audit logs
+- Strona `/admin/audit-logs` - historia dostępów adminów
+- Funkcja `get_admin_access_logs()` - pobiera logi dla panelu
+- Funkcja `get_user_audit_logs(user_id)` - użytkownik może zobaczyć kto przeglądał jego wiadomości
+- Funkcja `cleanup_old_audit_logs()` - usuwa logi starsze niż 2 lata
+- Statystyki: liczba logów, uniqualni admini, dostępy ze zgłoszeń
 
-### 4. **Zarządzanie użytkownikami**
-- ✅ Banowanie użytkowników z powodem
-- ✅ Odbanowywanie użytkowników (`/app/admin/banned-users/page.tsx`)
-- ✅ Historia banów w tabeli `user_bans`
-- ✅ Blokada dostępu dla zbanowanych (middleware)
+### 4. Zarządzanie użytkownikami
+- Banowanie użytkowników z powodem
+- Odbanowywanie użytkowników (`/app/admin/banned-users/page.tsx`)
+- Historia banów w tabeli `user_bans`
+- Blokada dostępu dla zbanowanych (middleware)
 
-### 5. **Dokumentacja**
-- ✅ `PRIVACY_AND_MODERATION_GUIDELINES.md` - procedury dla zespołu
-- ✅ `AUDIT_LOGS_SETUP.md` - instrukcja konfiguracji
-- ✅ Komentarze w SQL opisujące funkcje
-- ✅ Checklist compliance - co zrobione, co do zrobienia
+### 5. Dokumentacja
+- `PRIVACY_AND_MODERATION_GUIDELINES.md` - procedury dla zespołu
+- `AUDIT_LOGS_SETUP.md` - instrukcja konfiguracji
+- Komentarze w SQL opisujące funkcje
+- Checklist compliance - co zrobione, co do zrobienia
 
-## ⚠️ Co MUSISZ zrobić (TODO)
+## Co musisz zrobić (TODO)
 
-### 🔴 KRYTYCZNE (przed produkcją)
+### Krytyczne (przed produkcją)
 
 1. **Uruchom SQL w Supabase**
    ```sql
@@ -72,7 +72,7 @@
 
    Ten email MUSI działać i być monitorowany!
 
-### 🟡 WAŻNE (w ciągu tygodnia)
+### Ważne (w ciągu tygodnia)
 
 4. **Przetestuj system**
    - [ ] Zgłoś testową wiadomość
@@ -84,7 +84,7 @@
    - [ ] Moderator (przeglądanie zgłoszeń)
    - [ ] RODO Officer (odpowiedzi na żądania użytkowników)
 
-### 🟢 OPCJONALNE (ale zalecane)
+### Opcjonalne (ale zalecane)
 
 6. **Dodaj 2FA dla adminów**
    - Supabase wspiera 2FA out of the box
@@ -94,7 +94,7 @@
    - Ustaw alert jeśli liczba zgłoszeń > 10/dzień
    - Regularnie sprawdzaj audit logi (co miesiąc)
 
-## 📋 Jak odpowiedzieć na żądanie RODO?
+## Jak odpowiedzieć na żądanie RODO?
 
 ### Scenariusz 1: Użytkownik chce wiedzieć kto przeglądał jego wiadomości
 
@@ -127,7 +127,7 @@
    ```
 3. Potwierdź usunięcie (w ciągu 30 dni)
 
-## 🔍 Monitoring compliance
+## Monitoring compliance
 
 ### Co sprawdzać regularnie?
 
@@ -147,7 +147,7 @@
 - [ ] Update polityki prywatności jeśli zmieniły się przepisy
 - [ ] Szkolenie zespołu z procedur
 
-## 🆘 FAQ
+## FAQ
 
 ### Q: Czy mogę zobaczyć treść wiadomości w bazie danych?
 **A:** Tak, ALE:
@@ -175,7 +175,7 @@
 - Wtedy musisz udostępnić audit logi
 - Dlatego ZAWSZE loguj dostęp z prawdziwym powodem!
 
-## 📞 Kontakt w razie wątpliwości
+## Kontakt w razie wątpliwości
 
 - **Techniczne:** Sprawdź `AUDIT_LOGS_SETUP.md`
 - **Prawne/RODO:** Skonsultuj z prawnikiem specjalizującym się w RODO
@@ -183,6 +183,6 @@
 
 ---
 
-**Status:** ✅ System gotowy do produkcji (po wykonaniu TODO)
+**Status:** System gotowy do produkcji (po wykonaniu TODO)
 **Data:** 2025-10-10
 **Compliance:** RODO/GDPR ready
