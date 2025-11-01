@@ -85,8 +85,8 @@ export default function LoginPage() {
   if (showForgotPassword) {
     if (resetEmailSent) {
       return (
-        <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6">
-          <div className="w-full max-w-md">
+        <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6 pb-safe">
+          <div className="w-full max-w-md pb-20">
             {/* Logo/Header */}
             <div className="text-center mb-8">
               <Link href="/" className="inline-flex flex-col items-center gap-3">
@@ -101,7 +101,7 @@ export default function LoginPage() {
               <p className="text-black/60 mt-2">Resetowanie hasła</p>
             </div>
 
-            <Card className="border-0 rounded-3xl bg-white shadow-lg">
+            <Card className="border-0 rounded-3xl bg-white shadow-sm">
               <CardHeader className="text-center pb-8">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
                   <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -132,8 +132,8 @@ export default function LoginPage() {
     }
 
     return (
-      <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6">
-        <div className="w-full max-w-md">
+      <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6 pb-safe">
+        <div className="w-full max-w-md pb-20">
           {/* Logo/Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex flex-col items-center gap-3">
@@ -148,7 +148,7 @@ export default function LoginPage() {
             <p className="text-black/60 mt-2">Resetowanie hasła</p>
           </div>
 
-          <Card className="border-0 rounded-3xl bg-white shadow-lg">
+          <Card className="border-0 rounded-3xl bg-white shadow-sm">
             <CardHeader className="text-center pb-8">
               <CardTitle className="text-2xl md:text-3xl font-bold text-black">Zresetuj hasło</CardTitle>
               <CardDescription className="text-sm md:text-base text-black/60 mt-2">
@@ -203,8 +203,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6 pb-safe">
+      <div className="w-full max-w-md pb-20">
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex flex-col items-center gap-3">
@@ -219,7 +219,7 @@ export default function LoginPage() {
           <p className="text-black/60 mt-2">Zaloguj się do swojego konta</p>
         </div>
 
-        <Card className="border-0 rounded-3xl bg-white shadow-lg">
+        <Card className="border-0 rounded-3xl bg-white shadow-sm">
           <CardHeader className="pb-6">
             <CardTitle className="text-xl md:text-2xl font-bold text-black text-center">Witaj ponownie!</CardTitle>
             <CardDescription className="text-sm md:text-base text-black/60 text-center">

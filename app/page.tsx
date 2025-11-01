@@ -7,9 +7,9 @@ import { HeroSection } from '@/components/HeroSection'
 import { FeatureCard } from '@/components/FeatureCard'
 import { CTASection } from '@/components/CTASection'
 
-// Revalidate cache co 1 godzinę (3600 sekund) dla lepszej wydajności w production
-// W development wyłącz cache (0 = no-cache)
-export const revalidate = process.env.NODE_ENV === 'development' ? 0 : 3600
+// Revalidate cache co 1 godzinę (3600 sekund) dla lepszej wydajności
+// Next.js automatycznie wyłącza caching w development mode
+export const revalidate = 3600
 
 export default async function Home() {
   const supabase = await createClient()
