@@ -193,9 +193,9 @@ export default async function MessagesPage() {
                         {/* Message Info */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-start justify-between gap-2 mb-1">
-                            <h3 className={`text-base md:text-lg font-semibold text-black truncate ${isUnread ? 'font-bold' : ''}`}>
+                            <p className={`text-base md:text-lg font-semibold text-black truncate ${isUnread ? 'font-bold' : ''}`}>
                               {conversation.other_user.full_name || 'Użytkownik'}
-                            </h3>
+                            </p>
                             <span className="text-xs md:text-sm text-black/60 flex-shrink-0 whitespace-nowrap">
                               {new Date(conversation.last_message.created_at).toLocaleDateString('pl-PL', {
                                 day: 'numeric',

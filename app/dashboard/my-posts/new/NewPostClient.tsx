@@ -666,7 +666,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     }}
                     required
                   >
-                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full" aria-label="Kategoria">
                       <SelectValue placeholder="Wybierz kategorię" />
                     </SelectTrigger>
                     <SelectContent>
@@ -690,7 +690,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     disabled={subcategories.length === 0}
                     required={subcategories.length > 0}
                   >
-                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full" aria-label="Podkategoria">
                       <SelectValue placeholder={subcategories.length > 0 ? "Wybierz" : "Brak"} />
                     </SelectTrigger>
                     <SelectContent>
@@ -786,7 +786,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     }
                     required
                   >
-                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
+                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full" aria-label="Typ ceny">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -820,6 +820,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           id="priceNegotiable"
                           checked={formData.priceNegotiable}
                           onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
+                          aria-label="Cena do negocjacji"
                         />
                         <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none whitespace-nowrap">
                           Cena do negocjacji
@@ -925,7 +926,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       }}
                       required
                     >
-                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
+                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base" aria-label="Kategoria">
                         <SelectValue placeholder="Wybierz kategorię" />
                       </SelectTrigger>
                       <SelectContent>
@@ -946,7 +947,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
                         required
                       >
-                        <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base">
+                        <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base" aria-label="Podkategoria">
                           <SelectValue placeholder="Wybierz podkategorię" />
                         </SelectTrigger>
                         <SelectContent>
@@ -1036,7 +1037,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       }
                       required
                     >
-                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base bg-white">
+                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base bg-white" aria-label="Typ ceny">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -1071,6 +1072,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                               id="priceNegotiable-mobile"
                               checked={formData.priceNegotiable}
                               onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
+                              aria-label="Cena do negocjacji"
                             />
                             <label htmlFor="priceNegotiable-mobile" className="text-sm text-black/70 cursor-pointer select-none whitespace-nowrap">
                               Cena do negocjacji
