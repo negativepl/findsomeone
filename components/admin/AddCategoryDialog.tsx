@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -98,8 +99,11 @@ export function AddCategoryDialog() {
 
     if (error) {
       console.error('Error adding category:', error)
-      alert('Błąd podczas dodawania kategorii: ' + error.message)
+      toast.error('Błąd podczas dodawania kategorii', {
+        description: error.message
+      })
     } else {
+      toast.success('Kategoria dodana!')
       setFormData({ name: '', slug: '', description: '', icon: 'more-horizontal', parent_id: '' })
       setOpen(false)
       router.refresh()
@@ -112,7 +116,7 @@ export function AddCategoryDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
-          + Dodaj kategorię
+          Dodaj kategorię
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[900px] rounded-3xl p-0 gap-0">

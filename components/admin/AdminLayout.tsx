@@ -103,7 +103,7 @@ const navItems = [
     badge: 'synonymsCount',
   },
   {
-    label: 'AI Embeddings',
+    label: 'Wyszukiwanie AI',
     href: '/admin/embeddings',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -176,7 +176,7 @@ export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
             <Logo className="w-7 h-7" />
             <div className="flex flex-col -space-y-0.5">
               <span className="text-base font-bold text-black leading-tight">FindSomeone</span>
-              <span className="text-[9px] text-black/50 leading-tight font-medium tracking-wide">PANEL ADMINISTRATORA</span>
+              <span className="text-[9px] text-black/50 leading-tight font-medium tracking-wide">PANEL ADMINISTRACYJNY</span>
             </div>
           </div>
         </div>
@@ -208,7 +208,7 @@ export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
               <Logo className="w-9 h-9 flex-shrink-0" />
               <div className="flex flex-col -space-y-0.5">
                 <span className="text-lg font-bold text-black leading-tight">FindSomeone</span>
-                <span className="text-[10px] text-black/50 leading-tight font-medium tracking-wide">PANEL ADMINISTRATORA</span>
+                <span className="text-[10px] text-black/50 leading-tight font-medium tracking-wide">PANEL ADMINISTRACYJNY</span>
               </div>
             </Link>
           </div>

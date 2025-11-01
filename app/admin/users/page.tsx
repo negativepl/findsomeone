@@ -3,7 +3,7 @@ import { Metadata } from 'next'
 import { UsersManager } from '@/components/admin/UsersManager'
 
 export const metadata: Metadata = {
-  title: "Zarządzanie użytkownikami - Panel admina",
+  title: "Zarządzanie użytkownikami - Panel administracyjny",
 }
 
 export default async function UsersManagementPage() {

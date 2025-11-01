@@ -61,12 +61,12 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
       {/* Gallery */}
       <div className="space-y-4">
         {/* Main Image */}
-        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-black/5">
+        <div className="relative w-full h-[60vh] min-h-[400px] max-h-[700px] rounded-2xl overflow-hidden bg-black/5">
           <Image
             src={images[currentIndex]}
             alt={`${title} - zdjęcie ${currentIndex + 1}`}
             fill
-            className="object-contain cursor-zoom-in"
+            className="object-cover cursor-zoom-in"
             onClick={() => openLightbox(currentIndex)}
             priority={currentIndex === 0}
           />

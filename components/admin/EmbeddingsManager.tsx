@@ -65,7 +65,7 @@ export function EmbeddingsManager() {
 
         <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
           <h4 className="font-semibold text-sm mb-2 text-black/70">Funkcje</h4>
-          <p className="text-sm text-black">Semantyczne wyszukiwanie</p>
+          <p className="text-lg font-bold text-black">Semantyczne wyszukiwanie</p>
           <p className="text-xs text-black/60 mt-1">Znajduje podobne znaczenia</p>
         </Card>
 
@@ -75,31 +75,6 @@ export function EmbeddingsManager() {
           <p className="text-xs text-black/60 mt-1">za 100 postów</p>
         </Card>
       </div>
-
-      {/* How it works */}
-      <Card className="p-4 bg-black/5 border-black/10 mb-6 rounded-2xl">
-        <h4 className="font-semibold text-sm mb-3 text-black/70">
-          Jak to działa?
-        </h4>
-        <ol className="space-y-2 text-sm text-black/70">
-          <li className="flex gap-2">
-            <Badge className="rounded-full bg-[#C44E35] text-white border-0 px-2 py-0 h-5">1</Badge>
-            <span>System pobiera wszystkie posty bez embeddingów</span>
-          </li>
-          <li className="flex gap-2">
-            <Badge className="rounded-full bg-[#C44E35] text-white border-0 px-2 py-0 h-5">2</Badge>
-            <span>Dla każdego posta generuje wektor 1536-wymiarowy używając OpenAI</span>
-          </li>
-          <li className="flex gap-2">
-            <Badge className="rounded-full bg-[#C44E35] text-white border-0 px-2 py-0 h-5">3</Badge>
-            <span>Zapisuje wektory w bazie danych (kolumna embedding w posts)</span>
-          </li>
-          <li className="flex gap-2">
-            <Badge className="rounded-full bg-[#C44E35] text-white border-0 px-2 py-0 h-5">4</Badge>
-            <span>Wyszukiwarka używa podobieństwa kosinusowego do znalezienia trafnych wyników</span>
-          </li>
-        </ol>
-      </Card>
 
       {/* Generate Button */}
       <Button

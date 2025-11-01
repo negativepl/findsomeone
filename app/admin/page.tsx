@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Panel admina",
+  title: "Panel administracyjny",
 }
 
 export default async function AdminPage() {

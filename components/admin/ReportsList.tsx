@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Flag, Check, X, Eye, Trash2, AlertTriangle, Ban, Loader2 } from 'lucide-react'
@@ -104,7 +105,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       // Refresh server data to ensure consistency
       router.refresh()
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }
@@ -125,7 +126,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       // Refresh server data to ensure consistency
       router.refresh()
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }
@@ -151,7 +152,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       // Refresh server data to ensure consistency
       router.refresh()
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }
@@ -159,7 +160,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
 
   const handleBanUser = async () => {
     if (!selectedReport || !banReason.trim()) {
-      alert('Podaj powód bana')
+      toast.error('Podaj powód bana')
       return
     }
     setIsProcessing(true)
@@ -172,7 +173,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
         actionNotes || undefined
       )
 
-      alert(result.message)
+      toast.success(result.message)
 
       // Remove from list
       setReports(reports.filter(r => r.report_id !== selectedReport.report_id))
@@ -184,7 +185,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       // Refresh server data to ensure consistency
       router.refresh()
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }

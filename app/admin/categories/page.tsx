@@ -5,7 +5,7 @@ import { AddCategoryDialog } from '@/components/admin/AddCategoryDialog'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Zarządzanie kategoriami - Panel admina",
+  title: "Zarządzanie kategoriami - Panel administracyjny",
 }
 
 interface Category {

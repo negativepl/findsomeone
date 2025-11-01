@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Loader2, Sparkles, Trash2, RefreshCw, ChevronDown, ChevronRight } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -200,7 +201,9 @@ export default function ContentBotPanel() {
       await fetchCategories()
     } catch (error) {
       console.error('Error generating posts:', error)
-      alert('Wystąpił błąd podczas generowania ogłoszeń.')
+      toast.error('Wystąpił błąd podczas generowania ogłoszeń', {
+        description: 'Sprawdź połączenie i spróbuj ponownie'
+      })
     } finally {
       setIsGenerating(false)
     }
@@ -208,7 +211,9 @@ export default function ContentBotPanel() {
 
   const handleDeleteAll = async () => {
     if (aiPostsCount === 0) {
-      alert('Brak postów AI do usunięcia.')
+      toast.info('Brak postów AI do usunięcia', {
+        description: 'Nie ma żadnych wygenerowanych ogłoszeń'
+      })
       return
     }
 
@@ -229,13 +234,17 @@ export default function ContentBotPanel() {
         throw new Error(data.error || 'Failed to delete AI posts')
       }
 
-      alert(`Usunięto ${data.deleted} ogłoszeń AI.`)
+      toast.success(`Usunięto ${data.deleted} ogłoszeń AI`, {
+        description: 'Ogłoszenia zostały trwale usunięte'
+      })
       await fetchAiPostsCount()
       await fetchCategories()
       setGenerationStats(null)
     } catch (error) {
       console.error('Error deleting AI posts:', error)
-      alert('Wystąpił błąd podczas usuwania ogłoszeń.')
+      toast.error('Wystąpił błąd podczas usuwania ogłoszeń', {
+        description: 'Spróbuj ponownie'
+      })
     } finally {
       setIsDeleting(false)
     }
@@ -243,7 +252,9 @@ export default function ContentBotPanel() {
 
   const handleDeleteByCategory = async () => {
     if (selectedCategories.size === 0) {
-      alert('Wybierz kategorie, z których chcesz usunąć posty AI.')
+      toast.info('Wybierz kategorie', {
+        description: 'Zaznacz kategorie, z których chcesz usunąć posty AI'
+      })
       return
     }
 
@@ -270,13 +281,17 @@ export default function ContentBotPanel() {
         throw new Error(data.error || 'Failed to delete AI posts')
       }
 
-      alert(`Usunięto ${data.deleted} ogłoszeń AI z wybranych kategorii.`)
+      toast.success(`Usunięto ${data.deleted} ogłoszeń AI`, {
+        description: 'Ogłoszenia zostały usunięte z wybranych kategorii'
+      })
       await fetchAiPostsCount()
       await fetchCategories()
       setSelectedCategories(new Set()) // Clear selection
     } catch (error) {
       console.error('Error deleting AI posts by category:', error)
-      alert('Wystąpił błąd podczas usuwania ogłoszeń.')
+      toast.error('Wystąpił błąd podczas usuwania ogłoszeń', {
+        description: 'Spróbuj ponownie'
+      })
     } finally {
       setIsDeleting(false)
     }
@@ -309,8 +324,8 @@ export default function ContentBotPanel() {
     <div className="space-y-6">
       {/* Stats Card */}
       <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <div className="flex items-center justify-between">
+        <div className="px-6 py-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-2xl font-bold text-black mb-1">Statystyki</h2>
               <p className="text-sm text-black/60">Ogłoszenia wygenerowane przez AI</p>
@@ -328,9 +343,8 @@ export default function ContentBotPanel() {
               <RefreshCw className={`h-4 w-4 ${isLoadingCount || isLoadingCategories ? 'animate-spin' : ''}`} />
             </Button>
           </div>
-        </div>
 
-        <div className="px-6 py-6">
+
           <div className="text-5xl font-bold text-[#C44E35] mb-2">
             {isLoadingCount ? '...' : aiPostsCount.toLocaleString()}
           </div>
@@ -340,8 +354,8 @@ export default function ContentBotPanel() {
 
       {/* Category Selection */}
       <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <div className="flex items-center justify-between">
+        <div className="px-6 py-6">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-black mb-1">Wybierz kategorie</h2>
               <p className="text-sm text-black/60">
@@ -371,9 +385,7 @@ export default function ContentBotPanel() {
               </Button>
             </div>
           </div>
-        </div>
 
-        <div className="p-6">
           {isLoadingCategories ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-6 w-6 animate-spin text-black/40" />
@@ -458,16 +470,14 @@ export default function ContentBotPanel() {
       {/* Generation Progress */}
       {generationProgress && (
         <div className="bg-white rounded-3xl shadow-sm overflow-hidden border-2 border-[#C44E35]/30">
-          <div className="px-8 py-6 border-b border-black/10">
-            <div className="flex items-center gap-3">
+          <div className="p-6 space-y-3">
+            <div className="flex items-center gap-3 mb-4">
               <Loader2 className="h-6 w-6 animate-spin text-[#C44E35]" />
               <div>
                 <h3 className="text-2xl font-bold text-black">Generowanie w toku...</h3>
               </div>
             </div>
-          </div>
 
-          <div className="p-6 space-y-3">
             <div className="flex items-center justify-between text-sm">
               <span className="font-medium text-black">
                 Postów: {generationProgress.current} / {generationProgress.total}
@@ -530,42 +540,19 @@ export default function ContentBotPanel() {
 
       {/* Action Buttons */}
       <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <div>
+        <div className="p-6">
+          <div className="mb-6">
             <h2 className="text-2xl font-bold text-black mb-1">Akcje</h2>
             <p className="text-sm text-black/60">Generuj lub usuń ogłoszenia AI</p>
           </div>
-        </div>
 
-        <div className="p-6">
-
-        <div className="space-y-3">
-          <Button
-            onClick={handleGenerate}
-            disabled={isGenerating || isDeleting}
-            className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold py-6"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Generowanie...
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-5 w-5" />
-                {selectedCategories.size === 0
-                  ? 'Wygeneruj dla wszystkich kategorii'
-                  : `Wygeneruj dla ${selectedCategories.size} wybranych`}
-              </>
-            )}
-          </Button>
-
+        <div className="flex flex-col sm:flex-row gap-3">
           {selectedCategories.size > 0 && (
             <Button
               onClick={handleDeleteByCategory}
               disabled={isGenerating || isDeleting}
               variant="outline"
-              className="w-full rounded-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700 font-semibold py-6"
+              className="flex-1 rounded-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700 font-semibold py-6"
             >
               {isDeleting ? (
                 <>
@@ -585,7 +572,7 @@ export default function ContentBotPanel() {
             onClick={handleDeleteAll}
             disabled={isGenerating || isDeleting || aiPostsCount === 0}
             variant="outline"
-            className="w-full rounded-full border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 font-semibold py-6"
+            className="flex-1 rounded-full border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 font-semibold py-6"
           >
             {isDeleting ? (
               <>
@@ -599,8 +586,27 @@ export default function ContentBotPanel() {
               </>
             )}
           </Button>
-        </div>
 
+          <Button
+            onClick={handleGenerate}
+            disabled={isGenerating || isDeleting}
+            className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold py-6"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                Generowanie...
+              </>
+            ) : (
+              <>
+                <Sparkles className="mr-2 h-5 w-5" />
+                {selectedCategories.size === 0
+                  ? 'Wygeneruj dla wszystkich kategorii'
+                  : `Wygeneruj dla ${selectedCategories.size} wybranych`}
+              </>
+            )}
+          </Button>
+        </div>
         </div>
       </div>
     </div>

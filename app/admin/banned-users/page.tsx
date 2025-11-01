@@ -3,7 +3,7 @@ import { BannedUsersList } from '@/components/admin/BannedUsersList'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Zbanowani użytkownicy - Panel Administratora",
+  title: "Zbanowani użytkownicy - Panel administracyjny",
 }
 
 export default async function AdminBannedUsersPage() {

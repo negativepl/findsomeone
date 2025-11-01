@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -77,8 +78,11 @@ export function EditSubcategoryDialog({ category, onClose, onUpdated }: EditSubc
 
     if (error) {
       console.error('Error updating subcategory:', error)
-      alert('Błąd podczas aktualizacji podkategorii: ' + error.message)
+      toast.error('Błąd podczas aktualizacji podkategorii', {
+        description: error.message
+      })
     } else if (data) {
+      toast.success('Podkategoria zaktualizowana!')
       onUpdated(data)
     }
 

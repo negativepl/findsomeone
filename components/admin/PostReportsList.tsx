@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Flag, Check, X, AlertTriangle, Trash2, Ban, Loader2, Eye, EyeOff } from 'lucide-react'
 import { updatePostReportStatus, deletePost, deactivatePost, warnPostAuthor } from '@/lib/actions/admin-post-reports'
@@ -62,7 +63,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
       setSelectedReport(null)
       setActionNotes('')
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }
@@ -85,7 +86,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
       setSelectedReport(null)
       setActionNotes('')
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }
@@ -108,7 +109,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
       setActionNotes('')
       setShowConfirmDeactivate(false)
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }
@@ -131,7 +132,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
       setActionNotes('')
       setShowConfirmDelete(false)
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }
@@ -139,7 +140,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
 
   const handleBanUser = async () => {
     if (!selectedReport || !banReason.trim()) {
-      alert('Podaj powód bana')
+      toast.error('Podaj powód bana')
       return
     }
     setIsProcessing(true)
@@ -152,7 +153,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
         actionNotes || undefined
       )
 
-      alert(result.message)
+      toast.success(result.message)
 
       // Remove from list
       setReports(reports.filter(r => r.report_id !== selectedReport.report_id))
@@ -161,7 +162,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
       setBanReason('')
       setShowConfirmBan(false)
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }

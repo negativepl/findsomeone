@@ -19,9 +19,6 @@ export default function NotFound() {
                   <Search className="w-12 h-12 md:w-16 md:h-16 text-[#C44E35]" strokeWidth={2.5} />
                 </div>
               </div>
-              {/* Decorative dots */}
-              <div className="absolute -top-4 -right-4 w-4 h-4 rounded-full bg-[#C44E35] animate-ping"></div>
-              <div className="absolute -bottom-4 -left-4 w-3 h-3 rounded-full bg-[#C44E35]/60 animate-pulse"></div>
             </div>
           </div>
         </div>

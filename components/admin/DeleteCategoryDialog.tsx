@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,8 +42,11 @@ export function DeleteCategoryDialog({ category, onClose, onDeleted }: DeleteCat
 
     if (error) {
       console.error('Error deleting category:', error)
-      alert('Błąd podczas usuwania kategorii: ' + error.message)
+      toast.error('Błąd podczas usuwania kategorii', {
+        description: error.message
+      })
     } else {
+      toast.success('Kategoria usunięta!')
       onDeleted(category.id)
     }
 

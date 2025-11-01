@@ -190,8 +190,8 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
     <div className="space-y-6">
       {/* Header */}
       <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <div className="flex items-center justify-between">
+        <div className="px-6 py-6">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-bold text-black mb-1">Page Builder</h1>
               <p className="text-sm text-black/60">Zarządzaj sekcjami na stronie głównej</p>
@@ -203,9 +203,8 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
               <span className="text-xs text-black/60 ml-1">aktywnych</span>
             </div>
           </div>
-        </div>
 
-        <div className="px-6 py-4 flex items-center justify-between">
+        <div className="flex items-center justify-between">
           <Button
             onClick={() => setIsAddDialogOpen(true)}
             className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-sm"
@@ -232,15 +231,14 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
             </svg>
           </a>
         </div>
+        </div>
       </div>
 
       {/* Sections list with drag & drop */}
       <div className="bg-white rounded-3xl shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <h2 className="text-2xl font-bold text-black mb-1">Sekcje strony głównej</h2>
-          <p className="text-sm text-black/60">Przeciągnij sekcje aby zmienić kolejność</p>
-        </div>
         <div className="p-6">
+          <h2 className="text-2xl font-bold text-black mb-1">Sekcje strony głównej</h2>
+          <p className="text-sm text-black/60 mb-6">Przeciągnij sekcje aby zmienić kolejność</p>
 
         {sections.length === 0 ? (
           <div className="text-center py-12 text-black/60">

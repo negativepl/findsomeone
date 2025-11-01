@@ -3,7 +3,7 @@ import { SynonymsManager } from '@/components/admin/SynonymsManager'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Synonimy wyszukiwania - Panel admina",
+  title: "Synonimy wyszukiwania - Panel administracyjny",
 }
 
 export default async function AdminSynonymsPage() {

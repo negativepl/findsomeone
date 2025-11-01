@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Audit Logs - Panel Administratora",
+  title: "Audit Logs - Panel administracyjny",
 }
 
 export default async function AdminAuditLogsPage() {

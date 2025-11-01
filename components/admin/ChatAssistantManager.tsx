@@ -1,20 +1,17 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
-import { MODELS } from '@/lib/ai-models'
 
 interface ChatAssistantSettings {
   chat_assistant_enabled?: boolean
   chat_assistant_system_prompt?: string
-  chat_assistant_model?: string
   chat_assistant_welcome_message?: string
   chat_assistant_suggestions?: string[]
   chat_assistant_max_results?: number
@@ -34,9 +31,6 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
   )
   const [chatSystemPrompt, setChatSystemPrompt] = useState(
     initialSettings?.chat_assistant_system_prompt || ''
-  )
-  const [chatModel, setChatModel] = useState(
-    initialSettings?.chat_assistant_model || 'gpt-5-nano'
   )
   const [chatWelcomeMessage, setChatWelcomeMessage] = useState(
     initialSettings?.chat_assistant_welcome_message || ''
@@ -60,7 +54,6 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
         body: JSON.stringify({
           chat_assistant_enabled: chatEnabled,
           chat_assistant_system_prompt: chatSystemPrompt,
-          chat_assistant_model: chatModel,
           chat_assistant_welcome_message: chatWelcomeMessage,
           chat_assistant_suggestions: chatSuggestions.split('\n').filter(s => s.trim()),
           chat_assistant_max_results: chatMaxResults,
@@ -69,14 +62,20 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
       })
 
       if (res.ok) {
-        alert('✅ Ustawienia zostały zapisane!')
+        toast.success('Ustawienia zostały zapisane!', {
+          description: 'Zmiany w asystencie czatu zostały zaktualizowane'
+        })
       } else {
         const error = await res.json()
-        alert(error.error || 'Nie udało się zapisać ustawień')
+        toast.error('Nie udało się zapisać ustawień', {
+          description: error.error || 'Spróbuj ponownie lub skontaktuj się z administratorem'
+        })
       }
     } catch (error) {
       console.error('Failed to save settings:', error)
-      alert('Błąd podczas zapisywania ustawień')
+      toast.error('Błąd podczas zapisywania ustawień', {
+        description: 'Wystąpił problem z połączeniem. Spróbuj ponownie.'
+      })
     } finally {
       setIsSaving(false)
     }
@@ -86,18 +85,11 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
     <div className="space-y-6">
       {/* Chat Assistant Settings */}
       <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-black mb-1">Konfiguracja asystenta</h2>
-              <p className="text-sm text-black/60">Ustawienia AI chatbota dla użytkowników</p>
-            </div>
-            <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
-              {chatModel}
-            </Badge>
-          </div>
-        </div>
         <CardContent className="space-y-6 p-6">
+          <div>
+            <h2 className="text-2xl font-bold text-black mb-1">Konfiguracja asystenta</h2>
+            <p className="text-sm text-black/60 mb-6">Ustawienia AI chatbota dla użytkowników (GPT-4o mini)</p>
+          </div>
           {/* Enable/Disable */}
           <div className="flex items-center justify-between p-4 rounded-2xl bg-black/5">
             <div>
@@ -108,24 +100,6 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
               checked={chatEnabled}
               onCheckedChange={setChatEnabled}
             />
-          </div>
-
-          {/* Model selection */}
-          <div>
-            <Label htmlFor="chatModel">Model AI</Label>
-            <Select value={chatModel} onValueChange={setChatModel}>
-              <SelectTrigger className="mt-2">
-                <SelectValue placeholder="Wybierz model" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={MODELS.GPT_5_NANO}>GPT-5 Nano (ultra-tani, wystarczający)</SelectItem>
-                <SelectItem value={MODELS.GPT_5_MINI}>GPT-5 Mini (lepsza jakość konwersacji)</SelectItem>
-                <SelectItem value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-black/40 mt-1">
-              GPT-5 Nano jest wystarczający dla prostego asystenta
-            </p>
           </div>
 
           {/* Max results */}
@@ -214,27 +188,6 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Info Card */}
-      <Card className="border-0 rounded-3xl bg-gradient-to-br from-[#C44E35]/10 to-[#C44E35]/5">
-        <CardContent className="p-6">
-          <div className="flex items-start gap-4">
-            <div className="p-3 rounded-2xl bg-[#C44E35]/20">
-              <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div className="flex-1">
-              <h3 className="font-semibold text-black mb-2">O asystencie czatu</h3>
-              <p className="text-sm text-black/70 leading-relaxed">
-                Asystent AI pomaga użytkownikom w nawigacji po serwisie i wyszukiwaniu ogłoszeń.
-                Wykorzystuje GPT do wykrywania intencji użytkownika i automatycznego wyszukiwania odpowiednich usług.
-                Może pytać o brakujące informacje (np. miasto) i sugerować alternatywne kategorie.
-              </p>
-            </div>
           </div>
         </CardContent>
       </Card>

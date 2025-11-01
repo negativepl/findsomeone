@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -88,8 +89,11 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
 
     if (error) {
       console.error('Error updating category:', error)
-      alert('Błąd podczas aktualizacji kategorii: ' + error.message)
+      toast.error('Błąd podczas aktualizacji kategorii', {
+        description: error.message
+      })
     } else if (data) {
+      toast.success('Kategoria zaktualizowana!')
       onUpdated(data)
     }
 

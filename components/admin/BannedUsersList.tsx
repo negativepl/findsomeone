@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Ban, Check, UserCheck, Calendar, User } from 'lucide-react'
@@ -28,7 +29,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
 
   const handleUnbanUser = async () => {
     if (!selectedUser || !unbanReason.trim()) {
-      alert('Podaj powód odbanowania')
+      toast.error('Podaj powód odbanowania')
       return
     }
     setIsProcessing(true)
@@ -36,7 +37,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
     try {
       const result = await unbanUser(selectedUser.id, unbanReason)
 
-      alert(result.message)
+      toast.success(result.message)
 
       // Remove from list
       setUsers(users.filter(u => u.id !== selectedUser.id))
@@ -44,7 +45,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
       setUnbanReason('')
       setShowConfirmUnban(false)
     } catch (error: any) {
-      alert('Błąd: ' + error.message)
+      toast.error('Błąd', { description: error.message })
     } finally {
       setIsProcessing(false)
     }

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
 import { createClient } from '@/lib/supabase/client'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -176,7 +177,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
   // Detect location
   const detectLocation = async () => {
     if (!navigator.geolocation) {
-      alert('Twoja przeglądarka nie obsługuje wykrywania lokalizacji')
+      toast.error('Twoja przeglądarka nie obsługuje wykrywania lokalizacji')
       return
     }
 
@@ -201,11 +202,13 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           if (city) {
             handleCitySelect(city)
           } else {
-            alert('Nie udało się określić miasta na podstawie Twojej lokalizacji')
+            toast.error('Nie udało się określić miasta', {
+              description: 'Spróbuj wpisać miasto ręcznie'
+            })
           }
         } catch (error) {
           console.error('Błąd podczas wykrywania lokalizacji:', error)
-          alert('Wystąpił błąd podczas wykrywania lokalizacji')
+          toast.error('Błąd podczas wykrywania lokalizacji')
         } finally {
           setIsDetectingLocation(false)
         }
@@ -215,9 +218,11 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
         setIsDetectingLocation(false)
 
         if (error.code === error.PERMISSION_DENIED) {
-          alert('Odmówiono dostępu do lokalizacji. Sprawdź ustawienia przeglądarki.')
+          toast.error('Odmówiono dostępu do lokalizacji', {
+            description: 'Sprawdź ustawienia przeglądarki'
+          })
         } else {
-          alert('Wystąpił błąd podczas wykrywania lokalizacji')
+          toast.error('Błąd podczas wykrywania lokalizacji')
         }
       }
     )

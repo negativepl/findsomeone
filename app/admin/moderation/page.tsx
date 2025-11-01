@@ -1,5 +1,10 @@
 import { createClient } from '@/lib/supabase/server'
 import { ModerationPanel } from '@/components/admin/ModerationPanel'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: "Moderacja ogłoszeń - Panel administracyjny",
+}
 
 export default async function ModerationPage() {
   const supabase = await createClient()

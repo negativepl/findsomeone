@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { toast } from 'sonner'
 import { Search, MapPin } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -255,7 +256,7 @@ export function NavbarSearchBar() {
   // Detect user location
   const detectLocation = async () => {
     if (!navigator.geolocation) {
-      alert('Twoja przeglądarka nie obsługuje wykrywania lokalizacji')
+      toast.error('Twoja przeglądarka nie obsługuje wykrywania lokalizacji')
       return
     }
 
@@ -282,11 +283,13 @@ export function NavbarSearchBar() {
           if (city) {
             handleCitySelect(city)
           } else {
-            alert('Nie udało się określić miasta na podstawie Twojej lokalizacji')
+            toast.error('Nie udało się określić miasta', {
+              description: 'Spróbuj wpisać miasto ręcznie'
+            })
           }
         } catch (error) {
           console.error('Błąd podczas wykrywania lokalizacji:', error)
-          alert('Wystąpił błąd podczas wykrywania lokalizacji')
+          toast.error('Błąd podczas wykrywania lokalizacji')
         } finally {
           setIsDetectingLocation(false)
         }
@@ -296,13 +299,15 @@ export function NavbarSearchBar() {
         setIsDetectingLocation(false)
 
         if (error.code === error.PERMISSION_DENIED) {
-          alert('Odmówiono dostępu do lokalizacji. Sprawdź ustawienia przeglądarki.')
+          toast.error('Odmówiono dostępu do lokalizacji', {
+            description: 'Sprawdź ustawienia przeglądarki'
+          })
         } else if (error.code === error.POSITION_UNAVAILABLE) {
-          alert('Lokalizacja jest niedostępna')
+          toast.error('Lokalizacja jest niedostępna')
         } else if (error.code === error.TIMEOUT) {
-          alert('Przekroczono limit czasu wykrywania lokalizacji')
+          toast.error('Przekroczono limit czasu wykrywania lokalizacji')
         } else {
-          alert('Wystąpił błąd podczas wykrywania lokalizacji')
+          toast.error('Błąd podczas wykrywania lokalizacji')
         }
       },
       {

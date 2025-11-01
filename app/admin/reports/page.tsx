@@ -3,7 +3,7 @@ import { ReportsList } from '@/components/admin/ReportsList'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Zgłoszenia wiadomości - Panel Administratora",
+  title: "Zgłoszenia wiadomości - Panel administracyjny",
 }
 
 export default async function AdminReportsPage() {

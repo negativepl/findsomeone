@@ -143,13 +143,13 @@ findsomeone/
   - Konfiguracja AI Chat
 - **Technologie:** Supabase RLS, Server Actions
 
-### 6. AI Navigator Bot
+### 6. AI Navigator Bot (Nawigatorek)
 - **Lokalizacja:** `app/api/ai-chat/`, `components/chat/`
 - **Funkcje:**
   - Chatbot pomagający znaleźć ogłoszenia
   - Naturalna rozmowa z użytkownikiem
   - Integracja z wyszukiwaniem semantycznym
-- **Technologie:** OpenAI GPT, streaming responses
+- **Technologie:** OpenAI GPT-4o mini, streaming responses
 
 ## Baza Danych (Supabase)
 
@@ -283,7 +283,7 @@ SELECT * FROM search_posts_hybrid(
 ```
 
 ### 2. AI Navigator Bot (OpenAI GPT)
-- Model: GPT-4 Turbo
+- Model: GPT-4o mini (konfigurowalny w panelu admina)
 - Streaming responses
 - Context-aware (historia konwersacji)
 - Integracja z semantic search

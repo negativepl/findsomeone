@@ -3,7 +3,7 @@ import { AISettingsManager } from '@/components/admin/AISettingsManager'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Ustawienia AI - Panel admina",
+  title: "Ustawienia AI - Panel administracyjny",
 }
 
 export default async function AISettingsPage() {

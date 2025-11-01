@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -127,15 +128,21 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
           setAiSuggestions(data.suggestions)
           setShowAIPanel(true)
         } else {
-          alert(data.message || 'Brak terminów do przetworzenia. Spróbuj trybu "Własny termin" lub dodaj dane do wyszukiwarki.')
+          toast.info('Brak terminów do przetworzenia', {
+            description: 'Spróbuj trybu "Własny termin" lub dodaj dane do wyszukiwarki.'
+          })
         }
       } else {
         const error = await res.json()
-        alert(error.message || error.error || 'Nie udało się wygenerować synonimów')
+        toast.error('Nie udało się wygenerować synonimów', {
+          description: error.message || error.error || 'Spróbuj ponownie'
+        })
       }
     } catch (error) {
       console.error('Failed to generate AI synonyms:', error)
-      alert('Błąd podczas generowania synonimów')
+      toast.error('Błąd podczas generowania synonimów', {
+        description: 'Wystąpił problem z połączeniem'
+      })
     } finally {
       setIsGenerating(false)
     }
@@ -155,12 +162,17 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
 
       if (res.ok) {
         const data = await res.json()
+        toast.success('Synonimy zostały zapisane!', {
+          description: 'Strona zostanie odświeżona'
+        })
         // Refresh synonyms list
         window.location.reload()
       }
     } catch (error) {
       console.error('Failed to apply synonyms:', error)
-      alert('Błąd podczas zapisywania synonimów')
+      toast.error('Błąd podczas zapisywania synonimów', {
+        description: 'Spróbuj ponownie'
+      })
     } finally {
       setIsLoading(false)
     }
@@ -203,15 +215,21 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
           setCategoryAiSuggestions(data.suggestions)
           setShowCategoryAIPanel(true)
         } else {
-          alert(data.message || 'Brak kategorii do przetworzenia')
+          toast.info('Brak kategorii do przetworzenia', {
+            description: 'Wszystkie kategorie mogą już mieć synonimy'
+          })
         }
       } else {
         const error = await res.json()
-        alert(error.message || error.error || 'Nie udało się wygenerować synonimów')
+        toast.error('Nie udało się wygenerować synonimów', {
+          description: error.message || error.error || 'Spróbuj ponownie'
+        })
       }
     } catch (error) {
       console.error('Failed to generate category synonyms:', error)
-      alert('Błąd podczas generowania synonimów')
+      toast.error('Błąd podczas generowania synonimów', {
+        description: 'Wystąpił problem z połączeniem'
+      })
     } finally {
       setIsGeneratingCategories(false)
     }
@@ -230,11 +248,16 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       })
 
       if (res.ok) {
+        toast.success('Synonimy kategorii zostały zapisane!', {
+          description: 'Strona zostanie odświeżona'
+        })
         window.location.reload()
       }
     } catch (error) {
       console.error('Failed to apply category synonyms:', error)
-      alert('Błąd podczas zapisywania synonimów')
+      toast.error('Błąd podczas zapisywania synonimów', {
+        description: 'Spróbuj ponownie'
+      })
     } finally {
       setIsLoading(false)
     }
@@ -303,7 +326,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
               </div>
               <div>
                 <CardTitle className="text-xl">Generator synonimów AI</CardTitle>
-                <p className="text-sm text-black/60 mt-1">Wykorzystuje GPT-5 nano do inteligentnego generowania synonimów</p>
+                <p className="text-sm text-black/60 mt-1 mb-2">Wykorzystuje GPT-5 nano do inteligentnego generowania synonimów</p>
               </div>
             </div>
             <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
@@ -450,11 +473,9 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
 
       {/* Add New Synonym Manually */}
       <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10 bg-gradient-to-r from-green-500/5 to-transparent">
-          <h2 className="text-2xl font-bold text-black mb-1">Dodaj synonym ręcznie</h2>
-          <p className="text-sm text-black/60">Wprowadź termin główny i jego synonim</p>
-        </div>
         <CardContent className="p-6">
+          <h2 className="text-2xl font-bold text-black mb-1">Dodaj synonym ręcznie</h2>
+          <p className="text-sm text-black/60 mb-6">Wprowadź termin główny i jego synonim</p>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="term">Termin główny</Label>
@@ -489,11 +510,9 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
 
       {/* Existing Synonyms */}
       <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10 bg-gradient-to-r from-blue-500/5 to-transparent">
-          <h2 className="text-2xl font-bold text-black mb-1">Istniejące synonimy ({synonyms.length})</h2>
-          <p className="text-sm text-black/60">Lista wszystkich aktywnych synonimów terminów</p>
-        </div>
         <CardContent className="p-6">
+          <h2 className="text-2xl font-bold text-black mb-1">Istniejące synonimy ({synonyms.length})</h2>
+          <p className="text-sm text-black/60 mb-6">Lista wszystkich aktywnych synonimów terminów</p>
           <div className="space-y-3">
             {Object.entries(groupedSynonyms).map(([term, syns]) => {
               const isExpanded = expandedTerms.has(term)
@@ -539,15 +558,21 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                                     [term]: filteredSuggestions
                                   }))
                                 } else {
-                                  alert('AI wygenerowało tylko synonimy które już istnieją')
+                                  toast.info('AI wygenerowało tylko synonimy które już istnieją', {
+                                    description: 'Spróbuj dodać ręcznie inne warianty'
+                                  })
                                 }
                               } else {
-                                alert(data.message || 'AI wygenerowało takie same synonimy')
+                                toast.info('AI wygenerowało takie same synonimy', {
+                                  description: data.message || 'Brak nowych sugestii'
+                                })
                               }
                             }
                           } catch (error) {
                             console.error('Failed to expand:', error)
-                            alert('Błąd podczas generowania synonimów')
+                            toast.error('Błąd podczas generowania synonimów', {
+                              description: 'Spróbuj ponownie'
+                            })
                           } finally {
                             setExpandingTerm(null)
                           }
@@ -702,7 +727,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                   </div>
                   <div>
                     <CardTitle className="text-xl">Generator synonimów kategorii AI</CardTitle>
-                    <p className="text-sm text-black/60 mt-1">Automatycznie generuj synonimy dla wszystkich kategorii</p>
+                    <p className="text-sm text-black/60 mt-1 mb-2">Automatycznie generuj synonimy dla wszystkich kategorii</p>
                   </div>
                 </div>
                 <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
@@ -802,13 +827,11 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
           )}
 
           <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
-            <div className="px-8 py-6 border-b border-black/10 bg-gradient-to-r from-purple-500/5 to-transparent">
+            <CardContent className="p-6">
               <h2 className="text-2xl font-bold text-black mb-1">Synonimy kategorii ({initialCategories.length})</h2>
-              <p className="text-sm text-black/60">
+              <p className="text-sm text-black/60 mb-6">
                 Dodaj synonimy do kategorii aby użytkownicy łatwiej je znajdowali. Np. dla kategorii "Hydraulik" dodaj: "instalator", "monter"
               </p>
-            </div>
-            <CardContent className="p-6">
               <div className="space-y-3">
                 {initialCategories.map((category) => (
                   <div key={category.id} className="border border-black/10 rounded-2xl p-4">
@@ -849,15 +872,21 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                                       [category.id]: filteredSuggestions
                                     }))
                                   } else {
-                                    alert('AI wygenerowało tylko synonimy które już istnieją')
+                                    toast.info('AI wygenerowało tylko synonimy które już istnieją', {
+                                      description: 'Spróbuj dodać ręcznie inne warianty'
+                                    })
                                   }
                                 } else {
-                                  alert(data.message || 'AI nie wygenerowało nowych synonimów')
+                                  toast.info('AI nie wygenerowało nowych synonimów', {
+                                    description: data.message || 'Brak nowych sugestii'
+                                  })
                                 }
                               }
                             } catch (error) {
                               console.error('Failed to expand category:', error)
-                              alert('Błąd podczas generowania synonimów')
+                              toast.error('Błąd podczas generowania synonimów', {
+                                description: 'Spróbuj ponownie'
+                              })
                             } finally {
                               setExpandingCategory(null)
                             }
@@ -895,13 +924,18 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                                     method: 'DELETE'
                                   })
                                   if (res.ok) {
+                                    toast.success('Synonim usunięty!')
                                     window.location.reload()
                                   } else {
-                                    alert('Błąd podczas usuwania synonimu')
+                                    toast.error('Błąd podczas usuwania synonimu', {
+                                      description: 'Spróbuj ponownie'
+                                    })
                                   }
                                 } catch (error) {
                                   console.error('Failed to delete:', error)
-                                  alert('Błąd podczas usuwania synonimu')
+                                  toast.error('Błąd podczas usuwania synonimu', {
+                                    description: 'Wystąpił problem z połączeniem'
+                                  })
                                 }
                               }}
                               className="text-red-500 hover:text-red-700 transition-colors"
@@ -995,14 +1029,19 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                             })
                           })
                           if (res.ok) {
+                            toast.success('Synonim dodany!')
                             window.location.reload()
                           } else {
                             const error = await res.json()
-                            alert(error.error || 'Błąd podczas dodawania synonimu')
+                            toast.error('Błąd podczas dodawania synonimu', {
+                              description: error.error || 'Spróbuj ponownie'
+                            })
                           }
                         } catch (error) {
                           console.error('Failed to add category synonym:', error)
-                          alert('Błąd podczas dodawania synonimu')
+                          toast.error('Błąd podczas dodawania synonimu', {
+                            description: 'Wystąpił problem z połączeniem'
+                          })
                         }
                       }}
                       className="text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium flex items-center gap-1"

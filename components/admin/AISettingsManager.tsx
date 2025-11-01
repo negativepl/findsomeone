@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
@@ -199,14 +200,20 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       if (res.ok) {
         const data = await res.json()
         setSettings(data.settings)
-        alert('✅ Ustawienia zostały zapisane!')
+        toast.success('Ustawienia zostały zapisane!', {
+          description: 'Konfiguracja AI została zaktualizowana'
+        })
       } else {
         const error = await res.json()
-        alert(error.error || 'Nie udało się zapisać ustawień')
+        toast.error('Nie udało się zapisać ustawień', {
+          description: error.error || 'Spróbuj ponownie'
+        })
       }
     } catch (error) {
       console.error('Failed to save settings:', error)
-      alert('Błąd podczas zapisywania ustawień')
+      toast.error('Błąd podczas zapisywania ustawień', {
+        description: 'Wystąpił problem z połączeniem'
+      })
     } finally {
       setIsSaving(false)
     }
@@ -281,8 +288,10 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               })
 
               setTimeout(() => {
-                const errorMessage = data.errors?.length > 0 ? '\n\nBłędy:\n' + data.errors.slice(0, 3).join('\n') : ''
-                alert(`✅ Wygenerowano ${data.generated} opisów!\nNie udało się: ${data.failed}${errorMessage}`)
+                const errorMessage = data.errors?.length > 0 ? '\n' + data.errors.slice(0, 3).join('\n') : ''
+                toast.success('Generowanie zakończone!', {
+                  description: `Wygenerowano ${data.generated} opisów. Nie udało się: ${data.failed}${errorMessage}`
+                })
 
                 if (data.generated > 0) {
                   window.location.reload()
@@ -296,7 +305,9 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       }
     } catch (error) {
       console.error('Failed to generate descriptions:', error)
-      alert('Błąd podczas generowania opisów')
+      toast.error('Błąd podczas generowania opisów', {
+        description: 'Sprawdź połączenie i spróbuj ponownie'
+      })
     } finally {
       setIsGenerating(false)
       setTimeout(() => setGenerationProgress(null), 2000)
@@ -327,14 +338,20 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
         setCategorySynonymModel(data.settings.category_synonym_model)
         setCategorySynonymMaxSynonyms(data.settings.category_synonym_max_synonyms)
         setCategorySynonymMinSynonyms(data.settings.category_synonym_min_synonyms)
-        alert('✅ Przywrócono ustawienia domyślne!')
+        toast.success('Przywrócono ustawienia domyślne!', {
+          description: 'Wszystkie ustawienia zostały zresetowane'
+        })
       } else {
         const error = await res.json()
-        alert(error.error || 'Nie udało się przywrócić ustawień')
+        toast.error('Nie udało się przywrócić ustawień', {
+          description: error.error || 'Spróbuj ponownie'
+        })
       }
     } catch (error) {
       console.error('Failed to reset settings:', error)
-      alert('Błąd podczas przywracania ustawień')
+      toast.error('Błąd podczas przywracania ustawień', {
+        description: 'Wystąpił problem z połączeniem'
+      })
     } finally {
       setIsLoading(false)
     }
@@ -389,8 +406,8 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
         <>
       {/* Synonym Generation Settings */}
       <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <div className="flex items-center justify-between">
+        <CardContent className="space-y-6 p-6">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-black mb-1">Generowanie synonimów</h2>
               <p className="text-sm text-black/60">Konfiguracja promptu i modelu AI dla terminów wyszukiwania</p>
@@ -399,8 +416,6 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               {synonymModel}
             </Badge>
           </div>
-        </div>
-        <CardContent className="space-y-6 p-6">
           {/* Model selection */}
           <div>
             <Label htmlFor="model">Model AI</Label>
@@ -497,34 +512,6 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
           </div>
         </CardContent>
       </Card>
-
-      {/* Future features placeholder */}
-      <Card className="border-0 rounded-3xl bg-white opacity-50">
-        <CardHeader>
-          <CardTitle>Przyszłe funkcje AI</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3 text-black/60">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-black/20"></div>
-              <span>Query Expansion - rozszerzanie zapytań</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-black/20"></div>
-              <span>Semantic Search - wyszukiwanie semantyczne</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-black/20"></div>
-              <span>Query Rewriting - poprawianie zapytań</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-black/20"></div>
-              <span>Intent Recognition - rozpoznawanie intencji</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
         </>
       )}
 
@@ -532,8 +519,8 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
         <>
       {/* Category Synonym Generation Settings */}
       <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <div className="flex items-center justify-between">
+        <CardContent className="space-y-6 p-6">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-black mb-1">Synonimy kategorii</h2>
               <p className="text-sm text-black/60">Konfiguracja promptu i modelu AI dla kategorii usług</p>
@@ -542,8 +529,6 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               {categorySynonymModel}
             </Badge>
           </div>
-        </div>
-        <CardContent className="space-y-6 p-6">
           {/* Model selection */}
           <div>
             <Label htmlFor="categoryModel">Model AI</Label>
@@ -647,8 +632,8 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
         <>
       {/* SEO Description Generation Settings */}
       <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
-        <div className="px-8 py-6 border-b border-black/10">
-          <div className="flex items-center justify-between">
+        <CardContent className="space-y-6 p-6">
+          <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-black mb-1">Generowanie opisów SEO</h2>
               <p className="text-sm text-black/60">Automatyczne tworzenie opisów dla kategorii i podkategorii</p>
@@ -657,8 +642,6 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               {seoModel}
             </Badge>
           </div>
-        </div>
-        <CardContent className="space-y-6 p-6">
           {/* Bulk Generate Button */}
           <div className="p-6 rounded-2xl bg-[#C44E35]/5 border border-[#C44E35]/20">
             <div className="flex items-start justify-between gap-6">
@@ -821,20 +804,6 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
         </CardContent>
       </Card>
         </>
-      )}
-
-      {/* Debug info */}
-      {settings && (
-        <Card className="border-0 rounded-3xl bg-black/5">
-          <CardHeader>
-            <CardTitle className="text-sm">Informacje debugowania</CardTitle>
-          </CardHeader>
-          <CardContent className="text-xs text-black/60 font-mono space-y-1">
-            <div>ID: {settings.id}</div>
-            <div>Utworzono: {new Date(settings.created_at).toLocaleString('pl-PL')}</div>
-            <div>Ostatnia aktualizacja: {new Date(settings.updated_at).toLocaleString('pl-PL')}</div>
-          </CardContent>
-        </Card>
       )}
     </div>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import { toast } from 'sonner'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -30,6 +31,8 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
   const [loading, setLoading] = useState<string | null>(null)
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'badges' | 'info' | 'settings'>('badges')
+  const [banReason, setBanReason] = useState('')
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
 
   const filteredUsers = users.filter(user => {
     const query = searchQuery.toLowerCase()
@@ -57,9 +60,12 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       setUsers(users.map(user =>
         user.id === userId ? { ...user, [field]: value } : user
       ))
+      toast.success('Użytkownik zaktualizowany!')
     } catch (error) {
       console.error('Error updating user:', error)
-      alert('Nie udało się zaktualizować użytkownika')
+      toast.error('Nie udało się zaktualizować użytkownika', {
+        description: 'Spróbuj ponownie'
+      })
     } finally {
       setLoading(null)
     }
@@ -72,9 +78,83 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text)
-      alert('ID skopiowane do schowka!')
+      toast.success('ID skopiowane do schowka!')
     } catch (err) {
       console.error('Failed to copy:', err)
+      toast.error('Nie udało się skopiować')
+    }
+  }
+
+  const banUser = async (userId: string) => {
+    if (!banReason.trim()) {
+      toast.error('Podaj powód bana')
+      return
+    }
+
+    setLoading(userId)
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'ban', reason: banReason })
+      })
+
+      if (!res.ok) throw new Error('Failed to ban user')
+
+      setUsers(users.map(user =>
+        user.id === userId ? { ...user, banned: true } : user
+      ))
+      setBanReason('')
+      toast.success('Użytkownik został zbanowany')
+    } catch (error) {
+      console.error('Error banning user:', error)
+      toast.error('Nie udało się zbanować użytkownika')
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const unbanUser = async (userId: string) => {
+    setLoading(userId)
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'unban' })
+      })
+
+      if (!res.ok) throw new Error('Failed to unban user')
+
+      setUsers(users.map(user =>
+        user.id === userId ? { ...user, banned: false } : user
+      ))
+      toast.success('Użytkownik został odbanowany')
+    } catch (error) {
+      console.error('Error unbanning user:', error)
+      toast.error('Nie udało się odbanować użytkownika')
+    } finally {
+      setLoading(null)
+    }
+  }
+
+  const deleteUser = async (userId: string) => {
+    setLoading(userId)
+    try {
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: 'DELETE'
+      })
+
+      if (!res.ok) throw new Error('Failed to delete user')
+
+      setUsers(users.filter(user => user.id !== userId))
+      setShowDeleteConfirm(null)
+      setExpandedUserId(null)
+      toast.success('Użytkownik został usunięty')
+    } catch (error) {
+      console.error('Error deleting user:', error)
+      toast.error('Nie udało się usunąć użytkownika')
+    } finally {
+      setLoading(null)
     }
   }
 
@@ -100,9 +180,6 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
               className="pl-10 rounded-2xl"
             />
           </div>
-          <p className="text-sm text-black/60 mt-2">
-            Znaleziono: {filteredUsers.length} użytkowników
-          </p>
         </CardContent>
       </Card>
 
@@ -229,53 +306,52 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                     {/* Expanded Controls */}
                     {expandedUserId === user.id && (
                       <tr key={`${user.id}-expanded`}>
-                        <td colSpan={5} className="bg-gradient-to-b from-black/5 to-white">
-                          <div className="p-6">
-                            {/* Tabs Navigation */}
-                            <div className="flex gap-2 mb-6 border-b border-black/10">
-                              <button
-                                onClick={() => setActiveTab('badges')}
-                                className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-                                  activeTab === 'badges'
-                                    ? 'text-[#C44E35]'
-                                    : 'text-black/60 hover:text-black'
-                                }`}
-                              >
-                                Badges
-                                {activeTab === 'badges' && (
-                                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-                                )}
-                              </button>
-                              <button
-                                onClick={() => setActiveTab('info')}
-                                className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-                                  activeTab === 'info'
-                                    ? 'text-[#C44E35]'
-                                    : 'text-black/60 hover:text-black'
-                                }`}
-                              >
-                                Informacje
-                                {activeTab === 'info' && (
-                                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-                                )}
-                              </button>
-                              <button
-                                onClick={() => setActiveTab('settings')}
-                                className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-                                  activeTab === 'settings'
-                                    ? 'text-[#C44E35]'
-                                    : 'text-black/60 hover:text-black'
-                                }`}
-                              >
-                                Ustawienia
-                                {activeTab === 'settings' && (
-                                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-                                )}
-                              </button>
-                            </div>
+                        <td colSpan={5} className="bg-black/5 px-6 py-6">
+                          {/* Tabs Navigation */}
+                          <div className="flex gap-2 mb-6 border-b border-black/10">
+                            <button
+                              onClick={() => setActiveTab('badges')}
+                              className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+                                activeTab === 'badges'
+                                  ? 'text-[#C44E35]'
+                                  : 'text-black/60 hover:text-black'
+                              }`}
+                            >
+                              Badges
+                              {activeTab === 'badges' && (
+                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => setActiveTab('info')}
+                              className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+                                activeTab === 'info'
+                                  ? 'text-[#C44E35]'
+                                  : 'text-black/60 hover:text-black'
+                              }`}
+                            >
+                              Informacje
+                              {activeTab === 'info' && (
+                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => setActiveTab('settings')}
+                              className={`px-4 py-2 text-sm font-medium transition-colors relative ${
+                                activeTab === 'settings'
+                                  ? 'text-[#C44E35]'
+                                  : 'text-black/60 hover:text-black'
+                              }`}
+                            >
+                              Ustawienia
+                              {activeTab === 'settings' && (
+                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+                              )}
+                            </button>
+                          </div>
 
-                            {/* Tab Content */}
-                            <div className="max-w-4xl mx-auto">
+                          {/* Tab Content */}
+                          <div>
                               {activeTab === 'badges' && (
                                 <div>
                                   <h4 className="text-sm font-semibold text-black mb-4">Zarządzaj odznakami użytkownika</h4>
@@ -387,12 +463,98 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               )}
 
                               {activeTab === 'settings' && (
-                                <div className="bg-white rounded-2xl p-6 border border-black/10">
-                                  <h4 className="text-sm font-semibold text-black mb-4">Dodatkowe ustawienia</h4>
-                                  <p className="text-sm text-black/60">Wkrótce dostępne dodatkowe opcje zarządzania użytkownikiem...</p>
+                                <div className="space-y-4">
+                                  {/* Ban/Unban Section */}
+                                  <div className="bg-white rounded-2xl p-6 border border-black/10">
+                                    <h4 className="text-sm font-semibold text-black mb-4">Zarządzanie dostępem</h4>
+
+                                    {user.banned ? (
+                                      <div className="space-y-4">
+                                        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                                          <div className="flex items-center gap-2 mb-2">
+                                            <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                            </svg>
+                                            <span className="font-semibold text-red-900">Użytkownik zbanowany</span>
+                                          </div>
+                                          <p className="text-sm text-red-800">Ten użytkownik został zablokowany i nie może korzystać z platformy.</p>
+                                        </div>
+                                        <Button
+                                          onClick={() => unbanUser(user.id)}
+                                          disabled={loading === user.id}
+                                          className="w-full rounded-lg bg-green-600 hover:bg-green-700 text-white"
+                                        >
+                                          {loading === user.id ? 'Odbanowywanie...' : 'Odbanuj użytkownika'}
+                                        </Button>
+                                      </div>
+                                    ) : (
+                                      <div className="space-y-4">
+                                        <div className="space-y-2">
+                                          <label htmlFor={`ban-reason-${user.id}`} className="text-sm font-medium text-black">
+                                            Powód bana
+                                          </label>
+                                          <Input
+                                            id={`ban-reason-${user.id}`}
+                                            placeholder="np. Spam, Nieodpowiednie treści, Naruszenie regulaminu..."
+                                            value={banReason}
+                                            onChange={(e) => setBanReason(e.target.value)}
+                                            className="rounded-lg"
+                                          />
+                                          <p className="text-xs text-black/60">Podaj powód zablokowania tego użytkownika</p>
+                                        </div>
+                                        <Button
+                                          onClick={() => banUser(user.id)}
+                                          disabled={loading === user.id || !banReason.trim()}
+                                          className="w-full rounded-lg bg-red-600 hover:bg-red-700 text-white"
+                                        >
+                                          {loading === user.id ? 'Banowanie...' : 'Zbanuj użytkownika'}
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  {/* Delete User Section */}
+                                  <div className="bg-white rounded-2xl p-6 border border-red-200">
+                                    <h4 className="text-sm font-semibold text-red-900 mb-4">Strefa niebezpieczna</h4>
+
+                                    {showDeleteConfirm === user.id ? (
+                                      <div className="space-y-4">
+                                        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+                                          <p className="text-sm text-red-900 font-semibold mb-2">Czy na pewno chcesz usunąć tego użytkownika?</p>
+                                          <p className="text-xs text-red-800">Ta akcja jest nieodwracalna. Wszystkie dane użytkownika, w tym ogłoszenia, zostaną trwale usunięte.</p>
+                                        </div>
+                                        <div className="flex gap-3">
+                                          <Button
+                                            onClick={() => setShowDeleteConfirm(null)}
+                                            variant="outline"
+                                            className="flex-1 rounded-lg"
+                                          >
+                                            Anuluj
+                                          </Button>
+                                          <Button
+                                            onClick={() => deleteUser(user.id)}
+                                            disabled={loading === user.id}
+                                            className="flex-1 rounded-lg bg-red-600 hover:bg-red-700 text-white"
+                                          >
+                                            {loading === user.id ? 'Usuwanie...' : 'Tak, usuń'}
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    ) : (
+                                      <div className="space-y-2">
+                                        <p className="text-sm text-black/60 mb-3">Trwale usuń użytkownika i wszystkie jego dane z platformy.</p>
+                                        <Button
+                                          onClick={() => setShowDeleteConfirm(user.id)}
+                                          variant="outline"
+                                          className="w-full rounded-lg border-red-300 text-red-700 hover:bg-red-50"
+                                        >
+                                          Usuń użytkownika
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                               )}
-                            </div>
                           </div>
                         </td>
                       </tr>

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -104,9 +105,12 @@ export function ModerationPanel({
       }
 
       await loadPosts()
+      toast.success('Akcja wykonana pomyślnie')
     } catch (error) {
       console.error('Error performing action:', error)
-      alert('Wystąpił błąd podczas wykonywania akcji')
+      toast.error('Wystąpił błąd podczas wykonywania akcji', {
+        description: 'Spróbuj ponownie'
+      })
     } finally {
       setActionLoading(null)
     }

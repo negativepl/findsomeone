@@ -3,7 +3,7 @@ import { PostReportsList } from '@/components/admin/PostReportsList'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Zgłoszenia ogłoszeń - Panel Administratora",
+  title: "Zgłoszenia ogłoszeń - Panel administracyjny",
 }
 
 export default async function AdminPostReportsPage() {

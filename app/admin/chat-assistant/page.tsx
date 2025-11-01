@@ -3,7 +3,7 @@ import { ChatAssistantManager } from '@/components/admin/ChatAssistantManager'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Asystent czatu - Panel admina",
+  title: "Asystent czatu - Panel administracyjny",
 }
 
 export default async function ChatAssistantPage() {
@@ -12,7 +12,7 @@ export default async function ChatAssistantPage() {
   // Fetch AI settings (chat assistant fields)
   const { data: settings } = await supabase
     .from('ai_settings')
-    .select('chat_assistant_enabled, chat_assistant_system_prompt, chat_assistant_model, chat_assistant_welcome_message, chat_assistant_suggestions, chat_assistant_max_results, chat_assistant_require_city')
+    .select('chat_assistant_enabled, chat_assistant_system_prompt, chat_assistant_welcome_message, chat_assistant_suggestions, chat_assistant_max_results, chat_assistant_require_city')
     .single()
 
   return (

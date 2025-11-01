@@ -34,15 +34,32 @@ interface ChatSettings {
   suggestions: string[]
 }
 
+// Helper function to load messages from localStorage
+const loadMessagesFromStorage = (): Message[] => {
+  if (typeof window === 'undefined') return []
+
+  try {
+    const saved = localStorage.getItem('ai-assistant-messages')
+    if (saved) {
+      return JSON.parse(saved)
+    }
+  } catch (error) {
+    // Silent fail
+  }
+  return []
+}
+
 export function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
+  const [messages, setMessages] = useState<Message[]>(loadMessagesFromStorage)
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
+  const [isButtonHovered, setIsButtonHovered] = useState(false)
   const [showGradient, setShowGradient] = useState(false)
   const [settings, setSettings] = useState<ChatSettings | null>(null)
   const [isLoadingSettings, setIsLoadingSettings] = useState(true)
+  const [isPinned, setIsPinned] = useState(false)
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
@@ -58,6 +75,21 @@ export function AIAssistant() {
 
   useEffect(() => {
     scrollToBottom()
+  }, [messages])
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    try {
+      if (messages.length > 0) {
+        localStorage.setItem('ai-assistant-messages', JSON.stringify(messages))
+      } else {
+        localStorage.removeItem('ai-assistant-messages')
+      }
+    } catch (error) {
+      // Silent fail
+    }
   }, [messages])
 
   // Fetch settings on mount
@@ -137,6 +169,11 @@ export function AIAssistant() {
     }
   }
 
+  const handleClearChat = () => {
+    setMessages([])
+    localStorage.removeItem('ai-assistant-messages')
+  }
+
   const handleMouseEnter = () => {
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current)
@@ -151,6 +188,9 @@ export function AIAssistant() {
 
   const handleMouseLeave = () => {
     setIsHovered(false)
+    // Don't auto-close if pinned
+    if (isPinned) return
+
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current)
     }
@@ -200,10 +240,13 @@ export function AIAssistant() {
     }
   }, [logoAnimationData, showLogoLottie])
 
-  // Block body scroll when chat is open on mobile
+  // Block body scroll when chat is open on mobile ONLY
   useEffect(() => {
-    if (isOpen) {
-      // Prevent body scroll but allow chat scroll
+    // Check if mobile (screen width < 768px)
+    const isMobile = window.innerWidth < 768
+
+    if (isOpen && isMobile) {
+      // Prevent body scroll but allow chat scroll on mobile only
       document.body.style.overflow = 'hidden'
       document.body.style.touchAction = 'none'
     } else {
@@ -241,6 +284,8 @@ export function AIAssistant() {
     >
       {/* AI Button in Navbar */}
       <button
+        onMouseEnter={() => setIsButtonHovered(true)}
+        onMouseLeave={() => setIsButtonHovered(false)}
         className="relative inline-flex items-center justify-center h-[34px] w-[34px] md:h-10 md:w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
         aria-label="Asystent AI"
         aria-expanded={isOpen}
@@ -260,7 +305,7 @@ export function AIAssistant() {
             </svg>
           }
           className="h-4 w-4 md:h-5 md:w-5"
-          isHovered={isHovered}
+          isHovered={isButtonHovered}
         />
         {messages.length > 0 && (
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full border-2 border-[#C44E35]" />
@@ -310,19 +355,48 @@ export function AIAssistant() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-black">Nawigatorek</h3>
-                  <p className="text-[10px] text-black/40 leading-tight">
-                    wersja zapoznawcza, może popełniać błędy
+                  <p className="text-[10px] text-black/60 leading-tight">
+                    wersja alfa, może popełniać błędy
                   </p>
                 </div>
               </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+              <div className="flex items-center gap-1">
+                {/* Clear chat button - only show when there are messages */}
+                {messages.length > 0 && (
+                  <button
+                    onClick={handleClearChat}
+                    className="w-8 h-8 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-black/40 hover:text-[#C44E35]"
+                    title="Wyczyść historię"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                  </button>
+                )}
+                {/* Pin button */}
+                <button
+                  onClick={() => setIsPinned(!isPinned)}
+                  className={`w-8 h-8 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors ${isPinned ? 'text-[#C44E35]' : 'text-black/40'}`}
+                  title={isPinned ? "Odepnij okno" : "Przypnij okno"}
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                  </svg>
+                </button>
+                {/* Close button */}
+                <button
+                  onClick={() => {
+                    setIsOpen(false)
+                    setIsPinned(false)
+                  }}
+                  className="w-8 h-8 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors"
+                  title="Zamknij"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
             </div>
 
             {/* Messages */}

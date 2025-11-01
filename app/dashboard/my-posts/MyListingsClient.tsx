@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useTransition, useEffect, useRef } from 'react'
+import { toast } from 'sonner'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -198,10 +199,12 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
     startTransition(async () => {
       const result = await updatePostStatus(postId, newStatus)
       if (result.error) {
-        alert('Błąd: ' + result.error)
+        toast.error('Błąd', { description: result.error })
       } else {
         if (newStatus === 'active') {
-          alert('Ogłoszenie zostało wysłane do ponownej weryfikacji. Będzie widoczne publicznie po zatwierdzeniu.')
+          toast.success('Ogłoszenie wysłane do weryfikacji', {
+            description: 'Będzie widoczne publicznie po zatwierdzeniu'
+          })
         }
         router.refresh()
       }
@@ -214,7 +217,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
     startTransition(async () => {
       const result = await deletePost(postToDelete)
       if (result.error) {
-        alert('Błąd: ' + result.error)
+        toast.error('Błąd', { description: result.error })
       } else {
         router.refresh()
       }
@@ -236,16 +239,18 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
   const handleAppeal = async () => {
     if (!postToAppeal || !appealMessage.trim()) {
-      alert('Proszę podać powód odwołania')
+      toast.error('Proszę podać powód odwołania')
       return
     }
 
     startTransition(async () => {
       const result = await appealRejectedPost(postToAppeal, appealMessage)
       if (result.error) {
-        alert('Błąd: ' + result.error)
+        toast.error('Błąd', { description: result.error })
       } else {
-        alert('Odwołanie zostało wysłane. Moderator sprawdzi je w ciągu 24 godzin.')
+        toast.success('Odwołanie wysłane', {
+          description: 'Moderator sprawdzi je w ciągu 24 godzin'
+        })
         setAppealDialogOpen(false)
         setPostToAppeal(null)
         setAppealMessage('')
@@ -274,7 +279,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
         router.refresh()
       } catch (error) {
-        alert('Błąd podczas przedłużania ogłoszenia')
+        toast.error('Błąd podczas przedłużania ogłoszenia', {
+          description: 'Spróbuj ponownie'
+        })
       }
     })
   }
