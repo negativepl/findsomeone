@@ -71,8 +71,8 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="text-black/40 hover:text-red-600 transition-colors p-1">
-        <Flag className="w-4 h-4" />
+      <DialogTrigger className="text-black/40 hover:text-red-600 transition-colors p-1" aria-label="Zgłoś wiadomość">
+        <Flag className="w-4 h-4" aria-hidden="true" />
       </DialogTrigger>
       <DialogContent className="sm:max-w-md border-0 rounded-3xl shadow-xl">
         {success ? (

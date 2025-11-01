@@ -84,7 +84,7 @@ export function MessageBubble({
 
         {/* Time and Status */}
         <div className="flex items-center gap-2 mt-1 px-2">
-          <span className="text-xs text-black/50">
+          <span className="text-xs text-gray-600">
             {formatTime(createdAt)}
           </span>
           {/* Report button - only for messages from others */}

@@ -96,8 +96,9 @@ export default async function ConversationPage({
             <Link
               href="/dashboard/messages"
               className="flex-shrink-0 hover:bg-black/5 rounded-full p-2 transition-colors"
+              aria-label="Wróć do listy wiadomości"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>

@@ -247,7 +247,7 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
   }
 
   return (
-    <div className="flex-1 flex flex-col">
+    <main className="flex-1 flex flex-col">
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto pb-32">
         {/* Spacer for desktop header */}
@@ -305,6 +305,6 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
           </div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }
