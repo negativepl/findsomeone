@@ -144,17 +144,19 @@ export function AIAssistant() {
     }
     setIsHovered(true)
     setIsOpen(true)
+
+    // Close other dropdowns when AI chat opens
+    window.dispatchEvent(new CustomEvent('ai-chat-opened'))
   }
 
   const handleMouseLeave = () => {
     setIsHovered(false)
-    // TEMPORARY: Disabled auto-close for debugging
-    // if (closeTimeoutRef.current) {
-    //   clearTimeout(closeTimeoutRef.current)
-    // }
-    // closeTimeoutRef.current = setTimeout(() => {
-    //   setIsOpen(false)
-    // }, 200)
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current)
+    }
+    closeTimeoutRef.current = setTimeout(() => {
+      setIsOpen(false)
+    }, 200)
   }
 
   // Load logo animation when chat opens
@@ -246,16 +248,13 @@ export function AIAssistant() {
         <LottieIcon
           animationPath="/animations/ai-assistant.json"
           fallbackSvg={
-            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24">
-              <g clipPath="url(#so68geZKzSa)">
-                <path stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.25 4.75h6.5c3.31 0 6 2.69 6 6v2.5c0 3.31-2.69 6-6 6H3.25v-8.5c0-3.31 2.69-6 6-6"/>
-                <circle cx="8.5" cy="12" r="1" fill="#fff"/>
-                <path fill="#fff" d="M13.5 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
-                <circle cx="16.5" cy="12" r="1" fill="#fff"/>
+            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <g clipPath="url(#qfAgLRY-ola)">
+                <path stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z"/>
               </g>
               <defs>
-                <clipPath id="so68geZKzSa">
-                  <path fill="#fff" d="M.5 0h24v24H.5z"/>
+                <clipPath id="qfAgLRY-ola">
+                  <path fill="#fff" d="M0 0h24v24H0z"/>
                 </clipPath>
               </defs>
             </svg>
@@ -271,24 +270,7 @@ export function AIAssistant() {
       {/* Chat Panel - Mobile: Fixed, Desktop: Absolute */}
       <AnimatePresence>
         {isOpen && (
-          <>
-            {/* Backdrop for mobile - visible dark overlay */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 bg-black/50 z-[9998] md:hidden"
-              onClick={() => setIsOpen(false)}
-            />
-
-            {/* Backdrop for desktop - invisible but clickable */}
-            <div
-              className="hidden md:block fixed inset-0 z-40"
-              onClick={() => setIsOpen(false)}
-            />
-
-            <motion.div
+          <motion.div
               initial={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
               animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
               exit={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
@@ -299,7 +281,7 @@ export function AIAssistant() {
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-black/5">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center flex-shrink-0 relative">
+                <div className="w-8 h-8 rounded-full bg-[#C44E35] flex items-center justify-center flex-shrink-0 relative">
                   {/* SVG - always visible until Lottie is ready */}
                   <div
                     className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
@@ -626,7 +608,6 @@ export function AIAssistant() {
               </div>
             </div>
           </motion.div>
-          </>
         )}
       </AnimatePresence>
     </div>

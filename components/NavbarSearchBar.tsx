@@ -414,6 +414,18 @@ export function NavbarSearchBar() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Close dropdowns when AI chat opens
+  useEffect(() => {
+    const handleAIChatOpened = () => {
+      setIsOpen(false)
+      setIsCityDropdownOpen(false)
+      setCityQuery('')
+    }
+
+    window.addEventListener('ai-chat-opened', handleAIChatOpened)
+    return () => window.removeEventListener('ai-chat-opened', handleAIChatOpened)
+  }, [])
+
   // Cleanup debounce timers on unmount
   useEffect(() => {
     return () => {

@@ -32,6 +32,16 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
     }
   }, [user])
 
+  // Close search bar when AI chat opens
+  useEffect(() => {
+    const handleAIChatOpened = () => {
+      setIsSearchOpen(false)
+    }
+
+    window.addEventListener('ai-chat-opened', handleAIChatOpened)
+    return () => window.removeEventListener('ai-chat-opened', handleAIChatOpened)
+  }, [])
+
   useEffect(() => {
     if (!user || !isHydrated) return
 
