@@ -156,7 +156,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                       {/* Content */}
                       <div className="flex-1 flex flex-col justify-between min-w-0 min-h-[80px]">
-                        <h3 className="text-base font-bold text-black mb-2">
+                        <h3 className="text-base font-bold text-black mb-2 line-clamp-2">
                           {post.title}
                         </h3>
 
@@ -259,7 +259,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                     <div className="flex-1 flex flex-col p-6">
                       {/* Main content area - tylko tytuł */}
                       <div className="flex-1 pb-6">
-                        <h3 className="text-xl font-bold text-black">
+                        <h3 className="text-xl font-bold text-black line-clamp-2">
                           {post.title}
                         </h3>
                       </div>
@@ -366,7 +366,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                   <div className="flex-1 flex flex-col min-h-0">
                     <CardHeader className="pb-4 pt-4 px-4 md:pt-6 md:px-6">
-                      <CardTitle className="text-base md:text-xl font-bold text-black">
+                      <CardTitle className="text-base md:text-xl font-bold text-black line-clamp-2">
                         {post.title}
                       </CardTitle>
                       {/* Mobile - Location and date in header */}

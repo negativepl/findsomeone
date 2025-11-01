@@ -463,7 +463,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
             <button
               onClick={clearFilters}
               data-navigate="true"
-              className="text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium"
+              className="text-sm text-[#B33D2A] hover:text-[#A02C1F] font-medium"
             >
               Wyczyść wszystkie filtry
             </button>
@@ -482,7 +482,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
             <button
               onClick={clearFilters}
               data-navigate="true"
-              className="text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium"
+              className="text-sm text-[#B33D2A] hover:text-[#A02C1F] font-medium"
             >
               Wyczyść
             </button>

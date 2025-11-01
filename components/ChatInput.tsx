@@ -114,7 +114,7 @@ export function ChatInput({
             />
             {/* Character count inside textarea */}
             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs pointer-events-none">
-              <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-orange-500' : 'text-black/40'}>
+              <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-orange-500' : 'text-gray-600'}>
                 {characterCount} / {MAX_MESSAGE_LENGTH}
               </span>
             </div>
@@ -124,12 +124,14 @@ export function ChatInput({
             type="submit"
             disabled={disabled || !isValid}
             className="flex-shrink-0 w-11 h-11 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white disabled:bg-black/10 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+            aria-label="Wyślij wiadomość"
           >
             <svg
               className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
