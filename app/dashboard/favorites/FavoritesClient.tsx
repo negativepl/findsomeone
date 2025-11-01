@@ -107,7 +107,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
                           ★ {post.profiles.rating.toFixed(1)} ({post.profiles.total_reviews || 0} {post.profiles.total_reviews === 1 ? 'opinia' : 'opinii'})
                         </p>
                       ) : (
-                        <p className="text-xs text-black/40 italic">Brak opinii</p>
+                        <p className="text-xs text-black/60 italic">Brak opinii</p>
                       )}
                     </div>
                   </div>

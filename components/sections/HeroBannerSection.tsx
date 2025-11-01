@@ -165,34 +165,36 @@ export function HeroBannerSection({ section }: HeroBannerSectionProps) {
           {(buttonText || buttonTextSecondary) && (
             <div className={`flex flex-col md:flex-row gap-4 md:gap-6 items-stretch md:items-center w-full md:w-auto ${hasOnlyOneButton && textAlignment === 'center' ? 'justify-center' : ''}`}>
               {buttonText && buttonLink && (
-                <Link href={buttonLink} className="w-full md:w-auto">
-                  <Button
-                    size="lg"
-                    className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-0 transition-all min-h-[56px]"
-                    style={{
-                      backgroundColor: buttonColor,
-                      color: buttonTextColor
-                    }}
-                  >
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-0 transition-all min-h-[56px]"
+                  style={{
+                    backgroundColor: buttonColor,
+                    color: buttonTextColor
+                  }}
+                >
+                  <Link href={buttonLink} className="w-full md:w-auto">
                     {buttonText}
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               )}
 
               {buttonTextSecondary && buttonLinkSecondary && (
-                <Link href={buttonLinkSecondary} className="w-full md:w-auto">
-                  <Button
-                    size="lg"
-                    className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 transition-all min-h-[56px]"
-                    style={{
-                      backgroundColor: buttonColorSecondary,
-                      color: buttonTextColorSecondary,
-                      borderColor: buttonTextColorSecondary
-                    }}
-                  >
+                <Button
+                  asChild
+                  size="lg"
+                  className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 transition-all min-h-[56px]"
+                  style={{
+                    backgroundColor: buttonColorSecondary,
+                    color: buttonTextColorSecondary,
+                    borderColor: buttonTextColorSecondary
+                  }}
+                >
+                  <Link href={buttonLinkSecondary} className="w-full md:w-auto">
                     {buttonTextSecondary}
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               )}
             </div>
           )}

@@ -102,7 +102,8 @@ export default async function Home() {
         <div className="relative z-10">
           <NavbarWithHide user={user} />
 
-          <HeroSection user={user} />
+          <main>
+            <HeroSection user={user} />
 
         {/* Features Section - Only show for non-authenticated users */}
         {!user && (
@@ -179,6 +180,7 @@ export default async function Home() {
 
         {/* CTA Section - Only show for non-authenticated users - at bottom */}
         {!user && <CTASection />}
+          </main>
 
         <Footer />
         </div>

@@ -52,32 +52,34 @@ export function CTASection({ section }: CTASectionProps) {
           )}
 
           <div className="flex flex-wrap gap-4 mt-4">
-            <Link href={buttonLink}>
+            <Button
+              asChild
+              size="lg"
+              className="rounded-full px-8"
+              style={{
+                backgroundColor: buttonColor,
+                color: buttonTextColor
+              }}
+            >
+              <Link href={buttonLink}>
+                {buttonText}
+              </Link>
+            </Button>
+
+            {buttonTextSecondary && buttonLinkSecondary && (
               <Button
+                asChild
                 size="lg"
                 className="rounded-full px-8"
                 style={{
-                  backgroundColor: buttonColor,
-                  color: buttonTextColor
+                  backgroundColor: buttonColorSecondary,
+                  color: buttonTextColorSecondary
                 }}
               >
-                {buttonText}
-              </Button>
-            </Link>
-
-            {buttonTextSecondary && buttonLinkSecondary && (
-              <Link href={buttonLinkSecondary}>
-                <Button
-                  size="lg"
-                  className="rounded-full px-8"
-                  style={{
-                    backgroundColor: buttonColorSecondary,
-                    color: buttonTextColorSecondary
-                  }}
-                >
+                <Link href={buttonLinkSecondary}>
                   {buttonTextSecondary}
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             )}
           </div>
         </div>

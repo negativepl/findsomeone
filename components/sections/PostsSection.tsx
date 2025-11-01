@@ -83,10 +83,8 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
           </div>
           {showButton && (
             <div className="hidden md:block">
-              <Link href={buttonLink}>
-                <button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-2.5 text-sm font-medium transition-colors">
-                  Zobacz wszystkie
-                </button>
+              <Link href={buttonLink} className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-2.5 text-sm font-medium transition-colors inline-block">
+                Zobacz wszystkie
               </Link>
             </div>
           )}

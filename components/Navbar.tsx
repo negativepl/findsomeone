@@ -63,7 +63,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
             <div className="flex items-center gap-3 min-w-0">
               {stepInfo}
               <div className="hidden md:block shrink-0">
-                <Link href="/" aria-label="Strona główna">
+                <Link href="/">
                   <LogoWithText />
                 </Link>
               </div>
@@ -96,7 +96,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
                     <CategoriesNavButton categories={categories} />
                   )}
                 </div>
-                <Link href="/" className="shrink-0" aria-label="Strona główna">
+                <Link href="/" className="shrink-0">
                   <LogoWithText />
                 </Link>
               </div>
@@ -104,7 +104,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
           ) : (
             <>
               {/* Mobile - Logo only */}
-              <Link href="/" className="md:hidden shrink-0" aria-label="Strona główna">
+              <Link href="/" className="md:hidden shrink-0">
                 <LogoWithText />
               </Link>
               {/* Desktop - Categories + Logo */}
@@ -114,7 +114,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
                     <CategoriesNavButton categories={categories} />
                   )}
                 </div>
-                <Link href="/" className="shrink-0" aria-label="Strona główna">
+                <Link href="/" className="shrink-0">
                   <LogoWithText />
                 </Link>
               </div>

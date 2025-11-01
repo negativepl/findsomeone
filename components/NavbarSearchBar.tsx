@@ -849,7 +849,6 @@ export function NavbarSearchBar() {
           onMouseEnter={handleLocationButtonMouseEnter}
           onMouseLeave={handleLocationButtonMouseLeave}
           className="flex items-center gap-2 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-full h-10 transition-colors flex-shrink-0 px-4"
-          aria-label={selectedCity ? `Wybrana lokalizacja: ${selectedCity}` : 'Wybierz lokalizację'}
           aria-expanded={isCityDropdownOpen}
         >
           <LottieIcon

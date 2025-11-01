@@ -379,6 +379,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   ) : null}
                 </div>
 
+                {/* Title - Mobile */}
+                <div className="lg:hidden px-4 pt-4">
+                  <h1 className="text-2xl font-bold text-black leading-tight mb-4">{post.title}</h1>
+                </div>
+
                 {/* Badges Section - Above Description */}
                 {post.categories && (
                   <div className="px-4 md:px-8 pt-2 md:pt-0 pb-3 md:pb-4">
@@ -402,7 +407,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   <div className="border-t border-black/5 pt-3 md:pt-6">
                     {/* Mobile: stacked layout */}
                     <div className="flex flex-col items-center gap-2 md:hidden">
-                      <div className="text-black/50 text-[10px]">
+                      <div className="text-black/70 text-[10px]">
                         <span>{post.views || 0} wyświetleń</span>
                       </div>
                       <div className="flex items-center justify-center gap-2">
@@ -421,7 +426,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                           <ReportPostDialog postId={post.id} onReport={reportPost} />
                         )}
                       </div>
-                      <div className="text-black/50 text-sm">
+                      <div className="text-black/70 text-sm">
                         <span>{post.views || 0} wyświetleń</span>
                       </div>
                     </div>
@@ -454,7 +459,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Title */}
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-black leading-tight">{post.title}</h1>
+                  <p className="text-2xl md:text-3xl font-bold text-black leading-tight">{post.title}</p>
                 </div>
 
                 {/* Budget */}
@@ -510,9 +515,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     />
                   </div>
                   <div className="text-center md:text-left">
-                    <h4 className="text-lg md:text-xl font-bold text-black">
+                    <h2 className="text-lg md:text-xl font-bold text-black">
                       {post.profiles?.full_name || 'Anonymous'}
-                    </h4>
+                    </h2>
                     <div className="flex justify-center md:justify-start">
                       <RatingDisplay
                         userId={post.user_id}
@@ -620,9 +625,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             {otherPosts && otherPosts.length > 0 && (
               <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
                 <CardContent className="p-4 md:p-6">
-                  <h4 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
+                  <h2 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
                     Inne ogłoszenia użytkownika
-                  </h4>
+                  </h2>
 
                   {/* Mobile: Horizontal Carousel */}
                   <div className="md:hidden -mx-4">
@@ -645,9 +650,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                               {/* Content */}
                               <div className="flex flex-col gap-2">
-                                <h5 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
+                                <h3 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
                                   {otherPost.title}
-                                </h5>
+                                </h3>
                                 <div className="flex items-center gap-1.5 text-xs text-black/60">
                                   <span>{otherPost.city}</span>
                                   {otherPost.price && (
@@ -688,9 +693,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                               {/* Content */}
                               <div className="flex flex-col gap-2">
-                                <h5 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug min-h-[40px]">
+                                <h3 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug min-h-[40px]">
                                   {otherPost.title}
-                                </h5>
+                                </h3>
                                 <div className="flex items-center gap-1.5 text-xs text-black/60">
                                   <span>{otherPost.city}</span>
                                   {otherPost.price && (

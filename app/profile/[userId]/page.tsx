@@ -153,7 +153,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                         </span>
                       </>
                     ) : (
-                      <span className="text-sm md:text-base text-black/40 italic">Brak opinii</span>
+                      <span className="text-sm md:text-base text-black/60 italic">Brak opinii</span>
                     )}
                   </div>
 

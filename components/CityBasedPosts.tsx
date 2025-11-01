@@ -103,10 +103,8 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
             </p>
           </div>
           <div className="hidden md:block">
-            <Link href={`/posts?city=${encodeURIComponent(city)}`}>
-              <button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-2.5 text-sm font-medium transition-colors">
-                Zobacz wszystkie
-              </button>
+            <Link href={`/posts?city=${encodeURIComponent(city)}`} className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-2.5 text-sm font-medium transition-colors inline-block">
+              Zobacz wszystkie
             </Link>
           </div>
         </div>

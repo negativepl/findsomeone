@@ -18,7 +18,7 @@ export function RatingDisplay({ userId, rating, reviewCount = 0, className = '',
       <span>({reviewCount} {reviewCount === 1 ? 'opinia' : 'opinii'})</span>
     </>
   ) : (
-    <span className="text-black/40 italic">Brak opinii</span>
+    <span className="text-black/60 italic">Brak opinii</span>
   )
 
   if (!clickable) {
