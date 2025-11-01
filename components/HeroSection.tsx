@@ -15,7 +15,7 @@ export function HeroSection({ user }: HeroSectionProps) {
   return (
     <section className="relative overflow-hidden">
       <div className="container mx-auto px-6 py-3 md:pt-14 md:pb-2 text-center">
-        <h2 className="text-4xl md:text-7xl font-bold mb-4 md:mb-6 text-black leading-tight">
+        <h1 className="text-4xl md:text-7xl font-bold mb-4 md:mb-6 text-black leading-tight">
           {headingText.split(" ").map((word, index) => (
             <motion.span
               key={index}
@@ -37,6 +37,7 @@ export function HeroSection({ user }: HeroSectionProps) {
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                     preserveAspectRatio="none"
+                    aria-hidden="true"
                   >
                     <path
                       d="M2 6C50 4 100 2 150 5C200 8 250 4 298 6"
@@ -58,7 +59,7 @@ export function HeroSection({ user }: HeroSectionProps) {
               )}
             </motion.span>
           ))}
-        </h2>
+        </h1>
 
         <motion.p
           initial={{ opacity: 0 }}

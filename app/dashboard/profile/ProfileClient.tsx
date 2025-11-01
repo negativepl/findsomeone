@@ -322,7 +322,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     className="hidden"
                   />
                 </div>
-                <p className="text-xs text-black/50 mt-2">Kliknij ikonę aby zmienić</p>
+                <p className="text-xs text-gray-600 mt-2">Kliknij ikonę aby zmienić</p>
               </div>
 
               <h2 className="text-2xl font-bold text-black mb-1">
@@ -619,6 +619,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     id="show_phone"
                     checked={privacySettings.show_phone}
                     onCheckedChange={(checked) => setPrivacySettings({ ...privacySettings, show_phone: checked })}
+                    aria-label="Pokazuj numer telefonu"
                   />
                 </div>
 
@@ -636,6 +637,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     id="show_messages"
                     checked={privacySettings.show_messages}
                     onCheckedChange={(checked) => setPrivacySettings({ ...privacySettings, show_messages: checked })}
+                    aria-label="Pokazuj przycisk Wyślij wiadomość"
                   />
                 </div>
 

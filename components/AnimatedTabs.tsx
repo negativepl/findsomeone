@@ -51,7 +51,7 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', sho
           data-no-loader={!showLoader ? "true" : undefined}
           className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-colors duration-200 relative text-sm md:text-base whitespace-nowrap ${
             activeTab === tab.id
-              ? 'text-[#C44E35]'
+              ? 'text-[#B33D2A]'
               : 'text-gray-700 hover:text-black'
           }`}
         >
