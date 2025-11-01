@@ -118,8 +118,8 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
   return (
     <>
       <div className={viewMode === 'list' ? 'flex flex-col gap-4' : `grid gap-4 md:gap-6 ${
-        itemsPerPage >= 24 ? 'md:grid-cols-2 lg:grid-cols-4' :
-        itemsPerPage >= 12 ? 'md:grid-cols-2 lg:grid-cols-3' :
+        itemsPerPage >= 24 ? 'md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4' :
+        itemsPerPage >= 12 ? 'md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' :
         'md:grid-cols-1 lg:grid-cols-2'
       }`}>
         {posts.map((post: Post) => (
