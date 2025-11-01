@@ -595,8 +595,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors" aria-label="Pomoc: Jak pisać dobry tytuł?">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </button>
@@ -628,7 +628,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     maxLength={80}
                     className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-black/40 font-medium">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-gray-500 font-medium">
                     {formData.title.length}/80
                   </span>
                 </div>
@@ -712,8 +712,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors" aria-label="Pomoc: Jak napisać dobry opis?">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </button>
@@ -890,7 +890,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         maxLength={80}
                         className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-14 text-base"
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-black/40 font-medium">
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-medium">
                         {formData.title.length}/80
                       </span>
                     </div>
@@ -1011,7 +1011,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
                   <div className="space-y-2">
                     <Label htmlFor="district-mobile" className="text-base font-semibold text-black">
-                      Dzielnica <span className="text-black/40 font-normal">(opcjonalnie)</span>
+                      Dzielnica <span className="text-gray-600 font-normal">(opcjonalnie)</span>
                     </Label>
                     <Input
                       id="district-mobile"
@@ -1051,7 +1051,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <>
                       <div className="space-y-2">
                         <Label htmlFor="price-mobile" className="text-base font-semibold text-black">
-                          Cena (zł) <span className="text-black/40 font-normal">(opcjonalnie)</span>
+                          Cena (zł) <span className="text-gray-600 font-normal">(opcjonalnie)</span>
                         </Label>
                         <div className="flex items-center gap-3">
                           <Input
@@ -1148,7 +1148,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           <span className="text-sm font-medium text-black">{images.length} {images.length === 1 ? 'zdjęcie' : 'zdjęcia'}</span>
                         </div>
                       ) : (
-                        <p className="text-sm text-black/40">Brak zdjęć</p>
+                        <p className="text-sm text-gray-500">Brak zdjęć</p>
                       )}
                     </div>
 

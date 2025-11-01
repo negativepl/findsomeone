@@ -94,8 +94,9 @@ function SortableThumbnail({
             onRotate(imageUrl)
           }}
           className="absolute top-1 left-1 p-1 bg-white text-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 z-20 shadow-md"
+          aria-label={`Obróć zdjęcie ${index + 1}`}
         >
-          <RotateCw className="w-3 h-3" />
+          <RotateCw className="w-3 h-3" aria-hidden="true" />
         </button>
       )}
       {/* Delete button */}
@@ -106,8 +107,9 @@ function SortableThumbnail({
           onRemove(imageUrl)
         }}
         className="absolute top-1 right-0 p-1 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 z-20 shadow-md"
+        aria-label={`Usuń zdjęcie ${index + 1}`}
       >
-        <X className="w-3 h-3" />
+        <X className="w-3 h-3" aria-hidden="true" />
       </button>
     </div>
   )
@@ -294,11 +296,12 @@ export function ImageUpload({
               key={`empty-${index}`}
               htmlFor="image-upload"
               className="rounded-2xl border-2 border-dashed border-black/20 hover:border-black/40 bg-white hover:bg-black/5 cursor-pointer transition-colors flex items-center justify-center h-40 w-40 md:h-32 md:w-32"
+              aria-label={`Dodaj zdjęcie ${images.length + index + 1}`}
             >
               {uploading && index === 0 ? (
-                <div className="w-8 h-8 border-2 border-black/20 border-t-black/60 rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-black/20 border-t-black/60 rounded-full animate-spin" aria-label="Przesyłanie zdjęcia" />
               ) : (
-                <ImageIcon className="w-8 h-8 text-black/30" />
+                <ImageIcon className="w-8 h-8 text-black/30" aria-hidden="true" />
               )}
             </label>
           ))}

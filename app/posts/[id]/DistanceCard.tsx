@@ -75,7 +75,7 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
               </svg>
             </div>
             <div>
-              <h4 className="text-base font-semibold text-black">Obliczam odległość...</h4>
+              <p className="text-base font-semibold text-black">Obliczam odległość...</p>
               <p className="text-sm text-black/60">Sprawdzam lokalizację</p>
             </div>
           </div>
@@ -99,7 +99,7 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
             </svg>
           </div>
           <div>
-            <h4 className="text-base font-semibold text-black">Odległość od Ciebie</h4>
+            <p className="text-base font-semibold text-black">Odległość od Ciebie</p>
             <p className="text-sm text-black/60">
               {distance < 1
                 ? 'Mniej niż 1 km'

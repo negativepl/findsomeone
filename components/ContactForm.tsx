@@ -119,7 +119,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 disabled={loading}
                 required
               >
-                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-12">
+                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-12" aria-label="Kategoria kontaktu">
                   <SelectValue placeholder="Wybierz kategorię" />
                 </SelectTrigger>
                 <SelectContent>
@@ -163,7 +163,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 minLength={10}
                 maxLength={5000}
               />
-              <p className="text-xs text-black/40 mt-1">
+              <p className="text-xs text-gray-500 mt-1">
                 {formData.message.length}/5000 znaków
               </p>
             </div>

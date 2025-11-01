@@ -402,7 +402,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
         {/* Right side - Sort */}
         <Select value={sortBy} onValueChange={handleSortChange}>
-          <SelectTrigger className="w-auto rounded-xl border-black/10 h-9 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20 px-2.5 gap-1 justify-start">
+          <SelectTrigger className="w-auto rounded-xl border-black/10 h-9 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20 px-2.5 gap-1 justify-start" aria-label="Sortuj według">
             <span className="text-sm">Sortuj według</span>
           </SelectTrigger>
           <SelectContent>

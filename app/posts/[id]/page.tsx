@@ -551,7 +551,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     </div>
                     {/* Activity Status */}
                     <div className={`flex items-center justify-center md:justify-start gap-2 ${
-                      isOnline ? 'text-green-600' : 'text-black/50'
+                      isOnline ? 'text-green-600' : 'text-gray-600'
                     }`}>
                       <div className={`w-2 h-2 rounded-full ${
                         isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-400'

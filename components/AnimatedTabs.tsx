@@ -52,7 +52,7 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', sho
           className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-colors duration-200 relative text-sm md:text-base whitespace-nowrap ${
             activeTab === tab.id
               ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
+              : 'text-gray-700 hover:text-black'
           }`}
         >
           {tab.icon && <span className="flex-shrink-0">{tab.icon}</span>}
@@ -62,7 +62,7 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', sho
               className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold transition-all duration-200 ${
                 activeTab === tab.id
                   ? 'bg-[#C44E35] text-white'
-                  : 'bg-black/10 text-black/60'
+                  : 'bg-gray-200 text-gray-700'
               }`}
             >
               {tab.count}
