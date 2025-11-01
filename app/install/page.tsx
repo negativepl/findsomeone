@@ -3,7 +3,7 @@ import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Metadata } from 'next'
-import { Zap, Smartphone, Wifi, Apple, Chrome, Monitor } from 'lucide-react'
+import { Zap, Smartphone, Wifi } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: "Zainstaluj aplikację - FindSomeone",
@@ -79,8 +79,8 @@ export default async function InstallPage() {
           {/* iPhone / Safari */}
           <Card className="border-0 rounded-3xl bg-white mb-6">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-3">
-                <Apple className="w-6 h-6" /> iPhone / iPad (Safari)
+              <h3 className="text-xl font-bold text-black mb-4">
+                iPhone / iPad (Safari)
               </h3>
               <ol className="space-y-3 text-black/70">
                 <li className="flex gap-3">
@@ -110,8 +110,8 @@ export default async function InstallPage() {
           {/* Android / Chrome */}
           <Card className="border-0 rounded-3xl bg-white">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-3">
-                <Chrome className="w-6 h-6" /> Android (Chrome)
+              <h3 className="text-xl font-bold text-black mb-4">
+                Android (Chrome)
               </h3>
               <ol className="space-y-3 text-black/70">
                 <li className="flex gap-3">
@@ -148,8 +148,8 @@ export default async function InstallPage() {
           {/* Chrome */}
           <Card className="border-0 rounded-3xl bg-white mb-6">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-3">
-                <Chrome className="w-6 h-6" /> Google Chrome
+              <h3 className="text-xl font-bold text-black mb-4">
+                Google Chrome
               </h3>
               <ol className="space-y-3 text-black/70">
                 <li className="flex gap-3">
@@ -175,8 +175,8 @@ export default async function InstallPage() {
           {/* Edge */}
           <Card className="border-0 rounded-3xl bg-white mb-6">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-3">
-                <Monitor className="w-6 h-6" /> Microsoft Edge
+              <h3 className="text-xl font-bold text-black mb-4">
+                Microsoft Edge
               </h3>
               <ol className="space-y-3 text-black/70">
                 <li className="flex gap-3">
@@ -206,8 +206,8 @@ export default async function InstallPage() {
           {/* Safari (Mac) */}
           <Card className="border-0 rounded-3xl bg-white">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4 flex items-center gap-3">
-                <Apple className="w-6 h-6" /> Safari (macOS)
+              <h3 className="text-xl font-bold text-black mb-4">
+                Safari (macOS)
               </h3>
               <p className="text-black/60 mb-4">
                 Safari na macOS nie wspiera natywnej instalacji PWA. Zalecamy użycie Chrome lub Edge dla pełnej funkcjonalności aplikacji.

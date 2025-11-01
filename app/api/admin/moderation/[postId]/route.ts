@@ -5,12 +5,13 @@ import { isAdmin } from '@/lib/admin'
 // PATCH /api/admin/moderation/[postId] - Approve/reject/delete post
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   try {
+    const { postId } = await params
     const supabase = await createClient()
 
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data:{ user } } = await supabase.auth.getUser()
     if (!user || !(await isAdmin(user.id))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -21,8 +22,6 @@ export async function PATCH(
     if (!['approve', 'reject', 'approve_appeal', 'reject_appeal'].includes(action)) {
       return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
-
-    const postId = params.postId
 
     // Get current post status
     const { data: post, error: fetchError } = await supabase
@@ -152,17 +151,16 @@ export async function PATCH(
 // DELETE /api/admin/moderation/[postId] - Delete post
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { postId: string } }
+  { params }: { params: Promise<{ postId: string }> }
 ) {
   try {
+    const { postId } = await params
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
     if (!user || !(await isAdmin(user.id))) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
-
-    const postId = params.postId
 
     // Get current post for logging
     const { data: post } = await supabase

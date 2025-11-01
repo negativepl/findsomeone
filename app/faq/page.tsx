@@ -70,52 +70,25 @@ export default async function FAQPage() {
           </div>
         </section>
 
-        {/* Dla szukających pomocy */}
+        {/* Ogłoszenia */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-black mb-8">Dla szukających pomocy</h2>
+          <h2 className="text-3xl font-bold text-black mb-8">Ogłoszenia</h2>
           <div className="space-y-4">
             <Card className="border-0 rounded-3xl bg-white">
               <CardContent className="p-6 md:p-8">
-                <h3 className="text-lg md:text-xl font-bold text-black mb-3">Jak znaleźć pomoc w mojej okolicy?</h3>
+                <h3 className="text-lg md:text-xl font-bold text-black mb-3">Jak przeglądać ogłoszenia?</h3>
                 <p className="text-black/60 leading-relaxed mb-3">
                   Wejdź na stronę główną lub sekcję &quot;Przeglądaj ogłoszenia&quot;. Możesz:
                 </p>
                 <ul className="list-disc list-inside text-black/60 space-y-2 ml-4">
-                  <li>Wybrać kategorię pomocy z menu (zakupy, sprzątanie, remont, itp.)</li>
-                  <li>Wprowadzić swoją lokalizację aby zobaczyć osoby w pobliżu</li>
+                  <li>Wybrać kategorię z menu (zakupy, sprzątanie, remont, itp.)</li>
+                  <li>Wprowadzić swoją lokalizację aby zobaczyć ogłoszenia w pobliżu</li>
                   <li>Filtrować wyniki po cenie, ocenach i odległości</li>
-                  <li>Użyć wyszukiwarki do znalezienia konkretnej pomocy</li>
+                  <li>Użyć wyszukiwarki do znalezienia konkretnych ogłoszeń</li>
                 </ul>
               </CardContent>
             </Card>
 
-            <Card className="border-0 rounded-3xl bg-white">
-              <CardContent className="p-6 md:p-8">
-                <h3 className="text-lg md:text-xl font-bold text-black mb-3">Jak skontaktować się z osobą oferującą usługę?</h3>
-                <p className="text-black/60 leading-relaxed">
-                  Po zalogowaniu kliknij przycisk &quot;Wyślij wiadomość&quot; na profilu wybranej osoby.
-                  Możesz wysłać wiadomość przez nasz wbudowany system wiadomości, który pozwala na bezpieczną komunikację
-                  bez ujawniania danych osobowych.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 rounded-3xl bg-white">
-              <CardContent className="p-6 md:p-8">
-                <h3 className="text-lg md:text-xl font-bold text-black mb-3">Czy mogę zostawić opinię po skorzystaniu z usługi?</h3>
-                <p className="text-black/60 leading-relaxed">
-                  Tak! Po zakończonej współpracy możesz wystawić ocenę i napisać opinię.
-                  To pomaga innym użytkownikom w wyborze oraz buduje reputację osób świadczących usługi.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </section>
-
-        {/* Dla oferujących usługi */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-black mb-8">Dla oferujących usługi</h2>
-          <div className="space-y-4">
             <Card className="border-0 rounded-3xl bg-white">
               <CardContent className="p-6 md:p-8">
                 <h3 className="text-lg md:text-xl font-bold text-black mb-3">Jak dodać ogłoszenie?</h3>
@@ -123,11 +96,11 @@ export default async function FAQPage() {
                   Po zalogowaniu kliknij przycisk &quot;Dodaj ogłoszenie&quot; w prawym górnym rogu. Następnie:
                 </p>
                 <ul className="list-disc list-inside text-black/60 space-y-2 ml-4">
-                  <li>Wybierz kategorię swojej usługi</li>
-                  <li>Wypełnij tytuł i opis - napisz czym się zajmujesz</li>
-                  <li>Ustaw cenę lub przedział cenowy</li>
+                  <li>Wybierz odpowiednią kategorię</li>
+                  <li>Wypełnij tytuł i opis ogłoszenia</li>
+                  <li>Ustaw cenę lub przedział cenowy (opcjonalnie)</li>
                   <li>Dodaj zdjęcia (opcjonalnie, ale zalecane)</li>
-                  <li>Wskaż lokalizację, w której świadczysz usługi</li>
+                  <li>Wskaż lokalizację</li>
                   <li>Opublikuj ogłoszenie!</li>
                 </ul>
               </CardContent>
@@ -137,25 +110,8 @@ export default async function FAQPage() {
               <CardContent className="p-6 md:p-8">
                 <h3 className="text-lg md:text-xl font-bold text-black mb-3">Ile mogę mieć aktywnych ogłoszeń?</h3>
                 <p className="text-black/60 leading-relaxed">
-                  Obecnie nie ma limitu liczby ogłoszeń. Możesz dodać tyle ogłoszeń, ile chcesz,
-                  aby zaprezentować pełen zakres swoich usług.
+                  Obecnie nie ma limitu liczby ogłoszeń. Możesz dodać tyle ogłoszeń, ile potrzebujesz.
                 </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-0 rounded-3xl bg-white">
-              <CardContent className="p-6 md:p-8">
-                <h3 className="text-lg md:text-xl font-bold text-black mb-3">Jak zbudować dobrą reputację na platformie?</h3>
-                <p className="text-black/60 leading-relaxed mb-3">
-                  Aby zbudować zaufanie i zdobyć więcej klientów:
-                </p>
-                <ul className="list-disc list-inside text-black/60 space-y-2 ml-4">
-                  <li>Dodaj dokładny i szczegółowy opis swoich usług</li>
-                  <li>Zamieść zdjęcia swoich realizacji</li>
-                  <li>Odpowiadaj szybko na wiadomości</li>
-                  <li>Świadcz usługi wysokiej jakości - to przyniesie pozytywne opinie</li>
-                  <li>Uzupełnij swój profil wszystkimi informacjami</li>
-                </ul>
               </CardContent>
             </Card>
 
@@ -165,6 +121,49 @@ export default async function FAQPage() {
                 <p className="text-black/60 leading-relaxed">
                   Tak, możesz w każdej chwili edytować lub usunąć swoje ogłoszenia.
                   Przejdź do swojego panelu, wybierz ogłoszenie i kliknij &quot;Edytuj&quot; lub &quot;Usuń&quot;.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+
+        {/* Komunikacja */}
+        <section className="mb-16">
+          <h2 className="text-3xl font-bold text-black mb-8">Komunikacja</h2>
+          <div className="space-y-4">
+            <Card className="border-0 rounded-3xl bg-white">
+              <CardContent className="p-6 md:p-8">
+                <h3 className="text-lg md:text-xl font-bold text-black mb-3">Jak skontaktować się z autorem ogłoszenia?</h3>
+                <p className="text-black/60 leading-relaxed">
+                  Po zalogowaniu kliknij przycisk &quot;Wyślij wiadomość&quot; na wybranym ogłoszeniu.
+                  Możesz wysłać wiadomość przez nasz wbudowany system wiadomości, który pozwala na bezpieczną komunikację
+                  bez ujawniania danych osobowych.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 rounded-3xl bg-white">
+              <CardContent className="p-6 md:p-8">
+                <h3 className="text-lg md:text-xl font-bold text-black mb-3">Jak zbudować dobrą reputację na platformie?</h3>
+                <p className="text-black/60 leading-relaxed mb-3">
+                  Aby zbudować zaufanie:
+                </p>
+                <ul className="list-disc list-inside text-black/60 space-y-2 ml-4">
+                  <li>Dodaj dokładny i szczegółowy opis w ogłoszeniach</li>
+                  <li>Zamieść zdjęcia</li>
+                  <li>Odpowiadaj szybko na wiadomości</li>
+                  <li>Uzupełnij swój profil wszystkimi informacjami</li>
+                  <li>Buduj pozytywne relacje z innymi użytkownikami</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 rounded-3xl bg-white">
+              <CardContent className="p-6 md:p-8">
+                <h3 className="text-lg md:text-xl font-bold text-black mb-3">Czy mogę zostawić opinię?</h3>
+                <p className="text-black/60 leading-relaxed">
+                  Tak! Po zakończonej współpracy możesz wystawić ocenę i napisać opinię.
+                  To pomaga innym użytkownikom oraz buduje reputację na platformie.
                 </p>
               </CardContent>
             </Card>

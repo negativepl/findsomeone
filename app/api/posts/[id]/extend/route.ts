@@ -3,8 +3,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
   const supabase = await createClient()
 
   try {
@@ -22,7 +23,7 @@ export async function POST(
     const { data: post, error: fetchError } = await supabase
       .from('posts')
       .select('id, user_id, status, expires_at, extended_count')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (fetchError || !post) {
@@ -48,7 +49,7 @@ export async function POST(
 
     // Extend the post expiration by calling the database function
     const { error: extendError } = await supabase.rpc('extend_post_expiration', {
-      post_id: params.id
+      post_id: id
     })
 
     if (extendError) {
@@ -63,7 +64,7 @@ export async function POST(
     const { data: updatedPost, error: updateFetchError } = await supabase
       .from('posts')
       .select('expires_at, extended_count, last_extended_at')
-      .eq('id', params.id)
+      .eq('id', id)
       .single()
 
     if (updateFetchError) {

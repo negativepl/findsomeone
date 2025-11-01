@@ -32,7 +32,7 @@ export default async function TermsPage() {
 
         <div className="bg-white rounded-3xl p-8 mb-8">
             <p className="text-black/60 mb-8">
-              Ostatnia aktualizacja: 15.10.2025
+              Ostatnia aktualizacja: 1.11.2025
             </p>
 
             <div className="space-y-8">

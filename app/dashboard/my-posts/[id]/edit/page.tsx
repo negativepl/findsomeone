@@ -9,7 +9,8 @@ export const metadata: Metadata = {
   title: "Edytuj ogłoszenie",
 }
 
-export default async function EditPostPage({ params }: { params: { id: string } }) {
+export default async function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -28,7 +29,7 @@ export default async function EditPostPage({ params }: { params: { id: string } 
         name
       )
     `)
-    .eq('id', params.id)
+    .eq('id', id)
     .eq('user_id', user.id) // Only allow editing own posts
     .single()
 

@@ -32,14 +32,14 @@ export default async function PrivacyPage() {
 
         <div className="bg-white rounded-3xl p-8 mb-8">
             <p className="text-black/60 mb-8">
-              Ostatnia aktualizacja: 15.10.2025
+              Ostatnia aktualizacja: 1.11.2025
             </p>
 
             <div className="space-y-8">
               <section>
                 <h2 className="text-2xl font-bold text-black mb-4">1. Administrator danych</h2>
                 <p className="text-black/70 leading-relaxed mb-4">
-                  Administratorem danych osobowych zbieranych za pośrednictwem platformy FindSomeone jest [Nazwa firmy].
+                  Administratorem danych osobowych zbieranych za pośrednictwem platformy FindSomeone jest Marcin Baszewski.
                 </p>
               </section>
 

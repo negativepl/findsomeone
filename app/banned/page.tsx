@@ -10,8 +10,9 @@ export const metadata: Metadata = {
 export default async function BannedPage({
   searchParams,
 }: {
-  searchParams: { reason?: string }
+  searchParams: Promise<{ reason?: string }>
 }) {
+  const params = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -58,7 +59,7 @@ export default async function BannedPage({
               Powód blokady:
             </p>
             <p className="text-red-800">
-              {profile.ban_reason || searchParams.reason || 'Naruszenie regulaminu platformy'}
+              {profile.ban_reason || params.reason || 'Naruszenie regulaminu platformy'}
             </p>
           </div>
 
