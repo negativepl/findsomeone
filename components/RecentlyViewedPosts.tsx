@@ -86,10 +86,10 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
 
         <div className="relative -mx-6">
           {posts.length > 1 && (
-            <ScrollGradients containerId="recently-viewed-scroll" />
+            <ScrollGradients containerId="recently-viewed-scroll-mobile" />
           )}
 
-          <div id="recently-viewed-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
+          <div id="recently-viewed-scroll-mobile" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory w-full">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {loading ? (
                 <>
@@ -130,13 +130,13 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
             </div>
           </div>
           {posts.length > 1 && (
-            <ScrollIndicator containerId="recently-viewed-scroll" />
+            <ScrollIndicator containerId="recently-viewed-scroll-mobile" />
           )}
         </div>
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section overflow-visible">
         <div className="mb-12">
           <h3 className="text-4xl font-bold text-black mb-2">Ostatnio wyświetlane</h3>
           <p className="text-lg text-black/60">Ostatnio przeglądane ogłoszenia</p>
@@ -145,12 +145,12 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
         <div className="relative -mx-8">
           {posts.length > 1 && (
             <>
-              <ScrollArrows containerId="recently-viewed-scroll" />
-              <ScrollGradients containerId="recently-viewed-scroll" />
+              <ScrollArrows containerId="recently-viewed-scroll-desktop" />
+              <ScrollGradients containerId="recently-viewed-scroll-desktop" />
             </>
           )}
 
-          <div id="recently-viewed-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
+          <div id="recently-viewed-scroll-desktop" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory w-full">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {loading ? (
                 <>
@@ -191,7 +191,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
             </div>
           </div>
           {posts.length > 1 && (
-            <ScrollIndicator containerId="recently-viewed-scroll" />
+            <ScrollIndicator containerId="recently-viewed-scroll-desktop" />
           )}
         </div>
       </div>

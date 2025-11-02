@@ -83,9 +83,9 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
         </div>
 
         <div className="relative -mx-6">
-          <ScrollGradients containerId={`section-${section.id}-scroll`} />
+          <ScrollGradients containerId={`section-${section.id}-scroll-mobile`} />
 
-          <div id={`section-${section.id}-scroll`} className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
+          <div id={`section-${section.id}-scroll-mobile`} className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory w-full">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {posts.map((post: any, index: number) => (
                 <PostCard
@@ -97,12 +97,12 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
               ))}
             </div>
           </div>
-          <ScrollIndicator containerId={`section-${section.id}-scroll`} />
+          <ScrollIndicator containerId={`section-${section.id}-scroll-mobile`} />
         </div>
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section overflow-visible">
         <div className="flex items-center justify-between mb-12">
           <div>
             <h3 className="text-4xl font-bold text-black mb-2">{title}</h3>
@@ -116,10 +116,10 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
         </div>
 
         <div className="relative -mx-8">
-          <ScrollArrows containerId={`section-${section.id}-scroll`} />
-          <ScrollGradients containerId={`section-${section.id}-scroll`} />
+          <ScrollArrows containerId={`section-${section.id}-scroll-desktop`} />
+          <ScrollGradients containerId={`section-${section.id}-scroll-desktop`} />
 
-          <div id={`section-${section.id}-scroll`} className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
+          <div id={`section-${section.id}-scroll-desktop`} className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory w-full">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {posts.map((post: any, index: number) => (
                 <PostCard
@@ -131,7 +131,7 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
               ))}
             </div>
           </div>
-          <ScrollIndicator containerId={`section-${section.id}-scroll`} />
+          <ScrollIndicator containerId={`section-${section.id}-scroll-desktop`} />
         </div>
       </div>
     </section>

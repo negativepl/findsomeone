@@ -100,9 +100,9 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
         </div>
 
         <div className="relative -mx-6">
-          <ScrollGradients containerId="city-posts-scroll" />
+          <ScrollGradients containerId="city-posts-scroll-mobile" />
 
-          <div id="city-posts-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
+          <div id="city-posts-scroll-mobile" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory w-full">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {posts.map((post) => (
                 <PostCard
@@ -113,12 +113,12 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
               ))}
             </div>
           </div>
-          <ScrollIndicator containerId="city-posts-scroll" />
+          <ScrollIndicator containerId="city-posts-scroll-mobile" />
         </div>
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section overflow-visible">
         <div className="flex items-center justify-between mb-12">
           <div>
             <h3 className="text-4xl font-bold text-black mb-2">W Twoim mieście</h3>
@@ -130,10 +130,10 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
         </div>
 
         <div className="relative -mx-8">
-          <ScrollArrows containerId="city-posts-scroll" />
-          <ScrollGradients containerId="city-posts-scroll" />
+          <ScrollArrows containerId="city-posts-scroll-desktop" />
+          <ScrollGradients containerId="city-posts-scroll-desktop" />
 
-          <div id="city-posts-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
+          <div id="city-posts-scroll-desktop" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory w-full">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {posts.map((post) => (
                 <PostCard
@@ -144,7 +144,7 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
               ))}
             </div>
           </div>
-          <ScrollIndicator containerId="city-posts-scroll" />
+          <ScrollIndicator containerId="city-posts-scroll-desktop" />
         </div>
       </div>
     </section>
