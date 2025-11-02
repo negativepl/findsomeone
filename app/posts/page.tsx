@@ -97,7 +97,7 @@ export default async function PostsPage({
   const { data: categories } = await supabase
     .from('categories')
     .select('id, name, slug, icon, parent_id')
-    .order('name')
+    .order('display_order')
 
   const searchQuery = params.search || ''
   const cityQuery = params.city || ''

@@ -59,7 +59,7 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
         .select('id, name')
         .is('parent_id', null)
         .neq('id', category.id)
-        .order('name')
+        .order('display_order')
 
       setCategories(data || [])
     }

@@ -103,7 +103,10 @@ export default function ContentBotPanel() {
     const allIds = new Set<string>()
     categories.forEach(cat => {
       allIds.add(cat.id)
-      cat.subcategories?.forEach(sub => allIds.add(sub.id))
+      cat.subcategories?.forEach(sub => {
+        allIds.add(sub.id)
+        sub.subcategories?.forEach(sub3 => allIds.add(sub3.id))
+      })
     })
     setSelectedCategories(allIds)
   }
@@ -301,8 +304,11 @@ export default function ContentBotPanel() {
     if (selectedCategories.size === 0) {
       return categories.reduce((sum, cat) => {
         const catTotal = cat.totalPosts
-        const subTotal = cat.subcategories?.reduce((s, sub) => s + sub.totalPosts, 0) || 0
-        return sum + catTotal + subTotal
+        const sub2Total = cat.subcategories?.reduce((s, sub) => {
+          const sub3Total = sub.subcategories?.reduce((s3, sub3) => s3 + sub3.totalPosts, 0) || 0
+          return s + sub.totalPosts + sub3Total
+        }, 0) || 0
+        return sum + catTotal + sub2Total
       }, 0)
     }
 
@@ -315,6 +321,11 @@ export default function ContentBotPanel() {
         if (selectedCategories.has(sub.id)) {
           total += sub.totalPosts
         }
+        sub.subcategories?.forEach(sub3 => {
+          if (selectedCategories.has(sub3.id)) {
+            total += sub3.totalPosts
+          }
+        })
       })
     })
     return total
@@ -429,33 +440,77 @@ export default function ContentBotPanel() {
                   </div>
                 </div>
 
-                {/* Subcategories */}
+                {/* Subcategories Level 2 */}
                 {category.subcategories && category.subcategories.length > 0 && expandedCategories.has(category.id) && (
                   <div className="border-t border-black/10 bg-black/[0.02]">
                     {category.subcategories.map((subcategory) => (
-                      <div
-                        key={subcategory.id}
-                        className="flex items-center gap-3 p-3 pl-12 hover:bg-black/5 transition-colors"
-                      >
-                        <Checkbox
-                          checked={selectedCategories.has(subcategory.id)}
-                          onCheckedChange={() => toggleCategory(subcategory.id)}
-                        />
-                        <span className="text-sm text-black flex-1">{subcategory.name}</span>
-                        <div className="flex items-center gap-2 text-xs">
-                          <div className="px-2.5 py-1.5 bg-black/5 rounded-full">
-                            <span className="text-black font-semibold">{subcategory.totalPosts}</span>
-                            <span className="text-black/60 ml-1">razem</span>
-                          </div>
-                          <div className="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-full">
-                            <span className="text-purple-700 font-semibold">{subcategory.aiPosts}</span>
-                            <span className="text-purple-600 ml-1">AI</span>
-                          </div>
-                          <div className="px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-full">
-                            <span className="text-green-700 font-semibold">{subcategory.humanPosts}</span>
-                            <span className="text-green-600 ml-1">ludzie</span>
+                      <div key={subcategory.id}>
+                        {/* Level 2 Category */}
+                        <div className="flex items-center gap-3 p-3 pl-8 hover:bg-black/5 transition-colors">
+                          <Checkbox
+                            checked={selectedCategories.has(subcategory.id)}
+                            onCheckedChange={() => toggleCategory(subcategory.id)}
+                          />
+                          <button
+                            onClick={() => toggleCategoryExpand(subcategory.id)}
+                            className="flex items-center gap-2 flex-1 text-left"
+                          >
+                            {subcategory.subcategories && subcategory.subcategories.length > 0 && (
+                              expandedCategories.has(subcategory.id) ? (
+                                <ChevronDown className="h-4 w-4 text-black/60" />
+                              ) : (
+                                <ChevronRight className="h-4 w-4 text-black/60" />
+                              )
+                            )}
+                            <span className="text-sm text-black">{subcategory.name}</span>
+                          </button>
+                          <div className="flex items-center gap-2 text-xs">
+                            <div className="px-2.5 py-1.5 bg-black/5 rounded-full">
+                              <span className="text-black font-semibold">{subcategory.totalPosts}</span>
+                              <span className="text-black/60 ml-1">razem</span>
+                            </div>
+                            <div className="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-full">
+                              <span className="text-purple-700 font-semibold">{subcategory.aiPosts}</span>
+                              <span className="text-purple-600 ml-1">AI</span>
+                            </div>
+                            <div className="px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-full">
+                              <span className="text-green-700 font-semibold">{subcategory.humanPosts}</span>
+                              <span className="text-green-600 ml-1">ludzie</span>
+                            </div>
                           </div>
                         </div>
+
+                        {/* Subcategories Level 3 */}
+                        {subcategory.subcategories && subcategory.subcategories.length > 0 && expandedCategories.has(subcategory.id) && (
+                          <div className="bg-black/[0.04]">
+                            {subcategory.subcategories.map((subcat3) => (
+                              <div
+                                key={subcat3.id}
+                                className="flex items-center gap-3 p-3 pl-16 hover:bg-black/5 transition-colors"
+                              >
+                                <Checkbox
+                                  checked={selectedCategories.has(subcat3.id)}
+                                  onCheckedChange={() => toggleCategory(subcat3.id)}
+                                />
+                                <span className="text-sm text-black/80 flex-1">{subcat3.name}</span>
+                                <div className="flex items-center gap-2 text-xs">
+                                  <div className="px-2.5 py-1.5 bg-black/5 rounded-full">
+                                    <span className="text-black font-semibold">{subcat3.totalPosts}</span>
+                                    <span className="text-black/60 ml-1">razem</span>
+                                  </div>
+                                  <div className="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-full">
+                                    <span className="text-purple-700 font-semibold">{subcat3.aiPosts}</span>
+                                    <span className="text-purple-600 ml-1">AI</span>
+                                  </div>
+                                  <div className="px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-full">
+                                    <span className="text-green-700 font-semibold">{subcat3.humanPosts}</span>
+                                    <span className="text-green-600 ml-1">ludzie</span>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

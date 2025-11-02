@@ -244,7 +244,7 @@ export default async function AdminPage() {
       {/* Management Sections */}
       <div>
         <h2 className="text-xl font-bold text-black mb-4">Zarządzanie</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <Link href="/admin/users">
             <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
               <CardContent className="py-6">
@@ -275,6 +275,60 @@ export default async function AdminPage() {
                   <div>
                     <h3 className="font-semibold text-black mb-1">Kategorie</h3>
                     <p className="text-sm text-black/60">Zarządzaj kategoriami</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/posts">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Ogłoszenia</h3>
+                    <p className="text-sm text-black/60">Wszystkie ogłoszenia</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/moderation">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Moderacja</h3>
+                    <p className="text-sm text-black/60">Weryfikacja ogłoszeń</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/banned-users">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Zbanowani</h3>
+                    <p className="text-sm text-black/60">Zbanowani użytkownicy</p>
                   </div>
                 </div>
               </CardContent>
@@ -383,6 +437,60 @@ export default async function AdminPage() {
                   <div>
                     <h3 className="font-semibold text-black mb-1">Zgłoszenia ogłoszeń</h3>
                     <p className="text-sm text-black/60">Moderacja ogłoszeń</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/chat-assistant">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Asystent czatu</h3>
+                    <p className="text-sm text-black/60">AI Chat Helper</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/content-bot">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Wypełniaczek</h3>
+                    <p className="text-sm text-black/60">Generator ogłoszeń AI</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/admin/page-builder">
+            <Card className="border-0 rounded-3xl bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <CardContent className="py-6">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 13a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1v-7z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-black mb-1">Page Builder</h3>
+                    <p className="text-sm text-black/60">Kreator stron</p>
                   </div>
                 </div>
               </CardContent>

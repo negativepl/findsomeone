@@ -181,10 +181,13 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
       )}
 
       {/* Editor */}
-      <div className={`${noBorder ? 'flex-1 h-full' : 'flex-1 overflow-auto'} bg-white`}>
+      <div
+        className={`${noBorder ? 'flex-1 h-full' : 'flex-1 overflow-auto min-h-[250px]'} bg-white cursor-text`}
+        onClick={() => editor.commands.focus()}
+      >
         <EditorContent
           editor={editor}
-          className={noBorder ? 'h-full [&_.tiptap]:h-full [&_.tiptap]:p-4 [&_.tiptap]:cursor-text' : 'h-full'}
+          className={noBorder ? 'h-full [&_.tiptap]:h-full [&_.tiptap]:p-4 [&_.tiptap]:cursor-text' : 'h-full [&_.tiptap]:min-h-[250px]'}
         />
       </div>
     </div>

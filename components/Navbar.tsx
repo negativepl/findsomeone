@@ -52,7 +52,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
       subcategories:categories!parent_id(id, name, slug)
     `)
     .is('parent_id', null)
-    .order('name')
+    .order('display_order')
 
   return (
     <header className={`fixed top-0 left-0 right-0 bg-white border-b border-black/5 ${noRounding ? '' : 'rounded-b-3xl'} before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-white before:-translate-y-full before:z-[-1]`} style={{ zIndex: 9999, paddingTop: 'env(safe-area-inset-top, 0px)' }}>

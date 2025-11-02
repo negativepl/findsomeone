@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
       const { data: categories, error } = await supabase
         .from('categories')
         .select('id, name')
-        .order('name')
+        .order('display_order')
 
       if (error) throw error
       categoriesToProcess = categories || []

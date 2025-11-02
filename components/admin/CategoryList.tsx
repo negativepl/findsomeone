@@ -1,12 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useMemo, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { EditCategoryDialog } from './EditCategoryDialog'
 import { EditSubcategoryDialog } from './EditSubcategoryDialog'
 import { DeleteCategoryDialog } from './DeleteCategoryDialog'
+import { SortAlphabeticallyButton } from './SortAlphabeticallyButton'
+import { AddCategoryDialog } from './AddCategoryDialog'
 import { CategoryIcon } from '@/lib/category-icons'
-import { ChevronRight, ChevronDown } from 'lucide-react'
+import { ChevronRight, ChevronLeft, GripVertical, Search, X } from 'lucide-react'
+import { toast } from 'sonner'
+import { Input } from '@/components/ui/input'
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 interface Category {
   id: string
@@ -16,17 +37,234 @@ interface Category {
   icon: string | null
   parent_id: string | null
   created_at: string
+  display_order?: number
 }
 
 interface CategoryListProps {
   categories: Category[]
+  onCategoriesRefresh?: () => void
 }
 
-export function CategoryList({ categories: initialCategories }: CategoryListProps) {
+function SortableCategory({
+  category,
+  onClick,
+  onEdit,
+  onDelete,
+  subCount
+}: {
+  category: Category
+  onClick: () => void
+  onEdit: (e: React.MouseEvent) => void
+  onDelete: (e: React.MouseEvent) => void
+  subCount: number
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: category.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: isDragging ? 'none' : transition,
+    opacity: isDragging ? 0.5 : 1,
+    cursor: isDragging ? 'grabbing' : undefined,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`group relative rounded-xl bg-white border-2 border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
+      onClick={onClick}
+    >
+      {/* Drag Handle */}
+      <div
+        {...attributes}
+        {...listeners}
+        className={`p-2 cursor-grab active:cursor-grabbing text-black/30 hover:text-black/50 ${isDragging ? '' : 'transition-colors'}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <GripVertical className="w-5 h-5" />
+      </div>
+
+      {/* Arrow - moved to left */}
+      <ChevronRight className={`w-5 h-5 text-black/30 group-hover:text-black/50 shrink-0 ${isDragging ? '' : 'transition-colors'}`} />
+
+      {/* Icon */}
+      <div className={`w-12 h-12 rounded-lg bg-black/5 group-hover:bg-black/10 flex items-center justify-center shrink-0 ${isDragging ? '' : 'transition-colors'}`}>
+        <CategoryIcon iconName={category.icon} className="w-6 h-6 text-black/70" />
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <h3 className={`font-bold text-base text-black group-hover:text-black/80 ${isDragging ? '' : 'transition-colors'}`}>
+            {category.name}
+          </h3>
+          <span className="text-xs text-black/40 font-mono">
+            {category.slug}
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <p className="text-xs text-black/50">
+            {subCount} {subCount === 1 ? 'podkategoria' : 'podkategorii'}
+          </p>
+          {category.description && (
+            <>
+              <span className="text-black/20">•</span>
+              <p className="text-xs text-black/50 line-clamp-1">{category.description}</p>
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Buttons */}
+      <div className="flex gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onDelete}
+          className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+        >
+          Usuń
+        </Button>
+        <Button
+          size="sm"
+          onClick={onEdit}
+          className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold text-xs px-4"
+        >
+          Edytuj
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function SortableSubcategory({
+  category,
+  onEdit,
+  onDelete,
+  onClick,
+  hasChildren,
+}: {
+  category: Category
+  onEdit: () => void
+  onDelete: () => void
+  onClick?: () => void
+  hasChildren?: boolean
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: category.id })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition: isDragging ? 'none' : transition,
+    opacity: isDragging ? 0.5 : 1,
+    cursor: isDragging ? 'grabbing' : undefined,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`group relative rounded-xl bg-white border-2 border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
+      onClick={hasChildren ? onClick : undefined}
+    >
+      {/* Drag Handle */}
+      <div
+        {...attributes}
+        {...listeners}
+        className={`p-2 cursor-grab active:cursor-grabbing text-black/30 hover:text-black/50 ${isDragging ? '' : 'transition-colors'}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <GripVertical className="w-5 h-5" />
+      </div>
+
+      {/* Arrow if has children - moved to left */}
+      {hasChildren ? (
+        <ChevronRight className={`w-5 h-5 text-black/30 group-hover:text-black/50 shrink-0 ${isDragging ? '' : 'transition-colors'}`} />
+      ) : (
+        <div className="w-5 h-5 shrink-0" />
+      )}
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 mb-1">
+          <h4 className={`font-semibold text-base text-black ${isDragging ? '' : 'transition-colors'}`}>{category.name}</h4>
+          <span className="text-xs text-black/40 font-mono">
+            {category.slug}
+          </span>
+          {hasChildren && (
+            <span className="text-xs text-black/40">
+              • ma podkategorie
+            </span>
+          )}
+        </div>
+        {category.description && (
+          <p className="text-xs text-black/50 line-clamp-1">{category.description}</p>
+        )}
+      </div>
+
+      {/* Buttons */}
+      <div className="flex gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onDelete}
+          className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+        >
+          Usuń
+        </Button>
+        <Button
+          size="sm"
+          onClick={onEdit}
+          className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold text-xs px-4"
+        >
+          Edytuj
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+export function CategoryList({ categories: initialCategories, onCategoriesRefresh }: CategoryListProps) {
   const [categories, setCategories] = useState(initialCategories)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null)
-  const [selectedParentCategory, setSelectedParentCategory] = useState<Category | null>(null)
+  const [navigationPath, setNavigationPath] = useState<Category[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Update categories when prop changes (e.g., after sorting)
+  useEffect(() => {
+    setCategories(initialCategories)
+  }, [initialCategories])
+
+  const selectedParentCategory = useMemo(
+    () => navigationPath.length > 0 ? navigationPath[navigationPath.length - 1] : null,
+    [navigationPath]
+  )
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const handleCategoryUpdated = (updatedCategory: Category) => {
     setCategories(categories.map(cat =>
@@ -40,14 +278,110 @@ export function CategoryList({ categories: initialCategories }: CategoryListProp
     setDeletingCategory(null)
   }
 
-  // Organize categories by parent/child
-  const parentCategories = categories.filter(cat => !cat.parent_id)
-  const getSubcategories = (parentId: string) =>
-    categories.filter(cat => cat.parent_id === parentId)
+  // Global search - finds matching categories at any level
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return null
 
-  const subcategories = selectedParentCategory
-    ? getSubcategories(selectedParentCategory.id)
-    : []
+    const query = searchQuery.toLowerCase()
+    const matches = categories.filter(cat =>
+      cat.name.toLowerCase().includes(query) ||
+      cat.slug.toLowerCase().includes(query) ||
+      cat.description?.toLowerCase().includes(query)
+    ).sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
+
+    return matches
+  }, [categories, searchQuery])
+
+  // Organize categories by parent/child - memoized for performance
+  const parentCategories = useMemo(
+    () => categories
+      .filter(cat => !cat.parent_id)
+      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0)),
+    [categories]
+  )
+
+  const getSubcategories = useMemo(
+    () => (parentId: string) =>
+      categories
+        .filter(cat => cat.parent_id === parentId)
+        .sort((a, b) => (a.display_order || 0) - (b.display_order || 0)),
+    [categories]
+  )
+
+  const hasChildren = useMemo(
+    () => (categoryId: string) => categories.some(cat => cat.parent_id === categoryId),
+    [categories]
+  )
+
+  const subcategories = useMemo(
+    () => selectedParentCategory ? getSubcategories(selectedParentCategory.id) : [],
+    [selectedParentCategory, getSubcategories]
+  )
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (!over || active.id === over.id) return
+
+    const isMainCategory = !selectedParentCategory
+    const items = isMainCategory ? parentCategories : subcategories
+
+    const oldIndex = items.findIndex(cat => cat.id === active.id)
+    const newIndex = items.findIndex(cat => cat.id === over.id)
+
+    if (oldIndex === -1 || newIndex === -1) return
+
+    const newOrder = arrayMove(items, oldIndex, newIndex)
+
+    // Update local state immediately for instant feedback
+    const updatedCategories = [...categories]
+    newOrder.forEach((cat, index) => {
+      const catIndex = updatedCategories.findIndex(c => c.id === cat.id)
+      if (catIndex !== -1) {
+        updatedCategories[catIndex] = {
+          ...updatedCategories[catIndex],
+          display_order: (index + 1) * 10
+        }
+      }
+    })
+    setCategories(updatedCategories)
+
+    // Debounce save to database
+    if (saveTimeoutRef.current) {
+      clearTimeout(saveTimeoutRef.current)
+    }
+
+    saveTimeoutRef.current = setTimeout(async () => {
+      try {
+        const updates = newOrder.map((cat, index) => ({
+          id: cat.id,
+          display_order: (index + 1) * 10
+        }))
+
+        fetch('/api/admin/categories/reorder', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ updates })
+        })
+          .then(res => {
+            if (res.ok) {
+              toast.success('Kolejność zapisana', {
+                duration: 2000,
+              })
+            } else {
+              toast.error('Błąd podczas zapisywania kolejności')
+            }
+          })
+          .catch(err => {
+            console.error('Error updating category order:', err)
+            toast.error('Błąd podczas zapisywania kolejności')
+          })
+      } catch (error) {
+        console.error('Error updating category order:', error)
+        toast.error('Błąd podczas zapisywania kolejności')
+      }
+    }, 300)
+  }
 
   if (categories.length === 0) {
     return (
@@ -64,95 +398,197 @@ export function CategoryList({ categories: initialCategories }: CategoryListProp
 
   return (
     <>
-      {/* Breadcrumb / Back button */}
-      {selectedParentCategory && (
-        <div className="mb-6">
-          <Button
-            variant="ghost"
-            onClick={() => setSelectedParentCategory(null)}
-            className="text-black/60 hover:text-black hover:bg-black/5 gap-2"
-          >
-            <ChevronRight className="w-4 h-4 rotate-180" />
-            Powrót do kategorii głównych
-          </Button>
+      {/* Search, Breadcrumbs and Sort Button */}
+      <div className="mb-6 space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-black/40" />
+          <Input
+            type="text"
+            placeholder="Szukaj kategorii..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-12 pr-10 h-12 text-base rounded-xl border-2 border-black/10 focus:border-[#C44E35]/40 bg-white"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          )}
         </div>
-      )}
 
-      {/* Main Categories Grid */}
-      {!selectedParentCategory && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {parentCategories.map((parent) => {
-            const subCount = getSubcategories(parent.id).length
-
-            return (
-              <div
-                key={parent.id}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] border-2 border-black/5 hover:border-black/20 transition-all shadow-sm hover:shadow-md flex flex-col"
-              >
-                {/* Card Body - clickable */}
-                <div
-                  className="p-6 flex-1 cursor-pointer"
-                  onClick={() => setSelectedParentCategory(parent)}
+        {/* Breadcrumbs, Add Button and Sort Button - hide when searching */}
+        {!searchResults && (
+          <div className="flex items-center justify-between gap-4">
+            {navigationPath.length > 0 ? (
+              <div className="flex items-center gap-2 text-sm">
+                <button
+                  onClick={() => setNavigationPath([])}
+                  className="text-black/60 hover:text-black hover:underline"
                 >
-                  <div className="flex items-start gap-3 mb-3">
-                    <div className="w-14 h-14 rounded-xl bg-black/5 group-hover:bg-black/10 flex items-center justify-center transition-colors shrink-0">
-                      <CategoryIcon iconName={parent.icon} className="w-7 h-7 text-black/70" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-lg text-black group-hover:text-black/80 transition-colors mb-1">
-                        {parent.name}
-                      </h3>
-                      <p className="text-xs text-black/50">
-                        {subCount} {subCount === 1 ? 'podkategoria' : 'podkategorii'}
-                      </p>
-                    </div>
-                    <ChevronRight className="w-5 h-5 text-black/30 group-hover:text-black/50 transition-colors shrink-0" />
+                  Kategorie główne
+                </button>
+                {navigationPath.map((cat, index) => (
+                  <div key={cat.id} className="flex items-center gap-2">
+                    <ChevronRight className="w-4 h-4 text-black/30" />
+                    {index === navigationPath.length - 1 ? (
+                      <span className="font-semibold text-black">{cat.name}</span>
+                    ) : (
+                      <button
+                        onClick={() => setNavigationPath(navigationPath.slice(0, index + 1))}
+                        className="text-black/60 hover:text-black hover:underline"
+                      >
+                        {cat.name}
+                      </button>
+                    )}
                   </div>
-
-                  {parent.description && (
-                    <p className="text-sm text-black/60 line-clamp-2">{parent.description}</p>
-                  )}
-                </div>
-
-                {/* Card Footer - buttons */}
-                <div className="border-t border-black/5 bg-black/[0.02] px-4 py-3 flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setDeletingCategory(parent)
-                    }}
-                    className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-sm px-5"
-                  >
-                    Usuń
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setEditingCategory(parent)
-                    }}
-                    className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold text-sm px-5"
-                  >
-                    Edytuj
-                  </Button>
-                </div>
+                ))}
               </div>
-            )
-          })}
+            ) : (
+              <div />
+            )}
+            <div className="flex gap-3">
+              <SortAlphabeticallyButton
+                parentId={selectedParentCategory?.id || null}
+                onSorted={onCategoriesRefresh}
+              />
+              <AddCategoryDialog
+                parentId={selectedParentCategory?.id || null}
+                onCategoryAdded={onCategoriesRefresh}
+              />
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Search Results - Global search across all categories */}
+      {searchResults && (
+        <div>
+          <p className="text-sm text-black/60 mb-4">
+            Znaleziono {searchResults.length} {searchResults.length === 1 ? 'kategorię' : searchResults.length < 5 ? 'kategorie' : 'kategorii'}
+          </p>
+          {searchResults.length === 0 ? (
+            <div className="text-center py-12 rounded-xl border-2 border-dashed border-black/10">
+              <p className="text-black/40">Brak kategorii pasujących do "{searchQuery}"</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {searchResults.map((cat) => {
+                const parentCat = cat.parent_id ? categories.find(c => c.id === cat.parent_id) : null
+                return (
+                  <div
+                    key={cat.id}
+                    className="group relative rounded-xl bg-white border-2 border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 transition-all"
+                  >
+                    {cat.icon && (
+                      <div className="w-12 h-12 rounded-lg bg-black/5 group-hover:bg-black/10 flex items-center justify-center shrink-0 transition-colors">
+                        <CategoryIcon iconName={cat.icon} className="w-6 h-6 text-black/70" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-semibold text-base text-black">{cat.name}</h4>
+                        <span className="text-xs text-black/40 font-mono">{cat.slug}</span>
+                        {parentCat && (
+                          <span className="text-xs text-black/40">• w {parentCat.name}</span>
+                        )}
+                      </div>
+                      {cat.description && (
+                        <p className="text-xs text-black/50 line-clamp-1">{cat.description}</p>
+                      )}
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setDeletingCategory(cat)}
+                        className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+                      >
+                        Usuń
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => setEditingCategory(cat)}
+                        className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold text-xs px-4"
+                      >
+                        Edytuj
+                      </Button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       )}
 
-      {/* Subcategories View */}
-      {selectedParentCategory && (
+      {/* Main Categories Grid with Drag & Drop */}
+      {!selectedParentCategory && !searchResults && (
+        <>
+          {parentCategories.length === 0 ? (
+            <div className="text-center py-12 rounded-xl border-2 border-dashed border-black/10">
+              <p className="text-black/40">Brak kategorii</p>
+            </div>
+          ) : (
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={parentCategories.map(c => c.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <div className="flex flex-col gap-3">
+                  {parentCategories.map((parent) => {
+                    const subCount = getSubcategories(parent.id).length
+                    return (
+                      <SortableCategory
+                        key={parent.id}
+                        category={parent}
+                        onClick={() => setNavigationPath([parent])}
+                        onEdit={(e) => {
+                          e.stopPropagation()
+                          setEditingCategory(parent)
+                        }}
+                        onDelete={(e) => {
+                          e.stopPropagation()
+                          setDeletingCategory(parent)
+                        }}
+                        subCount={subCount}
+                      />
+                    )
+                  })}
+                </div>
+              </SortableContext>
+            </DndContext>
+          )}
+        </>
+      )}
+
+      {/* Subcategories View with Drag & Drop */}
+      {selectedParentCategory && !searchResults && (
         <div>
-          {/* Header */}
+          {/* Header with Back Button */}
           <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] border-2 border-black/10">
             <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl bg-black/5 flex items-center justify-center">
-                <CategoryIcon iconName={selectedParentCategory.icon} className="w-8 h-8 text-black/70" />
-              </div>
+              <Button
+                onClick={() => {
+                  if (navigationPath.length > 1) {
+                    setNavigationPath(navigationPath.slice(0, -1))
+                  } else {
+                    setNavigationPath([])
+                  }
+                }}
+                variant="outline"
+                className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-sm px-6 gap-2"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                Cofnij
+              </Button>
               <div>
                 <h2 className="text-2xl font-bold text-black mb-1">
                   {selectedParentCategory.name}
@@ -164,45 +600,33 @@ export function CategoryList({ categories: initialCategories }: CategoryListProp
             </div>
           </div>
 
-          {/* Subcategories Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {subcategories.map((sub) => (
-              <div
-                key={sub.id}
-                className="rounded-xl bg-white border-2 border-black/5 hover:border-black/20 hover:shadow-sm transition-all flex flex-col"
-              >
-                {/* Card Body */}
-                <div className="p-5 flex-1">
-                  <h4 className="font-semibold text-base text-black mb-2">{sub.name}</h4>
-                  <p className="text-xs text-black/40 mb-3 font-mono">
-                    {sub.slug}
-                  </p>
-                  {sub.description && (
-                    <p className="text-sm text-black/60">{sub.description}</p>
-                  )}
-                </div>
-
-                {/* Card Footer */}
-                <div className="border-t border-black/5 bg-black/[0.02] px-4 py-3 flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setDeletingCategory(sub)}
-                    className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-sm px-5"
-                  >
-                    Usuń
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => setEditingCategory(sub)}
-                    className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold text-sm px-5"
-                  >
-                    Edytuj
-                  </Button>
-                </div>
+          {/* Subcategories Grid with Drag & Drop */}
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={subcategories.map(c => c.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="flex flex-col gap-3">
+                {subcategories.map((sub) => {
+                  const subHasChildren = hasChildren(sub.id)
+                  return (
+                    <SortableSubcategory
+                      key={sub.id}
+                      category={sub}
+                      onEdit={() => setEditingCategory(sub)}
+                      onDelete={() => setDeletingCategory(sub)}
+                      onClick={() => setNavigationPath([...navigationPath, sub])}
+                      hasChildren={subHasChildren}
+                    />
+                  )
+                })}
               </div>
-            ))}
-          </div>
+            </SortableContext>
+          </DndContext>
 
           {subcategories.length === 0 && (
             <div className="text-center py-12 rounded-xl border-2 border-dashed border-black/10">

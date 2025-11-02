@@ -55,9 +55,9 @@ export async function POST(request: Request) {
       .replace('{categoryType}', categoryType)
       .replace('{city}', city)
 
-    // Generate post content with GPT-5 Nano
+    // Generate post content with GPT-4o Mini
     const completion = await openai.chat.completions.create({
-      model: aiSettings.content_bot_model || 'gpt-5-nano',
+      model: aiSettings.content_bot_model || 'gpt-4o-mini',
       messages: [
         {
           role: 'system',
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
         },
       ],
       response_format: { type: 'json_object' },
-      // GPT-5 nano doesn't support max_tokens or temperature
+      temperature: 0.8,
     })
 
     const generatedContent = completion.choices[0]?.message?.content?.trim()
@@ -118,6 +118,7 @@ export async function POST(request: Request) {
         price_negotiable: postData.price_negotiable || false,
         images: images,
         status: 'active',
+        moderation_status: 'approved', // AI-generated posts are pre-approved
         is_ai_generated: true,
       })
       .select()

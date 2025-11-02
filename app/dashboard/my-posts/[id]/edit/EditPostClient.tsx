@@ -8,11 +8,18 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Check, ChevronsUpDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
 import NProgress from 'nprogress'
 import { Switch } from '@/components/ui/switch'
+import { MapPin, ChevronRight, Zap } from 'lucide-react'
+import { toast } from 'sonner'
+import { CategorySelector } from '@/components/CategorySelector'
 
 interface Category {
   id: string
@@ -56,11 +63,16 @@ export function EditPostClient({ post }: EditPostClientProps) {
     reasons: string[]
   } | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
+  const [showCategorySelector, setShowCategorySelector] = useState(false)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>(post.categories?.id || '')
+  const [categoryPath, setCategoryPath] = useState<Array<{ id: string; name: string; slug: string }>>([])
+
+  // AI Category suggestion state
+  const [suggestingCategory, setSuggestingCategory] = useState(false)
 
   const [formData, setFormData] = useState({
     title: post.title,
     description: post.description,
-    category: post.categories?.slug || '',
     city: post.city,
     district: post.district || '',
     price: post.price?.toString() || '',
@@ -71,16 +83,57 @@ export function EditPostClient({ post }: EditPostClientProps) {
   const [images, setImages] = useState<string[]>(post.images || [])
   const [imageRotations, setImageRotations] = useState<Record<string, number>>({})
 
-  // Fetch categories on mount
+  // Location detection state
+  const [detectingLocation, setDetectingLocation] = useState(false)
+
+  // Cities from database
+  const [cities, setCities] = useState<Array<{ id: string; name: string; slug: string; voivodeship: string | null }>>([])
+  const [loadingCities, setLoadingCities] = useState(true)
+  const [openCityCombobox, setOpenCityCombobox] = useState(false)
+
+  // Load initial category path
   useEffect(() => {
-    supabase
-      .from('categories')
-      .select('id, name, slug')
-      .is('parent_id', null)
-      .order('name')
-      .then(({ data }) => {
-        if (data) setCategories(data)
-      })
+    const loadCategoryPath = async () => {
+      if (!post.categories?.id) return
+
+      const { data: allCats } = await supabase
+        .from('categories')
+        .select('id, name, slug, parent_id')
+
+      if (allCats) {
+        // Build the full path from root to this category
+        const path: Array<{ id: string; name: string; slug: string }> = []
+        let currentCat = allCats.find(cat => cat.id === post.categories?.id)
+
+        while (currentCat) {
+          path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
+          currentCat = (currentCat.parent_id
+            ? allCats.find(cat => cat.id === currentCat.parent_id)
+            : null) || null
+        }
+
+        setCategoryPath(path)
+      }
+    }
+
+    loadCategoryPath()
+  }, [supabase, post.categories?.id])
+
+  // Fetch cities from database
+  useEffect(() => {
+    const fetchCities = async () => {
+      const { data, error } = await supabase
+        .from('cities')
+        .select('id, name, slug, voivodeship')
+        .order('name', { ascending: true })
+
+      if (data && !error) {
+        setCities(data)
+      }
+      setLoadingCities(false)
+    }
+
+    fetchCities()
   }, [supabase])
 
   // Process rotated images before submit
@@ -177,6 +230,164 @@ export function EditPostClient({ post }: EditPostClientProps) {
     return processedImages
   }
 
+  // Location detection handler
+  const handleDetectLocation = async () => {
+    if (!navigator.geolocation) {
+      toast.error('Geolokalizacja niedostępna', {
+        description: 'Twoja przeglądarka nie obsługuje wykrywania lokalizacji'
+      })
+      return
+    }
+
+    setDetectingLocation(true)
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          // Use Nominatim (OpenStreetMap) for reverse geocoding
+          const { latitude, longitude } = position.coords
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`,
+            {
+              headers: {
+                'Accept-Language': 'pl'
+              }
+            }
+          )
+
+          if (!response.ok) {
+            throw new Error('Nie udało się wykryć lokalizacji')
+          }
+
+          const data = await response.json()
+          const address = data.address
+
+          // Extract city (try different fields in order of preference)
+          const city = address.city
+            || address.town
+            || address.village
+            || address.municipality
+            || address.county
+            || ''
+
+          if (city) {
+            setFormData({
+              ...formData,
+              city,
+              district: '' // Don't auto-fill district
+            })
+            toast.success('Lokalizacja wykryta!', {
+              description: city
+            })
+          } else {
+            toast.error('Nie znaleziono miasta', {
+              description: 'Spróbuj wpisać lokalizację ręcznie'
+            })
+          }
+        } catch (error) {
+          console.error('Geocoding error:', error)
+          toast.error('Błąd wykrywania lokalizacji', {
+            description: 'Nie udało się określić miasta'
+          })
+        } finally {
+          setDetectingLocation(false)
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error)
+        let errorMessage = 'Nie udało się pobrać lokalizacji'
+
+        if (error.code === error.PERMISSION_DENIED) {
+          errorMessage = 'Musisz zezwolić na dostęp do lokalizacji'
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          errorMessage = 'Lokalizacja niedostępna'
+        } else if (error.code === error.TIMEOUT) {
+          errorMessage = 'Przekroczono limit czasu'
+        }
+
+        toast.error('Błąd lokalizacji', {
+          description: errorMessage
+        })
+        setDetectingLocation(false)
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 300000 // Cache for 5 minutes
+      }
+    )
+  }
+
+  // AI-powered category suggestion
+  const handleSuggestCategory = async () => {
+    if (!formData.title && !formData.description) {
+      toast.error('Brak danych', {
+        description: 'Wpisz tytuł lub opis, aby wykryć kategorię'
+      })
+      return
+    }
+
+    setSuggestingCategory(true)
+
+    try {
+      const response = await fetch('/api/posts/suggest-category', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Nie udało się wykryć kategorii')
+      }
+
+      if (data.suggestion) {
+        // Fetch the full category data to build the path
+        const { data: allCats } = await supabase
+          .from('categories')
+          .select('id, name, slug, parent_id')
+
+        if (allCats) {
+          // Find the suggested category (use most specific level available)
+          const targetSlug = data.suggestion.thirdLevelSlug
+            || data.suggestion.subcategorySlug
+            || data.suggestion.categorySlug
+          const targetCategory = allCats.find(cat => cat.slug === targetSlug)
+
+          if (targetCategory) {
+            // Build the full path from root to this category
+            const path: Array<{ id: string; name: string; slug: string }> = []
+            let currentCat = targetCategory
+
+            while (currentCat) {
+              path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
+              currentCat = (currentCat.parent_id
+                ? allCats.find(cat => cat.id === currentCat.parent_id)
+                : null) || null
+            }
+
+            setSelectedCategoryId(targetCategory.id)
+            setCategoryPath(path)
+
+            // Show success toast
+            toast.success('Kategoria wykryta!')
+          }
+        }
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Wystąpił błąd podczas wykrywania kategorii'
+      toast.error('Błąd wykrywania', {
+        description: errorMessage
+      })
+    } finally {
+      setSuggestingCategory(false)
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
@@ -197,23 +408,12 @@ export function EditPostClient({ post }: EditPostClientProps) {
       // Process rotated images before updating post
       const processedImages = await processRotatedImages(images, imageRotations)
 
-      // Get category ID from slug
-      let categoryId = null
-      if (formData.category) {
-        const { data: category } = await supabase
-          .from('categories')
-          .select('id')
-          .eq('slug', formData.category)
-          .single()
-        categoryId = category?.id || null
-      }
-
       const { error: updateError } = await supabase
         .from('posts')
         .update({
           title: formData.title,
           description: formData.description,
-          category_id: categoryId,
+          category_id: selectedCategoryId,
           city: formData.city,
           district: formData.district || null,
           price: formData.price ? parseFloat(formData.price) : null,
@@ -264,77 +464,125 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
   return (
     <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
-      <Card className="border-0 rounded-3xl bg-white">
-        <CardHeader className="pb-6">
-          <CardTitle className="text-2xl md:text-3xl font-bold text-black">Formularz edycji</CardTitle>
-          <CardDescription className="text-sm md:text-base text-black/60">
-            Zaktualizuj informacje w swoim ogłoszeniu
-          </CardDescription>
-          <div className="mt-4 bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
-            <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-yellow-900 mb-1">
-                Ponowna weryfikacja wymagana
-              </p>
-              <p className="text-sm text-yellow-800">
-                Po zapisaniu zmian, Twoje ogłoszenie zostanie ponownie zweryfikowane przez system moderacji. Ogłoszenie będzie widoczne publicznie dopiero po zatwierdzeniu.
-              </p>
-            </div>
+      {/* Page Header - Above Card */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <h1 className="text-4xl font-bold text-black">Formularz edycji</h1>
+        </div>
+        <p className="text-lg text-black/60 mb-4">
+          Zaktualizuj informacje w swoim ogłoszeniu
+        </p>
+        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
+          <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-yellow-900 mb-1">
+              Ponowna weryfikacja wymagana
+            </p>
+            <p className="text-sm text-yellow-800">
+              Po zapisaniu zmian, Twoje ogłoszenie zostanie ponownie zweryfikowane przez system moderacji. Ogłoszenie będzie widoczne publicznie dopiero po zatwierdzeniu.
+            </p>
           </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Title and Category in one row */}
-            <div className="grid md:grid-cols-[1fr_280px] gap-4">
-              {/* Title */}
-              <div className="space-y-3">
-                <Label htmlFor="title" className="text-base font-semibold text-black">
-                  Tytuł ogłoszenia *
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="title"
-                    placeholder="np. Hydraulik Warszawa - naprawa kranów"
-                    value={formData.title}
-                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    required
-                    maxLength={80}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-black/40">
-                    {formData.title.length}/80
-                  </span>
-                </div>
-              </div>
+        </div>
+      </div>
 
-              {/* Category */}
-              <div className="space-y-3">
-                <Label className="text-base font-semibold text-black">Kategoria *</Label>
-                <Select
-                  value={formData.category}
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+      {/* Desktop: Card wrapper */}
+      <Card className="border-0 rounded-3xl bg-white">
+        <CardContent className="pt-6 px-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Title */}
+            <div className="space-y-3">
+              <Label htmlFor="title" className="text-base font-semibold text-black">
+                Tytuł ogłoszenia <span className="text-[#C44E35]">*</span>
+              </Label>
+              <div className="relative">
+                <Input
+                  id="title"
+                  placeholder="np. Hydraulik Warszawa - naprawa kranów"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
-                >
-                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
-                    <SelectValue placeholder="Wybierz kategorię" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {categories.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.slug}>
-                        {cat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  maxLength={80}
+                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
+                />
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-gray-500 font-medium">
+                  {formData.title.length}/80
+                </span>
               </div>
+            </div>
+
+            {/* Category Selector */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-semibold text-black">Kategoria <span className="text-[#C44E35]">*</span></Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSuggestCategory}
+                  disabled={suggestingCategory || (!formData.title && !formData.description)}
+                  className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {suggestingCategory ? (
+                    <>
+                      <svg className="w-3.5 h-3.5 mr-1.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Wykrywam...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-3.5 h-3.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z" />
+                      </svg>
+                      Wykryj kategorię
+                    </>
+                  )}
+                </Button>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowCategorySelector(true)}
+                className={`w-full rounded-2xl border-2 transition-all p-4 text-left group ${
+                  categoryPath.length > 0
+                    ? 'border-[#C44E35]/30 bg-[#C44E35]/5 hover:border-[#C44E35]/50'
+                    : 'border-black/10 hover:border-black/30 hover:bg-black/5'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
+                    categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-black/5 group-hover:bg-black/10'
+                  }`}>
+                    <svg className={`w-6 h-6 transition-colors ${
+                      categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40 group-hover:text-black/60'
+                    }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs text-black/60 mb-1">Kategoria</div>
+                    <div className={`font-medium truncate ${
+                      categoryPath.length > 0 ? 'text-black' : 'text-black/40'
+                    }`}>
+                      {categoryPath.length > 0
+                        ? categoryPath.map(c => c.name).join(' > ')
+                        : 'Wybierz kategorię'
+                      }
+                    </div>
+                  </div>
+                  <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
+                    categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40 group-hover:text-black/60'
+                  }`} />
+                </div>
+              </button>
             </div>
 
             {/* Description */}
             <div className="space-y-3">
               <Label className="text-base font-semibold text-black">
-                Opis *
+                Opis <span className="text-[#C44E35]">*</span>
               </Label>
               <RichTextEditor
                 content={formData.description}
@@ -344,53 +592,132 @@ export function EditPostClient({ post }: EditPostClientProps) {
             </div>
 
             {/* Images */}
-            <ImageUpload
-              images={images}
-              onImagesChange={setImages}
-              userId={post.user_id}
-              postId={post.id}
-              maxImages={6}
-              imageRotations={imageRotations}
-              onRotationsChange={setImageRotations}
-            />
+            <div className="space-y-3">
+              <Label className="text-base font-semibold text-black">
+                Zdjęcia <span className="text-[#C44E35]">*</span>
+              </Label>
+              <ImageUpload
+                images={images}
+                onImagesChange={setImages}
+                userId={post.user_id}
+                postId={post.id}
+                maxImages={6}
+                imageRotations={imageRotations}
+                onRotationsChange={setImageRotations}
+              />
+            </div>
 
             {/* Location */}
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="space-y-3">
-                <Label htmlFor="city" className="text-base font-semibold text-black">
-                  Miasto *
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-base font-semibold text-black">
+                  Lokalizacja <span className="text-[#C44E35]">*</span>
                 </Label>
-                <Input
-                  id="city"
-                  placeholder="np. Warszawa"
-                  value={formData.city}
-                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  required
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDetectLocation}
+                  disabled={detectingLocation}
+                  className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <MapPin className="w-3.5 h-3.5 mr-1.5" />
+                  {detectingLocation ? 'Wykrywam...' : 'Wykryj lokalizację'}
+                </Button>
               </div>
-              <div className="space-y-3">
-                <Label htmlFor="district" className="text-base font-semibold text-black">
-                  Dzielnica (opcjonalnie)
-                </Label>
-                <Input
-                  id="district"
-                  placeholder="np. Śródmieście"
-                  value={formData.district}
-                  onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                />
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <Label className="text-sm text-black/60">
+                    Miasto <span className="text-[#C44E35]">*</span>
+                  </Label>
+                  <Popover open={openCityCombobox} onOpenChange={setOpenCityCombobox}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openCityCombobox}
+                        className="w-full justify-between rounded-2xl border-2 border-black/10 h-12 hover:border-black/30 hover:bg-black/5 font-normal"
+                      >
+                        {formData.city || "Wybierz miasto"}
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[500px] p-0 rounded-2xl border-2 border-black/10" align="start">
+                      <Command className="rounded-2xl">
+                        <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
+                        <CommandList>
+                          <CommandEmpty>Nie znaleziono miasta.</CommandEmpty>
+                          <CommandGroup>
+                            {cities.map((city) => (
+                              <CommandItem
+                                key={city.id}
+                                value={city.name}
+                                onSelect={(currentValue) => {
+                                  setFormData({ ...formData, city: currentValue })
+                                  setOpenCityCombobox(false)
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 h-4 w-4 flex-shrink-0",
+                                    formData.city === city.name ? "opacity-100" : "opacity-0"
+                                  )}
+                                />
+                                <div className="flex items-center justify-between w-full">
+                                  <span>{city.name}</span>
+                                  {city.voivodeship && (
+                                    <span className="text-xs text-black/40 ml-2">{city.voivodeship}</span>
+                                  )}
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-3">
+                  <Label htmlFor="district" className="text-sm text-black/60">
+                    Dzielnica (opcjonalnie)
+                  </Label>
+                  <Input
+                    id="district"
+                    placeholder="np. Śródmieście"
+                    value={formData.district}
+                    onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  />
+                </div>
               </div>
             </div>
 
             {/* Price */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">Budżet (opcjonalnie)</Label>
-              <div className="grid md:grid-cols-[1fr_280px] gap-4">
-                <div className="space-y-3">
-                  <Label htmlFor="price" className="text-sm text-black/60">
-                    Cena (zł)
-                  </Label>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="space-y-3 w-full md:w-48">
+                <Label className="text-base font-semibold text-black">Typ ceny <span className="text-[#C44E35]">*</span></Label>
+                <Select
+                  value={formData.priceType}
+                  onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
+                    setFormData({ ...formData, priceType: value })
+                  }
+                  required
+                >
+                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full" aria-label="Typ ceny">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="fixed">Stała cena</SelectItem>
+                    <SelectItem value="hourly">Za godzinę</SelectItem>
+                    <SelectItem value="free">Za darmo</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-3 flex-1">
+                <Label htmlFor="price" className="text-base font-semibold text-black">
+                  Cena (zł) {formData.priceType !== 'free' && <span className="text-[#C44E35]">*</span>}
+                </Label>
+                <div className="flex items-center gap-3">
                   <Input
                     id="price"
                     type="number"
@@ -399,41 +726,26 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     placeholder="0"
                     value={formData.price}
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    disabled={formData.priceType === 'free'}
+                    required={formData.priceType !== 'free'}
+                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed w-32"
                   />
-                </div>
-                <div className="space-y-3">
-                  <Label className="text-sm text-black/60">Typ ceny</Label>
-                  <Select
-                    value={formData.priceType}
-                    onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
-                      setFormData({ ...formData, priceType: value })
-                    }
-                  >
-                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="fixed">Stała cena</SelectItem>
-                      <SelectItem value="hourly">Za godzinę</SelectItem>
-                      <SelectItem value="free">Za darmo</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
 
-                {/* Negotiable switch */}
-                {formData.priceType !== 'free' && (
-                  <div className="flex items-center gap-2 pt-2">
-                    <Switch
-                      id="priceNegotiable"
-                      checked={formData.priceNegotiable}
-                      onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
-                    />
-                    <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none">
-                      Cena do negocjacji
-                    </label>
-                  </div>
-                )}
+                  {/* Negotiable switch */}
+                  {formData.priceType !== 'free' && (
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <Switch
+                        id="priceNegotiable"
+                        checked={formData.priceNegotiable}
+                        onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
+                        aria-label="Cena do negocjacji"
+                      />
+                      <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none whitespace-nowrap">
+                        Cena do negocjacji
+                      </label>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -467,6 +779,17 @@ export function EditPostClient({ post }: EditPostClientProps) {
           </form>
         </CardContent>
       </Card>
+
+      {/* Category Selector Modal */}
+      <CategorySelector
+        open={showCategorySelector}
+        onOpenChange={setShowCategorySelector}
+        onSelect={(categoryId, path) => {
+          setSelectedCategoryId(categoryId)
+          setCategoryPath(path)
+        }}
+        selectedCategoryId={selectedCategoryId}
+      />
 
       {/* Moderation Modal */}
       {showModerationModal && (

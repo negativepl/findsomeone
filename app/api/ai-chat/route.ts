@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
       .from('categories')
       .select('name, slug')
       .is('parent_id', null)
-      .order('name')
+      .order('display_order')
 
     const categoryList = categories?.map(c => `- [${c.name}](https://findsomeone.pl/category/${c.slug})`).join('\n') || ''
 

@@ -124,7 +124,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           .from('categories')
           .select('id, name, slug, parent_id')
           .eq('parent_id', selectedCategory.id)
-          .order('name')
+          .order('display_order')
           .then(({ data }) => {
             if (data) {
               setSubcategories(data)

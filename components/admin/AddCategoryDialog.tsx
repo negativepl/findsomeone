@@ -25,24 +25,39 @@ import {
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { IconPicker } from './IconPicker'
+import { Zap } from 'lucide-react'
 
 interface Category {
   id: string
   name: string
 }
 
-export function AddCategoryDialog() {
+interface AddCategoryDialogProps {
+  parentId?: string | null
+  onCategoryAdded?: () => void
+}
+
+export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDialogProps) {
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [generatingDescription, setGeneratingDescription] = useState(false)
   const [categories, setCategories] = useState<Category[]>([])
   const [formData, setFormData] = useState({
     name: '',
     slug: '',
     description: '',
     icon: 'more-horizontal',
-    parent_id: '',
+    parent_id: parentId || '',
   })
+
+  // Update parent_id when prop changes
+  useEffect(() => {
+    setFormData(prev => ({
+      ...prev,
+      parent_id: parentId || ''
+    }))
+  }, [parentId])
 
   useEffect(() => {
     if (open) {
@@ -53,7 +68,7 @@ export function AddCategoryDialog() {
           .from('categories')
           .select('id, name')
           .is('parent_id', null)
-          .order('name')
+          .order('display_order')
 
         setCategories(data || [])
       }
@@ -104,12 +119,55 @@ export function AddCategoryDialog() {
       })
     } else {
       toast.success('Kategoria dodana!')
-      setFormData({ name: '', slug: '', description: '', icon: 'more-horizontal', parent_id: '' })
+      setFormData({ name: '', slug: '', description: '', icon: 'more-horizontal', parent_id: parentId || '' })
       setOpen(false)
-      router.refresh()
+      if (onCategoryAdded) {
+        onCategoryAdded()
+      } else {
+        router.refresh()
+      }
     }
 
     setLoading(false)
+  }
+
+  // Check if adding a subcategory (parentId is set)
+  const isSubcategory = !!parentId
+
+  const handleGenerateDescription = async () => {
+    if (!formData.name.trim()) {
+      toast.error('Najpierw wpisz nazwę kategorii')
+      return
+    }
+
+    setGeneratingDescription(true)
+
+    try {
+      const parentCategory = parentId ? categories.find(c => c.id === parentId) : null
+
+      const response = await fetch('/api/admin/categories/generate-description', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          categoryName: formData.name,
+          isSubcategory,
+          parentCategoryName: parentCategory?.name || null,
+        }),
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        setFormData({ ...formData, description: data.description })
+        toast.success('Opis wygenerowany!')
+      } else {
+        toast.error('Błąd podczas generowania opisu')
+      }
+    } catch (error) {
+      console.error('Error generating description:', error)
+      toast.error('Błąd podczas generowania opisu')
+    } finally {
+      setGeneratingDescription(false)
+    }
   }
 
   return (
@@ -122,26 +180,31 @@ export function AddCategoryDialog() {
       <DialogContent className="sm:max-w-[900px] rounded-3xl p-0 gap-0">
         <div className="p-6 pb-0">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Dodaj nową kategorię</DialogTitle>
+            <DialogTitle className="text-2xl">
+              {isSubcategory ? 'Dodaj nową podkategorię' : 'Dodaj nową kategorię'}
+            </DialogTitle>
             <DialogDescription>
-              Wypełnij poniższe pola, aby dodać nową kategorię ogłoszeń
+              {isSubcategory
+                ? 'Wypełnij poniższe pola, aby dodać nową podkategorię'
+                : 'Wypełnij poniższe pola, aby dodać nową kategorię ogłoszeń'
+              }
             </DialogDescription>
           </DialogHeader>
         </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col">
           <div className="px-6 py-4 max-h-[70vh] overflow-y-auto">
-            {/* Two column layout */}
-            <div className="grid lg:grid-cols-2 gap-6">
+            {/* Two column layout - only for main categories with icon picker */}
+            <div className={isSubcategory ? '' : 'grid lg:grid-cols-2 gap-6'}>
               {/* Left column - Form fields */}
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Nazwa kategorii *</Label>
+                  <Label htmlFor="name">Nazwa {isSubcategory ? 'podkategorii' : 'kategorii'} *</Label>
                   <Input
                     id="name"
                     value={formData.name}
                     onChange={(e) => handleNameChange(e.target.value)}
-                    placeholder="np. Hydraulika"
+                    placeholder={isSubcategory ? "np. iPhone" : "np. Hydraulika"}
                     required
                     className="rounded-xl"
                   />
@@ -153,7 +216,7 @@ export function AddCategoryDialog() {
                     id="slug"
                     value={formData.slug}
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                    placeholder="hydraulika"
+                    placeholder={isSubcategory ? "iphone" : "hydraulika"}
                     required
                     className="rounded-xl"
                   />
@@ -162,31 +225,47 @@ export function AddCategoryDialog() {
                   </p>
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="parent">Kategoria nadrzędna (opcjonalnie)</Label>
-                  <Select
-                    value={formData.parent_id || 'none'}
-                    onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
-                  >
-                    <SelectTrigger className="rounded-xl w-full">
-                      <SelectValue placeholder="Brak - kategoria główna" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">Brak - kategoria główna</SelectItem>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.id}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-black/60">
-                    Zostaw puste dla kategorii głównej lub wybierz kategorię nadrzędną
-                  </p>
-                </div>
+                {/* Show parent selector only when NOT adding subcategory */}
+                {!isSubcategory && (
+                  <div className="space-y-2">
+                    <Label htmlFor="parent">Kategoria nadrzędna (opcjonalnie)</Label>
+                    <Select
+                      value={formData.parent_id || 'none'}
+                      onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
+                    >
+                      <SelectTrigger className="rounded-xl w-full">
+                        <SelectValue placeholder="Brak - kategoria główna" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">Brak - kategoria główna</SelectItem>
+                        {categories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-black/60">
+                      Zostaw puste dla kategorii głównej lub wybierz kategorię nadrzędną
+                    </p>
+                  </div>
+                )}
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Opis (opcjonalnie)</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="description">Opis (opcjonalnie)</Label>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleGenerateDescription}
+                      disabled={generatingDescription || !formData.name.trim()}
+                      className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4 gap-2"
+                    >
+                      <Zap className="w-3 h-3" />
+                      {generatingDescription ? 'Generuję...' : 'Wygeneruj opis'}
+                    </Button>
+                  </div>
                   <Textarea
                     id="description"
                     value={formData.description}
@@ -198,13 +277,15 @@ export function AddCategoryDialog() {
                 </div>
               </div>
 
-              {/* Right column - Icon Picker */}
-              <div>
-                <IconPicker
-                  value={formData.icon}
-                  onChange={(icon) => setFormData({ ...formData, icon })}
-                />
-              </div>
+              {/* Right column - Icon Picker (only for main categories) */}
+              {!isSubcategory && (
+                <div>
+                  <IconPicker
+                    value={formData.icon}
+                    onChange={(icon) => setFormData({ ...formData, icon })}
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -225,7 +306,7 @@ export function AddCategoryDialog() {
                   className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold"
                   disabled={loading}
                 >
-                  {loading ? 'Dodawanie...' : 'Dodaj kategorię'}
+                  {loading ? 'Dodawanie...' : isSubcategory ? 'Dodaj podkategorię' : 'Dodaj kategorię'}
                 </Button>
               </DialogFooter>
             </div>

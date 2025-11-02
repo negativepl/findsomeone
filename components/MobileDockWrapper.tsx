@@ -34,7 +34,7 @@ export async function MobileDockWrapper({ user }: MobileDockWrapperProps) {
       subcategories:categories!parent_id(id, name, slug)
     `)
     .is('parent_id', null)
-    .order('name')
+    .order('display_order')
 
   return <MobileDock user={user} profile={profile} isAdmin={isAdmin} categories={categories || []} />
 }

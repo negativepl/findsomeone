@@ -17,7 +17,7 @@ export default async function CreatePostPage() {
     .from('categories')
     .select('id, name, slug')
     .is('parent_id', null)
-    .order('name')
+    .order('display_order')
 
   return <CreatePostClient categories={categories || []} />
 }

@@ -16,7 +16,7 @@ export async function GET(request: Request) {
       .from('categories')
       .select('id, name, parent_id')
       .order('parent_id', { nullsFirst: true })
-      .order('name')
+      .order('display_order')
 
     if (error) throw error
 
@@ -47,14 +47,47 @@ export async function GET(request: Request) {
       })
     )
 
-    // Group by parent categories
-    const parentCategories = categoriesWithCounts.filter(c => !c.parent_id)
-    const subcategories = categoriesWithCounts.filter(c => c.parent_id)
+    // Build 3-level hierarchy
+    const level1 = categoriesWithCounts.filter(c => !c.parent_id)
+    const level2 = categoriesWithCounts.filter(c => c.parent_id)
 
-    const grouped = parentCategories.map(parent => ({
-      ...parent,
-      subcategories: subcategories.filter(sub => sub.parent_id === parent.id),
-    }))
+    // Helper function to recursively sum stats
+    const sumChildStats = (category: any, allCategories: any[]): { totalPosts: number, aiPosts: number, humanPosts: number } => {
+      const children = allCategories.filter(c => c.parent_id === category.id)
+
+      let total = category.totalPosts
+      let ai = category.aiPosts
+      let human = category.humanPosts
+
+      children.forEach(child => {
+        const childStats = sumChildStats(child, allCategories)
+        total += childStats.totalPosts
+        ai += childStats.aiPosts
+        human += childStats.humanPosts
+      })
+
+      return { totalPosts: total, aiPosts: ai, humanPosts: human }
+    }
+
+    // Build hierarchy with recursive subcategories
+    const buildHierarchy = (parentId: string | null, allCategories: any[]): any[] => {
+      return allCategories
+        .filter(c => c.parent_id === parentId)
+        .map(cat => {
+          const subcats = buildHierarchy(cat.id, allCategories)
+          const stats = sumChildStats(cat, allCategories)
+
+          return {
+            ...cat,
+            totalPosts: stats.totalPosts,
+            aiPosts: stats.aiPosts,
+            humanPosts: stats.humanPosts,
+            subcategories: subcats.length > 0 ? subcats : undefined
+          }
+        })
+    }
+
+    const grouped = buildHierarchy(null, categoriesWithCounts)
 
     return NextResponse.json({
       success: true,

@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server'
 interface CategorySuggestion {
   categorySlug: string
   subcategorySlug?: string
+  thirdLevelSlug?: string
   confidence: number
   reasoning: string
 }
@@ -55,48 +56,59 @@ export async function POST(request: NextRequest) {
       }, { status: 500 })
     }
 
-    // Separate main categories and subcategories
+    // Separate categories by level
     const mainCategories = allCategories.filter(cat => !cat.parent_id)
-    const subcategories = allCategories.filter(cat => cat.parent_id)
 
-    // Build categories description for the AI
+    // Build hierarchical categories description for the AI
     const categoriesDescription = mainCategories.map(cat => {
-      const subs = subcategories.filter(sub => sub.parent_id === cat.id)
-      const subsText = subs.length > 0
-        ? `\n  Podkategorie: ${subs.map(s => `${s.name} (${s.slug})`).join(', ')}`
-        : ''
+      const level2 = allCategories.filter(sub => sub.parent_id === cat.id)
+
+      let subsText = ''
+      if (level2.length > 0) {
+        subsText = '\n  Podkategorie poziom 2:\n' + level2.map(sub2 => {
+          const level3 = allCategories.filter(sub3 => sub3.parent_id === sub2.id)
+          const level3Text = level3.length > 0
+            ? `\n    → Podkategorie poziom 3: ${level3.map(s => `${s.name} (${s.slug})`).join(', ')}`
+            : ''
+          return `    • ${sub2.name} (${sub2.slug})${level3Text}`
+        }).join('\n')
+      }
+
       return `- ${cat.name} (${cat.slug}): ${cat.description}${subsText}`
-    }).join('\n')
+    }).join('\n\n')
 
     const systemMessage = `Jesteś ekspertem od kategoryzacji ogłoszeń usługowych w Polsce.
 Analizujesz ogłoszenia i sugerujesz najbardziej odpowiednią kategorię i podkategorię.
 Zwracasz TYLKO czysty JSON bez dodatkowych komentarzy czy formatowania markdown.`
 
-    const userPrompt = `Przeanalizuj poniższe ogłoszenie i zasugeruj najbardziej odpowiednią kategorię i podkategorię:
+    const userPrompt = `Przeanalizuj poniższe ogłoszenie i zasugeruj najbardziej odpowiednią kategorię (może mieć do 3 poziomów):
 
 TYTUŁ: ${title}
 OPIS: ${description || '(brak opisu)'}
 
-Dostępne kategorie:
+Dostępne kategorie (hierarchia do 3 poziomów):
 ${categoriesDescription}
 
 Zwróć odpowiedź w formacie JSON:
 {
   "categorySlug": "slug-kategorii-glownej",
-  "subcategorySlug": "slug-podkategorii-lub-null",
+  "subcategorySlug": "slug-podkategorii-poziomu-2-lub-null",
+  "thirdLevelSlug": "slug-podkategorii-poziomu-3-lub-null",
   "confidence": 0.95,
   "reasoning": "Krótkie wyjaśnienie wyboru po polsku (1-2 zdania)"
 }
 
 WAŻNE:
-- Wybierz najbardziej pasującą kategorię główną
-- Jeśli pasuje podkategoria, podaj jej slug. Jeśli nie - null
+- Wybierz najbardziej pasującą kategorię główną (poziom 1)
+- Jeśli pasuje podkategoria poziomu 2, podaj jej slug w subcategorySlug
+- Jeśli pasuje jeszcze bardziej szczegółowa podkategoria poziomu 3, podaj jej slug w thirdLevelSlug
+- Możesz wybrać tylko poziom 1, albo 1+2, albo 1+2+3 - zależnie od tego co najbardziej pasuje
 - Confidence to pewność od 0 do 1 (np. 0.95 = 95%)
 - Reasoning ma wyjaśnić wybór po polsku
 - Zwróć TYLKO JSON, bez dodatkowego tekstu`
 
     const completion = await openai.chat.completions.create({
-      model: MODELS.GPT_5_NANO,
+      model: MODELS.GPT_4O_MINI,
       messages: [
         {
           role: 'system',
@@ -108,7 +120,7 @@ WAŻNE:
         }
       ],
       response_format: { type: 'json_object' },
-      // GPT-5 nano only supports default temperature (1)
+      temperature: 0.7,
     })
 
     const responseText = completion.choices[0].message.content || '{}'
@@ -125,22 +137,35 @@ WAŻNE:
         }, { status: 500 })
       }
 
-      // If subcategory is suggested, validate it exists and belongs to the main category
-      if (suggestion.subcategorySlug) {
-        const mainCategory = mainCategories.find(cat => cat.slug === suggestion.categorySlug)
-        const subcategoryExists = subcategories.some(
-          sub => sub.slug === suggestion.subcategorySlug && sub.parent_id === mainCategory?.id
+      // Validate subcategory hierarchy
+      const mainCategory = mainCategories.find(cat => cat.slug === suggestion.categorySlug)
+
+      if (suggestion.subcategorySlug && mainCategory) {
+        const level2Category = allCategories.find(
+          sub => sub.slug === suggestion.subcategorySlug && sub.parent_id === mainCategory.id
         )
-        if (!subcategoryExists) {
-          // If invalid subcategory, set to null
+        if (!level2Category) {
+          // Invalid level 2 category
           suggestion.subcategorySlug = undefined
+          suggestion.thirdLevelSlug = undefined
+        } else if (suggestion.thirdLevelSlug) {
+          // Validate level 3 category
+          const level3Exists = allCategories.some(
+            sub => sub.slug === suggestion.thirdLevelSlug && sub.parent_id === level2Category.id
+          )
+          if (!level3Exists) {
+            suggestion.thirdLevelSlug = undefined
+          }
         }
+      } else if (suggestion.thirdLevelSlug) {
+        // Can't have level 3 without level 2
+        suggestion.thirdLevelSlug = undefined
       }
 
       return NextResponse.json({
         suggestion,
         tokensUsed: completion.usage?.total_tokens || 0,
-        model: MODELS.GPT_5_NANO
+        model: MODELS.GPT_4O_MINI
       })
 
     } catch (parseError) {

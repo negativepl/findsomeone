@@ -83,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .from('categories')
     .select('id, name, slug, parent_id, is_active')
     .eq('is_active', true)
-    .order('name')
+    .order('display_order')
 
   const categoryRoutes: MetadataRoute.Sitemap = categories?.map((category) => {
     // Priorytet wyższy dla głównych kategorii, niższy dla podkategorii

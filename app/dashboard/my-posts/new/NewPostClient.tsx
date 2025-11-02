@@ -8,6 +8,10 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
+import { Check, ChevronsUpDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
@@ -15,6 +19,9 @@ import { RichTextToolbar } from '@/components/RichTextToolbar'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
+import { toast } from 'sonner'
+import { CategorySelector } from '@/components/CategorySelector'
+import { ChevronRight, MapPin } from 'lucide-react'
 
 interface Category {
   id: string
@@ -51,7 +58,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     reasons: string[]
   } | null>(null)
   const [categories, setCategories] = useState<Category[]>([])
-  const [subcategories, setSubcategories] = useState<Category[]>([])
+  const [showCategorySelector, setShowCategorySelector] = useState(false)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('')
+  const [categoryPath, setCategoryPath] = useState<Array<{ id: string; name: string; slug: string }>>([])
 
   const [showDraftModal, setShowDraftModal] = useState(false)
   const [hasDraft, setHasDraft] = useState(false)
@@ -68,8 +77,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
-    category: '',
-    subcategory: '',
     city: '',
     district: '',
     price: '',
@@ -87,10 +94,19 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   const [categorySuggestion, setCategorySuggestion] = useState<{
     categorySlug: string
     subcategorySlug?: string
+    thirdLevelSlug?: string
     confidence: number
     reasoning: string
   } | null>(null)
   const [aiSuggestionApplied, setAiSuggestionApplied] = useState(false)
+
+  // Location detection state
+  const [detectingLocation, setDetectingLocation] = useState(false)
+
+  // Cities from database
+  const [cities, setCities] = useState<Array<{ id: string; name: string; slug: string; voivodeship: string | null }>>([])
+  const [loadingCities, setLoadingCities] = useState(true)
+  const [openCityCombobox, setOpenCityCombobox] = useState(false)
 
   // Hide/show dock on scroll
   const [isDockVisible, setIsDockVisible] = useState(true)
@@ -156,32 +172,41 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     }
   }, [])
 
-  // Get user ID and categories on mount
+  // Get user ID on mount
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) setUserId(user.id)
     })
+  }, [supabase])
 
-    // Fetch categories from database
-    supabase
-      .from('categories')
-      .select('id, name, slug')
-      .is('parent_id', null) // Only main categories, no subcategories
-      .order('name')
-      .then(({ data }) => {
-        if (data) setCategories(data)
-      })
+  // Fetch cities from database
+  useEffect(() => {
+    const fetchCities = async () => {
+      const { data, error } = await supabase
+        .from('cities')
+        .select('id, name, slug, voivodeship')
+        .order('name', { ascending: true })
+
+      if (data && !error) {
+        setCities(data)
+      }
+      setLoadingCities(false)
+    }
+
+    fetchCities()
   }, [supabase])
 
   // Auto-save draft to localStorage
   useEffect(() => {
     // Don't save if form is empty
-    if (!formData.title && !formData.description && !formData.category) {
+    if (!formData.title && !formData.description && !selectedCategoryId) {
       return
     }
 
     const draftData = {
       formData,
+      selectedCategoryId,
+      categoryPath,
       images,
       imageRotations,
       currentStep,
@@ -189,71 +214,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
     }
 
     localStorage.setItem('postDraft', JSON.stringify(draftData))
-  }, [formData, images, imageRotations, currentStep])
-
-  // Fetch subcategories when category changes
-  useEffect(() => {
-    if (formData.category) {
-      // Find the selected category's ID
-      const selectedCategory = categories.find(cat => cat.slug === formData.category)
-      if (selectedCategory) {
-        // Fetch subcategories for this category
-        supabase
-          .from('categories')
-          .select('id, name, slug, parent_id')
-          .eq('parent_id', selectedCategory.id)
-          .order('name')
-          .then(({ data }) => {
-            if (data) {
-              setSubcategories(data)
-            } else {
-              setSubcategories([])
-            }
-          })
-      }
-    } else {
-      setSubcategories([])
-      setFormData(prev => ({ ...prev, subcategory: '' }))
-    }
-  }, [formData.category, categories, supabase])
-
-  // Apply AI-suggested subcategory after subcategories are loaded
-  useEffect(() => {
-    if (categorySuggestion?.subcategorySlug && subcategories.length > 0) {
-      // Check if the suggested subcategory exists in the loaded subcategories
-      const subcategoryExists = subcategories.some(sub => sub.slug === categorySuggestion.subcategorySlug)
-      if (subcategoryExists && formData.subcategory !== categorySuggestion.subcategorySlug) {
-        setFormData(prev => ({
-          ...prev,
-          subcategory: categorySuggestion.subcategorySlug || '',
-        }))
-      }
-    }
-  }, [subcategories, categorySuggestion, formData.subcategory])
-
-  // Auto-detect category from title with debounce
-  useEffect(() => {
-    // Only auto-detect if:
-    // 1. Title is at least 10 characters
-    // 2. Category is not manually selected yet
-    // 3. AI suggestion hasn't been applied yet
-    if (formData.title.length >= 10 && !formData.category && !aiSuggestionApplied) {
-      const timeoutId = setTimeout(() => {
-        handleSuggestCategory()
-      }, 1500) // Wait 1.5s after user stops typing
-
-      return () => clearTimeout(timeoutId)
-    }
-  }, [formData.title]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [formData, selectedCategoryId, categoryPath, images, imageRotations, currentStep])
 
   // Validation for each step
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1: // Podstawowe info
-        const hasRequiredFields = !!(formData.category && formData.title.trim())
-        // If subcategories are available, subcategory must be selected
-        const hasSubcategoryIfNeeded = subcategories.length === 0 || !!formData.subcategory
-        return hasRequiredFields && hasSubcategoryIfNeeded
+        return !!(selectedCategoryId && formData.title.trim())
       case 2: // Szczegóły
         return formData.description.trim().length > 0
       case 3: // Zdjęcia (wymagane)
@@ -416,15 +383,103 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   }
 
   // AI-powered category suggestion
+  const handleDetectLocation = async () => {
+    if (!navigator.geolocation) {
+      toast.error('Geolokalizacja niedostępna', {
+        description: 'Twoja przeglądarka nie obsługuje wykrywania lokalizacji'
+      })
+      return
+    }
+
+    setDetectingLocation(true)
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          // Use Nominatim (OpenStreetMap) for reverse geocoding
+          const { latitude, longitude } = position.coords
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`,
+            {
+              headers: {
+                'Accept-Language': 'pl'
+              }
+            }
+          )
+
+          if (!response.ok) {
+            throw new Error('Nie udało się wykryć lokalizacji')
+          }
+
+          const data = await response.json()
+          const address = data.address
+
+          // Extract city (try different fields in order of preference)
+          const city = address.city
+            || address.town
+            || address.village
+            || address.municipality
+            || address.county
+            || ''
+
+          if (city) {
+            setFormData({
+              ...formData,
+              city,
+              district: '' // Don't auto-fill district
+            })
+            toast.success('Lokalizacja wykryta!', {
+              description: city
+            })
+          } else {
+            toast.error('Nie znaleziono miasta', {
+              description: 'Spróbuj wpisać lokalizację ręcznie'
+            })
+          }
+        } catch (error) {
+          console.error('Geocoding error:', error)
+          toast.error('Błąd wykrywania lokalizacji', {
+            description: 'Nie udało się określić miasta'
+          })
+        } finally {
+          setDetectingLocation(false)
+        }
+      },
+      (error) => {
+        console.error('Geolocation error:', error)
+        let errorMessage = 'Nie udało się pobrać lokalizacji'
+
+        if (error.code === error.PERMISSION_DENIED) {
+          errorMessage = 'Musisz zezwolić na dostęp do lokalizacji'
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          errorMessage = 'Lokalizacja niedostępna'
+        } else if (error.code === error.TIMEOUT) {
+          errorMessage = 'Przekroczono limit czasu'
+        }
+
+        toast.error('Błąd lokalizacji', {
+          description: errorMessage
+        })
+        setDetectingLocation(false)
+      },
+      {
+        enableHighAccuracy: false,
+        timeout: 10000,
+        maximumAge: 300000 // Cache for 5 minutes
+      }
+    )
+  }
+
   const handleSuggestCategory = async () => {
     if (!formData.title && !formData.description) {
-      setError('Wpisz tytuł lub opis, aby wykryć kategorię')
+      toast.error('Brak danych', {
+        description: 'Wpisz tytuł lub opis, aby wykryć kategorię'
+      })
       return
     }
 
     setSuggestingCategory(true)
     setCategorySuggestion(null)
-    setError(null)
 
     try {
       const response = await fetch('/api/posts/suggest-category', {
@@ -445,16 +500,44 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       if (data.suggestion) {
         setCategorySuggestion(data.suggestion)
         setAiSuggestionApplied(true)
-        // Auto-apply the main category first
-        // Subcategory will be applied automatically by useEffect after subcategories load
-        setFormData(prev => ({
-          ...prev,
-          category: data.suggestion.categorySlug,
-          subcategory: '', // Reset subcategory, will be set by useEffect
-        }))
+
+        // Fetch the full category data to build the path
+        const { data: allCats } = await supabase
+          .from('categories')
+          .select('id, name, slug, parent_id')
+
+        if (allCats) {
+          // Find the suggested category (use most specific level available)
+          const targetSlug = data.suggestion.thirdLevelSlug
+            || data.suggestion.subcategorySlug
+            || data.suggestion.categorySlug
+          const targetCategory = allCats.find(cat => cat.slug === targetSlug)
+
+          if (targetCategory) {
+            // Build the full path from root to this category
+            const path: Array<{ id: string; name: string; slug: string }> = []
+            let currentCat = targetCategory
+
+            while (currentCat) {
+              path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
+              currentCat = (currentCat.parent_id
+                ? allCats.find(cat => cat.id === currentCat.parent_id)
+                : null) || null
+            }
+
+            setSelectedCategoryId(targetCategory.id)
+            setCategoryPath(path)
+
+            // Show success toast
+            toast.success('Kategoria wykryta!')
+          }
+        }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wystąpił błąd podczas wykrywania kategorii')
+      const errorMessage = err instanceof Error ? err.message : 'Wystąpił błąd podczas wykrywania kategorii'
+      toast.error('Błąd wykrywania', {
+        description: errorMessage
+      })
     } finally {
       setSuggestingCategory(false)
     }
@@ -477,29 +560,11 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       // Process rotated images before creating post
       const processedImages = await processRotatedImages(images, imageRotations)
 
-      // Get category ID from slug
-      const { data: category } = await supabase
-        .from('categories')
-        .select('id')
-        .eq('slug', formData.category)
-        .single()
-
-      // Get subcategory ID from slug if selected
-      let subcategoryId = null
-      if (formData.subcategory) {
-        const { data: subcategory } = await supabase
-          .from('categories')
-          .select('id')
-          .eq('slug', formData.subcategory)
-          .single()
-        subcategoryId = subcategory?.id || null
-      }
-
       const { data: newPost, error: insertError } = await supabase.from('posts').insert({
         user_id: user.id,
         title: formData.title,
         description: formData.description,
-        category_id: subcategoryId || category?.id || null, // Use subcategory if selected, otherwise main category
+        category_id: selectedCategoryId, // Use the selected category ID from modal
         city: formData.city,
         district: formData.district || null,
         price: formData.price ? parseFloat(formData.price) : null,
@@ -591,7 +656,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="title" className="text-base font-semibold text-black">
-                    Tytuł ogłoszenia *
+                    Tytuł ogłoszenia <span className="text-[#C44E35]">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -616,14 +681,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     id="title"
                     placeholder="np. Hydraulik Warszawa - naprawa kranów"
                     value={formData.title}
-                    onChange={(e) => {
-                      setFormData({ ...formData, title: e.target.value })
-                      // Reset AI flag when user changes title
-                      if (aiSuggestionApplied) {
-                        setAiSuggestionApplied(false)
-                        setCategorySuggestion(null)
-                      }
-                    }}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     required
                     maxLength={80}
                     className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
@@ -634,81 +692,79 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 </div>
               </div>
 
-              {/* Category and Subcategory */}
-              <div className="grid gap-4 md:grid-cols-2">
-                {/* Category */}
-                <div className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Label className="text-base font-semibold text-black">Kategoria *</Label>
-                    {suggestingCategory && (
-                      <div className="flex items-center gap-1.5 text-xs text-[#C44E35]">
-                        <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+              {/* Category Selector */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-base font-semibold text-black">Kategoria <span className="text-[#C44E35]">*</span></Label>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleSuggestCategory}
+                    disabled={suggestingCategory || (!formData.title && !formData.description)}
+                    className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {suggestingCategory ? (
+                      <>
+                        <svg className="w-3.5 h-3.5 mr-1.5 animate-spin" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
-                        <span className="font-medium">AI wykrywa...</span>
-                      </div>
-                    )}
-                    {aiSuggestionApplied && !suggestingCategory && (
-                      <div className="flex items-center gap-1.5 text-xs text-[#C44E35]">
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                        Wykrywam...
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-3.5 h-3.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z" />
                         </svg>
-                        <span className="font-medium">Wykryte przez AI</span>
-                      </div>
+                        Wykryj kategorię
+                      </>
                     )}
-                  </div>
-                  <Select
-                    value={formData.category}
-                    onValueChange={(value) => {
-                      setFormData({ ...formData, category: value, subcategory: '' })
-                      setAiSuggestionApplied(false)
-                    }}
-                    required
-                  >
-                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full" aria-label="Kategoria">
-                      <SelectValue placeholder="Wybierz kategorię" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map((cat) => (
-                        <SelectItem key={cat.id} value={cat.slug}>
-                          {cat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  </Button>
                 </div>
 
-                {/* Subcategory */}
-                <div className="space-y-3">
-                  <Label className="text-base font-semibold text-black">
-                    Podkategoria {subcategories.length > 0 && '*'}
-                  </Label>
-                  <Select
-                    value={formData.subcategory}
-                    onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
-                    disabled={subcategories.length === 0}
-                    required={subcategories.length > 0}
-                  >
-                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full" aria-label="Podkategoria">
-                      <SelectValue placeholder={subcategories.length > 0 ? "Wybierz" : "Brak"} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {subcategories.map((subcat) => (
-                        <SelectItem key={subcat.id} value={subcat.slug}>
-                          {subcat.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowCategorySelector(true)}
+                  className={`w-full rounded-2xl border-2 transition-all p-4 text-left group ${
+                    categoryPath.length > 0
+                      ? 'border-[#C44E35]/30 bg-[#C44E35]/5 hover:border-[#C44E35]/50'
+                      : 'border-black/10 hover:border-black/30 hover:bg-black/5'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
+                      categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-black/5 group-hover:bg-black/10'
+                    }`}>
+                      <svg className={`w-6 h-6 transition-colors ${
+                        categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40 group-hover:text-black/60'
+                      }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs text-black/60 mb-1">Kategoria</div>
+                      <div className={`font-medium truncate ${
+                        categoryPath.length > 0 ? 'text-black' : 'text-black/40'
+                      }`}>
+                        {categoryPath.length > 0
+                          ? categoryPath.map(c => c.name).join(' > ')
+                          : 'Wybierz kategorię'
+                        }
+                      </div>
+                    </div>
+                    <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
+                      categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40 group-hover:text-black/60'
+                    }`} />
+                  </div>
+                </button>
               </div>
 
               {/* Description */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Label className="text-base font-semibold text-black">
-                    Opis *
+                    Opis <span className="text-[#C44E35]">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -729,56 +785,140 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     </TooltipContent>
                   </Tooltip>
                 </div>
-                <RichTextEditor
-                  content={formData.description}
-                  onChange={(content) => setFormData({ ...formData, description: content })}
-                  placeholder="Opisz szczegółowo swoje ogłoszenie: zakres usług lub potrzeb, termin, wymagania..."
-                />
+                <div className="min-h-[300px]">
+                  <RichTextEditor
+                    content={formData.description}
+                    onChange={(content) => setFormData({ ...formData, description: content })}
+                    placeholder="Opisz szczegółowo swoje ogłoszenie: zakres usług lub potrzeb, termin, wymagania..."
+                    className="h-full"
+                  />
+                </div>
               </div>
 
               {/* Images */}
-              <ImageUpload
-                images={images}
-                onImagesChange={setImages}
-                userId={userId}
-                maxImages={6}
-                imageRotations={imageRotations}
-                onRotationsChange={setImageRotations}
-              />
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label className="text-base font-semibold text-black">
+                    Zdjęcia <span className="text-[#C44E35]">*</span>
+                  </Label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors" aria-label="Pomoc: Dlaczego zdjęcia są wymagane?">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      <p className="font-semibold mb-1">Dlaczego zdjęcia są wymagane?</p>
+                      <ul className="space-y-0.5 text-xs">
+                        <li>• Ogłoszenia ze zdjęciami otrzymują 5x więcej odpowiedzi</li>
+                        <li>• Pierwsze zdjęcie będzie miniaturką ogłoszenia</li>
+                        <li>• Możesz dodać maksymalnie 6 zdjęć</li>
+                        <li>• Przeciągnij zdjęcia aby zmienić kolejność</li>
+                      </ul>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <ImageUpload
+                  images={images}
+                  onImagesChange={setImages}
+                  userId={userId}
+                  maxImages={6}
+                  imageRotations={imageRotations}
+                  onRotationsChange={setImageRotations}
+                />
+              </div>
 
               {/* Location */}
-              <div className="grid md:grid-cols-2 gap-4">
-                <div className="space-y-3">
-                  <Label htmlFor="city" className="text-base font-semibold text-black">
-                    Miasto *
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <Label className="text-base font-semibold text-black">
+                    Lokalizacja <span className="text-[#C44E35]">*</span>
                   </Label>
-                  <Input
-                    id="city"
-                    placeholder="np. Warszawa"
-                    value={formData.city}
-                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    required
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleDetectLocation}
+                    disabled={detectingLocation}
+                    className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <MapPin className="w-3.5 h-3.5 mr-1.5" />
+                    {detectingLocation ? 'Wykrywam...' : 'Wykryj lokalizację'}
+                  </Button>
                 </div>
-                <div className="space-y-3">
-                  <Label htmlFor="district" className="text-base font-semibold text-black">
-                    Dzielnica (opcjonalnie)
-                  </Label>
-                  <Input
-                    id="district"
-                    placeholder="np. Śródmieście"
-                    value={formData.district}
-                    onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <Label className="text-sm text-black/60">
+                      Miasto <span className="text-[#C44E35]">*</span>
+                    </Label>
+                    <Popover open={openCityCombobox} onOpenChange={setOpenCityCombobox}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={openCityCombobox}
+                          className="w-full justify-between rounded-2xl border-2 border-black/10 h-12 hover:border-black/30 hover:bg-black/5 font-normal"
+                        >
+                          {formData.city || "Wybierz miasto"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[500px] p-0 rounded-2xl border-2 border-black/10" align="start">
+                        <Command className="rounded-2xl">
+                          <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
+                          <CommandList>
+                            <CommandEmpty>Nie znaleziono miasta.</CommandEmpty>
+                            <CommandGroup>
+                              {cities.map((city) => (
+                                <CommandItem
+                                  key={city.id}
+                                  value={city.name}
+                                  onSelect={(currentValue) => {
+                                    setFormData({ ...formData, city: currentValue })
+                                    setOpenCityCombobox(false)
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4 flex-shrink-0",
+                                      formData.city === city.name ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  <div className="flex items-center justify-between w-full">
+                                    <span>{city.name}</span>
+                                    {city.voivodeship && (
+                                      <span className="text-xs text-black/40 ml-2">{city.voivodeship}</span>
+                                    )}
+                                  </div>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div className="space-y-3">
+                    <Label htmlFor="district" className="text-sm text-black/60">
+                      Dzielnica (opcjonalnie)
+                    </Label>
+                    <Input
+                      id="district"
+                      placeholder="np. Śródmieście"
+                      value={formData.district}
+                      onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    />
+                  </div>
                 </div>
               </div>
 
-              {/* Price - 3 columns equal width */}
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="space-y-3">
-                  <Label className="text-base font-semibold text-black">Typ ceny *</Label>
+              {/* Price */}
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="space-y-3 w-full md:w-48">
+                  <Label className="text-base font-semibold text-black">Typ ceny <span className="text-[#C44E35]">*</span></Label>
                   <Select
                     value={formData.priceType}
                     onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
@@ -796,9 +936,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-3">
+                <div className="space-y-3 flex-1">
                   <Label htmlFor="price" className="text-base font-semibold text-black">
-                    Cena (zł)
+                    Cena (zł) {formData.priceType !== 'free' && <span className="text-[#C44E35]">*</span>}
                   </Label>
                   <div className="flex items-center gap-3">
                     <Input
@@ -810,7 +950,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       value={formData.price}
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                       disabled={formData.priceType === 'free'}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed"
+                      required={formData.priceType !== 'free'}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed w-32"
                     />
 
                     {/* Negotiable switch */}
@@ -873,7 +1014,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 bg-white">
                   <div className="space-y-2">
                     <Label htmlFor="title-mobile" className="text-base font-semibold text-black">
-                      Tytuł ogłoszenia *
+                      Tytuł ogłoszenia <span className="text-[#C44E35]">*</span>
                     </Label>
                     <div className="relative">
                       <Input
@@ -898,68 +1039,43 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Label className="text-base font-semibold text-black">Kategoria *</Label>
-                      {suggestingCategory && (
-                        <div className="flex items-center gap-1.5 text-xs text-[#C44E35]">
-                          <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                          </svg>
-                          <span className="font-medium">AI...</span>
-                        </div>
-                      )}
-                      {aiSuggestionApplied && !suggestingCategory && (
-                        <div className="flex items-center gap-1.5 text-xs text-[#C44E35]">
-                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                          </svg>
-                          <span className="font-medium">AI</span>
-                        </div>
-                      )}
-                    </div>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) => {
-                        setFormData({ ...formData, category: value, subcategory: '' })
-                        setAiSuggestionApplied(false)
-                      }}
-                      required
+                    <Label className="text-base font-semibold text-black">Kategoria <span className="text-[#C44E35]">*</span></Label>
+                    <button
+                      type="button"
+                      onClick={() => setShowCategorySelector(true)}
+                      className={`w-full rounded-2xl border-2 transition-all p-4 text-left active:scale-98 ${
+                        categoryPath.length > 0
+                          ? 'border-[#C44E35]/30 bg-[#C44E35]/5'
+                          : 'border-black/10 bg-white'
+                      }`}
                     >
-                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base" aria-label="Kategoria">
-                        <SelectValue placeholder="Wybierz kategorię" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((cat) => (
-                          <SelectItem key={cat.id} value={cat.slug}>
-                            {cat.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                      <div className="flex items-center gap-3">
+                        <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
+                          categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-black/5'
+                        }`}>
+                          <svg className={`w-6 h-6 transition-colors ${
+                            categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40'
+                          }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-xs text-black/60 mb-0.5">Kategoria</div>
+                          <div className={`font-medium text-base truncate ${
+                            categoryPath.length > 0 ? 'text-black' : 'text-black/40'
+                          }`}>
+                            {categoryPath.length > 0
+                              ? categoryPath.map(c => c.name).join(' > ')
+                              : 'Wybierz kategorię'
+                            }
+                          </div>
+                        </div>
+                        <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
+                          categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40'
+                        }`} />
+                      </div>
+                    </button>
                   </div>
-
-                  {subcategories.length > 0 && (
-                    <div className="space-y-2">
-                      <Label className="text-base font-semibold text-black">Podkategoria *</Label>
-                      <Select
-                        value={formData.subcategory}
-                        onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
-                        required
-                      >
-                        <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base" aria-label="Podkategoria">
-                          <SelectValue placeholder="Wybierz podkategorię" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {subcategories.map((subcat) => (
-                            <SelectItem key={subcat.id} value={subcat.slug}>
-                              {subcat.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
                 </div>
               )}
 
@@ -981,37 +1097,102 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 3: Zdjęcia */}
               {currentStep === 3 && (
-                <div className="animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto bg-white flex flex-col items-center">
-                  <ImageUpload
-                    images={images}
-                    onImagesChange={setImages}
-                    userId={userId}
-                    maxImages={6}
-                    imageRotations={imageRotations}
-                    onRotationsChange={setImageRotations}
-                  />
+                <div className="animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto bg-white flex flex-col">
+                  <div className="space-y-2 mb-4">
+                    <Label className="text-base font-semibold text-black">
+                      Zdjęcia <span className="text-[#C44E35]">*</span>
+                    </Label>
+                    <p className="text-sm text-black/60">
+                      Ogłoszenia ze zdjęciami otrzymują 5x więcej odpowiedzi. Pierwsze zdjęcie będzie miniaturką.
+                    </p>
+                  </div>
+                  <div className="flex justify-center">
+                    <ImageUpload
+                      images={images}
+                      onImagesChange={setImages}
+                      userId={userId}
+                      maxImages={6}
+                      imageRotations={imageRotations}
+                      onRotationsChange={setImageRotations}
+                    />
+                  </div>
                 </div>
               )}
 
               {/* Step 4: Lokalizacja */}
               {currentStep === 4 && (
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
-                  <div className="space-y-2">
-                    <Label htmlFor="city-mobile" className="text-base font-semibold text-black">
-                      Miasto *
+                  <div className="flex items-center justify-between mb-2">
+                    <Label className="text-base font-semibold text-black">
+                      Lokalizacja <span className="text-[#C44E35]">*</span>
                     </Label>
-                    <Input
-                      id="city-mobile"
-                      placeholder="np. Warszawa"
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                      required
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
-                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={handleDetectLocation}
+                      disabled={detectingLocation}
+                      className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <MapPin className="w-3.5 h-3.5 mr-1.5" />
+                      {detectingLocation ? 'Wykrywam...' : 'Wykryj'}
+                    </Button>
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="district-mobile" className="text-base font-semibold text-black">
+                    <Label className="text-sm text-black/60">
+                      Miasto <span className="text-[#C44E35]">*</span>
+                    </Label>
+                    <Popover open={openCityCombobox} onOpenChange={setOpenCityCombobox}>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={openCityCombobox}
+                          className="w-full justify-between rounded-2xl border-2 border-black/10 h-12 hover:border-black/30 hover:bg-black/5 font-normal text-base bg-white"
+                        >
+                          {formData.city || "Wybierz miasto"}
+                          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[calc(100vw-2rem)] p-0 rounded-2xl border-2 border-black/10" align="start">
+                        <Command className="rounded-2xl">
+                          <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
+                          <CommandList>
+                            <CommandEmpty>Nie znaleziono miasta.</CommandEmpty>
+                            <CommandGroup>
+                              {cities.map((city) => (
+                                <CommandItem
+                                  key={city.id}
+                                  value={city.name}
+                                  onSelect={(currentValue) => {
+                                    setFormData({ ...formData, city: currentValue })
+                                    setOpenCityCombobox(false)
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4 flex-shrink-0",
+                                      formData.city === city.name ? "opacity-100" : "opacity-0"
+                                    )}
+                                  />
+                                  <div className="flex items-center justify-between w-full">
+                                    <span>{city.name}</span>
+                                    {city.voivodeship && (
+                                      <span className="text-xs text-black/40 ml-2">{city.voivodeship}</span>
+                                    )}
+                                  </div>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="district-mobile" className="text-sm text-black/60">
                       Dzielnica <span className="text-gray-600 font-normal">(opcjonalnie)</span>
                     </Label>
                     <Input
@@ -1029,7 +1210,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {currentStep === 5 && (
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-black">Typ ceny *</Label>
+                    <Label className="text-base font-semibold text-black">Typ ceny <span className="text-[#C44E35]">*</span></Label>
                     <Select
                       value={formData.priceType}
                       onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
@@ -1052,7 +1233,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <>
                       <div className="space-y-2">
                         <Label htmlFor="price-mobile" className="text-base font-semibold text-black">
-                          Cena (zł) <span className="text-gray-600 font-normal">(opcjonalnie)</span>
+                          Cena (zł) <span className="text-[#C44E35]">*</span>
                         </Label>
                         <div className="flex items-center gap-3">
                           <Input
@@ -1063,6 +1244,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                             placeholder="0"
                             value={formData.price}
                             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                            required
                             className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
                           />
 
@@ -1232,6 +1414,17 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
             )}
           </div>
         </form>
+
+        {/* Category Selector Modal */}
+        <CategorySelector
+          open={showCategorySelector}
+          onOpenChange={setShowCategorySelector}
+          onSelect={(categoryId, path) => {
+            setSelectedCategoryId(categoryId)
+            setCategoryPath(path)
+          }}
+          selectedCategoryId={selectedCategoryId}
+        />
 
       {/* Mobile: Fixed bottom action bar */}
       <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-white z-30 pb-[72px] border-t border-black/10 overflow-hidden transition-transform duration-300 ${

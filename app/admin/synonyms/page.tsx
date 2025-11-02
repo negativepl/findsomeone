@@ -28,7 +28,7 @@ export default async function AdminSynonymsPage() {
         created_at
       )
     `)
-    .order('name')
+    .order('display_order')
 
   return (
     <>

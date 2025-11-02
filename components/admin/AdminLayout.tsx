@@ -35,12 +35,13 @@ const navItems = [
       </svg>
     ),
   },
+  { section: 'Treść' },
   {
-    label: 'Użytkownicy',
-    href: '/admin/users',
+    label: 'Ogłoszenia',
+    href: '/admin/posts',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
       </svg>
     ),
   },
@@ -53,8 +54,29 @@ const navItems = [
       </svg>
     ),
   },
+  { section: 'Użytkownicy' },
   {
-    label: 'Moderacja',
+    label: 'Użytkownicy',
+    href: '/admin/users',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Zbanowani',
+    href: '/admin/banned-users',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+      </svg>
+    ),
+    badge: 'bannedUsersCount',
+  },
+  { section: 'Moderacja' },
+  {
+    label: 'Zgłoszenia ogłoszeń',
     href: '/admin/moderation',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,7 +86,7 @@ const navItems = [
     badge: 'moderationCount',
   },
   {
-    label: 'Zgłoszenia',
+    label: 'Zgłoszenia wiadomości',
     href: '/admin/reports',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -73,25 +95,7 @@ const navItems = [
     ),
     badge: 'reportsCount',
   },
-  {
-    label: 'Zbanowani użytkownicy',
-    href: '/admin/banned-users',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-      </svg>
-    ),
-    badge: 'bannedUsersCount',
-  },
-  {
-    label: 'RODO / Audit',
-    href: '/admin/audit-logs',
-    icon: (
-      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-      </svg>
-    ),
-  },
+  { section: 'Wyszukiwanie' },
   {
     label: 'Synonimy',
     href: '/admin/synonyms',
@@ -103,7 +107,7 @@ const navItems = [
     badge: 'synonymsCount',
   },
   {
-    label: 'Wyszukiwanie AI',
+    label: 'Embeddingi AI',
     href: '/admin/embeddings',
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -111,6 +115,7 @@ const navItems = [
       </svg>
     ),
   },
+  { section: 'Narzędzia AI' },
   {
     label: 'Ustawienia AI',
     href: '/admin/ai-settings',
@@ -135,6 +140,16 @@ const navItems = [
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+      </svg>
+    ),
+  },
+  { section: 'System' },
+  {
+    label: 'RODO / Audit',
+    href: '/admin/audit-logs',
+    icon: (
+      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
       </svg>
     ),
   },
@@ -216,14 +231,27 @@ export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
           {/* Navigation */}
           <nav className="flex-1 overflow-y-auto py-4 px-3">
             <div className="space-y-1">
-              {navItems.map((item) => {
+              {navItems.map((item, index) => {
+                // Section header
+                if ('section' in item) {
+                  return (
+                    <div
+                      key={`section-${index}`}
+                      className="px-3 pt-4 pb-2 text-xs font-bold text-black/40 uppercase tracking-wider"
+                    >
+                      {item.section}
+                    </div>
+                  )
+                }
+
+                // Regular menu item
                 const isActive = pathname === item.href
                 const badgeCount = getBadgeCount(item.badge)
 
                 return (
                   <Link
                     key={item.href}
-                    href={item.href}
+                    href={item.href!}
                     onClick={() => setSidebarOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                       isActive
@@ -231,9 +259,6 @@ export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
                         : 'text-black/70 hover:bg-black/5 hover:text-black'
                     }`}
                   >
-                    <span className={isActive ? 'text-white' : 'text-black/60'}>
-                      {item.icon}
-                    </span>
                     <span className="text-sm font-medium flex-1">{item.label}</span>
                     {badgeCount && (
                       <span
