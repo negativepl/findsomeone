@@ -23,10 +23,11 @@ export default async function ContactPage() {
     <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} pageTitle="Kontakt" />
 
-      <main className="container mx-auto px-4 md:px-6 py-2 md:py-4">
-        <div className="mb-4 hidden md:block">
-          <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Kontakt</h1>
-          <p className="text-base md:text-lg text-black/60">
+      <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+        {/* Header - Desktop only */}
+        <div className="mb-8 hidden md:block">
+          <h1 className="text-4xl font-bold text-black mb-3">Kontakt</h1>
+          <p className="text-lg text-black/60">
             Masz pytania? Chętnie pomożemy!
           </p>
         </div>

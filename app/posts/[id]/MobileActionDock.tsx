@@ -82,6 +82,13 @@ export function MobileActionDock({
     window.location.href = `tel:${phone}`
   }
 
+  // Don't render if no actions available
+  const hasActions = isOwnPost || (showPhone && phone) || (showMessages && receiverId !== AI_BOT_USER_ID)
+
+  if (!hasActions) {
+    return null
+  }
+
   return (
     <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-black/10 z-30 pb-[72px] transition-transform duration-300 ${
       (isVisible && !isMenuOpen) ? 'translate-y-0' : 'translate-y-full'

@@ -56,18 +56,23 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
   if (showBothLayouts) {
     // Render both layouts with appropriate visibility classes
     return (
-      <section className="container mx-auto px-6 py-3 md:py-14">
-        <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
-          <div className="mb-8 md:mb-12">
-            <h3 className="text-2xl md:text-4xl font-bold text-black mb-2">{title}</h3>
-            <p className="text-sm md:text-lg text-black/60">{subtitle}</p>
+      <section className="container mx-auto px-6 py-6 md:py-14">
+        {/* Mobile: flat design without card */}
+        <div className="md:hidden">
+          <div className="mb-6">
+            <h3 className="text-2xl font-bold text-black mb-2">{title}</h3>
+            <p className="text-sm text-black/60">{subtitle}</p>
           </div>
+          {layoutMobile === 'carousel' ? renderCarousel() : renderGrid()}
+        </div>
 
-          {/* Mobile layout */}
-          {layoutMobile === 'carousel' ? renderCarousel('md:hidden') : renderGrid('md:hidden')}
-
-          {/* Desktop layout */}
-          {layoutDesktop === 'carousel' ? renderCarousel('hidden md:block') : renderGrid('hidden md:block')}
+        {/* Desktop: card design */}
+        <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+          <div className="mb-12">
+            <h3 className="text-4xl font-bold text-black mb-2">{title}</h3>
+            <p className="text-lg text-black/60">{subtitle}</p>
+          </div>
+          {layoutDesktop === 'carousel' ? renderCarousel() : renderGrid()}
         </div>
       </section>
     )
@@ -75,13 +80,22 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
 
   // Same layout for both mobile and desktop
   return (
-    <section className="container mx-auto px-6 py-3 md:py-14">
-      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
-        <div className="mb-8 md:mb-12">
-          <h3 className="text-2xl md:text-4xl font-bold text-black mb-2">{title}</h3>
-          <p className="text-sm md:text-lg text-black/60">{subtitle}</p>
+    <section className="container mx-auto px-6 py-6 md:py-14">
+      {/* Mobile: flat design */}
+      <div className="md:hidden">
+        <div className="mb-6">
+          <h3 className="text-2xl font-bold text-black mb-2">{title}</h3>
+          <p className="text-sm text-black/60">{subtitle}</p>
         </div>
+        {layoutMobile === 'carousel' ? renderCarousel() : renderGrid()}
+      </div>
 
+      {/* Desktop: card design */}
+      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+        <div className="mb-12">
+          <h3 className="text-4xl font-bold text-black mb-2">{title}</h3>
+          <p className="text-lg text-black/60">{subtitle}</p>
+        </div>
         {layoutMobile === 'carousel' ? renderCarousel() : renderGrid()}
       </div>
     </section>

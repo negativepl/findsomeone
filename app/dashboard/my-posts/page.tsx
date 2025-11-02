@@ -36,11 +36,11 @@ export default async function MyListingsPage() {
       <NavbarWithHide user={user} pageTitle="Moje ogłoszenia" />
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 md:px-6 py-2 md:py-4 pb-20 md:pb-10">
+      <main className="flex-1 container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-20 md:pb-10">
         {/* Header */}
-        <div className="mb-4 hidden md:block">
-          <h2 className="text-2xl md:text-4xl font-bold text-black mb-3">Moje ogłoszenia</h2>
-          <p className="text-base md:text-lg text-black/60">
+        <div className="mb-8 hidden md:block">
+          <h2 className="text-4xl font-bold text-black mb-3">Moje ogłoszenia</h2>
+          <p className="text-lg text-black/60">
             Zarządzaj swoimi ogłoszeniami i sprawdzaj ich status
           </p>
         </div>

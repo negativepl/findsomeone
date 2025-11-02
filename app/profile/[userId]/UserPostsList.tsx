@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
 interface Post {
@@ -74,32 +73,32 @@ export function UserPostsList({ userId, initialPosts, totalCount }: UserPostsLis
 
       {posts.length > 0 ? (
         <>
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4">
             {posts.map((post) => (
-              <Link key={post.id} href={`/posts/${post.id}`}>
-                <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all shadow-sm cursor-pointer">
-                  <CardContent className="p-6">
-                    {post.categories && (
-                      <div className="mb-3">
-                        <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-3 py-1.5">
-                          {post.categories.name}
-                        </Badge>
-                      </div>
-                    )}
+              <Link
+                key={post.id}
+                href={`/posts/${post.id}`}
+                className="block bg-white rounded-2xl p-5 hover:bg-[#F5F1E8] transition-all"
+              >
+                {post.categories && (
+                  <div className="mb-3">
+                    <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-3 py-1.5">
+                      {post.categories.name}
+                    </Badge>
+                  </div>
+                )}
 
-                    <h3 className="text-lg font-bold text-black mb-3">
-                      {post.title}
-                    </h3>
+                <h3 className="text-lg font-bold text-black mb-3">
+                  {post.title}
+                </h3>
 
-                    <div className="flex items-center gap-1.5 text-sm text-black/60">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      {post.city}{post.district && `, ${post.district}`}
-                    </div>
-                  </CardContent>
-                </Card>
+                <div className="flex items-center gap-1.5 text-sm text-black/60">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  {post.city}{post.district && `, ${post.district}`}
+                </div>
               </Link>
             ))}
           </div>
@@ -120,11 +119,9 @@ export function UserPostsList({ userId, initialPosts, totalCount }: UserPostsLis
           )}
         </>
       ) : (
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
-          <CardContent className="p-8 text-center">
-            <p className="text-black/60">Brak aktywnych ogłoszeń</p>
-          </CardContent>
-        </Card>
+        <div className="bg-white rounded-2xl p-8 text-center">
+          <p className="text-black/60">Brak aktywnych ogłoszeń</p>
+        </div>
       )}
     </div>
   )

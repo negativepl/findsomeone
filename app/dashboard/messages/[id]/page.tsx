@@ -90,7 +90,7 @@ export default async function ConversationPage({
       />
 
       {/* Chat Header - Fixed (Desktop only) */}
-      <div className="hidden md:block fixed top-[97px] left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
+      <div className="hidden md:block fixed top-16 left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
         <div className="container mx-auto">
           <div className="flex items-center gap-4">
             <Link

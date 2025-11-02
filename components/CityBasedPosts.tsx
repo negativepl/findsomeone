@@ -91,29 +91,46 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
   }
 
   return (
-    <section className="container mx-auto px-6 py-3 md:py-14">
-      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
-        <div className="flex items-center justify-between mb-8 md:mb-12">
-          <div>
-            <h3 className="text-2xl md:text-4xl font-bold text-black mb-2">
-              W Twoim mieście
-            </h3>
-            <p className="text-sm md:text-lg text-black/60">
-              Ogłoszenia z miasta {city}
-            </p>
-          </div>
-          <div className="hidden md:block">
-            <Link href={`/posts?city=${encodeURIComponent(city)}`} className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-2.5 text-sm font-medium transition-colors inline-block">
-              Zobacz wszystkie
-            </Link>
-          </div>
+    <section className="container mx-auto px-6 py-6 md:py-14">
+      {/* Mobile: flat design */}
+      <div className="md:hidden">
+        <div className="mb-6">
+          <h3 className="text-2xl font-bold text-black mb-2">W Twoim mieście</h3>
+          <p className="text-sm text-black/60">Ogłoszenia z miasta {city}</p>
         </div>
 
-        {/* Horizontal Scroll for all devices */}
-        <div className="relative -mx-6 md:-mx-8">
-          <div className="hidden md:block">
-            <ScrollArrows containerId="city-posts-scroll" />
+        <div className="relative -mx-6">
+          <ScrollGradients containerId="city-posts-scroll" />
+
+          <div id="city-posts-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
+            <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
+              {posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  isFavorite={userFavorites.includes(post.id)}
+                />
+              ))}
+            </div>
           </div>
+          <ScrollIndicator containerId="city-posts-scroll" />
+        </div>
+      </div>
+
+      {/* Desktop: card design */}
+      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+        <div className="flex items-center justify-between mb-12">
+          <div>
+            <h3 className="text-4xl font-bold text-black mb-2">W Twoim mieście</h3>
+            <p className="text-lg text-black/60">Ogłoszenia z miasta {city}</p>
+          </div>
+          <Link href={`/posts?city=${encodeURIComponent(city)}`} className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-2.5 text-sm font-medium transition-colors inline-block">
+            Zobacz wszystkie
+          </Link>
+        </div>
+
+        <div className="relative -mx-8">
+          <ScrollArrows containerId="city-posts-scroll" />
           <ScrollGradients containerId="city-posts-scroll" />
 
           <div id="city-posts-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">

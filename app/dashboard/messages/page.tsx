@@ -142,11 +142,11 @@ export default async function MessagesPage() {
     <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
       <NavbarWithHide user={user} pageTitle="Wiadomości" />
 
-      <main className="container mx-auto px-4 md:px-6 py-2 md:py-4 flex-1">
+      <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8 flex-1">
         {/* Header */}
-        <div className="mb-4 hidden md:block">
-          <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Wiadomości</h1>
-          <p className="text-base md:text-lg text-black/60">
+        <div className="mb-8 hidden md:block">
+          <h1 className="text-4xl font-bold text-black mb-3">Wiadomości</h1>
+          <p className="text-lg text-black/60">
             Twoje rozmowy z innymi użytkownikami
           </p>
         </div>

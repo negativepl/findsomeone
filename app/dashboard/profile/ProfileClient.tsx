@@ -247,18 +247,394 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
   }
 
   return (
-    <main className="container mx-auto px-4 md:px-6 py-2 md:py-4">
-      {/* Header */}
-      <div className="mb-4 hidden md:block">
-        <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Mój profil</h1>
-        <p className="text-base md:text-lg text-black/60">
+    <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+      {/* Header - Desktop only */}
+      <div className="mb-8 hidden md:block">
+        <h1 className="text-4xl font-bold text-black mb-3">Mój profil</h1>
+        <p className="text-lg text-black/60">
           Zarządzaj swoimi danymi i informacjami kontaktowymi
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Mobile: single column flat design */}
+      <div className="md:hidden space-y-6">
+        {/* Avatar Section */}
+        <div className="text-center">
+          <div className="mb-4 relative inline-block">
+            <div className="relative w-32 h-32 mx-auto">
+              {profile?.avatar_url ? (
+                <img
+                  src={profile.avatar_url}
+                  alt=""
+                  className="w-32 h-32 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-32 h-32 rounded-full bg-[#C44E35] flex items-center justify-center">
+                  <span className="text-5xl font-semibold text-white">
+                    {(() => {
+                      const name = formData.full_name || initialUser?.email || ''
+                      const parts = name.split(' ')
+                      if (parts.length >= 2) {
+                        return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+                      }
+                      return name.substring(0, 2).toUpperCase() || 'U'
+                    })()}
+                  </span>
+                </div>
+              )}
+
+              {/* Badges */}
+              <div className="absolute -top-1 -right-1 flex flex-col gap-1 z-10">
+                {profile?.verified && <UserBadge type="verified" />}
+                {profile?.is_company && <UserBadge type="company" />}
+                {profile?.is_ai_bot && <UserBadge type="ai_bot" />}
+              </div>
+
+              {/* Upload button */}
+              <label
+                htmlFor="avatar-upload-mobile"
+                onMouseEnter={() => setIsAvatarHovered(true)}
+                onMouseLeave={() => setIsAvatarHovered(false)}
+                className="absolute bottom-0 right-0 w-10 h-10 bg-[#C44E35] hover:bg-[#B33D2A] rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg"
+              >
+                {uploading ? (
+                  <svg className="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                ) : (
+                  <LottieIcon
+                    animationPath="/animations/camera.json"
+                    fallbackSvg={<img src="/icons/camera.svg" alt="Camera" className="w-full h-full" />}
+                    className="w-5 h-5 text-white"
+                    isHovered={isAvatarHovered}
+                  />
+                )}
+              </label>
+              <input
+                id="avatar-upload-mobile"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                disabled={uploading}
+                className="hidden"
+              />
+            </div>
+            <p className="text-xs text-gray-600 mt-2">Kliknij ikonę aby zmienić</p>
+          </div>
+
+          <h2 className="text-2xl font-bold text-black mb-1">
+            {formData.full_name || 'Użytkownik'}
+          </h2>
+          <p className="text-sm text-black/60 mb-4">{initialUser?.email}</p>
+
+          {/* Stats */}
+          <div className="bg-white rounded-2xl p-4 mb-4 space-y-3 text-left">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-black/60">Ocena</span>
+              <span className="font-semibold text-black flex items-center gap-1">
+                <svg className="w-4 h-4 text-[#C44E35]" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                {profile?.rating?.toFixed(1) || '0.0'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-black/60">Opinie</span>
+              <span className="font-semibold text-black">{profile?.total_reviews || 0}</span>
+            </div>
+          </div>
+
+          {/* View Profile Button */}
+          <Link href={`/profile/${initialUser.id}`} target="_blank" className="block">
+            <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12">
+              Zobacz swój profil
+            </Button>
+          </Link>
+        </div>
+
+        {/* Edit Profile Form */}
+        <div>
+          <h2 className="text-xl font-bold text-black mb-4">Edytuj profil</h2>
+          <div className="bg-white rounded-2xl p-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Full Name */}
+              <div className="space-y-2">
+                <Label htmlFor="full_name_mobile" className="text-sm font-semibold text-black">
+                  Imię i nazwisko *
+                </Label>
+                <Input
+                  id="full_name_mobile"
+                  placeholder="np. Jan Kowalski"
+                  value={formData.full_name}
+                  onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                  required
+                  className="rounded-2xl border-2 border-black/10 h-11 focus:border-black/30"
+                />
+              </div>
+
+              {/* Email (read-only) */}
+              <div className="space-y-2">
+                <Label htmlFor="email_mobile" className="text-sm font-semibold text-black">
+                  Email
+                </Label>
+                <Input
+                  id="email_mobile"
+                  value={initialUser?.email || ''}
+                  disabled
+                  className="rounded-2xl border-2 border-black/10 h-11 bg-black/5 text-black/60"
+                />
+                <p className="text-xs text-black/60">Email nie może być zmieniony</p>
+              </div>
+
+              {/* Phone */}
+              <div className="space-y-2">
+                <Label htmlFor="phone_mobile" className="text-sm font-semibold text-black">
+                  Telefon
+                </Label>
+                <Input
+                  id="phone_mobile"
+                  type="tel"
+                  placeholder="np. +48 123 456 789"
+                  value={formData.phone}
+                  onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="rounded-2xl border-2 border-black/10 h-11 focus:border-black/30"
+                />
+              </div>
+
+              {/* City */}
+              <div className="space-y-2">
+                <Label htmlFor="city_mobile" className="text-sm font-semibold text-black">
+                  Miasto
+                </Label>
+                <Input
+                  id="city_mobile"
+                  placeholder="np. Warszawa"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className="rounded-2xl border-2 border-black/10 h-11 focus:border-black/30"
+                />
+              </div>
+
+              {/* Bio */}
+              <div className="space-y-2">
+                <Label htmlFor="bio_mobile" className="text-sm font-semibold text-black">
+                  O mnie
+                </Label>
+                <Textarea
+                  id="bio_mobile"
+                  placeholder="Napisz coś o sobie..."
+                  rows={4}
+                  value={formData.bio}
+                  onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                  className="rounded-2xl border-2 border-black/10 focus:border-black/30 resize-none"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={saving}
+                className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold"
+              >
+                {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        {/* Banner Section */}
+        <div>
+          <h2 className="text-xl font-bold text-black mb-4">Banner profilu</h2>
+          <div className="bg-white rounded-2xl p-5">
+            <p className="text-sm text-black/60 mb-4">
+              Dodaj banner do swojego profilu - idealny dla firm (logo, zdjęcie lokalu, itp.)
+            </p>
+
+            {/* Banner Preview - same as desktop but mobile ID */}
+            <div className="mb-4">
+              {profile?.banner_url ? (
+                <div className="relative w-full rounded-2xl overflow-hidden group" style={{ aspectRatio: '3/1', minHeight: '150px' }}>
+                  <div
+                    style={{
+                      transform: `scale(${(profile.banner_scale || 100) / 100})`,
+                      transformOrigin: `center ${profile.banner_position || 50}%`,
+                      width: '100%',
+                      height: '100%',
+                      position: 'absolute',
+                      top: 0,
+                      left: 0
+                    }}
+                  >
+                    <Image
+                      src={profile.banner_url}
+                      alt="Profile banner"
+                      fill
+                      className="object-cover"
+                      style={{ objectPosition: `center ${profile.banner_position || 50}%` }}
+                      sizes="100vw"
+                      quality={90}
+                      unoptimized={process.env.NODE_ENV === 'development'}
+                    />
+                  </div>
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center">
+                    <label
+                      htmlFor="banner-upload-mobile"
+                      onMouseEnter={() => setIsBannerHovered(true)}
+                      onMouseLeave={() => setIsBannerHovered(false)}
+                      className="cursor-pointer flex flex-col items-center"
+                    >
+                      <div className="bg-white rounded-full p-3 hover:bg-gray-100 transition-colors flex items-center justify-center">
+                        {uploadingBanner ? (
+                          <svg className="animate-spin w-5 h-5 text-[#C44E35]" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                        ) : (
+                          <LottieIcon
+                            animationPath="/animations/photo.json"
+                            fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
+                            className="w-5 h-5 text-[#C44E35]"
+                            isHovered={isBannerHovered}
+                          />
+                        )}
+                      </div>
+                      <p className="text-white text-xs mt-2 font-semibold">Zmień banner</p>
+                    </label>
+                  </div>
+                </div>
+              ) : (
+                <label
+                  htmlFor="banner-upload-mobile"
+                  onMouseEnter={() => setIsBannerHovered(true)}
+                  onMouseLeave={() => setIsBannerHovered(false)}
+                  className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-black/20 rounded-2xl cursor-pointer hover:border-black/40 hover:bg-black/5 transition-all"
+                >
+                  <div className="flex flex-col items-center justify-center pt-4 pb-4 px-4">
+                    {uploadingBanner ? (
+                      <svg className="animate-spin w-8 h-8 text-[#C44E35] mb-2" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                    ) : (
+                      <>
+                        <LottieIcon
+                          animationPath="/animations/photo.json"
+                          fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
+                          className="w-8 h-8 mb-2 text-black/40"
+                          isHovered={isBannerHovered}
+                        />
+                        <p className="mb-1 text-sm text-black/70 font-semibold">Kliknij aby dodać banner</p>
+                        <p className="text-xs text-black/50">1488×496px, Max. 5MB</p>
+                      </>
+                    )}
+                  </div>
+                </label>
+              )}
+              <input
+                id="banner-upload-mobile"
+                type="file"
+                accept="image/*"
+                onChange={handleBannerUpload}
+                disabled={uploadingBanner}
+                className="hidden"
+              />
+            </div>
+
+            {profile?.banner_url && (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={async () => {
+                  if (confirm('Czy na pewno chcesz usunąć banner?')) {
+                    try {
+                      setUploadingBanner(true)
+                      const oldPath = profile.banner_url!.split('/banners/')[1]
+                      if (oldPath) {
+                        await supabase.storage.from('banners').remove([oldPath])
+                      }
+                      await supabase
+                        .from('profiles')
+                        .update({ banner_url: null })
+                        .eq('id', initialUser.id)
+                      setProfile({ ...profile, banner_url: null })
+                      toast.success('Banner został usunięty!')
+                    } catch (error) {
+                      console.error('Error removing banner:', error)
+                      toast.error('Nie udało się usunąć bannera')
+                    } finally {
+                      setUploadingBanner(false)
+                    }
+                  }
+                }}
+                className="w-full rounded-full border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 h-11"
+              >
+                Usuń banner
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Privacy Settings */}
+        <div>
+          <h2 className="text-xl font-bold text-black mb-4">Ustawienia prywatności</h2>
+          <div className="bg-white rounded-2xl p-5">
+            <p className="text-sm text-black/60 mb-4">
+              Kontroluj, jakie informacje są widoczne w Twoich ogłoszeniach
+            </p>
+
+            <form onSubmit={handlePrivacySubmit} className="space-y-4">
+              {/* Show Phone */}
+              <div className="flex items-center justify-between p-3 bg-[#FAF8F3] rounded-xl">
+                <div className="flex-1 pr-3">
+                  <Label htmlFor="show_phone_mobile" className="text-sm font-semibold text-black cursor-pointer">
+                    Pokazuj numer telefonu
+                  </Label>
+                  <p className="text-xs text-black/60 mt-0.5">
+                    Widoczny w ogłoszeniach
+                  </p>
+                </div>
+                <Switch
+                  id="show_phone_mobile"
+                  checked={privacySettings.show_phone}
+                  onCheckedChange={(checked) => setPrivacySettings({ ...privacySettings, show_phone: checked })}
+                  aria-label="Pokazuj numer telefonu"
+                />
+              </div>
+
+              {/* Show Messages */}
+              <div className="flex items-center justify-between p-3 bg-[#FAF8F3] rounded-xl">
+                <div className="flex-1 pr-3">
+                  <Label htmlFor="show_messages_mobile" className="text-sm font-semibold text-black cursor-pointer">
+                    Pokazuj "Wyślij wiadomość"
+                  </Label>
+                  <p className="text-xs text-black/60 mt-0.5">
+                    Użytkownicy mogą wysyłać wiadomości
+                  </p>
+                </div>
+                <Switch
+                  id="show_messages_mobile"
+                  checked={privacySettings.show_messages}
+                  onCheckedChange={(checked) => setPrivacySettings({ ...privacySettings, show_messages: checked })}
+                  aria-label="Pokazuj przycisk Wyślij wiadomość"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={savingPrivacy}
+                className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold"
+              >
+                {savingPrivacy ? 'Zapisywanie...' : 'Zapisz ustawienia'}
+              </Button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop: 2-column layout */}
+      <div className="hidden md:grid grid-cols-3 gap-6">
         {/* Left sidebar - Profile Summary */}
-        <div className="md:col-span-1">
+        <div className="col-span-1">
           <Card className="border-0 rounded-3xl bg-white sticky top-24 overflow-visible">
             <CardContent className="p-6 text-center overflow-visible">
               {/* Avatar */}
@@ -360,7 +736,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
         </div>
 
         {/* Right side - Edit Form */}
-        <div className="md:col-span-2">
+        <div className="col-span-2">
           <Card className="border-0 rounded-3xl bg-white">
             <CardHeader>
               <CardTitle className="text-2xl md:text-3xl font-bold text-black">Edytuj profil</CardTitle>

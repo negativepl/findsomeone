@@ -541,7 +541,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   }
 
   return (
-      <main className="md:container md:mx-auto md:px-6 h-full md:h-auto md:py-4 flex flex-col md:block">
+      <main className="md:container md:mx-auto md:px-6 h-full md:h-auto md:pt-24 md:pb-8 flex flex-col md:block">
         {/* Draft Recovery Modal */}
         {showDraftModal && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -572,7 +572,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         )}
 
         {/* Page Header - Above Card - Hidden on mobile */}
-        <div className="hidden md:block mb-4">
+        <div className="mb-8 hidden md:block">
           <div className="flex items-center justify-between mb-3">
             <h1 className="text-4xl font-bold text-black">Dodaj nowe ogłoszenie</h1>
           </div>

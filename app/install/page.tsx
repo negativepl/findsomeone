@@ -18,8 +18,8 @@ export default async function InstallPage() {
     <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} pageTitle="Zainstaluj aplikację" />
 
-      <main className="container mx-auto px-4 md:px-6 py-2 md:py-4">
-        <div className="mb-4 hidden md:block">
+      <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+        <div className="hidden md:block md:mb-4">
           <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Zainstaluj aplikację</h1>
           <p className="text-base md:text-lg text-black/60">
             Korzystaj z FindSomeone jak z natywnej aplikacji mobilnej

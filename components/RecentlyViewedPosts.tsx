@@ -76,37 +76,27 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
   }
 
   return (
-    <section className="container mx-auto px-6 py-3 md:py-14">
-      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
-        <div className="flex items-center justify-between mb-8 md:mb-12">
-          <div>
-            <h3 className="text-2xl md:text-4xl font-bold text-black mb-2">Ostatnio wyświetlane</h3>
-            <p className="text-sm md:text-lg text-black/60">Ostatnio przeglądane ogłoszenia</p>
-          </div>
+    <section className="container mx-auto px-6 py-6 md:py-14">
+      {/* Mobile: flat design */}
+      <div className="md:hidden">
+        <div className="mb-6">
+          <h3 className="text-2xl font-bold text-black mb-2">Ostatnio wyświetlane</h3>
+          <p className="text-sm text-black/60">Ostatnio przeglądane ogłoszenia</p>
         </div>
 
-        {/* Horizontal Scroll for all devices */}
-        <div className="relative -mx-6 md:-mx-8">
+        <div className="relative -mx-6">
           {posts.length > 1 && (
-            <>
-              <div className="hidden md:block">
-                <ScrollArrows containerId="recently-viewed-scroll" />
-              </div>
-              <ScrollGradients containerId="recently-viewed-scroll" />
-            </>
+            <ScrollGradients containerId="recently-viewed-scroll" />
           )}
 
           <div id="recently-viewed-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
               {loading ? (
-                // Skeleton loader - show 6 placeholder cards
                 <>
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div key={i} className="flex-shrink-0 snap-center" style={{ width: '320px' }}>
                       <Card className="border-0 rounded-3xl bg-white h-full flex flex-col animate-pulse">
-                        {/* Image skeleton */}
                         <div className="w-full h-48 bg-black/5 rounded-t-3xl" />
-
                         <CardHeader className="pb-4 pt-6">
                           <div className="flex items-start justify-between mb-3">
                             <div className="h-6 w-20 bg-black/5 rounded-full" />
@@ -114,7 +104,6 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
                           </div>
                           <div className="h-6 w-3/4 bg-black/5 rounded" />
                         </CardHeader>
-
                         <CardContent className="pb-6 mt-auto space-y-3">
                           <div className="h-4 w-1/2 bg-black/5 rounded" />
                           <div className="flex items-center justify-between gap-2">
@@ -131,12 +120,73 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
                 </>
               ) : (
                 posts.map((post: any) => (
-                <PostCard
-                  key={post.id}
-                  post={post}
-                  isFavorite={userFavorites.includes(post.id)}
-                />
-              ))
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    isFavorite={userFavorites.includes(post.id)}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+          {posts.length > 1 && (
+            <ScrollIndicator containerId="recently-viewed-scroll" />
+          )}
+        </div>
+      </div>
+
+      {/* Desktop: card design */}
+      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+        <div className="mb-12">
+          <h3 className="text-4xl font-bold text-black mb-2">Ostatnio wyświetlane</h3>
+          <p className="text-lg text-black/60">Ostatnio przeglądane ogłoszenia</p>
+        </div>
+
+        <div className="relative -mx-8">
+          {posts.length > 1 && (
+            <>
+              <ScrollArrows containerId="recently-viewed-scroll" />
+              <ScrollGradients containerId="recently-viewed-scroll" />
+            </>
+          )}
+
+          <div id="recently-viewed-scroll" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory">
+            <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
+              {loading ? (
+                <>
+                  {[1, 2, 3, 4, 5, 6].map((i) => (
+                    <div key={i} className="flex-shrink-0 snap-center" style={{ width: '320px' }}>
+                      <Card className="border-0 rounded-3xl bg-white h-full flex flex-col animate-pulse">
+                        <div className="w-full h-48 bg-black/5 rounded-t-3xl" />
+                        <CardHeader className="pb-4 pt-6">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="h-6 w-20 bg-black/5 rounded-full" />
+                            <div className="h-6 w-24 bg-black/5 rounded-full" />
+                          </div>
+                          <div className="h-6 w-3/4 bg-black/5 rounded" />
+                        </CardHeader>
+                        <CardContent className="pb-6 mt-auto space-y-3">
+                          <div className="h-4 w-1/2 bg-black/5 rounded" />
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                              <div className="w-8 h-8 rounded-full bg-black/5" />
+                              <div className="h-4 w-24 bg-black/5 rounded" />
+                            </div>
+                            <div className="h-6 w-20 bg-black/5 rounded" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  ))}
+                </>
+              ) : (
+                posts.map((post: any) => (
+                  <PostCard
+                    key={post.id}
+                    post={post}
+                    isFavorite={userFavorites.includes(post.id)}
+                  />
+                ))
               )}
             </div>
           </div>

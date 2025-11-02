@@ -34,22 +34,102 @@ export default async function SettingsPage() {
     <div className="min-h-screen bg-[#FAF8F3]">
       <NavbarWithHide user={user} pageTitle="Ustawienia" />
 
-      <main className="container mx-auto px-4 md:px-6 py-2 md:py-4">
-        {/* Header */}
-        <div className="mb-4 hidden md:block">
-          <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Ustawienia</h1>
-          <p className="text-base md:text-lg text-black/60">
+      <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+        {/* Header - Desktop only */}
+        <div className="mb-8 hidden md:block">
+          <h1 className="text-4xl font-bold text-black mb-3">Ustawienia</h1>
+          <p className="text-lg text-black/60">
             Zarządzaj swoim kontem i preferencjami
           </p>
         </div>
 
-        {/* Settings Sections */}
-        <div className="grid grid-cols-1 gap-6">
+        {/* Mobile: flat design */}
+        <div className="md:hidden space-y-6">
+          {/* Account Settings */}
+          <div>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-black mb-1">Konto</h2>
+              <p className="text-sm text-black/60">
+                Zarządzaj swoimi danymi i bezpieczeństwem konta
+              </p>
+            </div>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-5 rounded-2xl bg-white">
+                <div className="flex-1">
+                  <p className="text-base font-semibold text-black mb-1">Email</p>
+                  <p className="text-sm text-black/60">{user.email}</p>
+                </div>
+                <ChangeEmailDialog />
+              </div>
+              <div className="flex items-center justify-between p-5 rounded-2xl bg-white">
+                <div className="flex-1">
+                  <p className="text-base font-semibold text-black mb-1">Hasło</p>
+                  <p className="text-sm text-black/60">••••••••</p>
+                </div>
+                <ChangePasswordDialog />
+              </div>
+            </div>
+          </div>
+
+          {/* Notifications */}
+          <div>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-black mb-1">Powiadomienia</h2>
+              <p className="text-sm text-black/60">
+                Dostosuj preferencje powiadomień
+              </p>
+            </div>
+            <div className="bg-white rounded-2xl p-5">
+              <NotificationSettings
+                emailNotifications={profile?.email_notifications ?? false}
+                messageNotifications={profile?.message_notifications ?? false}
+              />
+            </div>
+          </div>
+
+          {/* Preferences */}
+          <div>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-black mb-1">Preferencje</h2>
+              <p className="text-sm text-black/60">
+                Dostosuj wygląd i działanie aplikacji
+              </p>
+            </div>
+            <div className="bg-white rounded-2xl p-5">
+              <PreferencesSettings
+                language={profile?.language ?? 'pl'}
+                theme={profile?.theme ?? 'light'}
+              />
+            </div>
+          </div>
+
+          {/* Danger Zone */}
+          <div>
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-red-600 mb-1">Strefa zagrożenia</h2>
+              <p className="text-sm text-red-700">
+                Nieodwracalne akcje - zachowaj ostrożność
+              </p>
+            </div>
+            <div className="flex flex-col gap-4 p-5 rounded-2xl bg-red-50 border-2 border-red-100">
+              <div className="flex-1">
+                <p className="text-base font-semibold text-red-900 mb-2">Usuń konto</p>
+                <p className="text-sm text-red-700">
+                  Permanentnie usuń swoje konto i wszystkie dane. Ta akcja jest nieodwracalna.
+                </p>
+              </div>
+              <DeleteAccountDialog />
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop: card design */}
+        <div className="hidden md:grid grid-cols-1 gap-6">
           {/* Account Settings */}
           <Card className="border-0 rounded-3xl bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Konto</CardTitle>
-              <CardDescription className="text-sm md:text-base text-black/60">
+              <CardTitle className="text-3xl font-bold text-black">Konto</CardTitle>
+              <CardDescription className="text-base text-black/60">
                 Zarządzaj swoimi danymi i bezpieczeństwem konta
               </CardDescription>
             </CardHeader>
@@ -74,8 +154,8 @@ export default async function SettingsPage() {
           {/* Notifications */}
           <Card className="border-0 rounded-3xl bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Powiadomienia</CardTitle>
-              <CardDescription className="text-sm md:text-base text-black/60">
+              <CardTitle className="text-3xl font-bold text-black">Powiadomienia</CardTitle>
+              <CardDescription className="text-base text-black/60">
                 Dostosuj preferencje powiadomień
               </CardDescription>
             </CardHeader>
@@ -90,8 +170,8 @@ export default async function SettingsPage() {
           {/* Preferences */}
           <Card className="border-0 rounded-3xl bg-white shadow-sm">
             <CardHeader>
-              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Preferencje</CardTitle>
-              <CardDescription className="text-sm md:text-base text-black/60">
+              <CardTitle className="text-3xl font-bold text-black">Preferencje</CardTitle>
+              <CardDescription className="text-base text-black/60">
                 Dostosuj wygląd i działanie aplikacji
               </CardDescription>
             </CardHeader>
@@ -102,28 +182,28 @@ export default async function SettingsPage() {
               />
             </CardContent>
           </Card>
-        </div>
 
-        {/* Danger Zone */}
-        <Card className="border-0 rounded-3xl bg-white shadow-sm mt-8">
-          <CardHeader>
-            <CardTitle className="text-2xl md:text-3xl font-bold text-red-600">Strefa zagrożenia</CardTitle>
-            <CardDescription className="text-sm md:text-base text-red-700">
-              Nieodwracalne akcje - zachowaj ostrożność
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-red-50 border-2 border-red-100">
-              <div className="flex-1">
-                <p className="text-lg font-semibold text-red-900 mb-2">Usuń konto</p>
-                <p className="text-sm text-red-700">
-                  Permanentnie usuń swoje konto i wszystkie dane. Ta akcja jest nieodwracalna.
-                </p>
+          {/* Danger Zone */}
+          <Card className="border-0 rounded-3xl bg-white shadow-sm mt-2">
+            <CardHeader>
+              <CardTitle className="text-3xl font-bold text-red-600">Strefa zagrożenia</CardTitle>
+              <CardDescription className="text-base text-red-700">
+                Nieodwracalne akcje - zachowaj ostrożność
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-red-50 border-2 border-red-100">
+                <div className="flex-1">
+                  <p className="text-lg font-semibold text-red-900 mb-2">Usuń konto</p>
+                  <p className="text-sm text-red-700">
+                    Permanentnie usuń swoje konto i wszystkie dane. Ta akcja jest nieodwracalna.
+                  </p>
+                </div>
+                <DeleteAccountDialog />
               </div>
-              <DeleteAccountDialog />
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </main>
 
       <Footer />

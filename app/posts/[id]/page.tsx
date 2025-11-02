@@ -306,9 +306,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
       <PostDetailClientWrapper postTitle={post.title}>
         {/* Main Content */}
-        <main className="container mx-auto px-4 md:px-6 py-2 md:py-6 mb-[72px] md:mb-0">
+        <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-2 md:pb-6 mb-[72px] md:mb-0">
         {/* Breadcrumbs */}
-        <div className="hidden md:block mb-4">
+        <div className="mb-8 hidden md:block">
           <Breadcrumbs
             items={[
               { label: 'Strona główna', href: '/' },
@@ -623,99 +623,97 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
             {/* Other Posts from Author */}
             {otherPosts && otherPosts.length > 0 && (
-              <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
-                <CardContent className="p-4 md:p-6">
-                  <h2 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
-                    Inne ogłoszenia użytkownika
-                  </h2>
+              <div>
+                <h2 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
+                  Inne ogłoszenia użytkownika
+                </h2>
 
-                  {/* Mobile: Horizontal Carousel */}
-                  <div className="md:hidden -mx-4">
-                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-160px)]">
-                      {otherPosts.map((otherPost: any) => (
-                        <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '320px' }}>
-                          <div className="group p-3 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
-                            <div className="flex flex-col gap-3">
-                              {/* Thumbnail */}
-                              {otherPost.images && otherPost.images.length > 0 && (
-                                <div className="relative w-full h-36 rounded-lg overflow-hidden bg-black/10">
-                                  <Image
-                                    src={otherPost.images[0]}
-                                    alt={otherPost.title}
-                                    fill
-                                    className="object-cover group-hover:scale-110 transition-transform duration-300"
-                                  />
-                                </div>
-                              )}
+                {/* Mobile: Horizontal Carousel */}
+                <div className="md:hidden -mx-4">
+                  <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-160px)]">
+                    {otherPosts.map((otherPost: any) => (
+                      <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '320px' }}>
+                        <div className="group p-3 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
+                          <div className="flex flex-col gap-3">
+                            {/* Thumbnail */}
+                            {otherPost.images && otherPost.images.length > 0 && (
+                              <div className="relative w-full h-36 rounded-lg overflow-hidden bg-black/10">
+                                <Image
+                                  src={otherPost.images[0]}
+                                  alt={otherPost.title}
+                                  fill
+                                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                />
+                              </div>
+                            )}
 
-                              {/* Content */}
-                              <div className="flex flex-col gap-2">
-                                <h3 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
-                                  {otherPost.title}
-                                </h3>
-                                <div className="flex items-center gap-1.5 text-xs text-black/60">
-                                  <span>{otherPost.city}</span>
-                                  {otherPost.price && (
-                                    <>
-                                      <span>•</span>
-                                      <span className="font-semibold text-black">
-                                        {otherPost.price} zł
-                                      </span>
-                                    </>
-                                  )}
-                                </div>
+                            {/* Content */}
+                            <div className="flex flex-col gap-2">
+                              <h3 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
+                                {otherPost.title}
+                              </h3>
+                              <div className="flex items-center gap-1.5 text-xs text-black/60">
+                                <span>{otherPost.city}</span>
+                                {otherPost.price && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="font-semibold text-black">
+                                      {otherPost.price} zł
+                                    </span>
+                                  </>
+                                )}
                               </div>
                             </div>
                           </div>
-                        </Link>
-                      ))}
-                    </div>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
+                </div>
 
-                  {/* Desktop: Horizontal Carousel */}
-                  <div className="hidden md:block -mx-6">
-                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
-                      {otherPosts.map((otherPost: any) => (
-                        <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
-                          <div className="group p-4 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
-                            <div className="flex flex-col gap-3">
-                              {/* Thumbnail */}
-                              {otherPost.images && otherPost.images.length > 0 && (
-                                <div className="relative w-full h-40 rounded-lg overflow-hidden bg-black/10">
-                                  <Image
-                                    src={otherPost.images[0]}
-                                    alt={otherPost.title}
-                                    fill
-                                    className="object-cover group-hover:scale-110 transition-transform duration-300"
-                                  />
-                                </div>
-                              )}
+                {/* Desktop: Horizontal Carousel */}
+                <div className="hidden md:block -mx-6">
+                  <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
+                    {otherPosts.map((otherPost: any) => (
+                      <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
+                        <div className="group p-4 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
+                          <div className="flex flex-col gap-3">
+                            {/* Thumbnail */}
+                            {otherPost.images && otherPost.images.length > 0 && (
+                              <div className="relative w-full h-40 rounded-lg overflow-hidden bg-black/10">
+                                <Image
+                                  src={otherPost.images[0]}
+                                  alt={otherPost.title}
+                                  fill
+                                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                />
+                              </div>
+                            )}
 
-                              {/* Content */}
-                              <div className="flex flex-col gap-2">
-                                <h3 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug min-h-[40px]">
-                                  {otherPost.title}
-                                </h3>
-                                <div className="flex items-center gap-1.5 text-xs text-black/60">
-                                  <span>{otherPost.city}</span>
-                                  {otherPost.price && (
-                                    <>
-                                      <span>•</span>
-                                      <span className="font-semibold text-black">
-                                        {otherPost.price} zł
-                                      </span>
-                                    </>
-                                  )}
-                                </div>
+                            {/* Content */}
+                            <div className="flex flex-col gap-2">
+                              <h3 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug min-h-[40px]">
+                                {otherPost.title}
+                              </h3>
+                              <div className="flex items-center gap-1.5 text-xs text-black/60">
+                                <span>{otherPost.city}</span>
+                                {otherPost.price && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="font-semibold text-black">
+                                      {otherPost.price} zł
+                                    </span>
+                                  </>
+                                )}
                               </div>
                             </div>
                           </div>
-                        </Link>
-                      ))}
-                    </div>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             )}
           </div>
         </div>

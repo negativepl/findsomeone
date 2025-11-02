@@ -62,18 +62,26 @@ export function HeroSection({ user }: HeroSectionProps) {
           ))}
         </h1>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-          className="text-base md:text-xl text-black/60 max-w-2xl leading-relaxed text-center"
-        >
-          Sprzedajesz, kupujesz, wynajmujesz? Szukasz fachowca lub oferujesz usługi?
-          A może potrzebujesz pomocy albo sam chcesz pomóc?{' '}
-          <span className="font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent">
+        <div className="max-w-2xl text-center space-y-4">
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.4 }}
+            className="text-base md:text-xl text-black/60 leading-relaxed"
+          >
+            Sprzedajesz, kupujesz, wynajmujesz? Szukasz fachowca lub oferujesz usługi?
+            A może potrzebujesz pomocy albo sam chcesz pomóc?
+          </motion.p>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3, delay: 0.5 }}
+            className="text-2xl md:text-3xl text-[#C44E35] font-[family-name:var(--font-dancing-script)]"
+          >
             FindSomeone łączy ludzi i ogłoszenia w okolicy.
-          </span>
-        </motion.p>
+          </motion.p>
+        </div>
 
         <motion.div
           initial={{ opacity: 0 }}
