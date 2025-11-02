@@ -55,9 +55,9 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
     .order('name')
 
   return (
-    <header className={`fixed top-0 left-0 right-0 bg-white border-b border-black/5 ${noRounding ? '' : 'rounded-b-3xl'}`} style={{ zIndex: 9999 }}>
+    <header className={`fixed top-0 left-0 right-0 bg-white border-b border-black/5 ${noRounding ? '' : 'rounded-b-3xl'} before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-white before:-translate-y-full before:z-[-1]`} style={{ zIndex: 9999, paddingTop: 'env(safe-area-inset-top, 0px)' }}>
       <div className="container mx-auto px-6">
-        <nav className="flex items-center justify-between gap-3 md:gap-4 h-16 md:h-24">
+        <nav className="flex items-center justify-between gap-3 md:gap-4 h-16">
           {/* Left Section */}
           {stepInfo ? (
             <div className="flex items-center gap-3 min-w-0">

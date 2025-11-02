@@ -16,11 +16,8 @@ interface NavbarWithHideProps {
 
 export async function NavbarWithHide({ user, showAddButton = true, alwaysVisible = true, noRounding = false, pageTitle, stepInfo, backUrl, otherUserId }: NavbarWithHideProps) {
   return (
-    <>
-      <NavbarPortal>
-        <Navbar user={user} showAddButton={showAddButton} noRounding={noRounding} pageTitle={pageTitle} stepInfo={stepInfo} backUrl={backUrl} otherUserId={otherUserId} />
-      </NavbarPortal>
-      <div className="h-16 md:h-24" /> {/* Spacer for fixed navbar */}
-    </>
+    <NavbarPortal>
+      <Navbar user={user} showAddButton={showAddButton} noRounding={noRounding} pageTitle={pageTitle} stepInfo={stepInfo} backUrl={backUrl} otherUserId={otherUserId} />
+    </NavbarPortal>
   )
 }

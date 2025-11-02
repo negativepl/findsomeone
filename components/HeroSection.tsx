@@ -14,8 +14,9 @@ export function HeroSection({ user }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="container mx-auto px-6 py-3 md:pt-14 md:pb-2 text-center">
-        <h1 className="text-4xl md:text-7xl font-bold mb-4 md:mb-6 text-black leading-tight">
+      <div className="container relative mx-auto px-6 py-16 sm:py-18 md:py-24 lg:px-16 xl:px-20">
+        <div className="relative z-10 pt-16 lg:min-h-[300px] flex flex-col items-center justify-center sm:mx-auto md:w-3/4 lg:mx-0 lg:w-full gap-4 lg:gap-8">
+        <h1 className="text-4xl md:text-7xl font-bold text-black leading-tight text-center">
           {headingText.split(" ").map((word, index) => (
             <motion.span
               key={index}
@@ -65,7 +66,7 @@ export function HeroSection({ user }: HeroSectionProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.4 }}
-          className="text-base md:text-xl text-black/60 mb-6 md:mb-10 max-w-2xl mx-auto leading-relaxed"
+          className="text-base md:text-xl text-black/60 max-w-2xl leading-relaxed text-center"
         >
           Sprzedajesz, kupujesz, wynajmujesz? Szukasz fachowca lub oferujesz usługi?
           A może potrzebujesz pomocy albo sam chcesz pomóc?{' '}
@@ -83,19 +84,20 @@ export function HeroSection({ user }: HeroSectionProps) {
           <Link href="/posts" className="flex-1 md:flex-none md:w-auto">
             <Button
               variant="outline"
-              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all h-[44px] md:h-[56px] md:min-w-[200px] transform hover:-translate-y-0.5"
+              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all h-[44px] md:h-[56px] md:min-w-[200px]"
             >
               Przeglądaj ogłoszenia
             </Button>
           </Link>
           <Link href={user ? "/dashboard/my-posts/new" : "/signup"} className="flex-1 md:flex-none md:w-auto">
             <Button
-              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all h-[44px] md:h-[56px] md:min-w-[200px] transform hover:-translate-y-0.5"
+              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full bg-black hover:bg-black/80 text-white border-0 transition-all h-[44px] md:h-[56px] md:min-w-[200px]"
             >
               Dodaj ogłoszenie
             </Button>
           </Link>
         </motion.div>
+        </div>
       </div>
     </section>
   )

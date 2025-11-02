@@ -234,7 +234,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-lg border border-black/10 py-2 z-50">
+        <div className="absolute top-full right-0 w-64 bg-white rounded-2xl shadow-lg border border-black/10 py-2 z-50">
           <div className="px-4 py-3 border-b border-black/5">
             <p className="text-sm font-semibold text-black">{getUserName()}</p>
             <p className="text-xs text-black/60 truncate">{user.email}</p>

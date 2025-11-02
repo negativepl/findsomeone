@@ -12,8 +12,8 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-black/5 bg-white rounded-t-3xl mt-3 md:mt-14 pb-20 md:pb-0">
-      <div className="container mx-auto px-6 pt-6 md:pt-12 pb-6">
+    <footer className="border-t border-black/5 bg-white rounded-t-3xl pb-20 md:pb-0">
+      <div className="container mx-auto px-6 py-8 md:py-12">
         <div className="grid md:grid-cols-4 gap-4 md:gap-8 mb-8">
           {/* Logo i opis */}
           <div className="md:col-span-1">

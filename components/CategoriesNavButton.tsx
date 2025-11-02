@@ -365,11 +365,8 @@ export function CategoriesNavButton({ categories }: CategoriesNavButtonProps) {
               duration: 0.2,
               ease: [0.25, 0.1, 0.25, 1] // Smoother, more natural easing
             }}
-            className="hidden md:flex fixed justify-center pointer-events-none"
+            className="hidden md:flex fixed top-20 left-0 right-0 justify-center pointer-events-none"
             style={{
-              top: '104px',
-              left: 0,
-              right: 0,
               zIndex: 10001
             }}
           >

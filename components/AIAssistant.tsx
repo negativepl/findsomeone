@@ -68,14 +68,26 @@ export function AIAssistant() {
   const logoInitialDelayRef = useRef<NodeJS.Timeout>()
   const [logoAnimationData, setLogoAnimationData] = useState<any>(null)
   const [showLogoLottie, setShowLogoLottie] = useState(false)
+  const [mounted, setMounted] = useState(false)
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const scrollToBottom = (instant = false) => {
+    messagesEndRef.current?.scrollIntoView({ behavior: instant ? 'instant' : 'smooth' })
   }
 
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  // Scroll to bottom instantly when panel opens
+  useEffect(() => {
+    if (isOpen) {
+      scrollToBottom(true)
+    }
+  }, [isOpen])
 
   // Save messages to localStorage whenever they change
   useEffect(() => {
@@ -307,19 +319,14 @@ export function AIAssistant() {
           className="h-4 w-4 md:h-5 md:w-5"
           isHovered={isButtonHovered}
         />
-        {messages.length > 0 && (
+        {mounted && messages.length > 0 && (
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full border-2 border-[#C44E35]" />
         )}
       </button>
 
       {/* Chat Panel - Mobile: Fixed, Desktop: Absolute */}
-      <AnimatePresence>
         {isOpen && (
-          <motion.div
-              initial={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
-              animate={{ opacity: 1, filter: 'blur(0px)', y: 0 }}
-              exit={{ opacity: 0, filter: 'blur(10px)', y: -20 }}
-              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          <div
               className="fixed top-0 left-0 right-0 bottom-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-white md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col md:border md:border-black/10"
               onClick={(e) => e.stopPropagation()}
             >
@@ -416,7 +423,7 @@ export function AIAssistant() {
               <div
                 ref={messagesContainerRef}
                 onScroll={handleScroll}
-                className="h-full overflow-y-auto p-4 space-y-4"
+                className="h-full overflow-y-auto p-4 space-y-4 scrollbar-hide"
                 style={{ touchAction: 'auto', WebkitOverflowScrolling: 'touch' }}
               >
               <AnimatePresence mode="wait">
@@ -561,8 +568,8 @@ export function AIAssistant() {
 
                         {/* Show posts if available */}
                         {message.posts && message.posts.length > 0 && (
-                          <div className="w-full mt-3 -mx-4">
-                            <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory px-[calc(50%-140px)]">
+                          <div className="w-full mt-3">
+                            <div className="flex items-stretch gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory -mx-4 px-4">
                               {message.posts.map((post, idx) => (
                                 <div key={post.id} className="flex flex-shrink-0 w-[280px] snap-center">
                                   <AIPostCard
@@ -682,9 +689,8 @@ export function AIAssistant() {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   )
 }
