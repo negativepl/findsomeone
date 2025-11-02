@@ -69,8 +69,8 @@ export function HeroSection({ user }: HeroSectionProps) {
             transition={{ duration: 0.3, delay: 0.4 }}
             className="text-base md:text-xl text-black/60 leading-relaxed"
           >
-            Sprzedajesz, kupujesz, wynajmujesz? Szukasz fachowca lub oferujesz usługi?
-            A może potrzebujesz pomocy albo sam chcesz pomóc?
+            Sprzedaż, kupno, wynajem. Poszukiwanie fachowców i oferowanie usług.
+            Lokalne ogłoszenia drobne i wsparcie sąsiedzkie. Wszystko w jednym miejscu, w Twojej okolicy.
           </motion.p>
 
           <motion.p
@@ -79,7 +79,7 @@ export function HeroSection({ user }: HeroSectionProps) {
             transition={{ duration: 0.3, delay: 0.5 }}
             className="text-2xl md:text-3xl text-[#C44E35] font-[family-name:var(--font-dancing-script)]"
           >
-            FindSomeone łączy ludzi i ogłoszenia w okolicy.
+            FindSomeone łączy ludzi i ogłoszenia w Twoim mieście.
           </motion.p>
         </div>
 

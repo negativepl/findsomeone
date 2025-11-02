@@ -366,7 +366,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                   <div className="flex-1 flex flex-col min-h-0">
                     <CardHeader className="pb-4 pt-4 px-4 md:pt-6 md:px-6">
-                      <CardTitle className="text-base md:text-xl font-bold text-black line-clamp-2">
+                      <CardTitle className="text-base md:text-xl font-bold text-black">
                         {post.title}
                       </CardTitle>
                       {/* Mobile - Location and date in header */}

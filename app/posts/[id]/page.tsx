@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Footer } from '@/components/Footer'
 import { FavoriteButton } from '@/components/FavoriteButton'
@@ -134,6 +134,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         id,
         full_name,
         avatar_url,
+        banner_url,
+        banner_position,
+        banner_scale,
         rating,
         total_reviews,
         city,
@@ -308,7 +311,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         {/* Main Content */}
         <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-2 md:pb-6 mb-[72px] md:mb-0">
         {/* Breadcrumbs */}
-        <div className="mb-8 hidden md:block">
+        <div className="mb-4 md:mb-8">
           <Breadcrumbs
             items={[
               { label: 'Strona główna', href: '/' },
@@ -377,11 +380,6 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   ) : post.price_type === 'free' ? (
                     <div className="text-3xl font-bold text-green-600">Za darmo</div>
                   ) : null}
-                </div>
-
-                {/* Title - Mobile */}
-                <div className="lg:hidden px-4 pt-4">
-                  <h1 className="text-2xl font-bold text-black leading-tight mb-4">{post.title}</h1>
                 </div>
 
                 {/* Badges Section - Above Description */}
@@ -487,10 +485,25 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             </Card>
 
             {/* Author Card */}
-            <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
+            <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm overflow-hidden">
+              {/* Banner */}
+              {post.profiles?.banner_url && (
+                <div className="relative w-full h-24 md:h-32 overflow-hidden bg-black/5">
+                  <Image
+                    src={post.profiles.banner_url}
+                    alt=""
+                    fill
+                    className="object-cover"
+                    style={{
+                      objectPosition: `center ${post.profiles.banner_position || 50}%`,
+                      transform: `scale(${(post.profiles.banner_scale || 100) / 100})`
+                    }}
+                  />
+                </div>
+              )}
               <CardContent className="p-4 md:p-6">
-                <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 mb-4 md:mb-6">
-                  <div className="relative">
+                <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                  <div className="relative flex-shrink-0">
                     {post.profiles?.avatar_url ? (
                       <Image
                         src={post.profiles.avatar_url}
@@ -514,57 +527,47 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       title={isOnline ? 'Online' : 'Offline'}
                     />
                   </div>
-                  <div className="text-center md:text-left">
+                  <div className="min-w-0 flex-1">
                     <h2 className="text-xl font-bold text-black">
                       {post.profiles?.full_name || 'Anonymous'}
                     </h2>
-                    <div className="flex justify-center md:justify-start">
-                      <RatingDisplay
-                        userId={post.user_id}
-                        rating={post.profiles?.rating || 0}
-                        reviewCount={post.profiles?.total_reviews || 0}
-                        clickable={post.profiles?.show_profile_link !== false}
-                      />
-                    </div>
+                    <RatingDisplay
+                      userId={post.user_id}
+                      rating={post.profiles?.rating || 0}
+                      reviewCount={post.profiles?.total_reviews || 0}
+                      clickable={post.profiles?.show_profile_link !== false}
+                    />
                   </div>
                 </div>
 
-                {/* Member Since Info */}
-                <div className="md:mb-6 md:pb-6 md:border-b md:border-black/5">
-                  <div className="flex flex-col gap-2 text-sm text-center md:text-left">
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-gray-600">
-                      <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                      <span>
-                        Na platformie od{' '}
-                        {daysOnPlatform === 0
-                          ? 'dzisiaj'
-                          : daysOnPlatform === 1
-                          ? '1 dnia'
-                          : daysOnPlatform < 31
-                          ? `${daysOnPlatform} dni`
-                          : daysOnPlatform < 365
-                          ? `${Math.floor(daysOnPlatform / 30)} miesięcy`
-                          : `${Math.floor(daysOnPlatform / 365)} lat`}
-                      </span>
-                    </div>
-                    {/* Activity Status */}
-                    <div className={`flex items-center justify-center md:justify-start gap-2 ${
-                      isOnline ? 'text-green-600' : 'text-gray-600'
-                    }`}>
-                      <div className={`w-2 h-2 rounded-full ${
-                        isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
-                      }`} />
-                      <span>{lastActiveText}</span>
-                    </div>
-                  </div>
+                {/* Member Since Info & Activity Status */}
+                <div className="flex flex-wrap items-center justify-center gap-2 text-xs md:text-sm text-black/60 mb-4 md:mb-6">
+                  <span>
+                    {daysOnPlatform === 0
+                      ? 'Dołączył dzisiaj'
+                      : daysOnPlatform === 1
+                      ? 'Na platformie od 1 dnia'
+                      : daysOnPlatform < 31
+                      ? `Na platformie od ${daysOnPlatform} dni`
+                      : daysOnPlatform < 365
+                      ? `Na platformie od ${Math.floor(daysOnPlatform / 30)} miesięcy`
+                      : `Na platformie od ${Math.floor(daysOnPlatform / 365)} lat`}
+                  </span>
+
+                  <span className="text-black/30">•</span>
+
+                  <span className={isOnline ? 'text-green-600' : 'text-black/60'}>
+                    {lastActiveText}
+                  </span>
                 </div>
 
                 {post.profiles?.bio && (
-                  <p className="text-sm text-black/70 mb-4 mt-4 md:mt-0 leading-relaxed">
-                    {post.profiles.bio}
-                  </p>
+                  <>
+                    <div className="border-t border-black/5 mb-4" />
+                    <p className="text-sm text-black/70 leading-relaxed mb-4">
+                      {post.profiles.bio}
+                    </p>
+                  </>
                 )}
 
                 {/* Contact Buttons */}
@@ -623,97 +626,119 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
             {/* Other Posts from Author */}
             {otherPosts && otherPosts.length > 0 && (
-              <div>
-                <h2 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
-                  Inne ogłoszenia użytkownika
-                </h2>
+              <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
+                <CardContent className="p-4 md:p-6">
+                  <h2 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
+                    Inne ogłoszenia użytkownika
+                  </h2>
 
-                {/* Mobile: Horizontal Carousel */}
-                <div className="md:hidden -mx-4">
-                  <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-160px)]">
-                    {otherPosts.map((otherPost: any) => (
-                      <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '320px' }}>
-                        <div className="group p-3 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
-                          <div className="flex flex-col gap-3">
-                            {/* Thumbnail */}
+                  {/* Mobile: Horizontal Carousel */}
+                  <div className="md:hidden -mx-4">
+                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-140px)]">
+                      {otherPosts.map((otherPost: any) => (
+                        <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
+                          <div className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                            {/* Image */}
                             {otherPost.images && otherPost.images.length > 0 && (
-                              <div className="relative w-full h-36 rounded-lg overflow-hidden bg-black/10">
+                              <div className="relative w-full h-40 bg-black/5">
                                 <Image
                                   src={otherPost.images[0]}
                                   alt={otherPost.title}
                                   fill
-                                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                  sizes="280px"
+                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                               </div>
                             )}
 
-                            {/* Content */}
-                            <div className="flex flex-col gap-2">
-                              <h3 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug">
-                                {otherPost.title}
-                              </h3>
-                              <div className="flex items-center gap-1.5 text-xs text-black/60">
-                                <span>{otherPost.city}</span>
+                            <div className="p-4 flex flex-col flex-1">
+                              {otherPost.categories && (
+                                <div className="mb-2">
+                                  <Badge variant="outline" className="rounded-full border-black/10 text-black/60 text-xs">
+                                    {otherPost.categories.name}
+                                  </Badge>
+                                </div>
+                              )}
+                              <h3 className="text-base font-bold text-black mb-3">{otherPost.title}</h3>
+
+                              <div className="flex items-center justify-between gap-2 mt-auto">
+                                {/* Location - Left */}
+                                <div className="flex items-center gap-1 text-xs text-black/60 min-w-0">
+                                  <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  </svg>
+                                  <span className="truncate">{otherPost.city}</span>
+                                </div>
+
+                                {/* Price - Right */}
                                 {otherPost.price && (
-                                  <>
-                                    <span>•</span>
-                                    <span className="font-semibold text-black">
-                                      {otherPost.price} zł
-                                    </span>
-                                  </>
+                                  <p className="text-sm font-bold text-black whitespace-nowrap">
+                                    {otherPost.price} zł
+                                  </p>
                                 )}
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                {/* Desktop: Horizontal Carousel */}
-                <div className="hidden md:block -mx-6">
-                  <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
-                    {otherPosts.map((otherPost: any) => (
-                      <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
-                        <div className="group p-4 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
-                          <div className="flex flex-col gap-3">
-                            {/* Thumbnail */}
+                  {/* Desktop: Horizontal Carousel */}
+                  <div className="hidden md:block -mx-6">
+                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
+                      {otherPosts.map((otherPost: any) => (
+                        <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
+                          <div className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                            {/* Image */}
                             {otherPost.images && otherPost.images.length > 0 && (
-                              <div className="relative w-full h-40 rounded-lg overflow-hidden bg-black/10">
+                              <div className="relative w-full h-40 bg-black/5">
                                 <Image
                                   src={otherPost.images[0]}
                                   alt={otherPost.title}
                                   fill
-                                  className="object-cover group-hover:scale-110 transition-transform duration-300"
+                                  sizes="280px"
+                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
                                 />
                               </div>
                             )}
 
-                            {/* Content */}
-                            <div className="flex flex-col gap-2">
-                              <h3 className="text-sm font-semibold text-black line-clamp-2 group-hover:text-[#C44E35] transition-colors leading-snug min-h-[40px]">
-                                {otherPost.title}
-                              </h3>
-                              <div className="flex items-center gap-1.5 text-xs text-black/60">
-                                <span>{otherPost.city}</span>
+                            <div className="p-4 flex flex-col flex-1">
+                              {otherPost.categories && (
+                                <div className="mb-2">
+                                  <Badge variant="outline" className="rounded-full border-black/10 text-black/60 text-xs">
+                                    {otherPost.categories.name}
+                                  </Badge>
+                                </div>
+                              )}
+                              <h3 className="text-base font-bold text-black mb-3">{otherPost.title}</h3>
+
+                              <div className="flex items-center justify-between gap-2 mt-auto">
+                                {/* Location - Left */}
+                                <div className="flex items-center gap-1 text-xs text-black/60 min-w-0">
+                                  <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  </svg>
+                                  <span className="truncate">{otherPost.city}</span>
+                                </div>
+
+                                {/* Price - Right */}
                                 {otherPost.price && (
-                                  <>
-                                    <span>•</span>
-                                    <span className="font-semibold text-black">
-                                      {otherPost.price} zł
-                                    </span>
-                                  </>
+                                  <p className="text-sm font-bold text-black whitespace-nowrap">
+                                    {otherPost.price} zł
+                                  </p>
                                 )}
                               </div>
                             </div>
                           </div>
-                        </div>
-                      </Link>
-                    ))}
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             )}
           </div>
         </div>

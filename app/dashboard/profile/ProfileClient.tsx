@@ -133,6 +133,39 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
     }
   }
 
+  const handleAvatarRemove = async () => {
+    if (!confirm('Czy na pewno chcesz usunąć avatar?')) return
+
+    try {
+      setUploading(true)
+
+      // Delete avatar from storage if exists
+      if (profile.avatar_url) {
+        const oldPath = profile.avatar_url.split('/avatars/')[1]
+        if (oldPath) {
+          await supabase.storage.from('avatars').remove([oldPath])
+        }
+      }
+
+      // Update profile to remove avatar URL
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: null })
+        .eq('id', initialUser.id)
+
+      if (updateError) throw updateError
+
+      // Update local state
+      setProfile({ ...profile, avatar_url: null })
+      toast.success('Avatar został usunięty!')
+    } catch (error) {
+      console.error('Error removing avatar:', error)
+      toast.error('Nie udało się usunąć avatara')
+    } finally {
+      setUploading(false)
+    }
+  }
+
   const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const file = e.target.files?.[0]
@@ -259,99 +292,114 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
       {/* Mobile: single column flat design */}
       <div className="md:hidden space-y-6">
         {/* Avatar Section */}
-        <div className="text-center">
-          <div className="mb-4 relative inline-block">
-            <div className="relative w-32 h-32 mx-auto">
-              {profile?.avatar_url ? (
-                <img
-                  src={profile.avatar_url}
-                  alt=""
-                  className="w-32 h-32 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-32 h-32 rounded-full bg-[#C44E35] flex items-center justify-center">
-                  <span className="text-5xl font-semibold text-white">
-                    {(() => {
-                      const name = formData.full_name || initialUser?.email || ''
-                      const parts = name.split(' ')
-                      if (parts.length >= 2) {
-                        return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-                      }
-                      return name.substring(0, 2).toUpperCase() || 'U'
-                    })()}
-                  </span>
-                </div>
-              )}
-
-              {/* Badges */}
-              <div className="absolute -top-1 -right-1 flex flex-col gap-1 z-10">
-                {profile?.verified && <UserBadge type="verified" />}
-                {profile?.is_company && <UserBadge type="company" />}
-                {profile?.is_ai_bot && <UserBadge type="ai_bot" />}
-              </div>
-
-              {/* Upload button */}
-              <label
-                htmlFor="avatar-upload-mobile"
-                onMouseEnter={() => setIsAvatarHovered(true)}
-                onMouseLeave={() => setIsAvatarHovered(false)}
-                className="absolute bottom-0 right-0 w-10 h-10 bg-[#C44E35] hover:bg-[#B33D2A] rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg"
-              >
-                {uploading ? (
-                  <svg className="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                ) : (
-                  <LottieIcon
-                    animationPath="/animations/camera.json"
-                    fallbackSvg={<img src="/icons/camera.svg" alt="Camera" className="w-full h-full" />}
-                    className="w-5 h-5 text-white"
-                    isHovered={isAvatarHovered}
+        <Card className="border-0 rounded-2xl bg-white shadow-sm">
+          <CardContent className="p-5 text-center">
+            <div className="mb-4 relative inline-block">
+              <div className="relative w-32 h-32 mx-auto">
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt=""
+                    className="w-32 h-32 rounded-full object-cover"
                   />
+                ) : (
+                  <div className="w-32 h-32 rounded-full bg-[#C44E35] flex items-center justify-center">
+                    <span className="text-5xl font-semibold text-white">
+                      {(() => {
+                        const name = formData.full_name || initialUser?.email || ''
+                        const parts = name.split(' ')
+                        if (parts.length >= 2) {
+                          return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+                        }
+                        return name.substring(0, 2).toUpperCase() || 'U'
+                      })()}
+                    </span>
+                  </div>
                 )}
-              </label>
-              <input
-                id="avatar-upload-mobile"
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarUpload}
-                disabled={uploading}
-                className="hidden"
-              />
-            </div>
-            <p className="text-xs text-gray-600 mt-2">Kliknij ikonę aby zmienić</p>
-          </div>
 
-          <h2 className="text-2xl font-bold text-black mb-1">
-            {formData.full_name || 'Użytkownik'}
-          </h2>
-          <p className="text-sm text-black/60 mb-4">{initialUser?.email}</p>
+                {/* Badges */}
+                <div className="absolute -top-1 -right-1 flex flex-col gap-1 z-10">
+                  {profile?.verified && <UserBadge type="verified" />}
+                  {profile?.is_company && <UserBadge type="company" />}
+                  {profile?.is_ai_bot && <UserBadge type="ai_bot" />}
+                </div>
 
-          {/* Stats */}
-          <div className="bg-white rounded-2xl p-4 mb-4 space-y-3 text-left">
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-black/60">Ocena</span>
-              <span className="font-semibold text-black flex items-center gap-1">
-                <svg className="w-4 h-4 text-[#C44E35]" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                </svg>
-                {profile?.rating?.toFixed(1) || '0.0'}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-black/60">Opinie</span>
-              <span className="font-semibold text-black">{profile?.total_reviews || 0}</span>
-            </div>
-          </div>
+                {/* Upload button */}
+                <label
+                  htmlFor="avatar-upload-mobile"
+                  onMouseEnter={() => setIsAvatarHovered(true)}
+                  onMouseLeave={() => setIsAvatarHovered(false)}
+                  className="absolute bottom-0 right-0 w-10 h-10 bg-[#C44E35] hover:bg-[#B33D2A] rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg"
+                >
+                  {uploading ? (
+                    <svg className="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                  ) : (
+                    <LottieIcon
+                      animationPath="/animations/camera.json"
+                      fallbackSvg={<img src="/icons/camera.svg" alt="Camera" className="w-full h-full" />}
+                      className="w-5 h-5 text-white"
+                      isHovered={isAvatarHovered}
+                    />
+                  )}
+                </label>
+                <input
+                  id="avatar-upload-mobile"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  disabled={uploading}
+                  className="hidden"
+                />
+              </div>
+              <p className="text-xs text-gray-600 mt-2">Kliknij ikonę aby zmienić</p>
 
-          {/* View Profile Button */}
-          <Link href={`/profile/${initialUser.id}`} target="_blank" className="block">
-            <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12">
-              Zobacz swój profil
-            </Button>
-          </Link>
-        </div>
+              {/* Remove Avatar Button */}
+              {profile?.avatar_url && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleAvatarRemove}
+                  disabled={uploading}
+                  className="mt-2 text-xs rounded-full border-2 border-red-200 text-red-600 hover:text-red-600 hover:bg-red-50 hover:border-red-300 h-8 px-3"
+                >
+                  Usuń avatar
+                </Button>
+              )}
+            </div>
+
+            <h2 className="text-2xl font-bold text-black mb-1">
+              {formData.full_name || 'Użytkownik'}
+            </h2>
+            <p className="text-sm text-black/60 mb-4">{initialUser?.email}</p>
+
+            {/* Stats */}
+            <div className="bg-[#FAF8F3] rounded-2xl p-4 mb-4 space-y-3 text-left">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-black/60">Ocena</span>
+                <span className="font-semibold text-black flex items-center gap-1">
+                  <svg className="w-4 h-4 text-[#C44E35]" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  {profile?.rating?.toFixed(1) || '0.0'}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-black/60">Opinie</span>
+                <span className="font-semibold text-black">{profile?.total_reviews || 0}</span>
+              </div>
+            </div>
+
+            {/* View Profile Button */}
+            <Link href={`/profile/${initialUser.id}`} target="_blank" className="block">
+              <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12">
+                Zobacz swój profil
+              </Button>
+            </Link>
+          </CardContent>
+        </Card>
 
         {/* Edit Profile Form */}
         <div>
@@ -371,20 +419,6 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   required
                   className="rounded-2xl border-2 border-black/10 h-11 focus:border-black/30"
                 />
-              </div>
-
-              {/* Email (read-only) */}
-              <div className="space-y-2">
-                <Label htmlFor="email_mobile" className="text-sm font-semibold text-black">
-                  Email
-                </Label>
-                <Input
-                  id="email_mobile"
-                  value={initialUser?.email || ''}
-                  disabled
-                  className="rounded-2xl border-2 border-black/10 h-11 bg-black/5 text-black/60"
-                />
-                <p className="text-xs text-black/60">Email nie może być zmieniony</p>
               </div>
 
               {/* Phone */}
@@ -699,6 +733,19 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   />
                 </div>
                 <p className="text-xs text-gray-600 mt-2">Kliknij ikonę aby zmienić</p>
+
+                {/* Remove Avatar Button */}
+                {profile?.avatar_url && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleAvatarRemove}
+                    disabled={uploading}
+                    className="mt-2 text-xs rounded-full border-2 border-red-200 text-red-600 hover:text-red-600 hover:bg-red-50 hover:border-red-300 h-8 px-3"
+                  >
+                    Usuń avatar
+                  </Button>
+                )}
               </div>
 
               <h2 className="text-2xl font-bold text-black mb-1">
@@ -746,51 +793,40 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
             </CardHeader>
             <CardContent className="pt-6">
               <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Full Name */}
-                <div className="space-y-3">
-                  <Label htmlFor="full_name" className="text-base font-semibold text-black">
-                    Imię i nazwisko *
-                  </Label>
-                  <Input
-                    id="full_name"
-                    placeholder="np. Jan Kowalski"
-                    value={formData.full_name}
-                    onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
-                    required
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
+                {/* Row 1: Full Name & Phone */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Full Name */}
+                  <div className="space-y-3">
+                    <Label htmlFor="full_name" className="text-base font-semibold text-black">
+                      Imię i nazwisko *
+                    </Label>
+                    <Input
+                      id="full_name"
+                      placeholder="np. Jan Kowalski"
+                      value={formData.full_name}
+                      onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                      required
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    />
+                  </div>
+
+                  {/* Phone */}
+                  <div className="space-y-3">
+                    <Label htmlFor="phone" className="text-base font-semibold text-black">
+                      Telefon
+                    </Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="np. +48 123 456 789"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    />
+                  </div>
                 </div>
 
-                {/* Email (read-only) */}
-                <div className="space-y-3">
-                  <Label htmlFor="email" className="text-base font-semibold text-black">
-                    Email
-                  </Label>
-                  <Input
-                    id="email"
-                    value={initialUser?.email || ''}
-                    disabled
-                    className="rounded-2xl border-2 border-black/10 h-12 bg-black/5 text-black/60"
-                  />
-                  <p className="text-sm text-black/60">Email nie może być zmieniony</p>
-                </div>
-
-                {/* Phone */}
-                <div className="space-y-3">
-                  <Label htmlFor="phone" className="text-base font-semibold text-black">
-                    Telefon
-                  </Label>
-                  <Input
-                    id="phone"
-                    type="tel"
-                    placeholder="np. +48 123 456 789"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
-                  />
-                </div>
-
-                {/* City */}
+                {/* Row 2: City (full width) */}
                 <div className="space-y-3">
                   <Label htmlFor="city" className="text-base font-semibold text-black">
                     Miasto
