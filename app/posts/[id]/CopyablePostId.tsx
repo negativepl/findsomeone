@@ -23,7 +23,7 @@ export function CopyablePostId({ postId }: CopyablePostIdProps) {
   return (
     <button
       onClick={handleCopy}
-      className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-black/10 hover:bg-black/5 hover:border-black/30 text-black/60 hover:text-black transition-colors text-[10px] sm:text-sm font-medium"
+      className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-black/10 hover:bg-black/5 hover:border-black/30 text-black/60 hover:text-black transition-colors text-xs sm:text-sm font-medium"
       title="Kopiuj ID ogłoszenia"
     >
       {copied ? (

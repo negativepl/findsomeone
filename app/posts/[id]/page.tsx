@@ -181,18 +181,18 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     const lastSeenTime = new Date(lastSeen).getTime()
     const diffMinutes = Math.floor((now - lastSeenTime) / (1000 * 60))
 
-    if (diffMinutes < 60) return `${diffMinutes} min temu`
+    if (diffMinutes < 60) return `Aktywny ${diffMinutes} min temu`
 
     const diffHours = Math.floor(diffMinutes / 60)
-    if (diffHours < 24) return `${diffHours} godz. temu`
+    if (diffHours < 24) return `Aktywny ${diffHours} godz. temu`
 
     const diffDays = Math.floor(diffHours / 24)
-    if (diffDays === 1) return 'Wczoraj'
-    if (diffDays < 7) return `${diffDays} dni temu`
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} tyg. temu`
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} mies. temu`
+    if (diffDays === 1) return 'Aktywny wczoraj'
+    if (diffDays < 7) return `Aktywny ${diffDays} dni temu`
+    if (diffDays < 30) return `Aktywny ${Math.floor(diffDays / 7)} tyg. temu`
+    if (diffDays < 365) return `Aktywny ${Math.floor(diffDays / 30)} mies. temu`
 
-    return `${Math.floor(diffDays / 365)} lat temu`
+    return `Aktywny ${Math.floor(diffDays / 365)} lat temu`
   }
 
   const lastActiveText = getLastActiveText(userPresence?.last_seen || null, isOnline)
@@ -353,7 +353,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Date and Price - Mobile Only */}
                 <div className="lg:hidden px-4 pt-4 pb-2 space-y-2">
-                  <div className="text-xs text-black/60">
+                  <div className="text-sm text-black/60">
                     Dodano {new Date(post.created_at).toLocaleDateString('pl-PL', {
                       day: 'numeric',
                       month: 'long',
@@ -363,10 +363,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                   {post.price ? (
                     <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="text-2xl font-bold text-black">
+                      <span className="text-3xl font-bold text-black">
                         {post.price} zł{post.price_negotiable ? '*' : ''}
                       </span>
-                      <span className="text-sm text-black/60">
+                      <span className="text-base text-black/60">
                         {post.price_negotiable
                           ? '/ do negocjacji'
                           : post.price_type === 'hourly'
@@ -375,7 +375,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       </span>
                     </div>
                   ) : post.price_type === 'free' ? (
-                    <div className="text-2xl font-bold text-green-600">Za darmo</div>
+                    <div className="text-3xl font-bold text-green-600">Za darmo</div>
                   ) : null}
                 </div>
 
@@ -397,7 +397,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 <div className="px-4 md:px-8 pb-4 md:pb-6">
                   <h2 className="text-xl md:text-2xl font-bold text-black mb-3 md:mb-4">Opis</h2>
                   <div
-                    className="prose prose-sm max-w-none text-black/70 leading-relaxed text-sm md:text-base"
+                    className="prose prose-base max-w-none text-black/70 leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: post.description }}
                   />
                 </div>
@@ -407,7 +407,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   <div className="border-t border-black/5 pt-3 md:pt-6">
                     {/* Mobile: stacked layout */}
                     <div className="flex flex-col items-center gap-2 md:hidden">
-                      <div className="text-black/70 text-[10px]">
+                      <div className="text-black/70 text-xs">
                         <span>{post.views || 0} wyświetleń</span>
                       </div>
                       <div className="flex items-center justify-center gap-2">
@@ -515,7 +515,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     />
                   </div>
                   <div className="text-center md:text-left">
-                    <h2 className="text-lg md:text-xl font-bold text-black">
+                    <h2 className="text-xl font-bold text-black">
                       {post.profiles?.full_name || 'Anonymous'}
                     </h2>
                     <div className="flex justify-center md:justify-start">
@@ -531,8 +531,8 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Member Since Info */}
                 <div className="md:mb-6 md:pb-6 md:border-b md:border-black/5">
-                  <div className="flex flex-col gap-2 text-xs md:text-sm text-center md:text-left">
-                    <div className="flex items-center justify-center md:justify-start gap-2 text-black/60">
+                  <div className="flex flex-col gap-2 text-sm text-center md:text-left">
+                    <div className="flex items-center justify-center md:justify-start gap-2 text-gray-600">
                       <svg className="w-3 h-3 md:w-4 md:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                       </svg>
@@ -556,13 +556,13 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       <div className={`w-2 h-2 rounded-full ${
                         isOnline ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
                       }`} />
-                      <span className="font-medium">{lastActiveText}</span>
+                      <span>{lastActiveText}</span>
                     </div>
                   </div>
                 </div>
 
                 {post.profiles?.bio && (
-                  <p className="text-xs md:text-sm text-black/70 mb-4 leading-relaxed">
+                  <p className="text-sm text-black/70 mb-4 mt-4 md:mt-0 leading-relaxed">
                     {post.profiles.bio}
                   </p>
                 )}
@@ -631,7 +631,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                   {/* Mobile: Horizontal Carousel */}
                   <div className="md:hidden -mx-4">
-                    <div className="horizontal-scroll-padding-mobile flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
+                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-160px)]">
                       {otherPosts.map((otherPost: any) => (
                         <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '320px' }}>
                           <div className="group p-3 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
@@ -673,10 +673,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   </div>
 
                   {/* Desktop: Horizontal Carousel */}
-                  <div className="hidden md:block">
-                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
+                  <div className="hidden md:block -mx-6">
+                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
                       {otherPosts.map((otherPost: any) => (
-                        <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-start flex-shrink-0" style={{ width: '280px' }}>
+                        <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
                           <div className="group p-4 rounded-xl bg-black/5 hover:bg-black/10 transition-all cursor-pointer h-full">
                             <div className="flex flex-col gap-3">
                               {/* Thumbnail */}
@@ -735,9 +735,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         />
       )}
 
-      <div className="hidden md:block">
-        <Footer />
-      </div>
+      <Footer />
       </PostDetailClientWrapper>
     </div>
   )

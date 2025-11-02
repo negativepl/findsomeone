@@ -72,7 +72,7 @@ export function ReportPostDialog({ postId, onReport }: ReportPostDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-black/10 hover:bg-red-50 hover:border-red-200 text-black/60 hover:text-red-600 transition-colors text-[10px] sm:text-sm font-medium">
+      <DialogTrigger className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-black/10 hover:bg-red-50 hover:border-red-200 text-black/60 hover:text-red-600 transition-colors text-xs sm:text-sm font-medium">
         <Flag className="w-3 h-3 sm:w-4 sm:h-4" />
         <span>Zgłoś</span>
       </DialogTrigger>

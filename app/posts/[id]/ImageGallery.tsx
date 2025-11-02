@@ -61,7 +61,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
       {/* Gallery */}
       <div className="space-y-4">
         {/* Main Image */}
-        <div className="relative w-full h-[60vh] min-h-[400px] max-h-[700px] rounded-2xl overflow-hidden bg-black/5">
+        <div className="relative w-full h-[22vh] md:h-[45vh] min-h-[180px] md:min-h-[280px] max-h-[260px] md:max-h-[500px] rounded-2xl overflow-hidden bg-black/5">
           <Image
             src={images[currentIndex]}
             alt={`${title} - zdjęcie ${currentIndex + 1}`}
