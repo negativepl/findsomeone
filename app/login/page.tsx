@@ -85,31 +85,31 @@ export default function LoginPage() {
   if (showForgotPassword) {
     if (resetEmailSent) {
       return (
-        <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6 pb-safe">
+        <div className="min-h-screen bg-background flex items-center justify-center p-6 pb-safe">
           <div className="w-full max-w-md pb-20">
             {/* Logo/Header */}
             <div className="text-center mb-8">
               <Link href="/" className="inline-flex flex-col items-center gap-3">
                 <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="32" cy="28" r="11" fill="#1A1A1A" />
-                  <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#1A1A1A" />
-                  <circle cx="68" cy="28" r="11" fill="#C44E35" />
-                  <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#C44E35" />
+                  <circle cx="32" cy="28" r="11" className="fill-foreground" />
+                  <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" className="fill-foreground" />
+                  <circle cx="68" cy="28" r="11" className="fill-brand" />
+                  <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" className="fill-brand" />
                 </svg>
-                <h1 className="text-3xl font-bold text-black">FindSomeone</h1>
+                <h1 className="text-3xl font-bold text-foreground">FindSomeone</h1>
               </Link>
-              <p className="text-black/60 mt-2">Resetowanie hasła</p>
+              <p className="text-muted-foreground mt-2">Resetowanie hasła</p>
             </div>
 
-            <Card className="border-0 rounded-3xl bg-white shadow-sm">
+            <Card className="border-0 rounded-3xl shadow-sm">
               <CardHeader className="text-center pb-8">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                  <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <CardTitle className="text-xl md:text-2xl font-bold text-black">Email wysłany!</CardTitle>
-                <CardDescription className="text-sm md:text-base text-black/60 mt-2">
+                <CardTitle className="text-xl md:text-2xl font-bold">Email wysłany!</CardTitle>
+                <CardDescription className="text-sm md:text-base mt-2">
                   Sprawdź swoją skrzynkę email. Wysłaliśmy Ci link do resetowania hasła.
                 </CardDescription>
               </CardHeader>
@@ -121,7 +121,7 @@ export default function LoginPage() {
                   setShowForgotPassword(false)
                   setResetEmailSent(false)
                 }}
-                className="text-sm text-black/60 hover:text-black transition-colors"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 ← Powrót do logowania
               </button>
@@ -132,33 +132,33 @@ export default function LoginPage() {
     }
 
     return (
-      <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6 pb-safe">
+      <div className="min-h-screen bg-background flex items-center justify-center p-6 pb-safe">
         <div className="w-full max-w-md pb-20">
           {/* Logo/Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-flex flex-col items-center gap-3">
               <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="32" cy="28" r="11" fill="#1A1A1A" />
-                <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#1A1A1A" />
-                <circle cx="68" cy="28" r="11" fill="#C44E35" />
-                <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#C44E35" />
+                <circle cx="32" cy="28" r="11" className="fill-foreground" />
+                <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" className="fill-foreground" />
+                <circle cx="68" cy="28" r="11" className="fill-brand" />
+                <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" className="fill-brand" />
               </svg>
-              <h1 className="text-3xl font-bold text-black">FindSomeone</h1>
+              <h1 className="text-3xl font-bold text-foreground">FindSomeone</h1>
             </Link>
-            <p className="text-black/60 mt-2">Resetowanie hasła</p>
+            <p className="text-muted-foreground mt-2">Resetowanie hasła</p>
           </div>
 
-          <Card className="border-0 rounded-3xl bg-white shadow-sm">
+          <Card className="border-0 rounded-3xl shadow-sm">
             <CardHeader className="text-center pb-8">
-              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Zresetuj hasło</CardTitle>
-              <CardDescription className="text-sm md:text-base text-black/60 mt-2">
+              <CardTitle className="text-2xl md:text-3xl font-bold">Zresetuj hasło</CardTitle>
+              <CardDescription className="text-sm md:text-base mt-2">
                 Podaj swój adres email, a wyślemy Ci link do resetowania hasła
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handlePasswordReset} className="space-y-6">
                 <div className="space-y-3">
-                  <Label htmlFor="email" className="text-base font-semibold text-black">
+                  <Label htmlFor="email" className="text-base font-semibold">
                     Email
                   </Label>
                   <Input
@@ -168,19 +168,19 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    className="rounded-2xl h-12"
                   />
                 </div>
 
                 {error && (
-                  <div className="text-sm text-red-600 bg-red-50 p-4 rounded-2xl border border-red-200">
+                  <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 p-4 rounded-2xl border border-red-200 dark:border-red-900">
                     {error}
                   </div>
                 )}
 
                 <Button
                   type="submit"
-                  className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12 text-base font-semibold"
+                  className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-12 text-base font-semibold"
                   disabled={loading}
                 >
                   {loading ? 'Wysyłanie...' : 'Wyślij link resetujący'}
@@ -192,7 +192,7 @@ export default function LoginPage() {
           <div className="text-center mt-6">
             <button
               onClick={() => setShowForgotPassword(false)}
-              className="text-sm text-black/60 hover:text-black transition-colors"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               ← Powrót do logowania
             </button>
@@ -203,33 +203,33 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] flex items-center justify-center p-6 pb-safe">
+    <div className="min-h-screen bg-background flex items-center justify-center p-6 pb-safe">
       <div className="w-full max-w-md pb-20">
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex flex-col items-center gap-3">
             <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="32" cy="28" r="11" fill="#1A1A1A" />
-              <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#1A1A1A" />
-              <circle cx="68" cy="28" r="11" fill="#C44E35" />
-              <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#C44E35" />
+              <circle cx="32" cy="28" r="11" className="fill-foreground" />
+              <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" className="fill-foreground" />
+              <circle cx="68" cy="28" r="11" className="fill-brand" />
+              <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" className="fill-brand" />
             </svg>
-            <h1 className="text-3xl font-bold text-black">FindSomeone</h1>
+            <h1 className="text-3xl font-bold text-foreground">FindSomeone</h1>
           </Link>
-          <p className="text-black/60 mt-2">Zaloguj się do swojego konta</p>
+          <p className="text-muted-foreground mt-2">Zaloguj się do swojego konta</p>
         </div>
 
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+        <Card className="border-0 rounded-3xl shadow-sm">
           <CardHeader className="pb-6">
-            <CardTitle className="text-xl md:text-2xl font-bold text-black text-center">Witaj ponownie!</CardTitle>
-            <CardDescription className="text-sm md:text-base text-black/60 text-center">
+            <CardTitle className="text-xl md:text-2xl font-bold text-center">Witaj ponownie!</CardTitle>
+            <CardDescription className="text-sm md:text-base text-center">
               Wprowadź swoje dane, aby się zalogować
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-3">
-                <Label htmlFor="email" className="text-base font-semibold text-black">
+                <Label htmlFor="email" className="text-base font-semibold">
                   Email
                 </Label>
                 <Input
@@ -239,12 +239,12 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  className="rounded-2xl h-12"
                 />
               </div>
 
               <div className="space-y-3">
-                <Label htmlFor="password" className="text-base font-semibold text-black">
+                <Label htmlFor="password" className="text-base font-semibold">
                   Hasło
                 </Label>
                 <Input
@@ -254,7 +254,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  className="rounded-2xl h-12"
                 />
               </div>
 
@@ -264,11 +264,10 @@ export default function LoginPage() {
                     id="remember"
                     checked={rememberMe}
                     onCheckedChange={(checked) => setRememberMe(checked as boolean)}
-                    className="rounded border-black/20"
                   />
                   <label
                     htmlFor="remember"
-                    className="text-sm text-black/70 cursor-pointer select-none"
+                    className="text-sm text-muted-foreground cursor-pointer select-none"
                   >
                     Zapamiętaj mnie
                   </label>
@@ -276,21 +275,21 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
-                  className="text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium transition-colors"
+                  className="text-sm text-brand hover:text-brand/80 font-medium transition-colors"
                 >
                   Zapomniałeś hasła?
                 </button>
               </div>
 
               {error && (
-                <div className="text-sm text-red-600 bg-red-50 p-4 rounded-2xl border border-red-200">
+                <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/50 p-4 rounded-2xl border border-red-200 dark:border-red-900">
                   {error}
                 </div>
               )}
 
               <Button
                 type="submit"
-                className="w-full rounded-full bg-black hover:bg-black/80 text-white border-0 h-12 text-base font-semibold"
+                className="w-full rounded-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 h-12 text-base font-semibold"
                 disabled={loading}
               >
                 {loading ? 'Logowanie...' : 'Zaloguj się'}
@@ -299,17 +298,17 @@ export default function LoginPage() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-black/10" />
+                <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="bg-white px-4 text-black/40 font-medium">LUB</span>
+                <span className="bg-card px-4 text-muted-foreground font-medium">LUB</span>
               </div>
             </div>
 
             <Button
               type="button"
               variant="outline"
-              className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-12"
+              className="w-full rounded-full h-12"
               onClick={handleGoogleLogin}
             >
               <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
@@ -334,9 +333,9 @@ export default function LoginPage() {
             </Button>
 
             <div className="text-center pt-4">
-              <p className="text-sm text-black/60">
+              <p className="text-sm text-muted-foreground">
                 Nie masz konta?{' '}
-                <Link href="/signup" className="text-[#C44E35] hover:text-[#B33D2A] font-semibold transition-colors">
+                <Link href="/signup" className="text-brand hover:text-brand/80 font-semibold transition-colors">
                   Zarejestruj się
                 </Link>
               </p>
@@ -346,7 +345,7 @@ export default function LoginPage() {
 
         {/* Back to home */}
         <div className="text-center mt-6">
-          <Link href="/" className="text-sm text-black/60 hover:text-black transition-colors">
+          <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             ← Powrót do strony głównej
           </Link>
         </div>

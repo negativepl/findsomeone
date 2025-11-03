@@ -50,7 +50,7 @@ export function FAQSection({ section }: FAQSectionProps) {
               return (
                 <div
                   key={index}
-                  className="bg-card border-2 border-border rounded-2xl overflow-hidden hover:border-[#C44E35]/30 transition-all"
+                  className="bg-card border border-border rounded-2xl overflow-hidden hover:border-brand/30 transition-all"
                 >
                   <button
                     onClick={() => setOpenIndex(isOpen ? null : index)}
@@ -60,7 +60,7 @@ export function FAQSection({ section }: FAQSectionProps) {
                       {item.question}
                     </span>
                     <ChevronDown
-                      className={`w-5 h-5 text-[#C44E35] transition-transform flex-shrink-0 ${
+                      className={`w-5 h-5 text-brand transition-transform flex-shrink-0 ${
                         isOpen ? 'rotate-180' : ''
                       }`}
                     />
@@ -109,7 +109,7 @@ export function FAQSection({ section }: FAQSectionProps) {
           {items.map((item: any, index: number) => (
             <div
               key={index}
-              className="bg-card border-2 border-border rounded-2xl p-6"
+              className="bg-card border border-border rounded-2xl p-6"
             >
               <h3 className="font-semibold text-foreground text-lg mb-3">
                 {item.question}

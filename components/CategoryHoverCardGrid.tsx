@@ -38,7 +38,7 @@ export function CategoryHoverCardGrid({ categories }: CategoryHoverCardGridProps
               delay: index * 0.05,
               ease: [0.16, 1, 0.3, 1]
             }}
-            className="relative h-full rounded-2xl border-2 border-border bg-card p-6 md:p-4 lg:p-6"
+            className="relative h-full rounded-2xl border border-border bg-card p-6 md:p-4 lg:p-6"
           >
             {/* Content */}
             <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[140px] md:min-h-[110px] lg:min-h-[140px]">
@@ -46,20 +46,20 @@ export function CategoryHoverCardGrid({ categories }: CategoryHoverCardGridProps
               <div
                 className={`relative w-16 h-16 md:w-12 md:h-12 lg:w-16 lg:h-16 mb-4 md:mb-3 lg:mb-4 rounded-2xl flex items-center justify-center transition-all duration-300 ${
                   hoveredId === category.id
-                    ? 'bg-[#C44E35] ring-4 ring-[#C44E35]/20 shadow-lg scale-110'
-                    : 'bg-[#C44E35]/10 shadow-sm'
+                    ? 'bg-brand ring-4 ring-brand/20 shadow-lg scale-110'
+                    : 'bg-brand/10 shadow-sm'
                 }`}
               >
                 <CategoryIcon
                   iconName={category.icon}
                   className={`w-8 h-8 md:w-6 md:h-6 lg:w-8 lg:h-8 transition-all duration-300 ${
-                    hoveredId === category.id ? 'text-white scale-110' : 'text-[#C44E35]'
+                    hoveredId === category.id ? 'text-brand-foreground scale-110' : 'text-brand'
                   }`}
                 />
               </div>
 
               <h4 className={`text-lg md:text-base lg:text-lg font-bold mb-2 md:mb-1.5 lg:mb-2 transition-colors duration-300 ${
-                hoveredId === category.id ? 'text-[#C44E35]' : 'text-foreground'
+                hoveredId === category.id ? 'text-brand' : 'text-foreground'
               }`}>
                 {category.name}
               </h4>

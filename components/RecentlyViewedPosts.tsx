@@ -136,7 +136,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-card border border-border rounded-3xl p-8 shadow-sm group/section overflow-visible">
+      <div className="hidden md:block bg-card border border-border rounded-3xl p-8 group/section overflow-visible">
         <div className="mb-12">
           <h3 className="text-4xl font-bold text-foreground mb-2">Ostatnio wyświetlane</h3>
           <p className="text-lg text-muted-foreground">Ostatnio przeglądane ogłoszenia</p>

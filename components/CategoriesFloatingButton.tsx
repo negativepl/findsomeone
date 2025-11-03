@@ -194,7 +194,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
         <Button
           onClick={() => setIsOpen(!isOpen)}
           size="lg"
-          className="h-14 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 shadow-2xl px-6 gap-3 transition-all hover:scale-105"
+          className="h-14 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 shadow-2xl px-6 gap-3 transition-all hover:scale-105"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -227,7 +227,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                       placeholder="Szukaj kategorii..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full h-9 pl-9 pr-4 rounded-full border border-black/10 focus:border-[#C44E35] focus:outline-none text-sm transition-all"
+                      className="w-full h-9 pl-9 pr-4 rounded-full border border-black/10 dark:border-border focus:border-brand focus:outline-none text-sm transition-all"
                     />
                     <svg
                       className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -274,14 +274,14 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
 
                           <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-300 ${
                             hoveredCategory === cat.id
-                              ? 'bg-[#C44E35] text-white ring-2 ring-[#C44E35]/30 scale-110'
-                              : 'bg-[#C44E35]/10 text-[#C44E35] group-hover:bg-[#C44E35]/20 group-hover:scale-105'
+                              ? 'bg-brand text-brand-foreground ring-2 ring-brand/30 scale-110'
+                              : 'bg-brand/10 text-brand group-hover:bg-brand/20 group-hover:scale-105'
                           }`}>
                             <CategoryIcon iconName={cat.icon} className="w-6 h-6 transition-transform duration-300 group-hover:scale-110" />
                           </div>
                           <div className="flex flex-col items-center">
                             <span className={`text-xs font-medium transition-colors duration-300 ${
-                              hoveredCategory === cat.id ? 'text-[#C44E35]' : 'text-foreground'
+                              hoveredCategory === cat.id ? 'text-brand' : 'text-foreground'
                             }`}>{cat.name}</span>
                             {count > 0 && (
                               <span className="text-[10px] text-muted-foreground mt-0.5">
@@ -318,7 +318,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                     return hoveredCat ? (
                       <>
                         <div className="flex items-center gap-3 mb-6">
-                          <div className="w-10 h-10 rounded-xl bg-[#C44E35] text-white flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-xl bg-brand text-brand-foreground flex items-center justify-center">
                             <CategoryIcon iconName={hoveredCat.icon} className="w-5 h-5" />
                           </div>
                           <h4 className="text-lg font-bold text-foreground">{hoveredCat.name}</h4>
@@ -339,7 +339,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                             ))}
                             <Link
                               href={`/posts?category=${encodeURIComponent(hoveredCat.name.toLowerCase())}`}
-                              className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#C44E35] hover:bg-[#C44E35]/5 transition-all mt-3"
+                              className="block px-4 py-2.5 rounded-xl text-sm font-bold text-brand hover:bg-brand/5 transition-all mt-3"
                               onClick={() => setIsOpen(false)}
                             >
                               Zobacz wszystkie →

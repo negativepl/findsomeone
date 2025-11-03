@@ -35,7 +35,7 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
   const getIcon = (iconName: string) => {
     const IconComponent = (LucideIcons as any)[iconName]
     if (IconComponent) {
-      return <IconComponent className="w-8 h-8 text-[#C44E35]" />
+      return <IconComponent className="w-8 h-8 text-brand" />
     }
     return null
   }
@@ -61,7 +61,7 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
             {features.map((feature: any, index: number) => (
               <div
                 key={index}
-                className="flex gap-4 p-6 rounded-2xl border-2 border-border hover:border-[#C44E35]/30 transition-colors bg-card"
+                className="flex gap-4 p-6 rounded-2xl border border-border hover:border-brand/30 transition-colors bg-card"
               >
                 {feature.icon && (
                   <div className="flex-shrink-0 mt-1">
@@ -85,7 +85,7 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
             {features.map((feature: any, index: number) => (
               <div
                 key={index}
-                className="text-center"
+                className="text-center p-6 md:p-8 rounded-2xl border border-border hover:border-brand/30 transition-colors bg-card"
               >
                 {feature.icon && (
                   <div className="flex justify-center mb-4">

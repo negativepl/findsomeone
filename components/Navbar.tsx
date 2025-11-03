@@ -6,9 +6,9 @@ import { MessagesIcon } from '@/components/MessagesIcon'
 import { FavoritesIcon } from '@/components/FavoritesIcon'
 import { MobileNavIcons } from '@/components/MobileNavIcons'
 import { NavbarSearchWrapper } from '@/components/NavbarSearchWrapper'
-import { CategoriesNavButton } from '@/components/CategoriesNavButton'
 import { PresenceIndicator } from '@/components/PresenceIndicator'
 import { AIAssistant } from '@/components/AIAssistant'
+import { MegaMenu } from '@/components/MegaMenu'
 import { User } from '@supabase/supabase-js'
 import { getUserRole } from '@/lib/admin'
 import { createClient } from '@/lib/supabase/server'
@@ -40,19 +40,6 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
     profile = data
   }
 
-  // Fetch categories for the categories button
-  const supabase = await createClient()
-  const { data: categories } = await supabase
-    .from('categories')
-    .select(`
-      id,
-      name,
-      slug,
-      icon,
-      subcategories:categories!parent_id(id, name, slug)
-    `)
-    .is('parent_id', null)
-    .order('display_order')
 
   return (
     <header className={`fixed top-0 left-0 right-0 bg-card border-b border-border ${noRounding ? '' : 'rounded-b-3xl'} before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-card before:-translate-y-full before:z-[-1]`} style={{ zIndex: 9999, paddingTop: 'env(safe-area-inset-top, 0px)' }}>
@@ -62,7 +49,8 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
           {stepInfo ? (
             <div className="flex items-center gap-3 min-w-0">
               {stepInfo}
-              <div className="hidden md:block shrink-0">
+              <div className="hidden md:flex gap-3 items-center shrink-0">
+                <MegaMenu />
                 <Link href="/">
                   <LogoWithText />
                 </Link>
@@ -91,11 +79,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
               </div>
               {/* Desktop */}
               <div className="hidden md:flex gap-3 items-center min-w-0">
-                <div className="shrink-0">
-                  {categories && categories.length > 0 && (
-                    <CategoriesNavButton categories={categories} />
-                  )}
-                </div>
+                <MegaMenu />
                 <Link href="/" className="shrink-0">
                   <LogoWithText />
                 </Link>
@@ -107,13 +91,9 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
               <Link href="/" className="md:hidden shrink-0">
                 <LogoWithText />
               </Link>
-              {/* Desktop - Categories + Logo */}
+              {/* Desktop - MegaMenu + Logo */}
               <div className="hidden md:flex gap-3 items-center min-w-0">
-                <div className="shrink-0">
-                  {categories && categories.length > 0 && (
-                    <CategoriesNavButton categories={categories} />
-                  )}
-                </div>
+                <MegaMenu />
                 <Link href="/" className="shrink-0">
                   <LogoWithText />
                 </Link>

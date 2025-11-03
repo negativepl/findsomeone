@@ -118,13 +118,13 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-card border border-border rounded-3xl p-8 shadow-sm group/section overflow-visible">
+      <div className="hidden md:block bg-card border border-border rounded-3xl p-8 group/section overflow-visible">
         <div className="flex items-center justify-between mb-12">
           <div>
             <h3 className="text-4xl font-bold text-foreground mb-2">W Twoim mieście</h3>
             <p className="text-lg text-muted-foreground">Ogłoszenia z miasta {city}</p>
           </div>
-          <Link href={`/posts?city=${encodeURIComponent(city)}`} className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-2.5 text-sm font-medium transition-colors inline-block">
+          <Link href={`/posts?city=${encodeURIComponent(city)}`} className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground px-6 py-2.5 text-sm font-medium transition-colors inline-block">
             Zobacz wszystkie
           </Link>
         </div>

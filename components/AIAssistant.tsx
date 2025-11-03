@@ -298,7 +298,7 @@ export function AIAssistant() {
       <button
         onMouseEnter={() => setIsButtonHovered(true)}
         onMouseLeave={() => setIsButtonHovered(false)}
-        className="relative inline-flex items-center justify-center h-[34px] w-[34px] md:h-10 md:w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
+        className="relative inline-flex items-center justify-center h-[34px] w-[34px] md:h-10 md:w-10 rounded-full bg-brand hover:bg-brand/90 transition-colors"
         aria-label="Asystent AI"
         aria-expanded={isOpen}
       >
@@ -320,7 +320,7 @@ export function AIAssistant() {
           isHovered={isButtonHovered}
         />
         {mounted && messages.length > 0 && (
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-background rounded-full border-2 border-[#C44E35]" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-background rounded-full border-2 border-brand" />
         )}
       </button>
 
@@ -333,7 +333,7 @@ export function AIAssistant() {
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-[#C44E35] flex items-center justify-center flex-shrink-0 relative">
+                <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center flex-shrink-0 relative">
                   {/* SVG - always visible until Lottie is ready */}
                   <div
                     className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
@@ -372,7 +372,7 @@ export function AIAssistant() {
                 {messages.length > 0 && (
                   <button
                     onClick={handleClearChat}
-                    className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors text-muted-foreground hover:text-[#C44E35]"
+                    className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors text-muted-foreground hover:text-brand"
                     title="Wyczyść historię"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -383,7 +383,7 @@ export function AIAssistant() {
                 {/* Pin button */}
                 <button
                   onClick={() => setIsPinned(!isPinned)}
-                  className={`w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors ${isPinned ? 'text-[#C44E35]' : 'text-muted-foreground'}`}
+                  className={`w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors ${isPinned ? 'text-brand' : 'text-muted-foreground'}`}
                   title={isPinned ? "Odepnij okno" : "Przypnij okno"}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -480,12 +480,12 @@ export function AIAssistant() {
                     >
                       <div className="mb-4 whitespace-pre-line">
                         {settings?.welcomeMessage?.split('\n').map((line, i) => (
-                          <p key={i} className={i === 0 ? 'font-semibold bg-gradient-to-r from-foreground to-[#C44E35] bg-clip-text text-transparent mb-2' : 'text-sm text-muted-foreground'}>
+                          <p key={i} className={i === 0 ? 'font-semibold bg-gradient-to-r from-foreground to-brand bg-clip-text text-transparent mb-2' : 'text-sm text-muted-foreground'}>
                             {line}
                           </p>
                         )) || (
                           <>
-                            <h4 className="font-semibold bg-gradient-to-r from-foreground to-[#C44E35] bg-clip-text text-transparent mb-2">Cześć! Jestem tu aby pomóc</h4>
+                            <h4 className="font-semibold bg-gradient-to-r from-foreground to-brand bg-clip-text text-transparent mb-2">Cześć! Jestem tu aby pomóc</h4>
                             <p className="text-sm text-muted-foreground">
                               Mogę pomóc Ci w nawigacji, odpowiedzieć na pytania o FindSomeone lub pomóc znaleźć odpowiednie ogłoszenia.
                             </p>
@@ -497,7 +497,7 @@ export function AIAssistant() {
                           <button
                             key={i}
                             onClick={() => setInput(suggestion)}
-                            className="w-full text-left px-4 py-3 rounded-xl bg-background hover:bg-[#C44E35]/10 hover:text-[#C44E35] transition-all text-sm border border-border/30"
+                            className="w-full text-left px-4 py-3 rounded-xl bg-background hover:bg-brand/10 hover:text-brand transition-all text-sm border border-border/30"
                           >
                             {suggestion}
                           </button>
@@ -537,7 +537,7 @@ export function AIAssistant() {
                         <div
                           className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                             message.role === 'user'
-                              ? 'bg-[#C44E35] text-white'
+                              ? 'bg-brand text-brand-foreground'
                               : 'bg-muted text-foreground'
                           }`}
                         >
@@ -548,7 +548,7 @@ export function AIAssistant() {
                                   a: ({ node, ...props }) => (
                                     <a
                                       {...props}
-                                      className="text-[#C44E35] font-medium no-underline hover:underline"
+                                      className="text-brand font-medium no-underline hover:underline"
                                       target="_blank"
                                       rel="noopener noreferrer"
                                     />
@@ -591,7 +591,7 @@ export function AIAssistant() {
                                 <button
                                   key={idx}
                                   onClick={() => setInput(suggestion)}
-                                  className="px-3 py-1.5 bg-muted hover:bg-[#C44E35]/10 hover:text-[#C44E35] text-foreground rounded-full text-xs transition-all"
+                                  className="px-3 py-1.5 bg-muted hover:bg-brand/10 hover:text-brand text-foreground rounded-full text-xs transition-all"
                                 >
                                   {suggestion}
                                 </button>
@@ -674,13 +674,13 @@ export function AIAssistant() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Napisz wiadomość..."
-                  className="flex-1 px-4 py-3 rounded-full bg-muted/80 text-foreground placeholder:text-muted-foreground border border-border/50 focus:outline-none focus:ring-2 focus:ring-[#C44E35] focus:border-transparent text-base md:text-sm transition-all"
+                  className="flex-1 px-4 py-3 rounded-full bg-muted/80 text-foreground placeholder:text-muted-foreground border border-border/50 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent text-base md:text-sm transition-all"
                   disabled={isLoading}
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isLoading}
-                  className="w-10 h-10 flex-shrink-0 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg hover:shadow-xl disabled:shadow-none"
+                  className="w-10 h-10 flex-shrink-0 rounded-full bg-brand hover:bg-brand/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg hover:shadow-xl disabled:shadow-none"
                   aria-label="Wyślij wiadomość"
                 >
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

@@ -609,7 +609,7 @@ export function NavbarSearchBar() {
       <form onSubmit={handleSubmit} className="flex-1" suppressHydrationWarning>
         <div
           onClick={() => searchInputRef.current?.focus()}
-          className="relative flex items-center bg-muted rounded-full pr-2 py-2 h-10 transition-colors cursor-text"
+          className="relative flex items-center bg-muted rounded-full pr-2 py-2 h-10 transition-colors cursor-text border border-border"
           style={{ paddingLeft: '20px' }}
         >
           <input
@@ -848,7 +848,7 @@ export function NavbarSearchBar() {
           type="button"
           onMouseEnter={handleLocationButtonMouseEnter}
           onMouseLeave={handleLocationButtonMouseLeave}
-          className="flex items-center gap-2 bg-muted hover:bg-accent rounded-full h-10 transition-colors flex-shrink-0 px-4"
+          className="flex items-center gap-2 bg-muted hover:bg-accent rounded-full h-10 transition-colors flex-shrink-0 px-4 border border-border"
           aria-expanded={isCityDropdownOpen}
         >
           <LottieIcon

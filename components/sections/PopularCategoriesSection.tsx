@@ -67,7 +67,7 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
         </div>
 
         {/* Desktop: card design */}
-        <div className="hidden md:block bg-card border border-border rounded-3xl p-8 shadow-sm group/section">
+        <div className="hidden md:block bg-card border border-border rounded-3xl p-8 group/section">
           <div className="mb-12">
             <h3 className="text-4xl font-bold text-foreground mb-2">{title}</h3>
             <p className="text-lg text-muted-foreground">{subtitle}</p>
@@ -91,7 +91,7 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-card border border-border rounded-3xl p-8 shadow-sm group/section">
+      <div className="hidden md:block bg-card border border-border rounded-3xl p-8 group/section">
         <div className="mb-12">
           <h3 className="text-4xl font-bold text-foreground mb-2">{title}</h3>
           <p className="text-lg text-muted-foreground">{subtitle}</p>

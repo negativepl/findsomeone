@@ -2,17 +2,17 @@
 
 import { createContext, useContext, useEffect, useState } from 'react'
 
-type Theme = 'light' | 'dark'
+type Theme = 'light' | 'dark' | 'system'
 
 type ThemeContextType = {
   theme: Theme
-  toggleTheme: () => void
+  setTheme: (theme: Theme) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light')
+  const [theme, setTheme] = useState<Theme>('system')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -22,43 +22,49 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     if (savedTheme) {
       setTheme(savedTheme)
-      if (savedTheme === 'dark') {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
     } else {
-      // Sprawdź preferencje systemowe
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      const initialTheme = prefersDark ? 'dark' : 'light'
-      setTheme(initialTheme)
-      if (prefersDark) {
-        document.documentElement.classList.add('dark')
-      } else {
-        document.documentElement.classList.remove('dark')
-      }
+      // Domyślnie ustawiamy 'system'
+      setTheme('system')
     }
   }, [])
 
   useEffect(() => {
     if (!mounted) return
 
-    // Aktualizuj klasę na elemencie HTML
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
+    const root = document.documentElement
+
+    // Funkcja do zastosowania motywu
+    const applyTheme = (currentTheme: Theme) => {
+      if (currentTheme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (prefersDark) {
+          root.classList.add('dark')
+        } else {
+          root.classList.remove('dark')
+        }
+      } else if (currentTheme === 'dark') {
+        root.classList.add('dark')
+      } else {
+        root.classList.remove('dark')
+      }
     }
+
+    applyTheme(theme)
+
     // Zapisz preferencje w localStorage
     localStorage.setItem('theme', theme)
+
+    // Nasłuchuj zmian preferencji systemowych gdy theme === 'system'
+    if (theme === 'system') {
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+      const handleChange = () => applyTheme('system')
+      mediaQuery.addEventListener('change', handleChange)
+      return () => mediaQuery.removeEventListener('change', handleChange)
+    }
   }, [theme, mounted])
 
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light')
-  }
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}
     </ThemeContext.Provider>
   )

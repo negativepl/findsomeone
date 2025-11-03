@@ -14,6 +14,14 @@ export function HeroSection({ user }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden">
+      {/* Gradient overlay - only in hero section */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(ellipse 120% 60% at 50% 0%, rgba(196, 78, 53, 0.15) 0%, rgba(196, 78, 53, 0.08) 30%, transparent 70%)',
+        }}
+      />
+      
       <div className="container relative mx-auto px-6 py-16 sm:py-18 md:py-24 lg:px-16 xl:px-20">
         <div className="relative z-10 pt-16 lg:min-h-[300px] flex flex-col items-center justify-center sm:mx-auto md:w-3/4 lg:mx-0 lg:w-full gap-4 lg:gap-8">
         <h1 className="text-4xl md:text-7xl font-bold text-foreground leading-tight text-center">

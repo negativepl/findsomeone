@@ -16,7 +16,9 @@ interface UserMenuProps {
 
 interface MenuItemWithIconProps {
   href?: string
-  icon: string
+  icon?: string // Legacy support
+  iconLight?: string // Animation for light mode
+  iconDark?: string // Animation for dark mode
   fallbackIcon: React.ReactNode
   children: React.ReactNode
   onClick: () => void
@@ -24,12 +26,20 @@ interface MenuItemWithIconProps {
   className?: string
 }
 
-function MenuItemWithIcon({ href, icon, fallbackIcon, children, onClick, isButton = false, className = "flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-accent transition-colors" }: MenuItemWithIconProps) {
+function MenuItemWithIcon({ href, icon, iconLight, iconDark, fallbackIcon, children, onClick, isButton = false, className = "flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-accent transition-colors" }: MenuItemWithIconProps) {
   const iconRef = useRef<LordIconRef>(null)
   const [isHovering, setIsHovering] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const handleMouseEnter = () => {
+    // Clear any pending timeout
+    if (animationTimeoutRef.current) {
+      clearTimeout(animationTimeoutRef.current)
+    }
+    
     setIsHovering(true)
+    setIsAnimating(true)
     // Trigger animation after a small delay to ensure LordIcon is mounted
     setTimeout(() => {
       if (iconRef.current) {
@@ -40,7 +50,20 @@ function MenuItemWithIcon({ href, icon, fallbackIcon, children, onClick, isButto
 
   const handleMouseLeave = () => {
     setIsHovering(false)
+    // Keep animation visible until it completes (about 1 second for most animations)
+    animationTimeoutRef.current = setTimeout(() => {
+      setIsAnimating(false)
+    }, 1000)
   }
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const content = (
     <>
@@ -48,16 +71,16 @@ function MenuItemWithIcon({ href, icon, fallbackIcon, children, onClick, isButto
         {/* SVG fallback icon - visible by default */}
         <div
           className="absolute inset-0 flex items-center justify-center transition-opacity duration-200"
-          style={{ opacity: isHovering ? 0 : 1 }}
+          style={{ opacity: isAnimating ? 0 : 1 }}
         >
           {fallbackIcon}
         </div>
-        {/* Lottie icon - hidden by default, visible on hover */}
+        {/* Lottie icon - hidden by default, visible when animating */}
         <div
           className="absolute inset-0 flex items-center justify-center transition-opacity duration-200"
-          style={{ opacity: isHovering ? 1 : 0 }}
+          style={{ opacity: isAnimating ? 1 : 0 }}
         >
-          <LordIcon ref={iconRef} src={icon} size={20} />
+          <LordIcon ref={iconRef} src={icon} srcLight={iconLight} srcDark={iconDark} size={20} />
         </div>
       </div>
       {children}
@@ -99,12 +122,18 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
   // Preload LordIcon animations on mount
   useEffect(() => {
     const iconsToPreload = [
-      '/icons/home.json',
-      '/icons/newspaper.json',
-      '/icons/account.json',
-      '/icons/settings.json',
-      '/icons/logout.json',
-      '/icons/admin.json'
+      '/icons/home-light.json',
+      '/icons/home-dark.json',
+      '/icons/newspaper-light.json',
+      '/icons/newspaper-dark.json',
+      '/icons/account-light.json',
+      '/icons/account-dark.json',
+      '/icons/settings-light.json',
+      '/icons/settings-dark.json',
+      '/icons/logout-light.json',
+      '/icons/logout-dark.json',
+      '/icons/admin-light.json',
+      '/icons/admin-dark.json'
     ]
     iconsToPreload.forEach(icon => {
       fetch(icon).catch(() => {}) // Preload but ignore errors
@@ -203,7 +232,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             className="w-9 h-9 lg:w-10 lg:h-10 rounded-full object-cover shrink-0"
           />
         ) : (
-          <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-[#C44E35] text-white flex items-center justify-center font-bold shrink-0 text-sm" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+          <div className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-brand text-brand-foreground flex items-center justify-center font-bold shrink-0 text-sm" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
             {getInitials()}
           </div>
         )}
@@ -243,7 +272,8 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
           <div className="py-1">
             <MenuItemWithIcon
               href="/dashboard"
-              icon="/icons/home.json"
+              iconLight="/icons/home-light.json"
+              iconDark="/icons/home-dark.json"
               fallbackIcon={
                 <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M19.5 8.329a.25.25 0 0 0-.125-.217l-7.25-4.174a.25.25 0 0 0-.25 0l-7.25 4.174a.25.25 0 0 0-.125.217V19.25c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25v-5.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 .75.75v5.5c0 .139.112.25.25.25h4a.25.25 0 0 0 .25-.25zM21 19.25A1.75 1.75 0 0 1 19.25 21h-4a1.75 1.75 0 0 1-1.75-1.75V14.5h-3v4.75A1.75 1.75 0 0 1 8.75 21h-4A1.75 1.75 0 0 1 3 19.25V8.33c0-.626.334-1.205.877-1.517l7.25-4.174a1.75 1.75 0 0 1 1.746 0l7.25 4.174c.543.312.877.89.877 1.517z"/>
@@ -256,7 +286,8 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
 
             <MenuItemWithIcon
               href="/dashboard/my-posts"
-              icon="/icons/newspaper.json"
+              iconLight="/icons/newspaper-light.json"
+              iconDark="/icons/newspaper-dark.json"
               fallbackIcon={
                 <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <g clipPath="url(#N3FWNfAbPsa)">
@@ -270,7 +301,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
                   </g>
                   <defs>
                     <clipPath id="N3FWNfAbPsa">
-                      <path fill="#fff" d="M0 0h24v24H0z"/>
+                      <path fill="currentColor" d="M0 0h24v24H0z"/>
                     </clipPath>
                   </defs>
                 </svg>
@@ -282,7 +313,8 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
 
             <MenuItemWithIcon
               href="/dashboard/profile"
-              icon="/icons/account.json"
+              iconLight="/icons/account-light.json"
+              iconDark="/icons/account-dark.json"
               fallbackIcon={
                 <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <g fill="currentColor" fillRule="evenodd" clipRule="evenodd">
@@ -298,7 +330,8 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
 
             <MenuItemWithIcon
               href="/dashboard/settings"
-              icon="/icons/settings.json"
+              iconLight="/icons/settings-light.json"
+              iconDark="/icons/settings-dark.json"
               fallbackIcon={
                 <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <g clipPath="url(#vx0YN8sIZ7a)">
@@ -306,7 +339,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
                   </g>
                   <defs>
                     <clipPath id="vx0YN8sIZ7a">
-                      <path fill="#fff" d="M0 0h24v24H0z"/>
+                      <path fill="currentColor" d="M0 0h24v24H0z"/>
                     </clipPath>
                   </defs>
                 </svg>
@@ -318,7 +351,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
           </div>
 
           {isAdmin && (
-            <div className="border-t border-black/5 pt-1 mt-1">
+            <div className="border-t border-border pt-1 mt-1">
               <MenuItemWithIcon
                 href="/admin"
                 icon="/icons/admin.json"
@@ -328,31 +361,31 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
                   </svg>
                 }
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm text-[#C44E35] hover:bg-[#C44E35]/5 transition-colors font-medium"
+                className="flex items-center gap-3 px-4 py-2.5 text-sm text-brand hover:bg-accent transition-colors font-medium"
               >
                 Panel administracyjny
               </MenuItemWithIcon>
             </div>
           )}
 
-          <div className="border-t border-black/5 pt-1 mt-1">
+          <div className="border-t border-border pt-1 mt-1">
             <MenuItemWithIcon
               icon="/icons/logout.json"
               fallbackIcon={
-                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <g stroke="#dc2626" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#er_gIUdBqMa)">
+                <svg className="w-5 h-5 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" clipPath="url(#er_gIUdBqMa)">
                     <path d="M16 16.25 20.25 12 16 7.75M20.25 12H8.75m4.5 8.25h-7.5c-1.1 0-2-.9-2-2V5.75c0-1.1.9-2 2-2h7.5"/>
                   </g>
                   <defs>
                     <clipPath id="er_gIUdBqMa">
-                      <path fill="#fff" d="M0 0h24v24H0z"/>
+                      <path fill="currentColor" d="M0 0h24v24H0z"/>
                     </clipPath>
                   </defs>
                 </svg>
               }
               onClick={handleSignOut}
               isButton={true}
-              className="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+              className="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-accent transition-colors"
             >
               Wyloguj się
             </MenuItemWithIcon>

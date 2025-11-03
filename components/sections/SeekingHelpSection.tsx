@@ -52,7 +52,7 @@ export async function SeekingHelpSection({ section, userFavorites }: SeekingHelp
 
   return (
     <section className="container mx-auto px-6 py-12 md:py-14">
-      <div className="bg-card rounded-3xl p-6 md:p-8 shadow-sm group/section">
+      <div className="bg-card rounded-3xl p-6 md:p-8 group/section">
         <div className="flex items-center justify-between mb-8 md:mb-12">
           <div>
             <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{title}</h3>
@@ -61,7 +61,7 @@ export async function SeekingHelpSection({ section, userFavorites }: SeekingHelp
           {showButton && (
             <div className="hidden md:block">
               <Link href="/posts">
-                <button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-3 font-medium transition-colors">
+                <button className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground px-6 py-3 font-medium transition-colors">
                   Zobacz wszystkie
                 </button>
               </Link>

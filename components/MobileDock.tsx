@@ -419,7 +419,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     setSelectedCategory(null)
                     setCategoriesOpen(true)
                   }}
-                  className="flex items-center gap-2 text-foreground hover:text-[#C44E35] transition-colors mb-2"
+                  className="flex items-center gap-2 text-foreground hover:text-brand transition-colors mb-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -522,7 +522,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     triggerHaptic()
                     setSelectedSubcategory(null)
                   }}
-                  className="flex items-center gap-2 text-foreground hover:text-[#C44E35] transition-colors mb-2"
+                  className="flex items-center gap-2 text-foreground hover:text-brand transition-colors mb-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -611,7 +611,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                             className="w-12 h-12 rounded-full object-cover"
                           />
                         ) : (
-                          <div className="w-12 h-12 rounded-full bg-[#C44E35] text-white flex items-center justify-center font-bold text-lg" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+                          <div className="w-12 h-12 rounded-full bg-brand text-brand-foreground flex items-center justify-center font-bold text-lg" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
                             {getInitials()}
                           </div>
                         )}
@@ -671,7 +671,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         className={cn(
                           "flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors duration-300 group",
                           isActive
-                            ? "bg-muted text-foreground ring-2 ring-[#C44E35]/20"
+                            ? "bg-muted text-foreground ring-2 ring-brand/20"
                             : "bg-muted text-foreground hover:bg-brand hover:text-white"
                         )}
                       >
@@ -728,7 +728,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
           {/* Animated indicator background */}
           <motion.div
-            className="absolute bg-[#C44E35]"
+            className="absolute bg-brand"
             initial={false}
             animate={
               passesThroughSpecial && activeIndex !== -1 && prevActiveIndex !== -1
@@ -885,7 +885,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 >
                   <div className="relative flex items-center justify-center">
                     {/* Pomarańczowe kółko w tle */}
-                    <div className="absolute w-11 h-11 bg-[#C44E35] rounded-full shrink-0" />
+                    <div className="absolute w-11 h-11 bg-brand rounded-full shrink-0" />
                     {/* Ikona */}
                     <motion.div
                       className="relative"

@@ -36,7 +36,7 @@ export function CTASection({ section }: CTASectionProps) {
       <div className="container mx-auto px-6">
         <div className={`flex flex-col gap-6 ${alignClass}`}>
           {subheading && (
-            <p className="text-sm md:text-base font-medium text-[#C44E35] uppercase tracking-wide">
+            <p className="text-sm md:text-base font-medium text-brand uppercase tracking-wide">
               {subheading}
             </p>
           )}

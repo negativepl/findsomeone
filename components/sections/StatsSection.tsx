@@ -92,7 +92,7 @@ export function StatsSection({ section }: StatsSectionProps) {
   const getIcon = (iconName: string) => {
     const IconComponent = (LucideIcons as any)[iconName]
     if (IconComponent) {
-      return <IconComponent className="w-8 h-8 text-[#C44E35]" />
+      return <IconComponent className="w-8 h-8 text-brand" />
     }
     return null
   }
@@ -126,7 +126,7 @@ export function StatsSection({ section }: StatsSectionProps) {
                   </div>
                 )}
 
-                <div className="text-4xl md:text-5xl font-bold text-[#C44E35] mb-2">
+                <div className="text-4xl md:text-5xl font-bold text-brand mb-2">
                   {stat.prefix}
                   {animate ? counts[index] : stat.number}
                   {stat.suffix}
@@ -151,7 +151,7 @@ export function StatsSection({ section }: StatsSectionProps) {
                   </div>
                 )}
 
-                <div className="text-4xl md:text-5xl font-bold text-[#C44E35] mb-2">
+                <div className="text-4xl md:text-5xl font-bold text-brand mb-2">
                   {stat.prefix}
                   {animate ? counts[index] : stat.number}
                   {stat.suffix}

@@ -49,7 +49,7 @@ export function AIPostCard({
     >
       <Link
         href={url}
-        className="flex flex-col h-full group bg-card rounded-xl border-2 border-border hover:border-[#C44E35]/40 hover:bg-[#C44E35]/[0.02] transition-all overflow-hidden"
+        className="flex flex-col h-full group bg-card rounded-xl border-2 border-border hover:border-brand/40 hover:bg-brand/[0.02] transition-all overflow-hidden"
       >
         {/* Image */}
         {image && (
@@ -66,7 +66,7 @@ export function AIPostCard({
 
         <div className="flex flex-col flex-1 p-3.5">
           {/* Title */}
-          <h4 className="font-semibold text-foreground text-base mb-3 pb-3 border-b border-border group-hover:text-[#C44E35] transition-colors">
+          <h4 className="font-semibold text-foreground text-base mb-3 pb-3 border-b border-border group-hover:text-brand transition-colors">
             {title}
           </h4>
 
