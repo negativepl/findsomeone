@@ -29,11 +29,17 @@ export function LottieIcon({
   const [animationData, setAnimationData] = useState<any>(null)
   const [hasHovered, setHasHovered] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isDark, setIsDark] = useState(false)
   const prevHoveredRef = useRef(false)
   const { theme } = useTheme()
 
+  // Determine theme on client side only
+  useEffect(() => {
+    const checkDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    setIsDark(checkDark)
+  }, [theme])
+
   // Determine which animation path to use based on theme
-  const isDark = theme === 'dark' || (theme === 'system' && typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches)
   const currentAnimationPath = animationPathLight && animationPathDark
     ? (isDark ? animationPathDark : animationPathLight)
     : animationPath // Fallback to legacy single path
