@@ -148,13 +148,13 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col ">
-        <DialogHeader className="pb-4 border-b border-black/5">
-          <DialogTitle className="text-2xl font-bold text-black">Wybierz kategorię</DialogTitle>
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col rounded-3xl">
+        <DialogHeader className="pb-4 border-b border-border">
+          <DialogTitle className="text-2xl font-bold text-foreground">Wybierz kategorię</DialogTitle>
         </DialogHeader>
 
         {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 text-sm text-black/60 overflow-x-auto py-4 border-b border-black/5">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground overflow-x-auto py-4 border-b border-border">
           <button
             onClick={() => handleBreadcrumbClick(-1)}
             className="hover:text-[#C44E35] transition-colors whitespace-nowrap font-medium"
@@ -181,7 +181,7 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
             {breadcrumbs.length > 0 && (
               <button
                 onClick={handleGoBack}
-                className="w-full flex items-center gap-3 px-4 py-3 transition-all text-left hover:bg-[#C44E35]/5 text-black/70 hover:text-[#C44E35] mb-2 border border-transparent hover:border-[#C44E35]/20"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left hover:bg-brand/5 text-muted-foreground hover:text-brand mb-2 border border-transparent hover:border-brand/20"
               >
                 <ArrowLeft className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">Powrót</span>
@@ -199,20 +199,20 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
                   key={category.id}
                   onClick={() => handleCategoryClick(category)}
                   className={`
-                    w-full flex items-center px-4 py-3 transition-all text-left border
+                    w-full flex items-center px-4 py-3 rounded-xl transition-all text-left border
                     ${isMainCategory ? 'gap-3' : 'justify-between'}
                     ${isSelected
-                      ? 'bg-[#C44E35]/10 text-black font-medium border-[#C44E35]/30'
-                      : 'hover:bg-[#C44E35]/5 text-black border-transparent hover:border-[#C44E35]/20'
+                      ? 'bg-brand/10 text-foreground font-medium border-brand/30'
+                      : 'hover:bg-brand/5 text-foreground border-transparent hover:border-brand/20'
                     }
                   `}
                 >
                   {/* Ikona tylko dla głównych kategorii */}
                   {isMainCategory && IconComponent && (
                     <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center transition-all ${
-                      isSelected ? 'bg-[#C44E35]/20' : 'bg-black/5 group-hover:bg-[#C44E35]/10'
+                      isSelected ? 'bg-brand/20' : 'bg-muted group-hover:bg-brand/10'
                     }`}>
-                      <IconComponent className={`w-5 h-5 transition-colors ${isSelected ? 'text-[#C44E35]' : 'text-black/60'}`} />
+                      <IconComponent className={`w-5 h-5 transition-colors ${isSelected ? 'text-brand' : 'text-muted-foreground'}`} />
                     </div>
                   )}
 
@@ -220,10 +220,10 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
 
                   {hasSubcategories ? (
                     <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
-                      isSelected ? 'text-[#C44E35]' : 'text-black/40'
+                      isSelected ? 'text-brand' : 'text-muted-foreground'
                     }`} />
                   ) : isSelected ? (
-                    <Check className="w-5 h-5 text-[#C44E35] flex-shrink-0" />
+                    <Check className="w-5 h-5 text-brand flex-shrink-0" />
                   ) : null}
                 </button>
               )
@@ -231,19 +231,19 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
           </div>
 
           {currentCategories.length === 0 && (
-            <div className="text-center py-8 text-black/60">
+            <div className="text-center py-8 text-muted-foreground">
               Brak kategorii
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-3 pt-6 border-t border-black/5 mt-4">
+        <div className="flex justify-end gap-3 pt-6 border-t border-border mt-4">
           <Button
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="h-11 px-6 border-2 border-black/10 hover:border-black/20"
+            className="h-11 px-6 rounded-full"
           >
             Anuluj
           </Button>
@@ -251,7 +251,7 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
             type="button"
             onClick={handleConfirm}
             disabled={!selectedId}
-            className="h-11 px-8 bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-sm"
+            className="h-11 px-8 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground"
           >
             Potwierdź
           </Button>

@@ -577,6 +577,47 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
       if (insertError) throw insertError
 
+      // Generate and update embedding (don't block on errors)
+      if (newPost) {
+        try {
+          // Get category name for embedding
+          const { data: categoryData } = await supabase
+            .from('categories')
+            .select('name')
+            .eq('id', selectedCategoryId)
+            .single()
+
+          const categoryName = categoryData?.name || ''
+
+          // Generate embedding via API route
+          const embeddingResponse = await fetch('/api/posts/generate-embedding', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: formData.title,
+              description: formData.description,
+              category: categoryName,
+              city: formData.city,
+            }),
+          })
+
+          if (embeddingResponse.ok) {
+            const { embedding } = await embeddingResponse.json()
+
+            // Update post with embedding if generated successfully
+            if (embedding) {
+              await supabase
+                .from('posts')
+                .update({ embedding: `[${embedding.join(',')}]` })
+                .eq('id', newPost.id)
+            }
+          }
+        } catch (embeddingError) {
+          console.error('Failed to generate embedding:', embeddingError)
+          // Continue with post creation even if embedding fails
+        }
+      }
+
       // Trigger moderation and wait for result
       if (newPost) {
         const moderationResponse = await fetch('/api/moderate', {

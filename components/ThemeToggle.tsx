@@ -23,11 +23,11 @@ export function ThemeToggle() {
   const getIcon = () => {
     switch (theme) {
       case 'light':
-        return <Sun className="w-5 h-5 text-muted-foreground" />
+        return <Sun className="w-5 h-5 text-foreground" />
       case 'dark':
-        return <Moon className="w-5 h-5 text-muted-foreground" />
+        return <Moon className="w-5 h-5 text-foreground" />
       case 'system':
-        return <Monitor className="w-5 h-5 text-muted-foreground" />
+        return <Monitor className="w-5 h-5 text-foreground" />
     }
   }
 
@@ -47,10 +47,9 @@ export function ThemeToggle() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Wybierz motyw"
-        className="flex items-center gap-2 pl-2 pr-3 py-2 rounded-full bg-muted hover:bg-accent transition-colors"
+        className="flex items-center justify-center w-10 h-10 rounded-full bg-muted hover:bg-accent transition-colors"
       >
         {getIcon()}
-        <span className="text-sm text-muted-foreground hidden sm:inline">{getLabel()}</span>
       </button>
 
       {isOpen && (

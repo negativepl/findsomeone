@@ -24,9 +24,10 @@ interface MenuItemWithIconProps {
   onClick: () => void
   isButton?: boolean
   className?: string
+  dataNavigate?: boolean
 }
 
-function MenuItemWithIcon({ href, icon, iconLight, iconDark, fallbackIcon, children, onClick, isButton = false, className = "flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-accent transition-colors" }: MenuItemWithIconProps) {
+function MenuItemWithIcon({ href, icon, iconLight, iconDark, fallbackIcon, children, onClick, isButton = false, className = "flex items-center gap-3 px-3 py-2.5 text-sm text-foreground hover:bg-accent rounded-xl transition-colors", dataNavigate = false }: MenuItemWithIconProps) {
   const iconRef = useRef<LordIconRef>(null)
   const [isHovering, setIsHovering] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
@@ -94,6 +95,7 @@ function MenuItemWithIcon({ href, icon, iconLight, iconDark, fallbackIcon, child
         onClick={onClick}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        data-navigate={dataNavigate ? "true" : undefined}
       >
         {content}
       </button>
@@ -269,7 +271,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             <p className="text-xs text-muted-foreground truncate">{user.email}</p>
           </div>
 
-          <div className="py-1">
+          <div className="py-1 px-2">
             <MenuItemWithIcon
               href="/dashboard"
               iconLight="/icons/home-light.json"
@@ -351,7 +353,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
           </div>
 
           {isAdmin && (
-            <div className="border-t border-border pt-1 mt-1">
+            <div className="border-t border-border pt-1 mt-1 px-2">
               <MenuItemWithIcon
                 href="/admin"
                 icon="/icons/admin.json"
@@ -361,14 +363,14 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
                   </svg>
                 }
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-4 py-2.5 text-sm text-brand hover:bg-accent transition-colors font-medium"
+                className="flex items-center gap-3 px-3 py-2.5 text-sm text-brand hover:bg-accent rounded-xl transition-colors font-medium"
               >
                 Panel administracyjny
               </MenuItemWithIcon>
             </div>
           )}
 
-          <div className="border-t border-border pt-1 mt-1">
+          <div className="border-t border-border pt-1 mt-1 px-2">
             <MenuItemWithIcon
               icon="/icons/logout.json"
               fallbackIcon={
@@ -385,7 +387,8 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
               }
               onClick={handleSignOut}
               isButton={true}
-              className="flex items-center gap-3 w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-accent transition-colors"
+              dataNavigate={true}
+              className="flex items-center gap-3 w-full text-left px-3 py-2.5 text-sm text-red-600 hover:bg-accent rounded-xl transition-colors"
             >
               Wyloguj się
             </MenuItemWithIcon>

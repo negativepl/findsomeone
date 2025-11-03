@@ -14,7 +14,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-border bg-card rounded-t-3xl">
-      <div className="container mx-auto px-6 pt-8 pb-24 md:py-12">
+      <div className="container mx-auto px-6 pt-8 md:pt-12">
         <div className="grid md:grid-cols-4 gap-4 md:gap-8 mb-8">
           {/* Logo i opis */}
           <div className="md:col-span-1">
@@ -143,8 +143,8 @@ export function Footer() {
         </div>
 
         {/* Copyright & Social */}
-        <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">&copy; 2025 FindSomeone. Wszystkie prawa zastrzeżone.</p>
+        <div className="border-t border-border py-6 pb-24 md:pb-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-muted-foreground">Made by FindSomeone</p>
 
           <div className="flex items-center gap-4">
             {/* Dark Mode Toggle */}

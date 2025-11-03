@@ -64,16 +64,15 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
 
     async function detectCityByIP() {
       try {
-        // Fallback: Use IP-based geolocation (ipapi.co - free tier)
-        const response = await fetch('https://ipapi.co/json/')
-        const data = await response.json()
-
-        const detectedCity = data.city || null
-
-        if (detectedCity) {
-          setCity(detectedCity)
-          await fetchPostsByCity(detectedCity)
-        }
+        // DISABLED: IP-based geolocation removed due to CORS and rate limiting issues
+        // Users will select their city manually via the location selector
+        // const response = await fetch('https://ipapi.co/json/')
+        // const data = await response.json()
+        // const detectedCity = data.city || null
+        // if (detectedCity) {
+        //   setCity(detectedCity)
+        //   await fetchPostsByCity(detectedCity)
+        // }
       } catch (error) {
         // IP geolocation failed - silently continue
       } finally {

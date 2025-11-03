@@ -103,13 +103,15 @@ export function EditPostClient({ post }: EditPostClientProps) {
       if (allCats) {
         // Build the full path from root to this category
         const path: Array<{ id: string; name: string; slug: string }> = []
-        let currentCat = allCats.find(cat => cat.id === post.categories?.id)
+        let currentCat: { id: any; name: any; slug: any; parent_id: any } | undefined = allCats.find(cat => cat.id === post.categories?.id)
 
         while (currentCat) {
           path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
-          currentCat = (currentCat.parent_id
-            ? allCats.find(cat => cat.id === currentCat.parent_id)
-            : null) || null
+          if (currentCat.parent_id) {
+            currentCat = allCats.find(cat => cat.id === currentCat!.parent_id)
+          } else {
+            currentCat = undefined
+          }
         }
 
         setCategoryPath(path)
@@ -361,13 +363,15 @@ export function EditPostClient({ post }: EditPostClientProps) {
           if (targetCategory) {
             // Build the full path from root to this category
             const path: Array<{ id: string; name: string; slug: string }> = []
-            let currentCat = targetCategory
+            let currentCat: { id: any; name: any; slug: any; parent_id: any } | undefined = targetCategory
 
             while (currentCat) {
               path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
-              currentCat = (currentCat.parent_id
-                ? allCats.find(cat => cat.id === currentCat.parent_id)
-                : null) || null
+              if (currentCat.parent_id) {
+                currentCat = allCats.find(cat => cat.id === currentCat!.parent_id)
+              } else {
+                currentCat = undefined
+              }
             }
 
             setSelectedCategoryId(targetCategory.id)
@@ -463,24 +467,25 @@ export function EditPostClient({ post }: EditPostClientProps) {
   }
 
   return (
-    <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+    <main className="min-h-screen bg-background">
+      <div className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
       {/* Page Header - Above Card */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-3">
-          <h1 className="text-4xl font-bold text-black">Formularz edycji</h1>
+          <h1 className="text-4xl font-bold text-foreground">Formularz edycji</h1>
         </div>
-        <p className="text-lg text-black/60 mb-4">
+        <p className="text-lg text-muted-foreground mb-4">
           Zaktualizuj informacje w swoim ogłoszeniu
         </p>
-        <div className="bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
-          <svg className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="bg-yellow-50 dark:bg-yellow-950/30 border-2 border-yellow-200 dark:border-yellow-800 rounded-2xl p-4 flex items-start gap-3">
+          <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-yellow-900 mb-1">
+            <p className="text-sm font-semibold text-yellow-900 dark:text-yellow-200 mb-1">
               Ponowna weryfikacja wymagana
             </p>
-            <p className="text-sm text-yellow-800">
+            <p className="text-sm text-yellow-800 dark:text-yellow-300">
               Po zapisaniu zmian, Twoje ogłoszenie zostanie ponownie zweryfikowane przez system moderacji. Ogłoszenie będzie widoczne publicznie dopiero po zatwierdzeniu.
             </p>
           </div>
@@ -488,12 +493,12 @@ export function EditPostClient({ post }: EditPostClientProps) {
       </div>
 
       {/* Desktop: Card wrapper */}
-      <Card className="border-0 rounded-3xl bg-white">
+      <Card className="border border-border rounded-3xl bg-card">
         <CardContent className="pt-6 px-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Title */}
             <div className="space-y-3">
-              <Label htmlFor="title" className="text-base font-semibold text-black">
+              <Label htmlFor="title" className="text-base font-semibold text-foreground">
                 Tytuł ogłoszenia <span className="text-[#C44E35]">*</span>
               </Label>
               <div className="relative">
@@ -504,9 +509,9 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
                   maxLength={80}
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
+                  className="rounded-2xl border-2 border-border h-12 focus:border-border pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
                 />
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-gray-500 font-medium">
+                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-muted-foreground font-medium">
                   {formData.title.length}/80
                 </span>
               </div>
@@ -515,7 +520,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
             {/* Category Selector */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-base font-semibold text-black">Kategoria <span className="text-[#C44E35]">*</span></Label>
+                <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-[#C44E35]">*</span></Label>
                 <Button
                   type="button"
                   variant="outline"
@@ -548,23 +553,23 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 className={`w-full rounded-2xl border-2 transition-all p-4 text-left group ${
                   categoryPath.length > 0
                     ? 'border-[#C44E35]/30 bg-[#C44E35]/5 hover:border-[#C44E35]/50'
-                    : 'border-black/10 hover:border-black/30 hover:bg-black/5'
+                    : 'border-border hover:border-border/70 hover:bg-muted'
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
-                    categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-black/5 group-hover:bg-black/10'
+                    categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-muted group-hover:bg-accent'
                   }`}>
                     <svg className={`w-6 h-6 transition-colors ${
-                      categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40 group-hover:text-black/60'
+                      categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground group-hover:text-foreground'
                     }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                     </svg>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-xs text-black/60 mb-1">Kategoria</div>
+                    <div className="text-xs text-muted-foreground mb-1">Kategoria</div>
                     <div className={`font-medium truncate ${
-                      categoryPath.length > 0 ? 'text-black' : 'text-black/40'
+                      categoryPath.length > 0 ? 'text-foreground' : 'text-muted-foreground'
                     }`}>
                       {categoryPath.length > 0
                         ? categoryPath.map(c => c.name).join(' > ')
@@ -573,7 +578,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     </div>
                   </div>
                   <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
-                    categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40 group-hover:text-black/60'
+                    categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground group-hover:text-foreground'
                   }`} />
                 </div>
               </button>
@@ -581,7 +586,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
             {/* Description */}
             <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">
+              <Label className="text-base font-semibold text-foreground">
                 Opis <span className="text-[#C44E35]">*</span>
               </Label>
               <RichTextEditor
@@ -593,7 +598,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
             {/* Images */}
             <div className="space-y-3">
-              <Label className="text-base font-semibold text-black">
+              <Label className="text-base font-semibold text-foreground">
                 Zdjęcia <span className="text-[#C44E35]">*</span>
               </Label>
               <ImageUpload
@@ -610,7 +615,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
             {/* Location */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <Label className="text-base font-semibold text-black">
+                <Label className="text-base font-semibold text-foreground">
                   Lokalizacja <span className="text-[#C44E35]">*</span>
                 </Label>
                 <Button
@@ -627,7 +632,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
               </div>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-3">
-                  <Label className="text-sm text-black/60">
+                  <Label className="text-sm text-muted-foreground">
                     Miasto <span className="text-[#C44E35]">*</span>
                   </Label>
                   <Popover open={openCityCombobox} onOpenChange={setOpenCityCombobox}>
@@ -636,13 +641,13 @@ export function EditPostClient({ post }: EditPostClientProps) {
                         variant="outline"
                         role="combobox"
                         aria-expanded={openCityCombobox}
-                        className="w-full justify-between rounded-2xl border-2 border-black/10 h-12 hover:border-black/30 hover:bg-black/5 font-normal"
+                        className="w-full justify-between rounded-2xl border-2 border-border h-12 hover:border-border/70 hover:bg-muted font-normal"
                       >
                         {formData.city || "Wybierz miasto"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[500px] p-0 rounded-2xl border-2 border-black/10" align="start">
+                    <PopoverContent className="w-[500px] p-0 rounded-2xl border-2 border-border" align="start">
                       <Command className="rounded-2xl">
                         <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
                         <CommandList>
@@ -666,7 +671,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                                 <div className="flex items-center justify-between w-full">
                                   <span>{city.name}</span>
                                   {city.voivodeship && (
-                                    <span className="text-xs text-black/40 ml-2">{city.voivodeship}</span>
+                                    <span className="text-xs text-muted-foreground ml-2">{city.voivodeship}</span>
                                   )}
                                 </div>
                               </CommandItem>
@@ -678,7 +683,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   </Popover>
                 </div>
                 <div className="space-y-3">
-                  <Label htmlFor="district" className="text-sm text-black/60">
+                  <Label htmlFor="district" className="text-sm text-muted-foreground">
                     Dzielnica (opcjonalnie)
                   </Label>
                   <Input
@@ -686,7 +691,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     placeholder="np. Śródmieście"
                     value={formData.district}
                     onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    className="rounded-2xl border-2 border-border h-12 focus:border-border"
                   />
                 </div>
               </div>
@@ -695,7 +700,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
             {/* Price */}
             <div className="flex flex-col md:flex-row gap-4">
               <div className="space-y-3 w-full md:w-48">
-                <Label className="text-base font-semibold text-black">Typ ceny <span className="text-[#C44E35]">*</span></Label>
+                <Label className="text-base font-semibold text-foreground">Typ ceny <span className="text-[#C44E35]">*</span></Label>
                 <Select
                   value={formData.priceType}
                   onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
@@ -703,7 +708,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   }
                   required
                 >
-                  <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full" aria-label="Typ ceny">
+                  <SelectTrigger className="rounded-2xl border-2 border-border !h-12 w-full" aria-label="Typ ceny">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -714,7 +719,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 </Select>
               </div>
               <div className="space-y-3 flex-1">
-                <Label htmlFor="price" className="text-base font-semibold text-black">
+                <Label htmlFor="price" className="text-base font-semibold text-foreground">
                   Cena (zł) {formData.priceType !== 'free' && <span className="text-[#C44E35]">*</span>}
                 </Label>
                 <div className="flex items-center gap-3">
@@ -728,7 +733,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     disabled={formData.priceType === 'free'}
                     required={formData.priceType !== 'free'}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed w-32"
+                    className="rounded-2xl border-2 border-border h-12 focus:border-border disabled:opacity-50 disabled:cursor-not-allowed w-32"
                   />
 
                   {/* Negotiable switch */}
@@ -740,7 +745,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                         onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
                         aria-label="Cena do negocjacji"
                       />
-                      <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none whitespace-nowrap">
+                      <label htmlFor="priceNegotiable" className="text-sm text-muted-foreground cursor-pointer select-none whitespace-nowrap">
                         Cena do negocjacji
                       </label>
                     </div>
@@ -750,19 +755,19 @@ export function EditPostClient({ post }: EditPostClientProps) {
             </div>
 
             {error && (
-              <div className="bg-red-50 border-2 border-red-200 text-red-600 p-4 rounded-2xl text-sm">
+              <div className="bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-2xl text-sm">
                 {error}
               </div>
             )}
 
             {/* Footer with buttons */}
-            <div className="mt-8 pt-6 border-t-2 border-black/5 rounded-b-3xl">
+            <div className="mt-8 pt-6 border-t-2 border-border rounded-b-3xl">
               <div className="flex flex-col md:flex-row gap-3 md:justify-end">
                 <Link href="/dashboard/my-posts">
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full md:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 px-6 text-sm"
+                    className="w-full md:w-auto rounded-full border-2 border-border hover:border-border/70 hover:bg-muted h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>
@@ -793,8 +798,8 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
       {/* Moderation Modal */}
       {showModerationModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+        <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-3xl p-8 max-w-md w-full">
             {moderationInProgress ? (
               <div className="text-center">
                 <div className="w-20 h-20 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -803,10 +808,10 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-black mb-2">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
                   Sprawdzanie zmian
                 </h3>
-                <p className="text-black/60">
+                <p className="text-muted-foreground">
                   Proszę czekać, weryfikujemy zaktualizowaną treść...
                 </p>
               </div>
@@ -814,49 +819,49 @@ export function EditPostClient({ post }: EditPostClientProps) {
               <>
                 {moderationResult?.status === 'approved' ? (
                   <div className="text-center">
-                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-green-100 dark:bg-green-950/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Zmiany zatwierdzone!
                     </h3>
-                    <p className="text-black/60">
+                    <p className="text-muted-foreground">
                       Twoje ogłoszenie zostało zaktualizowane i jest widoczne dla wszystkich użytkowników.
                     </p>
                   </div>
                 ) : moderationResult?.status === 'flagged' ? (
                   <div className="text-center">
-                    <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-yellow-100 dark:bg-yellow-950/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-yellow-600 dark:text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Wymaga weryfikacji
                     </h3>
-                    <p className="text-black/60">
+                    <p className="text-muted-foreground">
                       Twoje zaktualizowane ogłoszenie zostanie sprawdzone przez moderatora w ciągu 24 godzin.
                     </p>
                   </div>
                 ) : (
                   <div className="text-center">
-                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-red-100 dark:bg-red-950/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-red-600 dark:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Zmiany odrzucone
                     </h3>
-                    <p className="text-black/60 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       Zaktualizowana treść nie spełnia naszych wymagań. Sprawdź, czy treść jest zgodna z regulaminem.
                     </p>
                     {moderationResult?.reasons && moderationResult.reasons.length > 0 && (
-                      <div className="bg-red-50 border border-red-200 rounded-xl p-3 text-left">
-                        <p className="text-sm font-semibold text-red-900 mb-2">Powody odrzucenia:</p>
-                        <ul className="text-sm text-red-800 space-y-1">
+                      <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-xl p-3 text-left">
+                        <p className="text-sm font-semibold text-red-900 dark:text-red-200 mb-2">Powody odrzucenia:</p>
+                        <ul className="text-sm text-red-800 dark:text-red-300 space-y-1">
                           {moderationResult.reasons.map((reason, idx) => (
                             <li key={idx}>• {reason}</li>
                           ))}
@@ -870,6 +875,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
           </div>
         </div>
       )}
+      </div>
     </main>
   )
 }

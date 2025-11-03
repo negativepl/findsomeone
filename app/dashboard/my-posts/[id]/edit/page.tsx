@@ -38,12 +38,10 @@ export default async function EditPostPage({ params }: { params: Promise<{ id: s
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+    <>
       <NavbarWithHide user={user} />
-      <div className="flex-1">
-        <EditPostClient post={post} />
-      </div>
+      <EditPostClient post={post} />
       <Footer />
-    </div>
+    </>
   )
 }

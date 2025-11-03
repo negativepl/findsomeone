@@ -675,12 +675,11 @@ export function AIAssistant() {
                   onKeyPress={handleKeyPress}
                   placeholder="Napisz wiadomość..."
                   className="flex-1 px-4 py-3 rounded-full bg-muted/80 text-foreground placeholder:text-muted-foreground border border-border/50 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent text-base md:text-sm transition-all"
-                  disabled={isLoading}
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isLoading}
-                  className="w-10 h-10 flex-shrink-0 rounded-full bg-brand hover:bg-brand/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg hover:shadow-xl disabled:shadow-none"
+                  className="w-[46px] h-[46px] flex-shrink-0 rounded-full bg-brand hover:bg-brand/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg hover:shadow-xl disabled:shadow-none"
                   aria-label="Wyślij wiadomość"
                 >
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

@@ -128,11 +128,8 @@ export function LottieIcon({
         </div>
       )
     }
-    // Otherwise render single fallback (after mounted to avoid mismatch)
-    if (!mounted) {
-      return <div className={className} />
-    }
-    return <div className={className}>{currentFallbackSvg}</div>
+    // Single fallback (universal color) - show immediately, no need to wait for mounted
+    return <div className={className}>{fallbackSvg || currentFallbackSvg}</div>
   }
 
   return (

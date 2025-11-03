@@ -32,7 +32,7 @@ export default async function TermsPage() {
         </div>
 
         {/* Mobile flat, Desktop card */}
-        <div className="bg-card border border-border rounded-2xl md:rounded-3xl p-5 md:p-8 mb-8">
+        <div className="bg-card border border-border rounded-2xl md:rounded-3xl p-5 md:p-8">
             <p className="text-muted-foreground mb-8">
               Ostatnia aktualizacja: 1.11.2025
             </p>

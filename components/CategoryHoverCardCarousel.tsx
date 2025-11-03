@@ -76,7 +76,7 @@ export function CategoryHoverCardCarousel({ categories, sectionId }: CategoryHov
                   }`}>
                     {category.name}
                   </h4>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-foreground">
                     {category.post_count} ogłoszeń
                   </span>
                 </div>
