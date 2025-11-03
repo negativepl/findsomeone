@@ -29,23 +29,33 @@ export function LottieIcon({
   const [animationData, setAnimationData] = useState<any>(null)
   const [hasHovered, setHasHovered] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
-  const [isDark, setIsDark] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('light')
   const prevHoveredRef = useRef(false)
   const { theme } = useTheme()
 
-  // Determine theme on client side only
+  // Mount detection
   useEffect(() => {
-    const checkDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    setIsDark(checkDark)
-  }, [theme])
+    setMounted(true)
+    // Also set initial theme from DOM
+    const isDark = document.documentElement.classList.contains('dark')
+    setCurrentTheme(isDark ? 'dark' : 'light')
+  }, [])
+
+  // Detect theme changes for animation loading
+  useEffect(() => {
+    if (!mounted) return
+    const isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    setCurrentTheme(isDark ? 'dark' : 'light')
+  }, [theme, mounted])
 
   // Determine which animation path to use based on theme
   const currentAnimationPath = animationPathLight && animationPathDark
-    ? (isDark ? animationPathDark : animationPathLight)
+    ? (currentTheme === 'dark' ? animationPathDark : animationPathLight)
     : animationPath // Fallback to legacy single path
 
   const currentFallbackSvg = fallbackSvgLight && fallbackSvgDark
-    ? (isDark ? fallbackSvgDark : fallbackSvgLight)
+    ? (currentTheme === 'dark' ? fallbackSvgDark : fallbackSvgLight)
     : fallbackSvg // Fallback to legacy single SVG
 
   useEffect(() => {
@@ -109,6 +119,11 @@ export function LottieIcon({
 
   // Show SVG fallback if animation not loaded yet
   if (!animationData) {
+    // Show nothing until mounted to avoid flash
+    if (!mounted) {
+      return <div className={className} />
+    }
+    // Render only the appropriate SVG based on current theme
     return <div className={className}>{currentFallbackSvg}</div>
   }
 
