@@ -61,7 +61,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
       {/* Gallery */}
       <div className="space-y-4">
         {/* Main Image */}
-        <div className="relative w-full h-[22vh] md:h-[45vh] min-h-[180px] md:min-h-[280px] max-h-[260px] md:max-h-[500px] rounded-2xl overflow-hidden bg-black/5">
+        <div className="relative w-full h-[22vh] md:h-[45vh] min-h-[180px] md:min-h-[280px] max-h-[260px] md:max-h-[500px] rounded-2xl overflow-hidden bg-muted">
           <Image
             src={images[currentIndex]}
             alt={`${title} - zdjęcie ${currentIndex + 1}`}
@@ -86,20 +86,20 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
                   e.stopPropagation()
                   goToPrevious()
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-card/90 hover:bg-card rounded-full p-2 shadow-lg transition-all z-10"
                 aria-label="Poprzednie zdjęcie"
               >
-                <ChevronLeft className="w-6 h-6 text-black" />
+                <ChevronLeft className="w-6 h-6 text-foreground" />
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation()
                   goToNext()
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all z-10"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-card/90 hover:bg-card rounded-full p-2 shadow-lg transition-all z-10"
                 aria-label="Następne zdjęcie"
               >
-                <ChevronRight className="w-6 h-6 text-black" />
+                <ChevronRight className="w-6 h-6 text-foreground" />
               </button>
 
               {/* Image Counter */}
@@ -144,14 +144,14 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
           {/* Close Button */}
           <button
             onClick={closeLightbox}
-            className="absolute top-4 right-4 bg-white/10 hover:bg-white/20 rounded-full p-2 transition-all z-10"
+            className="absolute top-4 right-4 bg-card/10 hover:bg-card/20 rounded-full p-2 transition-all z-10"
             aria-label="Zamknij"
           >
             <X className="w-6 h-6 text-white" />
           </button>
 
           {/* Image Counter in Lightbox */}
-          <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-white/10 text-white px-4 py-2 rounded-full text-sm">
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-card/10 text-white px-4 py-2 rounded-full text-sm">
             {currentIndex + 1} / {images.length}
           </div>
 
@@ -178,7 +178,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
                   e.stopPropagation()
                   goToPrevious()
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 rounded-full p-3 transition-all z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-card/10 hover:bg-card/20 rounded-full p-3 transition-all z-10"
                 aria-label="Poprzednie zdjęcie"
               >
                 <ChevronLeft className="w-8 h-8 text-white" />
@@ -188,7 +188,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
                   e.stopPropagation()
                   goToNext()
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-white/20 rounded-full p-3 transition-all z-10"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-card/10 hover:bg-card/20 rounded-full p-3 transition-all z-10"
                 aria-label="Następne zdjęcie"
               >
                 <ChevronRight className="w-8 h-8 text-white" />

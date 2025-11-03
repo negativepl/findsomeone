@@ -9,6 +9,7 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -155,13 +156,13 @@ export function SendMessageModal({
       <DialogTrigger asChild>
         {trigger || defaultTrigger}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[550px] rounded-3xl">
+      <DialogContent className="sm:max-w-[550px] rounded-3xl border border-border bg-card">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">
+          <DialogTitle className="text-2xl font-bold text-foreground">
             Wyślij wiadomość do {receiverName}
           </DialogTitle>
-          <DialogDescription className="text-base">
-            Dotyczy ogłoszenia: <span className="font-semibold">{postTitle}</span>
+          <DialogDescription className="text-base text-muted-foreground">
+            Dotyczy ogłoszenia: <span className="font-semibold text-foreground">{postTitle}</span>
           </DialogDescription>
         </DialogHeader>
 
@@ -175,7 +176,7 @@ export function SendMessageModal({
         ) : (
           <form onSubmit={handleSubmit} className="space-y-6 pt-4">
             <div className="space-y-3">
-              <Label htmlFor="message" className="text-base font-semibold">
+              <Label htmlFor="message" className="text-base font-semibold text-foreground">
                 Twoja wiadomość *
               </Label>
               <Textarea
@@ -185,11 +186,11 @@ export function SendMessageModal({
                 onChange={(e) => setMessage(e.target.value)}
                 required
                 rows={6}
-                className="rounded-2xl border-2 border-black/10 focus:border-black/30 resize-none"
+                className="rounded-2xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-[#C44E35] resize-none"
                 disabled={loading}
               />
               <div className="flex justify-between items-center text-sm">
-                <span className={characterCount > 2000 ? 'text-red-500' : 'text-black/60'}>
+                <span className={characterCount > 2000 ? 'text-red-500' : 'text-muted-foreground'}>
                   {characterCount} / 2000 znaków
                 </span>
                 {message.trim().length > 0 && message.trim().length < 10 && (
@@ -206,24 +207,26 @@ export function SendMessageModal({
               </div>
             )}
 
-            <div className="flex gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-                className="flex-1 rounded-full border-2"
-                disabled={loading}
-              >
-                Anuluj
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
-                disabled={loading || !isValid}
-              >
-                {loading ? 'Wysyłanie...' : 'Wyślij wiadomość'}
-              </Button>
-            </div>
+            <DialogFooter className="mt-8 pt-6 border-t-2 border-border">
+              <div className="flex gap-3 justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  className="rounded-full border-2"
+                  disabled={loading}
+                >
+                  Anuluj
+                </Button>
+                <Button
+                  type="submit"
+                  className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+                  disabled={loading || !isValid}
+                >
+                  {loading ? 'Wysyłanie...' : 'Wyślij wiadomość'}
+                </Button>
+              </div>
+            </DialogFooter>
           </form>
         )}
       </DialogContent>

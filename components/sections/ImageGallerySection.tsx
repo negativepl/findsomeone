@@ -65,7 +65,7 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
     return (
       <section className="py-12 md:py-14">
         <div className="container mx-auto px-6">
-          <div className="text-center text-black/40 py-12 border-2 border-dashed border-black/10 rounded-2xl">
+          <div className="text-center text-foreground/40 py-12 border-2 border-dashed border-black/10 rounded-2xl">
             Brak zdjęć. Dodaj obrazki w konfiguracji sekcji.
           </div>
         </div>
@@ -90,11 +90,11 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
           <div className="container mx-auto px-6">
             {section.title && (
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-black mb-3">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
                   {section.title}
                 </h2>
                 {section.subtitle && (
-                  <p className="text-sm md:text-lg text-black/60">
+                  <p className="text-sm md:text-lg text-muted-foreground">
                     {section.subtitle}
                   </p>
                 )}
@@ -188,10 +188,10 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
 
             <button
               onClick={handleCloseLightbox}
-              className="absolute top-4 right-4 bg-white hover:bg-gray-100 rounded-full p-2 transition-all shadow-lg"
+              className="absolute top-4 right-4 bg-card hover:bg-accent rounded-full p-2 transition-all shadow-lg"
               style={{ zIndex: 1000000 }}
             >
-              <X className="w-6 h-6 text-black" />
+              <X className="w-6 h-6 text-foreground" />
             </button>
 
             <img
@@ -219,11 +219,11 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
           <div className="container mx-auto px-6">
             {section.title && (
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold text-black mb-3">
+                <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
                   {section.title}
                 </h2>
                 {section.subtitle && (
-                  <p className="text-sm md:text-lg text-black/60">
+                  <p className="text-sm md:text-lg text-muted-foreground">
                     {section.subtitle}
                   </p>
                 )}
@@ -314,10 +314,10 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
 
             <button
               onClick={handleCloseLightbox}
-              className="absolute top-4 right-4 bg-white hover:bg-gray-100 rounded-full p-2 transition-all shadow-lg"
+              className="absolute top-4 right-4 bg-card hover:bg-accent rounded-full p-2 transition-all shadow-lg"
               style={{ zIndex: 1000000 }}
             >
-              <X className="w-6 h-6 text-black" />
+              <X className="w-6 h-6 text-foreground" />
             </button>
 
             <img
@@ -344,11 +344,11 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
         <div className="container mx-auto px-6">
           {section.title && (
             <div className="text-center mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold text-black mb-3">
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
                 {section.title}
               </h2>
               {section.subtitle && (
-                <p className="text-sm md:text-lg text-black/60">
+                <p className="text-sm md:text-lg text-muted-foreground">
                   {section.subtitle}
                 </p>
               )}
@@ -439,10 +439,10 @@ export function ImageGallerySection({ section }: ImageGallerySectionProps) {
 
           <button
             onClick={handleCloseLightbox}
-            className="absolute top-4 right-4 bg-white hover:bg-gray-100 rounded-full p-2 transition-all shadow-lg"
+            className="absolute top-4 right-4 bg-card hover:bg-accent rounded-full p-2 transition-all shadow-lg"
             style={{ zIndex: 1000000 }}
           >
-            <X className="w-6 h-6 text-black" />
+            <X className="w-6 h-6 text-foreground" />
           </button>
 
           <img

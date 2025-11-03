@@ -5,9 +5,13 @@ import { toast } from 'sonner'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { UserBadge } from '@/components/ui/user-badge'
+import { Switch } from '@/components/ui/switch'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
+import { Trash2, Ban, Shield, Building2, Bot, Copy, CheckCircle2 } from 'lucide-react'
 
 interface Profile {
   id: string
@@ -29,10 +33,9 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
   const [users, setUsers] = useState<Profile[]>(initialUsers)
   const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState<string | null>(null)
-  const [expandedUserId, setExpandedUserId] = useState<string | null>(null)
-  const [activeTab, setActiveTab] = useState<'badges' | 'info' | 'settings'>('badges')
+  const [banDialogOpen, setBanDialogOpen] = useState(false)
+  const [userToBan, setUserToBan] = useState<Profile | null>(null)
   const [banReason, setBanReason] = useState('')
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null)
 
   const filteredUsers = users.filter(user => {
     const query = searchQuery.toLowerCase()
@@ -56,44 +59,42 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
 
       if (error) throw error
 
-      // Update local state
       setUsers(users.map(user =>
         user.id === userId ? { ...user, [field]: value } : user
       ))
-      toast.success('Użytkownik zaktualizowany!')
+      toast.success('Zaktualizowano!')
     } catch (error) {
       console.error('Error updating user:', error)
-      toast.error('Nie udało się zaktualizować użytkownika', {
-        description: 'Spróbuj ponownie'
-      })
+      toast.error('Błąd aktualizacji')
     } finally {
       setLoading(null)
     }
   }
 
-  const toggleExpand = (userId: string) => {
-    setExpandedUserId(expandedUserId === userId ? null : userId)
-  }
-
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text)
-      toast.success('ID skopiowane do schowka!')
+      toast.success('Skopiowano do schowka!')
     } catch (err) {
-      console.error('Failed to copy:', err)
       toast.error('Nie udało się skopiować')
     }
   }
 
-  const banUser = async (userId: string) => {
-    if (!banReason.trim()) {
+  const openBanDialog = (user: Profile) => {
+    setUserToBan(user)
+    setBanReason('')
+    setBanDialogOpen(true)
+  }
+
+  const banUser = async () => {
+    if (!userToBan || !banReason.trim()) {
       toast.error('Podaj powód bana')
       return
     }
 
-    setLoading(userId)
+    setLoading(userToBan.id)
     try {
-      const res = await fetch(`/api/admin/users/${userId}`, {
+      const res = await fetch(`/api/admin/users/${userToBan.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ action: 'ban', reason: banReason })
@@ -102,13 +103,14 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       if (!res.ok) throw new Error('Failed to ban user')
 
       setUsers(users.map(user =>
-        user.id === userId ? { ...user, banned: true } : user
+        user.id === userToBan.id ? { ...user, banned: true } : user
       ))
+      toast.success('Użytkownik zbanowany')
+      setBanDialogOpen(false)
+      setUserToBan(null)
       setBanReason('')
-      toast.success('Użytkownik został zbanowany')
     } catch (error) {
-      console.error('Error banning user:', error)
-      toast.error('Nie udało się zbanować użytkownika')
+      toast.error('Błąd banowania')
     } finally {
       setLoading(null)
     }
@@ -128,16 +130,17 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       setUsers(users.map(user =>
         user.id === userId ? { ...user, banned: false } : user
       ))
-      toast.success('Użytkownik został odbanowany')
+      toast.success('Użytkownik odbanowany')
     } catch (error) {
-      console.error('Error unbanning user:', error)
-      toast.error('Nie udało się odbanować użytkownika')
+      toast.error('Błąd odbanowania')
     } finally {
       setLoading(null)
     }
   }
 
   const deleteUser = async (userId: string) => {
+    if (!confirm('Czy na pewno chcesz TRWALE usunąć tego użytkownika? Ta operacja jest nieodwracalna!')) return
+
     setLoading(userId)
     try {
       const res = await fetch(`/api/admin/users/${userId}`, {
@@ -147,12 +150,9 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       if (!res.ok) throw new Error('Failed to delete user')
 
       setUsers(users.filter(user => user.id !== userId))
-      setShowDeleteConfirm(null)
-      setExpandedUserId(null)
-      toast.success('Użytkownik został usunięty')
+      toast.success('Użytkownik usunięty')
     } catch (error) {
-      console.error('Error deleting user:', error)
-      toast.error('Nie udało się usunąć użytkownika')
+      toast.error('Błąd usuwania')
     } finally {
       setLoading(null)
     }
@@ -177,7 +177,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
               placeholder="Szukaj użytkownika po nazwie, email lub ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-10 h-12 text-base rounded-xl border-2 border-black/10 focus:border-[#C44E35]/40 bg-white"
+              className="pl-12 pr-10 h-12 text-base border-2 border-black/10 focus:border-[#C44E35]/40 bg-white"
             />
             {searchQuery && (
               <button
@@ -194,73 +194,59 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       </Card>
 
       {/* Users Table */}
-      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-black/5 border-b border-black/10">
-              <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-black">Użytkownik</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-black">Email</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-black">Status</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-black">Data utworzenia</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-black">Akcje</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/5">
-              {filteredUsers.length === 0 ? (
+      <Card className="border-2 border-black/5 shadow-sm">
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-black/[0.02] border-b-2 border-black/5">
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center">
-                    <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-black/5 flex items-center justify-center">
-                      <svg className="w-10 h-10 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                    </div>
-                    <p className="text-black/60">Nie znaleziono użytkowników</p>
-                  </td>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-black/80">Użytkownik</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-black/80">Email</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-black/80">Odznaki</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-black/80">Status</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-black/80">Data</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-black/80">Akcje</th>
                 </tr>
-              ) : (
-                filteredUsers.map((user) => (
-                  <React.Fragment key={user.id}>
-                    <tr
-                      className={`hover:bg-black/5 transition-colors ${
-                        expandedUserId === user.id ? 'bg-black/5' : ''
-                      }`}
-                    >
+              </thead>
+              <tbody className="divide-y divide-black/5">
+                {filteredUsers.length === 0 ? (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-12 text-center">
+                      <p className="text-black/60">Nie znaleziono użytkowników</p>
+                    </td>
+                  </tr>
+                ) : (
+                  filteredUsers.map((user) => (
+                    <tr key={user.id} className="hover:bg-black/[0.02] transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <div className="relative flex-shrink-0">
-                            {user.avatar_url ? (
-                              <Image
-                                src={user.avatar_url}
-                                alt={user.full_name || 'User'}
-                                width={40}
-                                height={40}
-                                className="rounded-full"
-                              />
-                            ) : (
-                              <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
-                                <span className="text-sm font-semibold text-[#C44E35]">
-                                  {user.full_name?.charAt(0) || 'U'}
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="min-w-0 flex-1">
+                          {user.avatar_url ? (
+                            <Image
+                              src={user.avatar_url}
+                              alt={user.full_name || 'User'}
+                              width={40}
+                              height={40}
+                              className=""
+                            />
+                          ) : (
+                            <div className="w-10 h-10 bg-[#C44E35]/10 flex items-center justify-center">
+                              <span className="text-sm font-semibold text-[#C44E35]">
+                                {user.full_name?.charAt(0) || 'U'}
+                              </span>
+                            </div>
+                          )}
+                          <div className="min-w-0">
                             <p className="font-medium text-black truncate">
                               {user.full_name || 'Bez nazwy'}
                             </p>
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => copyToClipboard(user.id)}
-                                className="text-xs text-black/50 hover:text-black transition-colors flex items-center gap-1 group"
-                                title="Kliknij aby skopiować ID"
-                              >
-                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                </svg>
-                                <span className="group-hover:underline">Kopiuj ID</span>
-                              </button>
-                            </div>
+                            <button
+                              onClick={() => copyToClipboard(user.id)}
+                              className="text-xs text-black/40 hover:text-[#C44E35] transition-colors flex items-center gap-1"
+                              title="Kliknij aby skopiować ID"
+                            >
+                              <Copy className="w-3 h-3" />
+                              ID
+                            </button>
                           </div>
                         </div>
                       </td>
@@ -270,312 +256,151 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                         </p>
                       </td>
                       <td className="px-6 py-4">
-                        <div className="flex items-center justify-center gap-1">
-                          {user.banned ? (
-                            <span className="bg-red-100 text-red-700 px-2 py-1 rounded-lg text-xs font-semibold">
-                              Zbanowany
-                            </span>
-                          ) : (
-                            <span className="bg-green-100 text-green-700 px-2 py-1 rounded-lg text-xs font-semibold">
-                              Aktywny
-                            </span>
-                          )}
+                        <div className="flex items-center justify-center gap-3">
+                          <div className="flex items-center gap-2">
+                            <CheckCircle2 className={`w-4 h-4 ${user.verified ? 'text-blue-600' : 'text-black/20'}`} />
+                            <Switch
+                              checked={user.verified}
+                              onCheckedChange={(checked) => updateUserFlag(user.id, 'verified', checked)}
+                              disabled={loading === user.id}
+                              className="data-[state=checked]:bg-blue-600"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Building2 className={`w-4 h-4 ${user.is_company ? 'text-purple-600' : 'text-black/20'}`} />
+                            <Switch
+                              checked={user.is_company}
+                              onCheckedChange={(checked) => updateUserFlag(user.id, 'is_company', checked)}
+                              disabled={loading === user.id}
+                              className="data-[state=checked]:bg-purple-600"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Bot className={`w-4 h-4 ${user.is_ai_bot ? 'text-green-600' : 'text-black/20'}`} />
+                            <Switch
+                              checked={user.is_ai_bot}
+                              onCheckedChange={(checked) => updateUserFlag(user.id, 'is_ai_bot', checked)}
+                              disabled={loading === user.id}
+                              className="data-[state=checked]:bg-green-600"
+                            />
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <p className="text-sm text-black/70">
-                          {new Date(user.created_at).toLocaleDateString('pl-PL')}
-                        </p>
+                        {user.banned ? (
+                          <span className="inline-flex items-center gap-1 bg-red-50 text-red-700 px-2.5 py-1 text-xs font-semibold border border-red-200">
+                            <Ban className="w-3 h-3" />
+                            Zbanowany
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1 text-xs font-semibold border border-green-200">
+                            Aktywny
+                          </span>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => toggleExpand(user.id)}
-                          className="rounded-lg"
-                        >
-                          {expandedUserId === user.id ? (
-                            <>
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                              </svg>
-                              Zamknij
-                            </>
+                        <p className="text-xs text-black/50">
+                          {new Date(user.created_at).toLocaleDateString('pl-PL', {
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                          })}
+                        </p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-1">
+                          {user.banned ? (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => unbanUser(user.id)}
+                              disabled={loading === user.id}
+                              className="h-9 w-9 p-0 bg-green-50/50 text-green-600 hover:bg-green-100 hover:text-green-700 border border-green-200/50 hover:border-green-300 transition-colors "
+                              title="Odbanuj"
+                            >
+                              <Shield className="h-4 w-4" />
+                            </Button>
                           ) : (
-                            <>
-                              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
-                              </svg>
-                              Zarządzaj
-                            </>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => openBanDialog(user)}
+                              disabled={loading === user.id}
+                              className="h-9 w-9 p-0 bg-orange-50/50 text-orange-600 hover:bg-orange-100 hover:text-orange-700 border border-orange-200/50 hover:border-orange-300 transition-colors "
+                              title="Zbanuj"
+                            >
+                              <Ban className="h-4 w-4" />
+                            </Button>
                           )}
-                        </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => deleteUser(user.id)}
+                            disabled={loading === user.id}
+                            className="h-9 w-9 p-0 bg-red-50/50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200/50 hover:border-red-300 transition-colors "
+                            title="Usuń"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </td>
                     </tr>
-
-                    {/* Expanded Controls */}
-                    {expandedUserId === user.id && (
-                      <tr key={`${user.id}-expanded`}>
-                        <td colSpan={5} className="bg-black/5 px-6 py-6">
-                          {/* Tabs Navigation */}
-                          <div className="flex gap-2 mb-6 border-b border-black/10">
-                            <button
-                              onClick={() => setActiveTab('badges')}
-                              className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-                                activeTab === 'badges'
-                                  ? 'text-[#C44E35]'
-                                  : 'text-black/60 hover:text-black'
-                              }`}
-                            >
-                              Badges
-                              {activeTab === 'badges' && (
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-                              )}
-                            </button>
-                            <button
-                              onClick={() => setActiveTab('info')}
-                              className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-                                activeTab === 'info'
-                                  ? 'text-[#C44E35]'
-                                  : 'text-black/60 hover:text-black'
-                              }`}
-                            >
-                              Informacje
-                              {activeTab === 'info' && (
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-                              )}
-                            </button>
-                            <button
-                              onClick={() => setActiveTab('settings')}
-                              className={`px-4 py-2 text-sm font-medium transition-colors relative ${
-                                activeTab === 'settings'
-                                  ? 'text-[#C44E35]'
-                                  : 'text-black/60 hover:text-black'
-                              }`}
-                            >
-                              Ustawienia
-                              {activeTab === 'settings' && (
-                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-                              )}
-                            </button>
-                          </div>
-
-                          {/* Tab Content */}
-                          <div>
-                              {activeTab === 'badges' && (
-                                <div>
-                                  <h4 className="text-sm font-semibold text-black mb-4">Zarządzaj odznakami użytkownika</h4>
-                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    {/* Verified */}
-                                    <div className="bg-white rounded-2xl p-4 border border-black/10">
-                                      <div className="flex items-center gap-2 mb-3">
-                                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        <span className="text-sm font-medium text-black">Zweryfikowany</span>
-                                      </div>
-                                      <Button
-                                        size="sm"
-                                        variant={user.verified ? "default" : "outline"}
-                                        onClick={() => updateUserFlag(user.id, 'verified', !user.verified)}
-                                        disabled={loading === user.id}
-                                        className={`w-full rounded-lg ${
-                                          user.verified
-                                            ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                                            : 'border-2 hover:bg-blue-50'
-                                        }`}
-                                      >
-                                        {user.verified ? '✓ Aktywny' : 'Nieaktywny'}
-                                      </Button>
-                                    </div>
-
-                                    {/* Company */}
-                                    <div className="bg-white rounded-2xl p-4 border border-black/10">
-                                      <div className="flex items-center gap-2 mb-3">
-                                        <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                        </svg>
-                                        <span className="text-sm font-medium text-black">Firma</span>
-                                      </div>
-                                      <Button
-                                        size="sm"
-                                        variant={user.is_company ? "default" : "outline"}
-                                        onClick={() => updateUserFlag(user.id, 'is_company', !user.is_company)}
-                                        disabled={loading === user.id}
-                                        className={`w-full rounded-lg ${
-                                          user.is_company
-                                            ? 'bg-purple-600 hover:bg-purple-700 text-white'
-                                            : 'border-2 hover:bg-purple-50'
-                                        }`}
-                                      >
-                                        {user.is_company ? '✓ Aktywny' : 'Nieaktywny'}
-                                      </Button>
-                                    </div>
-
-                                    {/* AI Bot */}
-                                    <div className="bg-white rounded-2xl p-4 border border-black/10">
-                                      <div className="flex items-center gap-2 mb-3">
-                                        <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                        </svg>
-                                        <span className="text-sm font-medium text-black">AI Bot</span>
-                                      </div>
-                                      <Button
-                                        size="sm"
-                                        variant={user.is_ai_bot ? "default" : "outline"}
-                                        onClick={() => updateUserFlag(user.id, 'is_ai_bot', !user.is_ai_bot)}
-                                        disabled={loading === user.id}
-                                        className={`w-full rounded-lg ${
-                                          user.is_ai_bot
-                                            ? 'bg-green-600 hover:bg-green-700 text-white'
-                                            : 'border-2 hover:bg-green-50'
-                                        }`}
-                                      >
-                                        {user.is_ai_bot ? '✓ Aktywny' : 'Nieaktywny'}
-                                      </Button>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-
-                              {activeTab === 'info' && (
-                                <div className="bg-white rounded-2xl p-6 border border-black/10">
-                                  <h4 className="text-sm font-semibold text-black mb-4">Szczegółowe informacje</h4>
-                                  <div className="space-y-3 text-sm">
-                                    <div className="flex justify-between py-2 border-b border-black/5">
-                                      <span className="text-black/60">Pełne ID:</span>
-                                      <button
-                                        onClick={() => copyToClipboard(user.id)}
-                                        className="text-black font-mono hover:text-[#C44E35] transition-colors flex items-center gap-2"
-                                      >
-                                        {user.id}
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                        </svg>
-                                      </button>
-                                    </div>
-                                    <div className="flex justify-between py-2 border-b border-black/5">
-                                      <span className="text-black/60">Email:</span>
-                                      <span className="text-black">{user.email || 'Brak'}</span>
-                                    </div>
-                                    <div className="flex justify-between py-2 border-b border-black/5">
-                                      <span className="text-black/60">Data utworzenia:</span>
-                                      <span className="text-black">{new Date(user.created_at).toLocaleString('pl-PL')}</span>
-                                    </div>
-                                    <div className="flex justify-between py-2">
-                                      <span className="text-black/60">Status konta:</span>
-                                      <span className={user.banned ? 'text-red-600 font-semibold' : 'text-green-600 font-semibold'}>
-                                        {user.banned ? 'Zbanowany' : 'Aktywny'}
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-
-                              {activeTab === 'settings' && (
-                                <div className="space-y-4">
-                                  {/* Ban/Unban Section */}
-                                  <div className="bg-white rounded-2xl p-6 border border-black/10">
-                                    <h4 className="text-sm font-semibold text-black mb-4">Zarządzanie dostępem</h4>
-
-                                    {user.banned ? (
-                                      <div className="space-y-4">
-                                        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                                          <div className="flex items-center gap-2 mb-2">
-                                            <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                            </svg>
-                                            <span className="font-semibold text-red-900">Użytkownik zbanowany</span>
-                                          </div>
-                                          <p className="text-sm text-red-800">Ten użytkownik został zablokowany i nie może korzystać z platformy.</p>
-                                        </div>
-                                        <Button
-                                          onClick={() => unbanUser(user.id)}
-                                          disabled={loading === user.id}
-                                          className="w-full rounded-lg bg-green-600 hover:bg-green-700 text-white"
-                                        >
-                                          {loading === user.id ? 'Odbanowywanie...' : 'Odbanuj użytkownika'}
-                                        </Button>
-                                      </div>
-                                    ) : (
-                                      <div className="space-y-4">
-                                        <div className="space-y-2">
-                                          <label htmlFor={`ban-reason-${user.id}`} className="text-sm font-medium text-black">
-                                            Powód bana
-                                          </label>
-                                          <Input
-                                            id={`ban-reason-${user.id}`}
-                                            placeholder="np. Spam, Nieodpowiednie treści, Naruszenie regulaminu..."
-                                            value={banReason}
-                                            onChange={(e) => setBanReason(e.target.value)}
-                                            className="rounded-lg"
-                                          />
-                                          <p className="text-xs text-black/60">Podaj powód zablokowania tego użytkownika</p>
-                                        </div>
-                                        <Button
-                                          onClick={() => banUser(user.id)}
-                                          disabled={loading === user.id || !banReason.trim()}
-                                          className="w-full rounded-lg bg-red-600 hover:bg-red-700 text-white"
-                                        >
-                                          {loading === user.id ? 'Banowanie...' : 'Zbanuj użytkownika'}
-                                        </Button>
-                                      </div>
-                                    )}
-                                  </div>
-
-                                  {/* Delete User Section */}
-                                  <div className="bg-white rounded-2xl p-6 border border-red-200">
-                                    <h4 className="text-sm font-semibold text-red-900 mb-4">Strefa niebezpieczna</h4>
-
-                                    {showDeleteConfirm === user.id ? (
-                                      <div className="space-y-4">
-                                        <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                                          <p className="text-sm text-red-900 font-semibold mb-2">Czy na pewno chcesz usunąć tego użytkownika?</p>
-                                          <p className="text-xs text-red-800">Ta akcja jest nieodwracalna. Wszystkie dane użytkownika, w tym ogłoszenia, zostaną trwale usunięte.</p>
-                                        </div>
-                                        <div className="flex gap-3">
-                                          <Button
-                                            onClick={() => setShowDeleteConfirm(null)}
-                                            variant="outline"
-                                            className="flex-1 rounded-lg"
-                                          >
-                                            Anuluj
-                                          </Button>
-                                          <Button
-                                            onClick={() => deleteUser(user.id)}
-                                            disabled={loading === user.id}
-                                            className="flex-1 rounded-lg bg-red-600 hover:bg-red-700 text-white"
-                                          >
-                                            {loading === user.id ? 'Usuwanie...' : 'Tak, usuń'}
-                                          </Button>
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <div className="space-y-2">
-                                        <p className="text-sm text-black/60 mb-3">Trwale usuń użytkownika i wszystkie jego dane z platformy.</p>
-                                        <Button
-                                          onClick={() => setShowDeleteConfirm(user.id)}
-                                          variant="outline"
-                                          className="w-full rounded-lg border-red-300 text-red-700 hover:bg-red-50"
-                                        >
-                                          Usuń użytkownika
-                                        </Button>
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              )}
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </CardContent>
       </Card>
+
+      {/* Ban Dialog */}
+      <Dialog open={banDialogOpen} onOpenChange={setBanDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Zbanuj użytkownika</DialogTitle>
+            <DialogDescription>
+              Podaj powód zablokowania użytkownika {userToBan?.full_name || userToBan?.email}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="ban-reason">Powód bana</Label>
+              <Textarea
+                id="ban-reason"
+                placeholder="np. Spam, Nieodpowiednie treści, Naruszenie regulaminu..."
+                value={banReason}
+                onChange={(e) => setBanReason(e.target.value)}
+                className="min-h-[100px] "
+              />
+              <p className="text-xs text-black/60">
+                Ten powód zostanie zapisany i będzie widoczny w logach
+              </p>
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setBanDialogOpen(false)
+                setUserToBan(null)
+                setBanReason('')
+              }}
+              className=""
+            >
+              Anuluj
+            </Button>
+            <Button
+              onClick={banUser}
+              disabled={!banReason.trim() || loading === userToBan?.id}
+              className="bg-red-600 hover:bg-red-700 text-white "
+            >
+              {loading === userToBan?.id ? 'Banowanie...' : 'Zbanuj użytkownika'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

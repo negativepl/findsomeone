@@ -559,13 +559,13 @@ export function NavbarSearchBar() {
         const [parent, child] = categoryPart.split(' > ')
         return (
           <span className="flex items-center gap-1.5 flex-wrap">
-            <span className="text-sm text-black font-medium">{query}</span>
-            <span className="text-xs text-black/40">w kategorii</span>
-            <span className="text-xs text-black/50">{parent}</span>
-            <svg className="w-2.5 h-2.5 text-black/30 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <span className="text-sm text-foreground font-medium">{query}</span>
+            <span className="text-xs text-muted-foreground">w kategorii</span>
+            <span className="text-xs text-muted-foreground">{parent}</span>
+            <svg className="w-2.5 h-2.5 text-muted-foreground flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-            <span className="text-sm text-black/70">{child}</span>
+            <span className="text-sm text-muted-foreground">{child}</span>
           </span>
         )
       }
@@ -573,22 +573,22 @@ export function NavbarSearchBar() {
       // Simple category (no parent)
       return (
         <span className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-sm text-black font-medium">{query}</span>
-          <span className="text-xs text-black/40">w kategorii</span>
-          <span className="text-sm text-black/70">{categoryPart}</span>
+          <span className="text-sm text-foreground font-medium">{query}</span>
+          <span className="text-xs text-muted-foreground">w kategorii</span>
+          <span className="text-sm text-muted-foreground">{categoryPart}</span>
         </span>
       )
     }
 
     // Regular suggestion (no category context)
-    return <span className="text-sm text-black font-normal truncate">{text}</span>
+    return <span className="text-sm text-foreground font-normal truncate">{text}</span>
   }
 
   // Get icon for suggestion type - simple, uniform
   const getSuggestionIcon = (type: string) => {
     // All suggestions get the same search icon
     return (
-      <svg className="w-4 h-4 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
       </svg>
     )
@@ -609,7 +609,7 @@ export function NavbarSearchBar() {
       <form onSubmit={handleSubmit} className="flex-1" suppressHydrationWarning>
         <div
           onClick={() => searchInputRef.current?.focus()}
-          className="relative flex items-center bg-[#FAF8F3] rounded-full pr-2 py-2 h-10 transition-colors cursor-text"
+          className="relative flex items-center bg-muted rounded-full pr-2 py-2 h-10 transition-colors cursor-text"
           style={{ paddingLeft: '20px' }}
         >
           <input
@@ -619,7 +619,7 @@ export function NavbarSearchBar() {
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onFocus={handleSearchFocus}
-            className="flex-1 outline-none text-sm text-black placeholder:text-black/40 bg-transparent"
+            className="flex-1 outline-none text-sm text-foreground placeholder:text-muted-foreground bg-transparent"
             autoComplete="off"
             suppressHydrationWarning
           />
@@ -628,10 +628,10 @@ export function NavbarSearchBar() {
               type="button"
               onClick={(e) => clearSearch(e)}
               {...(pathname === '/posts' && { 'data-navigate': 'true' })}
-              className="p-1 hover:bg-black/5 rounded-full transition-colors flex-shrink-0 -ml-3 mr-3"
+              className="p-1 hover:bg-muted rounded-full transition-colors flex-shrink-0 -ml-3 mr-3"
               aria-label="Wyczyść wyszukiwanie"
             >
-              <svg className="w-4 h-4 text-black/40 hover:text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-muted-foreground hover:text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -656,7 +656,7 @@ export function NavbarSearchBar() {
       {/* Dropdown with animation - now spans full container width including location button */}
       {isOpen && hasResults && (
         <Card
-          className="absolute top-full left-0 mt-2 border border-black/10 rounded-2xl bg-white shadow-lg max-h-[450px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+          className="absolute top-full left-0 mt-2 border border-border rounded-2xl bg-card shadow-lg max-h-[450px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
           style={{ width: '100%', right: 0 }}
         >
           <div className="overflow-y-auto p-3">
@@ -666,7 +666,7 @@ export function NavbarSearchBar() {
               {recentSearches.length > 0 && !searchQuery && (
                 <div className="mb-3">
                   <div className="px-3 py-2 flex items-center justify-between">
-                    <p className="text-xs font-bold text-black/60 uppercase tracking-wide">Ostatnie wyszukiwania</p>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Ostatnie wyszukiwania</p>
                     <button
                       type="button"
                       onClick={clearRecentSearches}
@@ -685,15 +685,15 @@ export function NavbarSearchBar() {
                           onClick={() => handleSuggestionClick(search)}
                           data-navigate="true"
                           className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 group ${
-                            isSelected ? 'bg-black/10' : 'hover:bg-black/5'
+                            isSelected ? 'bg-muted' : 'hover:bg-muted'
                           }`}
                         >
-                          <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">
-                            <svg className="w-4 h-4 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-muted transition-colors">
+                            <svg className="w-4 h-4 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                           </div>
-                          <span className="text-sm text-black font-medium flex-1 truncate">{search}</span>
+                          <span className="text-sm text-foreground font-medium flex-1 truncate">{search}</span>
                         </button>
                       )
                     })}
@@ -703,8 +703,8 @@ export function NavbarSearchBar() {
 
               {/* Query correction - "Did you mean?" */}
               {results.queryCorrection && searchQuery && (
-                <div className="mb-3 px-3 py-2.5 bg-[#FAF8F3] rounded-lg border border-black/10">
-                  <p className="text-xs text-black/60 mb-1.5">Czy chodziło Ci o:</p>
+                <div className="mb-3 px-3 py-2.5 bg-muted rounded-lg border border-border">
+                  <p className="text-xs text-muted-foreground mb-1.5">Czy chodziło Ci o:</p>
                   <button
                     type="button"
                     onClick={() => {
@@ -724,13 +724,13 @@ export function NavbarSearchBar() {
               {/* Empty state - show when no recent, no trending, no query */}
               {!searchQuery && recentSearches.length === 0 && (results.trending?.length || 0) === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 px-4">
-                  <div className="w-16 h-16 rounded-full bg-black/5 flex items-center justify-center mb-4">
-                    <svg className="w-8 h-8 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
-                  <p className="text-base font-semibold text-black mb-1">Zacznij wpisywać</p>
-                  <p className="text-sm text-black/60 text-center">
+                  <p className="text-base font-semibold text-foreground mb-1">Zacznij wpisywać</p>
+                  <p className="text-sm text-muted-foreground text-center">
                     Wpisz czego szukasz, aby zobaczyć sugestie
                   </p>
                 </div>
@@ -740,7 +740,7 @@ export function NavbarSearchBar() {
               {(results.trending?.length || 0) > 0 && !searchQuery && (
                 <div className="mb-2">
                   <div className="px-3 py-2">
-                    <p className="text-xs font-bold text-black/60 uppercase tracking-wide">Trendy</p>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Trendy</p>
                   </div>
                   <div className="space-y-1">
                     {results.trending.slice(0, 5).map((item, index) => {
@@ -759,7 +759,7 @@ export function NavbarSearchBar() {
                         <div className="w-8 h-8 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C44E35]/20 transition-colors">
                           {getSuggestionIcon('trending')}
                         </div>
-                        <span className="text-sm text-black font-medium flex-1 truncate">{item.text}</span>
+                        <span className="text-sm text-foreground font-medium flex-1 truncate">{item.text}</span>
                         <Badge className="rounded-full bg-[#C44E35] text-white text-xs px-2.5 py-0.5 border-0">
                           #{index + 1}
                         </Badge>
@@ -773,16 +773,16 @@ export function NavbarSearchBar() {
               {/* No results message */}
               {searchQuery && (results.suggestions?.length || 0) === 0 && (
                 <div className="flex flex-col items-center justify-center py-12 px-4">
-                  <div className="w-16 h-16 rounded-full bg-black/5 flex items-center justify-center mb-4">
-                    <svg className="w-8 h-8 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                    <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
-                  <p className="text-base font-semibold text-black mb-1">Brak wyników</p>
-                  <p className="text-sm text-black/60 text-center">
+                  <p className="text-base font-semibold text-foreground mb-1">Brak wyników</p>
+                  <p className="text-sm text-muted-foreground text-center">
                     Nie znaleziono sugestii dla <span className="font-medium">"{searchQuery}"</span>
                   </p>
-                  <p className="text-xs text-black/50 mt-2 text-center">
+                  <p className="text-xs text-muted-foreground mt-2 text-center">
                     Spróbuj innych słów kluczowych lub wciśnij Enter, aby szukać w ogłoszeniach
                   </p>
                 </div>
@@ -792,7 +792,7 @@ export function NavbarSearchBar() {
               {(results.suggestions?.length || 0) > 0 && searchQuery && (
                 <div>
                   <div className="px-3 py-2">
-                    <p className="text-xs font-bold text-black/60 uppercase tracking-wide">Sugestie</p>
+                    <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">Sugestie</p>
                   </div>
                   <div className="space-y-1">
                     {results.suggestions.slice(0, 6).map((suggestion, index) => {
@@ -804,10 +804,10 @@ export function NavbarSearchBar() {
                         onClick={() => handleSuggestionClick(suggestion.text)}
                         data-navigate="true"
                         className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 group ${
-                          isSelected ? 'bg-black/10' : 'hover:bg-black/5'
+                          isSelected ? 'bg-muted' : 'hover:bg-muted'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-lg bg-black/5 flex items-center justify-center flex-shrink-0 group-hover:bg-black/10 transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center flex-shrink-0 group-hover:bg-muted transition-colors">
                           {getSuggestionIcon(suggestion.type)}
                         </div>
                         <span className="flex-1 min-w-0">
@@ -829,7 +829,7 @@ export function NavbarSearchBar() {
 
           {/* See all results button */}
           {searchQuery && searchQuery.length >= 2 && (
-            <div className="p-3 bg-white border-t border-black/5">
+            <div className="p-3 bg-card border-t border-border">
               <button
                 type="button"
                 onClick={handleSubmit}
@@ -848,7 +848,7 @@ export function NavbarSearchBar() {
           type="button"
           onMouseEnter={handleLocationButtonMouseEnter}
           onMouseLeave={handleLocationButtonMouseLeave}
-          className="flex items-center gap-2 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-full h-10 transition-colors flex-shrink-0 px-4"
+          className="flex items-center gap-2 bg-muted hover:bg-accent rounded-full h-10 transition-colors flex-shrink-0 px-4"
           aria-expanded={isCityDropdownOpen}
         >
           <LottieIcon
@@ -867,7 +867,7 @@ export function NavbarSearchBar() {
               }
             }
           `}</style>
-          <span className="location-label-text text-sm text-black font-medium truncate max-w-[140px]">
+          <span className="location-label-text text-sm text-foreground font-medium truncate max-w-[140px]">
             {selectedCity || 'Lokalizacja'}
           </span>
           {selectedCity && (
@@ -876,7 +876,7 @@ export function NavbarSearchBar() {
                 e.stopPropagation()
                 clearCity()
               }}
-              className="ml-auto hover:bg-black/10 rounded-full p-0.5 transition-colors flex-shrink-0 cursor-pointer"
+              className="ml-auto hover:bg-muted rounded-full p-0.5 transition-colors flex-shrink-0 cursor-pointer"
               role="button"
               tabIndex={0}
               onKeyDown={(e) => {
@@ -888,7 +888,7 @@ export function NavbarSearchBar() {
               }}
               aria-label="Usuń lokalizację"
             >
-              <svg className="w-3 h-3 text-black/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-3 h-3 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </span>
@@ -900,22 +900,22 @@ export function NavbarSearchBar() {
           <Card
             onMouseEnter={handleLocationMenuMouseEnter}
             onMouseLeave={handleLocationMenuMouseLeave}
-            className="absolute top-full right-0 mt-2 w-80 border border-black/10 rounded-2xl bg-white shadow-lg max-h-[400px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
+            className="absolute top-full right-0 mt-2 w-80 border border-border rounded-2xl bg-card shadow-lg max-h-[400px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
           >
-            <div className="p-3 border-b border-black/5">
-              <div className="relative flex items-center bg-[#FAF8F3] rounded-lg px-3 py-2">
-                <Search className="w-4 h-4 text-black/40 mr-2 flex-shrink-0" />
+            <div className="p-3 border-b border-border">
+              <div className="relative flex items-center bg-muted rounded-lg px-3 py-2">
+                <Search className="w-4 h-4 text-muted-foreground mr-2 flex-shrink-0" />
                 <input
                   ref={cityInputRef}
                   type="text"
                   placeholder="Wpisz miasto..."
                   value={cityQuery}
                   onChange={(e) => handleCityChange(e.target.value)}
-                  className="flex-1 outline-none text-sm text-black placeholder:text-black/40 bg-transparent"
+                  className="flex-1 outline-none text-sm text-foreground placeholder:text-muted-foreground bg-transparent"
                   autoComplete="off"
                 />
                 {isLoadingCities && (
-                  <div className="w-4 h-4 border-2 border-black/20 border-t-black/60 rounded-full animate-spin ml-2" />
+                  <div className="w-4 h-4 border-2 border-muted-foreground/20 border-t-muted-foreground/60 rounded-full animate-spin ml-2" />
                 )}
               </div>
             </div>
@@ -955,22 +955,22 @@ export function NavbarSearchBar() {
                       className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center justify-between group ${
                         selectedCity === city.name
                           ? 'bg-[#C44E35]/10 text-[#C44E35]'
-                          : 'hover:bg-black/5 text-black'
+                          : 'hover:bg-muted text-foreground'
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         <MapPin className={`w-4 h-4 flex-shrink-0 ${
-                          selectedCity === city.name ? 'text-[#C44E35]' : 'text-black/40'
+                          selectedCity === city.name ? 'text-[#C44E35]' : 'text-muted-foreground'
                         }`} />
                         <div>
                           <p className="text-sm font-medium">{city.name}</p>
                           {city.voivodeship && (
-                            <p className="text-xs text-black/50">{city.voivodeship}</p>
+                            <p className="text-xs text-muted-foreground">{city.voivodeship}</p>
                           )}
                         </div>
                       </div>
                       {city.popular && (
-                        <Badge className="rounded-full bg-black/10 text-black text-xs px-2 py-0.5 border-0">
+                        <Badge className="rounded-full bg-muted text-foreground text-xs px-2 py-0.5 border-0">
                           Popularne
                         </Badge>
                       )}
@@ -979,13 +979,13 @@ export function NavbarSearchBar() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-8 px-4">
-                  <div className="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center mb-3">
-                    <MapPin className="w-6 h-6 text-black/40" />
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                    <MapPin className="w-6 h-6 text-muted-foreground" />
                   </div>
-                  <p className="text-sm font-medium text-black mb-1">
+                  <p className="text-sm font-medium text-foreground mb-1">
                     {isLoadingCities ? 'Ładowanie...' : 'Brak miast'}
                   </p>
-                  <p className="text-xs text-black/50 text-center">
+                  <p className="text-xs text-muted-foreground text-center">
                     {cityQuery ? 'Spróbuj innej nazwy' : 'Zacznij wpisywać, aby zobaczyć miasta'}
                   </p>
                 </div>

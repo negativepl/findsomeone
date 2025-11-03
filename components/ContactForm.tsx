@@ -81,15 +81,15 @@ export function ContactForm({ userEmail }: ContactFormProps) {
     <>
       {/* Mobile: flat design */}
       <div className="md:hidden">
-        <h2 className="text-xl font-bold text-black mb-4">Formularz kontaktowy</h2>
-        <div className="bg-white rounded-2xl p-5">
-          <p className="text-sm text-black/60 mb-6">
+        <h2 className="text-xl font-bold text-foreground mb-4">Formularz kontaktowy</h2>
+        <div className="bg-card rounded-2xl p-5">
+          <p className="text-sm text-muted-foreground mb-6">
             Wypełnij formularz poniżej, a my odpowiemy na Twoją wiadomość w ciągu 24 godzin.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Twój email *
               </label>
               <input
@@ -98,14 +98,14 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:outline-none transition-colors text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors text-sm"
                 placeholder="twoj@email.pl"
                 disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Kategoria *
               </label>
               <Select
@@ -120,7 +120,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 disabled={loading}
                 required
               >
-                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-11 text-sm" aria-label="Kategoria kontaktu">
+                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-11 text-sm" aria-label="Kategoria kontaktu">
                   <SelectValue placeholder="Wybierz kategorię" />
                 </SelectTrigger>
                 <SelectContent>
@@ -131,7 +131,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Temat *
               </label>
               <input
@@ -140,7 +140,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 required
                 value={formData.subject}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:outline-none transition-colors text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors text-sm"
                 placeholder="W czym możemy pomóc?"
                 disabled={loading}
                 minLength={3}
@@ -149,7 +149,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Wiadomość *
               </label>
               <textarea
@@ -158,13 +158,13 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 value={formData.message}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2.5 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:outline-none transition-colors resize-none text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors resize-none text-sm"
                 placeholder="Opisz swój problem lub pytanie..."
                 disabled={loading}
                 minLength={10}
                 maxLength={5000}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {formData.message.length}/5000 znaków
               </p>
             </div>
@@ -178,9 +178,9 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="mt-0.5 w-4 h-4 rounded border-2 border-black/10 text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
+                  className="mt-0.5 w-4 h-4 rounded border-2 border-border text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
                 />
-                <span className="text-xs text-black/70 leading-relaxed">
+                <span className="text-xs text-muted-foreground leading-relaxed">
                   Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}
                   <a href="/privacy" className="text-[#C44E35] hover:underline" target="_blank" rel="noopener noreferrer">
                     Polityką Prywatności
@@ -202,16 +202,16 @@ export function ContactForm({ userEmail }: ContactFormProps) {
       </div>
 
       {/* Desktop: card design */}
-      <Card className="hidden md:block border-0 rounded-3xl bg-white">
+      <Card className="hidden md:block border border-border rounded-3xl bg-card">
         <CardContent className="p-8">
-          <h2 className="text-2xl font-bold text-black mb-2">Formularz kontaktowy</h2>
-          <p className="text-black/60 mb-8">
+          <h2 className="text-2xl font-bold text-foreground mb-2">Formularz kontaktowy</h2>
+          <p className="text-muted-foreground mb-8">
             Wypełnij formularz poniżej, a my odpowiemy na Twoją wiadomość w ciągu 24 godzin.
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Twój email *
               </label>
               <input
@@ -220,14 +220,14 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors"
                 placeholder="twoj@email.pl"
                 disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Kategoria *
               </label>
               <Select
@@ -242,7 +242,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 disabled={loading}
                 required
               >
-                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-12" aria-label="Kategoria kontaktu">
+                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-12" aria-label="Kategoria kontaktu">
                   <SelectValue placeholder="Wybierz kategorię" />
                 </SelectTrigger>
                 <SelectContent>
@@ -253,7 +253,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Temat *
               </label>
               <input
@@ -262,7 +262,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 required
                 value={formData.subject}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors"
                 placeholder="W czym możemy pomóc?"
                 disabled={loading}
                 minLength={3}
@@ -271,7 +271,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-black mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Wiadomość *
               </label>
               <textarea
@@ -280,13 +280,13 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 value={formData.message}
                 onChange={handleChange}
                 rows={5}
-                className="w-full px-4 py-3 rounded-xl border-2 border-black/10 bg-white focus:border-[#C44E35] focus:outline-none transition-colors resize-none"
+                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors resize-none"
                 placeholder="Opisz swój problem lub pytanie..."
                 disabled={loading}
                 minLength={10}
                 maxLength={5000}
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 {formData.message.length}/5000 znaków
               </p>
             </div>
@@ -300,9 +300,9 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="mt-1 w-4 h-4 rounded border-2 border-black/10 text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
+                  className="mt-1 w-4 h-4 rounded border-2 border-border text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
                 />
-                <span className="text-sm text-black/70 leading-relaxed">
+                <span className="text-sm text-muted-foreground leading-relaxed">
                   Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}
                   <a href="/privacy" className="text-[#C44E35] hover:underline" target="_blank" rel="noopener noreferrer">
                     Polityką Prywatności

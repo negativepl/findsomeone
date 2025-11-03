@@ -64,15 +64,15 @@ export function PreferencesSettings({
 
   return (
     <>
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3] opacity-50">
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
         <div className="flex-1 pr-4">
           <div className="flex items-center gap-2 mb-1">
-            <p className="text-base font-semibold text-black/60">Język</p>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-black/10 text-black/50 font-medium">
+            <p className="text-base font-semibold text-muted-foreground">Język</p>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
               Wkrótce
             </span>
           </div>
-          <p className="text-sm text-black/40">Wybierz język aplikacji</p>
+          <p className="text-sm text-muted-foreground/70">Wybierz język aplikacji</p>
         </div>
         <Select value={language} onValueChange={handleLanguageChange} disabled={true}>
           <SelectTrigger className="w-36 rounded-xl">
@@ -84,15 +84,15 @@ export function PreferencesSettings({
           </SelectContent>
         </Select>
       </div>
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-[#FAF8F3] opacity-50">
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
         <div className="flex-1 pr-4">
           <div className="flex items-center gap-2 mb-1">
-            <p className="text-base font-semibold text-black/60">Motyw</p>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-black/10 text-black/50 font-medium">
+            <p className="text-base font-semibold text-muted-foreground">Motyw</p>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
               Wkrótce
             </span>
           </div>
-          <p className="text-sm text-black/40">Dostosuj wygląd aplikacji</p>
+          <p className="text-sm text-muted-foreground/70">Dostosuj wygląd aplikacji</p>
         </div>
         <Select value={theme} onValueChange={handleThemeChange} disabled={true}>
           <SelectTrigger className="w-36 rounded-xl">

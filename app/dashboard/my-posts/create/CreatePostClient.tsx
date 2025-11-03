@@ -485,9 +485,9 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
   }
 
   return (
-    <div className={`min-h-screen flex flex-col ${currentStep === 2 ? 'bg-white' : 'bg-[#FAF8F3]'}`}>
+    <div className={`min-h-screen flex flex-col ${currentStep === 2 ? 'bg-card' : 'bg-background'}`}>
       {/* Progress bar - całkiem na górze */}
-      <div className="h-1 bg-black/5 sticky top-0 z-50">
+      <div className="h-1 bg-muted sticky top-0 z-50">
         <div
           className="h-full bg-[#C44E35] transition-all duration-300 ease-out"
           style={{ width: `${(currentStep / totalSteps) * 100}%` }}
@@ -495,7 +495,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
       </div>
 
       {/* Header - zaokrąglony */}
-      <header className="bg-white border-b border-black/10 sticky top-1 z-40 shadow-sm rounded-b-3xl">
+      <header className="bg-card border-b border-border sticky top-1 z-40 shadow-sm rounded-b-3xl">
         <div className="flex items-center justify-between h-16 px-4">
           {/* Title on the left with Lottie icon */}
           <div
@@ -509,11 +509,11 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               svgPath={getStepAnimationPaths(currentStep).svg}
               className="w-8 h-8 flex-shrink-0"
             />
-            <h1 className="text-xl font-bold text-black">{getStepTitle(currentStep)}</h1>
+            <h1 className="text-xl font-bold text-foreground">{getStepTitle(currentStep)}</h1>
           </div>
           {/* Step counter on the right */}
           <p
-            className={`text-lg text-black/60 font-semibold transition-all duration-200 ${
+            className={`text-lg text-muted-foreground font-semibold transition-all duration-200 ${
               isTransitioning ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'
             }`}
           >
@@ -524,7 +524,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
       {/* Sticky Toolbar for Step 2 */}
       {currentStep === 2 && richTextEditor && (
-        <div className="sticky top-[65px] z-30 bg-white shadow-sm">
+        <div className="sticky top-[65px] z-30 bg-card shadow-sm">
           <RichTextToolbar editor={richTextEditor} />
         </div>
       )}
@@ -540,10 +540,10 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           <div className="p-4 space-y-6 animate-in fade-in duration-300">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="title" className="text-base text-black">
+                <Label htmlFor="title" className="text-base text-foreground">
                   Tytuł ogłoszenia *
                 </Label>
-                <span className="text-xs text-black/40 font-medium">
+                <span className="text-xs text-foreground/40 font-medium">
                   {formData.title.length}/80
                 </span>
               </div>
@@ -554,12 +554,12 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
                 maxLength={80}
-                className="rounded-2xl border border-black/10 h-12 focus:border-black/30 text-base bg-white"
+                className="rounded-2xl border border-border h-12 focus:border-[#C44E35] text-base bg-card"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="text-base text-black">Wybierz kategorię *</Label>
+              <Label className="text-base text-foreground">Wybierz kategorię *</Label>
               <Select
                 value={formData.category}
                 onValueChange={(value) => {
@@ -567,7 +567,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 }}
                 required
               >
-                <SelectTrigger className="rounded-2xl border border-black/10 !h-12 w-full text-base bg-white">
+                <SelectTrigger className="rounded-2xl border border-border !h-12 w-full text-base bg-card">
                   <SelectValue placeholder="Wybierz kategorię" />
                 </SelectTrigger>
                 <SelectContent>
@@ -582,13 +582,13 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
             {subcategories.length > 0 && (
               <div className="space-y-2">
-                <Label className="text-base text-black">Wybierz podkategorię *</Label>
+                <Label className="text-base text-foreground">Wybierz podkategorię *</Label>
                 <Select
                   value={formData.subcategory}
                   onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
                   required
                 >
-                  <SelectTrigger className="rounded-2xl border border-black/10 !h-12 w-full text-base bg-white">
+                  <SelectTrigger className="rounded-2xl border border-border !h-12 w-full text-base bg-card">
                     <SelectValue placeholder="Wybierz podkategorię" />
                   </SelectTrigger>
                   <SelectContent>
@@ -607,7 +607,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
         {/* Step 2: Opis */}
         {currentStep === 2 && (
           <div
-            className="flex-1 bg-white overflow-auto cursor-text"
+            className="flex-1 bg-card overflow-auto cursor-text"
             onClick={() => richTextEditor?.commands.focus()}
           >
             <RichTextEditor
@@ -644,7 +644,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               type="button"
               onClick={detectLocation}
               disabled={isDetectingLocation}
-              className="w-full rounded-full bg-white border-2 border-black/10 hover:border-[#C44E35] hover:bg-[#C44E35]/5 text-black h-12 text-sm font-semibold transition-colors"
+              className="w-full rounded-full bg-card border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/5 text-foreground h-12 text-sm font-semibold transition-colors"
             >
               {isDetectingLocation ? (
                 <>
@@ -661,7 +661,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
             {/* City Input */}
             <div className="space-y-2 relative">
-              <Label className="text-base text-black">Miasto *</Label>
+              <Label className="text-base text-foreground">Miasto *</Label>
               <div className="relative">
                 <Input
                   ref={cityInputRef}
@@ -681,30 +681,30 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                       fetchCities('')
                     }
                   }}
-                  className="rounded-2xl border border-black/10 h-12 focus:border-black/30 text-base bg-white pr-10"
+                  className="rounded-2xl border border-border h-12 focus:border-[#C44E35] text-base bg-card pr-10"
                 />
                 {isLoadingCities && (
-                  <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-black/40" />
+                  <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-foreground/40" />
                 )}
               </div>
 
               {/* Cities Dropdown */}
               {isCityDropdownOpen && cities.length > 0 && (
-                <div ref={cityDropdownRef} className="absolute z-10 w-full mt-1 bg-white border border-black/10 rounded-2xl shadow-lg max-h-64 overflow-y-auto">
+                <div ref={cityDropdownRef} className="absolute z-10 w-full mt-1 bg-card border border-border rounded-2xl shadow-lg max-h-64 overflow-y-auto">
                   {/* Popular Cities */}
                   {cities.some(c => c.popular) && (
                     <div className="p-2">
-                      <p className="text-xs font-semibold text-black/40 px-3 py-2">POPULARNE</p>
+                      <p className="text-xs font-semibold text-foreground/40 px-3 py-2">POPULARNE</p>
                       {cities.filter(c => c.popular).map((city) => (
                         <button
                           key={city.slug}
                           type="button"
                           onClick={() => handleCitySelect(city.name)}
-                          className="w-full text-left px-3 py-2 hover:bg-black/5 rounded-lg text-sm transition-colors"
+                          className="w-full text-left px-3 py-2 hover:bg-muted rounded-lg text-sm transition-colors"
                         >
-                          <div className="font-medium text-black">{city.name}</div>
+                          <div className="font-medium text-foreground">{city.name}</div>
                           {city.voivodeship && (
-                            <div className="text-xs text-black/60">{city.voivodeship}</div>
+                            <div className="text-xs text-muted-foreground">{city.voivodeship}</div>
                           )}
                         </button>
                       ))}
@@ -721,13 +721,13 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     }, {} as Record<string, City[]>)
                   ).map(([voivodeship, voivodeshipCities]) => (
                     <div key={voivodeship} className="p-2">
-                      <p className="text-xs font-semibold text-black/40 px-3 py-2">{voivodeship.toUpperCase()}</p>
+                      <p className="text-xs font-semibold text-foreground/40 px-3 py-2">{voivodeship.toUpperCase()}</p>
                       {voivodeshipCities.map((city) => (
                         <button
                           key={city.slug}
                           type="button"
                           onClick={() => handleCitySelect(city.name)}
-                          className="w-full text-left px-3 py-2 hover:bg-black/5 rounded-lg text-sm transition-colors"
+                          className="w-full text-left px-3 py-2 hover:bg-muted rounded-lg text-sm transition-colors"
                         >
                           {city.name}
                         </button>
@@ -740,13 +740,13 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
             {/* District Input (Optional) */}
             <div className="space-y-2">
-              <Label className="text-base text-black">Dzielnica <span className="text-black/40 font-normal">(opcjonalnie)</span></Label>
+              <Label className="text-base text-foreground">Dzielnica <span className="text-foreground/40 font-normal">(opcjonalnie)</span></Label>
               <Input
                 type="text"
                 placeholder="np. Śródmieście"
                 value={formData.district}
                 onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                className="rounded-2xl border border-black/10 h-12 focus:border-black/30 text-base bg-white"
+                className="rounded-2xl border border-border h-12 focus:border-[#C44E35] text-base bg-card"
               />
             </div>
           </div>
@@ -757,7 +757,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           <div className="p-4 space-y-6 animate-in fade-in duration-300">
             {/* Price Type Selection */}
             <div className="space-y-3">
-              <Label className="text-base text-black">Typ ceny <span className="text-red-500">*</span></Label>
+              <Label className="text-base text-foreground">Typ ceny <span className="text-red-500">*</span></Label>
 
               {/* Fixed Price */}
               <button
@@ -766,12 +766,12 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
                   formData.priceType === 'fixed'
                     ? 'border-[#C44E35] bg-[#C44E35]/5'
-                    : 'border-black/10 bg-white hover:border-black/20'
+                    : 'border-border bg-card hover:border-black/20'
                 }`}
               >
                 <div className="flex-1">
-                  <div className="font-semibold text-black">Stała cena</div>
-                  <div className="text-sm text-black/60 mt-0.5">Podaj konkretną kwotę</div>
+                  <div className="font-semibold text-foreground">Stała cena</div>
+                  <div className="text-sm text-muted-foreground mt-0.5">Podaj konkretną kwotę</div>
                 </div>
               </button>
 
@@ -782,12 +782,12 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
                   formData.priceType === 'hourly'
                     ? 'border-[#C44E35] bg-[#C44E35]/5'
-                    : 'border-black/10 bg-white hover:border-black/20'
+                    : 'border-border bg-card hover:border-black/20'
                 }`}
               >
                 <div className="flex-1">
-                  <div className="font-semibold text-black">Za godzinę</div>
-                  <div className="text-sm text-black/60 mt-0.5">Stawka godzinowa</div>
+                  <div className="font-semibold text-foreground">Za godzinę</div>
+                  <div className="text-sm text-muted-foreground mt-0.5">Stawka godzinowa</div>
                 </div>
               </button>
 
@@ -798,12 +798,12 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
                   formData.priceType === 'free'
                     ? 'border-[#C44E35] bg-[#C44E35]/5'
-                    : 'border-black/10 bg-white hover:border-black/20'
+                    : 'border-border bg-card hover:border-black/20'
                 }`}
               >
                 <div className="flex-1">
-                  <div className="font-semibold text-black">Za darmo</div>
-                  <div className="text-sm text-black/60 mt-0.5">Usługa lub produkt bezpłatny</div>
+                  <div className="font-semibold text-foreground">Za darmo</div>
+                  <div className="text-sm text-muted-foreground mt-0.5">Usługa lub produkt bezpłatny</div>
                 </div>
               </button>
             </div>
@@ -811,7 +811,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             {/* Price Input - Show only if not free */}
             {formData.priceType !== 'free' && (
               <div className="space-y-2">
-                <Label htmlFor="price" className="text-base text-black">
+                <Label htmlFor="price" className="text-base text-foreground">
                   Cena {formData.priceType === 'hourly' ? 'za godzinę ' : ''}<span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
@@ -828,14 +828,14 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                         setFormData({ ...formData, price: value })
                       }
                     }}
-                    className="rounded-2xl border border-black/10 h-12 focus:border-black/30 text-base bg-white pr-12"
+                    className="rounded-2xl border border-border h-12 focus:border-[#C44E35] text-base bg-card pr-12"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base text-black/60 font-medium">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base text-muted-foreground font-medium">
                     PLN
                   </span>
                 </div>
                 {formData.priceType === 'hourly' && (
-                  <p className="text-xs text-black/50">
+                  <p className="text-xs text-foreground/50">
                     Podaj stawkę za godzinę pracy
                   </p>
                 )}
@@ -847,7 +847,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     checked={formData.priceNegotiable}
                     onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
                   />
-                  <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none">
+                  <label htmlFor="priceNegotiable" className="text-sm text-foreground/70 cursor-pointer select-none">
                     Cena do negocjacji
                   </label>
                 </div>
@@ -860,9 +860,9 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
         {currentStep === 6 && (
           <div className="p-4 space-y-4 animate-in fade-in duration-300">
             {/* Title */}
-            <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
-              <h2 className="text-xl font-bold text-black mb-1">{formData.title}</h2>
-              <div className="flex items-center gap-2 text-sm text-black/60">
+            <div className="bg-card rounded-2xl border-2 border-border p-4">
+              <h2 className="text-xl font-bold text-foreground mb-1">{formData.title}</h2>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Tag className="w-4 h-4" />
                 <span>
                   {getCategoryName(formData.category)}
@@ -872,27 +872,27 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+            <div className="bg-card rounded-2xl border-2 border-border p-4">
               <div className="flex items-center gap-2 mb-3">
-                <FileText className="w-5 h-5 text-black/60" />
-                <h3 className="font-semibold text-black">Opis</h3>
+                <FileText className="w-5 h-5 text-muted-foreground" />
+                <h3 className="font-semibold text-foreground">Opis</h3>
               </div>
               <div
-                className="prose prose-sm max-w-none text-black/80"
+                className="prose prose-sm max-w-none text-foreground/80"
                 dangerouslySetInnerHTML={{ __html: formData.description }}
               />
             </div>
 
             {/* Images */}
             {images.length > 0 && (
-              <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+              <div className="bg-card rounded-2xl border-2 border-border p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <ImageIcon className="w-5 h-5 text-black/60" />
-                  <h3 className="font-semibold text-black">Zdjęcia ({images.length})</h3>
+                  <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                  <h3 className="font-semibold text-foreground">Zdjęcia ({images.length})</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {images.map((imageUrl, index) => (
-                    <div key={imageUrl} className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-black/10">
+                    <div key={imageUrl} className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-border">
                       <Image
                         src={imageUrl}
                         alt={`Zdjęcie ${index + 1}`}
@@ -912,29 +912,29 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             )}
 
             {/* Location */}
-            <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+            <div className="bg-card rounded-2xl border-2 border-border p-4">
               <div className="flex items-center gap-2 mb-3">
-                <MapPin className="w-5 h-5 text-black/60" />
-                <h3 className="font-semibold text-black">Lokalizacja</h3>
+                <MapPin className="w-5 h-5 text-muted-foreground" />
+                <h3 className="font-semibold text-foreground">Lokalizacja</h3>
               </div>
-              <p className="text-base text-black">
+              <p className="text-base text-foreground">
                 {formData.city}
                 {formData.district && `, ${formData.district}`}
               </p>
             </div>
 
             {/* Price */}
-            <div className="bg-white rounded-2xl border-2 border-black/10 p-4">
+            <div className="bg-card rounded-2xl border-2 border-border p-4">
               <div className="flex items-center gap-2 mb-3">
-                <DollarSign className="w-5 h-5 text-black/60" />
-                <h3 className="font-semibold text-black">Cena</h3>
+                <DollarSign className="w-5 h-5 text-muted-foreground" />
+                <h3 className="font-semibold text-foreground">Cena</h3>
               </div>
               <p className="text-xl font-bold text-[#C44E35]">{getPriceDisplay()}</p>
             </div>
 
             {/* Info */}
             <div className="bg-[#C44E35]/5 border-2 border-[#C44E35]/20 rounded-2xl p-4">
-              <p className="text-sm text-black/70 text-center">
+              <p className="text-sm text-foreground/70 text-center">
                 Sprawdź dokładnie wszystkie informacje przed opublikowaniem ogłoszenia
               </p>
             </div>
@@ -943,19 +943,19 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
       </main>
 
       {/* Footer - Fixed at bottom */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-white border-t border-black/10 h-16 z-40 rounded-t-3xl shadow-lg flex items-center px-4">
+      <footer className="fixed bottom-0 left-0 right-0 bg-card border-t border-border h-16 z-40 rounded-t-3xl shadow-lg flex items-center px-4">
         <div className="flex gap-3 w-full">
           {currentStep === 1 ? (
             <button
               onClick={handleCancel}
-              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold text-black transition-colors"
+              className="flex-1 rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold text-foreground transition-colors"
             >
               Anuluj
             </button>
           ) : (
             <button
               onClick={prevStep}
-              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold text-black transition-colors"
+              className="flex-1 rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold text-foreground transition-colors"
             >
               Wstecz
             </button>
@@ -995,8 +995,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
       {/* Moderation Modal */}
       {showModerationModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+        <div className="fixed inset-0 bg-muted0 flex items-center justify-center z-50 p-4">
+          <div className="bg-card rounded-3xl p-8 max-w-md w-full">
             {moderationInProgress ? (
               <div className="text-center">
                 <div className="w-20 h-20 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -1005,10 +1005,10 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-black mb-2">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
                   Sprawdzanie ogłoszenia
                 </h3>
-                <p className="text-black/60">
+                <p className="text-muted-foreground">
                   Proszę czekać, weryfikujemy treść...
                 </p>
               </div>
@@ -1021,10 +1021,10 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Ogłoszenie zatwierdzone!
                     </h3>
-                    <p className="text-black/60 mb-6">
+                    <p className="text-muted-foreground mb-6">
                       Twoje ogłoszenie zostało pomyślnie opublikowane i jest już widoczne dla innych użytkowników.
                     </p>
                     <Button
@@ -1043,10 +1043,10 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Wymaga weryfikacji
                     </h3>
-                    <p className="text-black/60 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       Twoje ogłoszenie zostało dodane, ale wymaga weryfikacji przez moderatora przed publikacją.
                     </p>
                     {moderationResult.reasons && moderationResult.reasons.length > 0 && (
@@ -1075,10 +1075,10 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Ogłoszenie odrzucone
                     </h3>
-                    <p className="text-black/60 mb-4">
+                    <p className="text-muted-foreground mb-4">
                       Niestety, Twoje ogłoszenie nie spełnia naszych wytycznych i nie może zostać opublikowane.
                     </p>
                     {moderationResult.reasons && moderationResult.reasons.length > 0 && (
@@ -1107,10 +1107,10 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Wystąpił błąd
                     </h3>
-                    <p className="text-black/60 mb-6">
+                    <p className="text-muted-foreground mb-6">
                       {moderationResult.reasons?.[0] || 'Nie udało się opublikować ogłoszenia. Spróbuj ponownie.'}
                     </p>
                     <Button

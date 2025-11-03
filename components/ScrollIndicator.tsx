@@ -143,7 +143,7 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
       {/* Track container - shows total length */}
       <div
         ref={trackRef}
-        className="relative bg-black/10 rounded-full cursor-pointer select-none"
+        className="relative bg-border rounded-full cursor-pointer select-none"
         style={{
           width: `${trackWidth}px`,
           height: isDragging ? '8px' : '4px',

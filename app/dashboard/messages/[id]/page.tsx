@@ -79,7 +79,7 @@ export default async function ConversationPage({
     .eq('read', false)
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <NavbarWithHide
         user={user}
         alwaysVisible={true}
@@ -90,12 +90,12 @@ export default async function ConversationPage({
       />
 
       {/* Chat Header - Fixed (Desktop only) */}
-      <div className="hidden md:block fixed top-16 left-0 right-0 bg-white border-b border-black/10 rounded-b-3xl z-30">
+      <div className="hidden md:block fixed top-16 left-0 right-0 bg-card border-b border-border rounded-b-3xl z-30">
         <div className="container mx-auto">
           <div className="flex items-center gap-4">
             <Link
               href="/dashboard/messages"
-              className="flex-shrink-0 hover:bg-black/5 rounded-full p-2 transition-colors"
+              className="flex-shrink-0 hover:bg-muted rounded-full p-2 transition-colors"
               aria-label="Wróć do listy wiadomości"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -105,7 +105,7 @@ export default async function ConversationPage({
 
             <Link
               href={`/profile/${otherUser.id}`}
-              className="flex items-center gap-2 md:gap-3 p-2 hover:bg-black/5 rounded-2xl transition-colors"
+              className="flex items-center gap-2 md:gap-3 p-2 hover:bg-muted rounded-2xl transition-colors"
             >
               {otherUser.avatar_url ? (
                 <img
@@ -122,7 +122,7 @@ export default async function ConversationPage({
               )}
 
               <div className="min-w-0 flex items-center gap-2">
-                <h2 className="text-base md:text-lg font-semibold text-black truncate">
+                <h2 className="text-base md:text-lg font-semibold text-foreground truncate">
                   {otherUser.full_name || 'Użytkownik'}
                 </h2>
                 <PresenceIndicator userId={otherUser.id} showText={true} size="sm" />

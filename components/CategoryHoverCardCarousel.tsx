@@ -51,7 +51,7 @@ export function CategoryHoverCardCarousel({ categories, sectionId }: CategoryHov
                   delay: index * 0.05,
                   ease: [0.16, 1, 0.3, 1]
                 }}
-                className="relative h-full rounded-2xl border border-black/10 bg-white p-6"
+                className="relative h-full rounded-2xl border-2 border-border bg-card p-6"
               >
                 {/* Content */}
                 <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[140px]">
@@ -72,11 +72,11 @@ export function CategoryHoverCardCarousel({ categories, sectionId }: CategoryHov
                   </div>
 
                   <h4 className={`text-lg font-bold mb-2 transition-colors duration-300 ${
-                    hoveredId === category.id ? 'text-[#C44E35]' : 'text-black'
+                    hoveredId === category.id ? 'text-[#C44E35]' : 'text-foreground'
                   }`}>
                     {category.name}
                   </h4>
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-black/5 text-black/60">
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
                     {category.post_count} ogłoszeń
                   </span>
                 </div>

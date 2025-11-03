@@ -52,11 +52,11 @@ export async function SeekingHelpSection({ section, userFavorites }: SeekingHelp
 
   return (
     <section className="container mx-auto px-6 py-12 md:py-14">
-      <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm group/section">
+      <div className="bg-card rounded-3xl p-6 md:p-8 shadow-sm group/section">
         <div className="flex items-center justify-between mb-8 md:mb-12">
           <div>
-            <h3 className="text-3xl md:text-4xl font-bold text-black mb-2">{title}</h3>
-            <p className="text-lg text-black/60">{subtitle}</p>
+            <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-2">{title}</h3>
+            <p className="text-lg text-muted-foreground">{subtitle}</p>
           </div>
           {showButton && (
             <div className="hidden md:block">

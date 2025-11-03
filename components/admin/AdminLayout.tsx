@@ -17,6 +17,10 @@ interface AdminLayoutProps {
       avatar_url?: string
     }
   }
+  profile?: {
+    full_name: string | null
+    avatar_url: string | null
+  } | null
   stats?: {
     reportsCount?: number
     bannedUsersCount?: number
@@ -164,7 +168,7 @@ const navItems = [
   },
 ]
 
-export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
+export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps) {
   const pathname = usePathname()
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
@@ -181,7 +185,7 @@ export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-black/5 rounded-lg transition-colors"
+            className="p-2 hover:bg-black/5 transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -262,7 +266,7 @@ export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
                     <span className="text-sm font-medium flex-1">{item.label}</span>
                     {badgeCount && (
                       <span
-                        className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                        className={`text-xs font-semibold px-2 py-0.5 ${
                           isActive
                             ? 'bg-white/20 text-white'
                             : 'bg-[#C44E35]/10 text-[#C44E35]'
@@ -281,14 +285,14 @@ export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
           <div className="border-t border-black/5 p-4">
             <div className="flex items-center gap-3 mb-3">
               <Avatar className="w-10 h-10">
-                <AvatarImage src={user.user_metadata?.avatar_url} />
+                <AvatarImage src={profile?.avatar_url || user.user_metadata?.avatar_url} />
                 <AvatarFallback className="bg-[#C44E35] text-white">
-                  {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'A'}
+                  {profile?.full_name?.charAt(0) || user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'A'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-black truncate">
-                  {user.user_metadata?.full_name || 'Administrator'}
+                  {profile?.full_name || user.user_metadata?.full_name || 'Administrator'}
                 </p>
                 <p className="text-xs text-black/60 truncate">{user.email}</p>
               </div>
@@ -296,7 +300,7 @@ export function AdminLayout({ children, user, stats }: AdminLayoutProps) {
             <Link href="/dashboard" className="block">
               <Button
                 variant="outline"
-                className="w-full rounded-lg border-black/10 text-black/70 hover:bg-black/5"
+                className="w-full border-black/10 text-black/70 hover:bg-black/5"
                 size="sm"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

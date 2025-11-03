@@ -32,15 +32,15 @@ export default async function MyListingsPage() {
     .order('created_at', { ascending: false })
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <NavbarWithHide user={user} pageTitle="Moje ogłoszenia" />
 
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-20 md:pb-10">
         {/* Header */}
         <div className="mb-8 hidden md:block">
-          <h2 className="text-4xl font-bold text-black mb-3">Moje ogłoszenia</h2>
-          <p className="text-lg text-black/60">
+          <h2 className="text-4xl font-bold text-foreground mb-3">Moje ogłoszenia</h2>
+          <p className="text-lg text-muted-foreground">
             Zarządzaj swoimi ogłoszeniami i sprawdzaj ich status
           </p>
         </div>

@@ -18,12 +18,12 @@ export function RatingDisplay({ userId, rating, reviewCount = 0, className = '',
       <span>({reviewCount} {reviewCount === 1 ? 'opinia' : 'opinii'})</span>
     </>
   ) : (
-    <span className="text-black/60 italic">Brak opinii</span>
+    <span className="text-muted-foreground italic">Brak opinii</span>
   )
 
   if (!clickable) {
     return (
-      <div className={`flex items-center gap-1 text-black/60 ${className}`}>
+      <div className={`flex items-center gap-1 text-muted-foreground ${className}`}>
         {content}
       </div>
     )
@@ -32,7 +32,7 @@ export function RatingDisplay({ userId, rating, reviewCount = 0, className = '',
   return (
     <Link
       href={`/profile/${userId}`}
-      className={`flex items-center gap-1 text-black/60 hover:text-black transition-colors ${className}`}
+      className={`flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors ${className}`}
       onClick={(e) => e.stopPropagation()}
     >
       {content}

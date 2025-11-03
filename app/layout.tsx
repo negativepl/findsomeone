@@ -86,10 +86,32 @@ export default async function RootLayout({
   } = await supabase.auth.getUser()
 
   return (
-    <html lang="pl">
+    <html lang="pl" suppressHydrationWarning>
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#2E2E2E" media="(prefers-color-scheme: dark)" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  if (isDark) {
+                    document.documentElement.classList.add('dark');
+                  }
+                  // Update theme-color meta tag
+                  var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+                  if (themeColorMeta) {
+                    themeColorMeta.setAttribute('content', isDark ? '#2E2E2E' : '#FAF8F3');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} antialiased`}

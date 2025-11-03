@@ -61,7 +61,7 @@ export function FavoriteButton({
           className={`w-6 h-6 transition-all duration-300 ease-in-out ${
             isFavorite
               ? 'fill-red-500 text-red-500 scale-100'
-              : 'fill-none text-black/40 group-hover/fav:text-red-400 group-hover/fav:fill-red-50 group-hover/fav:scale-110'
+              : 'fill-none text-muted-foreground group-hover/fav:text-red-400 group-hover/fav:fill-red-50 group-hover/fav:scale-110'
           } ${isLoading ? 'opacity-50' : ''} active:scale-125`}
           stroke="currentColor"
           strokeWidth={2}
@@ -76,7 +76,7 @@ export function FavoriteButton({
         </svg>
       </div>
       {showLabel && (
-        <span className="text-sm text-black/60">
+        <span className="text-sm text-muted-foreground">
           {isFavorite ? 'Usuń z ulubionych' : 'Dodaj do ulubionych'}
         </span>
       )}

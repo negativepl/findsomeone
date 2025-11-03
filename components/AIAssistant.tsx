@@ -320,18 +320,18 @@ export function AIAssistant() {
           isHovered={isButtonHovered}
         />
         {mounted && messages.length > 0 && (
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full border-2 border-[#C44E35]" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-background rounded-full border-2 border-[#C44E35]" />
         )}
       </button>
 
       {/* Chat Panel - Mobile: Fixed, Desktop: Absolute */}
         {isOpen && (
           <div
-              className="fixed top-0 left-0 right-0 bottom-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-white md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col md:border md:border-black/10"
+              className="fixed top-0 left-0 right-0 bottom-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-card md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col md:border md:border-border"
               onClick={(e) => e.stopPropagation()}
             >
             {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-black/5">
+            <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-[#C44E35] flex items-center justify-center flex-shrink-0 relative">
                   {/* SVG - always visible until Lottie is ready */}
@@ -361,8 +361,8 @@ export function AIAssistant() {
                   )}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-black">Nawigatorek</h3>
-                  <p className="text-[10px] text-black/60 leading-tight">
+                  <h3 className="font-semibold text-foreground">Nawigatorek</h3>
+                  <p className="text-[10px] text-muted-foreground leading-tight">
                     wersja alfa, może popełniać błędy
                   </p>
                 </div>
@@ -372,7 +372,7 @@ export function AIAssistant() {
                 {messages.length > 0 && (
                   <button
                     onClick={handleClearChat}
-                    className="w-8 h-8 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors text-black/40 hover:text-[#C44E35]"
+                    className="w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors text-muted-foreground hover:text-[#C44E35]"
                     title="Wyczyść historię"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -383,7 +383,7 @@ export function AIAssistant() {
                 {/* Pin button */}
                 <button
                   onClick={() => setIsPinned(!isPinned)}
-                  className={`w-8 h-8 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors ${isPinned ? 'text-[#C44E35]' : 'text-black/40'}`}
+                  className={`w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors ${isPinned ? 'text-[#C44E35]' : 'text-muted-foreground'}`}
                   title={isPinned ? "Odepnij okno" : "Przypnij okno"}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -410,14 +410,14 @@ export function AIAssistant() {
             <div className="relative flex-1 overflow-hidden">
               {/* Gradient mask at top - only show when scrolled */}
               <div
-                className={`absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-white to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
+                className={`absolute top-0 left-0 right-0 h-8 bg-gradient-to-b from-card to-transparent pointer-events-none z-10 transition-opacity duration-300 ${
                   showGradient ? 'opacity-100' : 'opacity-0'
                 }`}
               />
 
               {/* Gradient mask at bottom - always visible */}
               <div
-                className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white to-transparent pointer-events-none z-10"
+                className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-card to-transparent pointer-events-none z-10"
               />
 
               <div
@@ -439,7 +439,7 @@ export function AIAssistant() {
                     >
                       <div className="flex gap-1">
                         <motion.div
-                          className="w-2 h-2 bg-black/40 rounded-full"
+                          className="w-2 h-2 bg-muted-foreground rounded-full"
                           animate={{ y: [0, -8, 0] }}
                           transition={{
                             duration: 0.6,
@@ -448,7 +448,7 @@ export function AIAssistant() {
                           }}
                         />
                         <motion.div
-                          className="w-2 h-2 bg-black/40 rounded-full"
+                          className="w-2 h-2 bg-muted-foreground rounded-full"
                           animate={{ y: [0, -8, 0] }}
                           transition={{
                             duration: 0.6,
@@ -458,7 +458,7 @@ export function AIAssistant() {
                           }}
                         />
                         <motion.div
-                          className="w-2 h-2 bg-black/40 rounded-full"
+                          className="w-2 h-2 bg-muted-foreground rounded-full"
                           animate={{ y: [0, -8, 0] }}
                           transition={{
                             duration: 0.6,
@@ -480,24 +480,24 @@ export function AIAssistant() {
                     >
                       <div className="mb-4 whitespace-pre-line">
                         {settings?.welcomeMessage?.split('\n').map((line, i) => (
-                          <p key={i} className={i === 0 ? 'font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent mb-2' : 'text-sm text-black/60'}>
+                          <p key={i} className={i === 0 ? 'font-semibold bg-gradient-to-r from-foreground to-[#C44E35] bg-clip-text text-transparent mb-2' : 'text-sm text-muted-foreground'}>
                             {line}
                           </p>
                         )) || (
                           <>
-                            <h4 className="font-semibold bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent mb-2">Cześć! Jestem tu aby pomóc</h4>
-                            <p className="text-sm text-black/60">
+                            <h4 className="font-semibold bg-gradient-to-r from-foreground to-[#C44E35] bg-clip-text text-transparent mb-2">Cześć! Jestem tu aby pomóc</h4>
+                            <p className="text-sm text-muted-foreground">
                               Mogę pomóc Ci w nawigacji, odpowiedzieć na pytania o FindSomeone lub pomóc znaleźć odpowiednie ogłoszenia.
                             </p>
                           </>
                         )}
                       </div>
-                      <div className="space-y-2 w-full">
+                      <div className="space-y-2 w-full bg-muted/50 rounded-2xl p-3 border border-border/50">
                         {(settings?.suggestions || ['Jak dodać ogłoszenie?', 'Jak znaleźć specjalistę?', 'Jak działają opinie?']).map((suggestion, i) => (
                           <button
                             key={i}
                             onClick={() => setInput(suggestion)}
-                            className="w-full text-left px-4 py-3 rounded-2xl bg-black/5 hover:bg-[#C44E35]/10 hover:text-[#C44E35] transition-all text-sm"
+                            className="w-full text-left px-4 py-3 rounded-xl bg-background hover:bg-[#C44E35]/10 hover:text-[#C44E35] transition-all text-sm border border-border/30"
                           >
                             {suggestion}
                           </button>
@@ -538,7 +538,7 @@ export function AIAssistant() {
                           className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                             message.role === 'user'
                               ? 'bg-[#C44E35] text-white'
-                              : 'bg-black/5 text-black'
+                              : 'bg-muted text-foreground'
                           }`}
                         >
                           {message.role === 'assistant' ? (
@@ -585,13 +585,13 @@ export function AIAssistant() {
                         {/* Show suggestions if available and few/no posts */}
                         {message.suggestions && message.suggestions.length > 0 && (
                           <div className="w-full mt-3">
-                            <p className="text-xs text-black/60 mb-2">Może zainteresują Cię:</p>
+                            <p className="text-xs text-muted-foreground mb-2">Może zainteresują Cię:</p>
                             <div className="flex flex-wrap gap-2">
                               {message.suggestions.map((suggestion, idx) => (
                                 <button
                                   key={idx}
                                   onClick={() => setInput(suggestion)}
-                                  className="px-3 py-1.5 bg-black/5 hover:bg-[#C44E35]/10 hover:text-[#C44E35] text-black rounded-full text-xs transition-all"
+                                  className="px-3 py-1.5 bg-muted hover:bg-[#C44E35]/10 hover:text-[#C44E35] text-foreground rounded-full text-xs transition-all"
                                 >
                                   {suggestion}
                                 </button>
@@ -623,10 +623,10 @@ export function AIAssistant() {
                       }}
                       className="flex justify-start"
                     >
-                      <div className="bg-black/5 rounded-2xl px-4 py-3">
+                      <div className="bg-muted rounded-2xl px-4 py-3">
                         <div className="flex gap-1">
                           <motion.div
-                            className="w-2 h-2 bg-black/40 rounded-full"
+                            className="w-2 h-2 bg-muted-foreground rounded-full"
                             animate={{ y: [0, -8, 0] }}
                             transition={{
                               duration: 0.6,
@@ -635,7 +635,7 @@ export function AIAssistant() {
                             }}
                           />
                           <motion.div
-                            className="w-2 h-2 bg-black/40 rounded-full"
+                            className="w-2 h-2 bg-muted-foreground rounded-full"
                             animate={{ y: [0, -8, 0] }}
                             transition={{
                               duration: 0.6,
@@ -645,7 +645,7 @@ export function AIAssistant() {
                             }}
                           />
                           <motion.div
-                            className="w-2 h-2 bg-black/40 rounded-full"
+                            className="w-2 h-2 bg-muted-foreground rounded-full"
                             animate={{ y: [0, -8, 0] }}
                             transition={{
                               duration: 0.6,
@@ -666,7 +666,7 @@ export function AIAssistant() {
             </div>
 
             {/* Input - Fixed at bottom on mobile */}
-            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-4 bg-white border-t border-black/5 md:rounded-b-3xl">
+            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-4 bg-card border-t border-border md:rounded-b-3xl">
               <div className="flex gap-2 items-center">
                 <input
                   type="text"
@@ -674,13 +674,13 @@ export function AIAssistant() {
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
                   placeholder="Napisz wiadomość..."
-                  className="flex-1 px-4 py-3 rounded-full bg-black/5 border-0 focus:outline-none focus:ring-2 focus:ring-[#C44E35] text-base md:text-sm"
+                  className="flex-1 px-4 py-3 rounded-full bg-muted/80 text-foreground placeholder:text-muted-foreground border border-border/50 focus:outline-none focus:ring-2 focus:ring-[#C44E35] focus:border-transparent text-base md:text-sm transition-all"
                   disabled={isLoading}
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isLoading}
-                  className="w-10 h-10 flex-shrink-0 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] disabled:bg-black/10 disabled:cursor-not-allowed flex items-center justify-center transition-colors"
+                  className="w-10 h-10 flex-shrink-0 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg hover:shadow-xl disabled:shadow-none"
                   aria-label="Wyślij wiadomość"
                 >
                   <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">

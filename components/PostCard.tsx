@@ -30,10 +30,10 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
       className="flex-shrink-0 snap-center"
       style={{ width: '280px' }}
     >
-      <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col">
+      <Card className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col">
         {/* Image */}
         {post.images && post.images.length > 0 && (
-          <div className="relative w-full h-40 bg-black/5">
+          <div className="relative w-full h-40 bg-muted">
             <Image
               src={post.images[0]}
               alt={post.title}
@@ -55,18 +55,18 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
         <CardHeader className="pb-3 pt-4">
           {post.categories && (
             <div className="mb-2">
-              <Badge variant="outline" className="rounded-full border-black/10 text-black/60 text-xs">
+              <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
                 {post.categories.name}
               </Badge>
             </div>
           )}
-          <CardTitle className="text-base md:text-base font-bold text-black">{post.title}</CardTitle>
+          <CardTitle className="text-base md:text-base font-bold text-foreground">{post.title}</CardTitle>
         </CardHeader>
 
         <CardContent className="pb-4 mt-auto">
           <div className="flex items-center justify-between gap-2">
             {/* Location - Left */}
-            <div className="flex items-center gap-1 text-xs text-black/60 min-w-0">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
               <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -76,12 +76,12 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
 
             {/* Price - Right */}
             {post.price ? (
-              <p className="text-sm font-bold text-black whitespace-nowrap">
+              <p className="text-sm font-bold text-foreground whitespace-nowrap">
                 {post.price} zł
               </p>
             ) : (
               post.price_type === 'negotiable' && (
-                <p className="text-xs text-black/60 whitespace-nowrap">Do negocjacji</p>
+                <p className="text-xs text-muted-foreground whitespace-nowrap">Do negocjacji</p>
               )
             )}
           </div>

@@ -293,27 +293,26 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
       {/* Categories Drawer */}
       <Drawer.Root open={categoriesOpen} onOpenChange={setCategoriesOpen} modal={true}>
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-gray-50/95 z-30 transition-all duration-300" />
+          <Drawer.Overlay className="fixed inset-0 bg-background/95 z-30 transition-all duration-300" />
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-black/10"
+            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-border bg-card"
             style={{
-              paddingBottom: '84px',
-              background: 'white'
+              paddingBottom: '84px'
             }}
           >
             {/* Handle */}
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-black/20 mt-4 mb-2" />
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/30 mt-4 mb-2" />
 
             <div className="overflow-y-auto flex-1">
               <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <Drawer.Title className="text-lg font-bold text-black">Kategorie</Drawer.Title>
+                  <Drawer.Title className="text-lg font-bold text-foreground">Kategorie</Drawer.Title>
                   <button
                     onClick={() => {
                       triggerHaptic()
                       setCategoriesOpen(false)
                     }}
-                    className="p-2 hover:bg-black/5 rounded-full transition-colors duration-300"
+                    className="p-2 hover:bg-muted rounded-full transition-colors duration-300 text-foreground"
                     aria-label="Zamknij menu"
                   >
                     <svg className="w-6 h-6" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2}>
@@ -329,7 +328,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     triggerHaptic()
                     setCategoriesOpen(false)
                   }}
-                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors duration-300 bg-[#F5F1E8] text-black hover:bg-brand hover:text-white"
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors duration-300 bg-muted text-foreground hover:bg-brand hover:text-white"
                 >
                   <span className="font-medium">Wszystkie kategorie</span>
                 </Link>
@@ -355,13 +354,13 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                             setCategoriesOpen(false)
                           }
                         }}
-                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors duration-300 bg-[#F5F1E8] text-black hover:bg-brand hover:text-white group"
+                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors duration-300 bg-muted text-foreground hover:bg-brand hover:text-white group"
                       >
-                        <CategoryIcon iconName={cat.icon} className="w-6 h-6 text-black/60 group-hover:text-white transition-colors duration-300" />
+                        <CategoryIcon iconName={cat.icon} className="w-6 h-6 text-muted-foreground group-hover:text-white transition-colors duration-300" />
                         <span className="font-medium flex-1 text-base">{cat.name}</span>
                         {hasSubcategories && (
                           <svg
-                            className="w-5 h-5 text-black/40 group-hover:text-white transition-colors duration-300"
+                            className="w-5 h-5 text-muted-foreground group-hover:text-white transition-colors duration-300"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -387,16 +386,15 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         }
       }} modal={true}>
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-gray-50/95 z-30 transition-all duration-300" />
+          <Drawer.Overlay className="fixed inset-0 bg-background/95 z-30 transition-all duration-300" />
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-black/10"
+            className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-border bg-card"
             style={{
-              paddingBottom: '84px',
-              background: 'white'
+              paddingBottom: '84px'
             }}
           >
             {/* Handle */}
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-black/20 mt-4 mb-2" />
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/30 mt-4 mb-2" />
 
             <div className="overflow-y-auto flex-1">
               <div className="p-6 space-y-4">
@@ -407,7 +405,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     setSelectedCategory(null)
                     setCategoriesOpen(true)
                   }}
-                  className="flex items-center gap-2 text-black hover:text-[#C44E35] transition-colors mb-2"
+                  className="flex items-center gap-2 text-foreground hover:text-[#C44E35] transition-colors mb-2"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -432,9 +430,9 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         setSelectedCategory(null)
                         setCategoriesOpen(false)
                       }}
-                      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#F5F1E8] hover:bg-brand hover:text-white transition-colors group"
+                      className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-muted text-foreground hover:bg-brand hover:text-white transition-colors group"
                     >
-                      <CategoryIcon iconName={selectedCategory.icon} className="w-6 h-6 text-black/60 group-hover:text-white transition-colors duration-300" />
+                      <CategoryIcon iconName={selectedCategory.icon} className="w-6 h-6 text-muted-foreground group-hover:text-white transition-colors duration-300" />
                       <span className="font-bold text-lg">{selectedCategory.name}</span>
                     </Link>
                   </div>
@@ -452,7 +450,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                           setSelectedCategory(null)
                           setCategoriesOpen(false)
                         }}
-                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors bg-[#F5F1E8] text-black hover:bg-brand hover:text-white"
+                        className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl text-left transition-colors bg-muted text-foreground hover:bg-brand hover:text-white"
                       >
                         <span className="font-medium text-base">{sub.name}</span>
                       </Link>
@@ -468,16 +466,15 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
       {/* Menu Drawer */}
       <Drawer.Root open={menuOpen} onOpenChange={setMenuOpen} modal={true}>
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-gray-50/95 z-30 transition-all duration-300" />
+          <Drawer.Overlay className="fixed inset-0 bg-background/95 z-30 transition-all duration-300" />
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[80vh] border-t border-black/10"
+            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[80vh] border-t border-border bg-card"
             style={{
-              paddingBottom: '84px',
-              background: 'white'
+              paddingBottom: '84px'
             }}
           >
             {/* Handle */}
-            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-black/20 mt-4 mb-2" />
+            <div className="mx-auto w-12 h-1.5 flex-shrink-0 rounded-full bg-muted-foreground/30 mt-4 mb-2" />
 
             <div className="overflow-y-auto flex-1">
               <div className="p-6">
@@ -502,13 +499,13 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         )}
                         {/* User info */}
                         <div className="flex flex-col">
-                          <Drawer.Title className="font-semibold text-black">{getUserName()}</Drawer.Title>
-                          <p className="text-sm text-black/60 truncate max-w-[180px]">{user.email}</p>
+                          <Drawer.Title className="font-semibold text-foreground">{getUserName()}</Drawer.Title>
+                          <p className="text-sm text-muted-foreground truncate max-w-[180px]">{user.email}</p>
                         </div>
                       </div>
                     </>
                   ) : (
-                    <Drawer.Title className="text-xl font-bold text-black">Menu</Drawer.Title>
+                    <Drawer.Title className="text-xl font-bold text-foreground">Menu</Drawer.Title>
                   )}
 
                   <button
@@ -516,7 +513,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                       triggerHaptic()
                       setMenuOpen(false)
                     }}
-                    className="text-black/60 hover:text-black transition-colors duration-300 p-2 -mr-2 rounded-full hover:bg-black/5"
+                    className="text-muted-foreground hover:text-foreground transition-colors duration-300 p-2 -mr-2 rounded-full hover:bg-muted"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 20 20" stroke="currentColor" fill="none">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15L15 5M5 5L15 15" />
@@ -533,12 +530,12 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         <button
                           key={`${item.href}-${index}`}
                           onClick={handleSignOut}
-                          className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors duration-300 bg-red-50 hover:bg-red-100 text-red-600"
+                          className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors duration-300 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400"
                         >
-                          <div className="text-red-600">
+                          <div className="menu-icon-red">
                             {item.icon}
                           </div>
-                          <span className="text-sm text-red-600">{item.title}</span>
+                          <span className="text-sm text-red-600 dark:text-red-400">{item.title}</span>
                         </button>
                       )
                     }
@@ -556,13 +553,13 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         className={cn(
                           "flex flex-col items-center justify-center gap-2 p-6 rounded-2xl font-medium transition-colors duration-300 group",
                           isActive
-                            ? "bg-[#F5F1E8] text-black ring-2 ring-[#C44E35]/20"
-                            : "bg-[#F5F1E8] text-black hover:bg-brand hover:text-white"
+                            ? "bg-muted text-foreground ring-2 ring-[#C44E35]/20"
+                            : "bg-muted text-foreground hover:bg-brand hover:text-white"
                         )}
                       >
                         <div className="transition-colors duration-300">
                           {item.lordicon ? (
-                            <div className={isActive ? "[&_svg]:text-black" : "[&_svg]:text-black group-hover:[&_svg]:text-white"}>
+                            <div className={isActive ? "[&_svg]:text-foreground" : "[&_svg]:text-foreground group-hover:[&_svg]:text-white"}>
                               <LordIcon
                                 ref={(el) => { iconRefsRef.current[index] = el }}
                                 src={item.lordicon}
@@ -572,8 +569,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                             </div>
                           ) : (
                             <div className={cn(
-                              "transition-colors duration-300",
-                              isActive ? "text-black" : "text-black group-hover:text-white"
+                              "menu-icon-base transition-colors duration-300",
+                              isActive ? "text-foreground" : "text-foreground group-hover:text-white"
                             )}>
                               {item.icon}
                             </div>
@@ -581,7 +578,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         </div>
                         <span className={cn(
                           "text-sm transition-colors duration-300",
-                          isActive ? "text-black" : "text-black group-hover:text-white"
+                          isActive ? "text-foreground" : "text-foreground group-hover:text-white"
                         )}>{item.title}</span>
                       </Link>
                     )
@@ -600,7 +597,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         transition={{ duration: 0.3, ease: [0.34, 1.25, 0.35, 1] }}
         data-mobile-dock
         className={cn(
-          "md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-black/5",
+          "md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border",
           !isMessagePage && "rounded-t-3xl"
         )}
         style={{
@@ -686,8 +683,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
                   <div className="relative">
-                    {/* Czarna ikona - bazowa */}
-                    <div style={{ filter: 'brightness(0) saturate(100%)' }}>
+                    {/* Ikona - bazowa */}
+                    <div className="dock-icon-base">
                       {item.icon}
                     </div>
                     {/* Biała ikona - overlay */}
@@ -706,7 +703,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                       {item.icon}
                     </motion.div>
                   </div>
-                  <span className="text-xs leading-none text-black/60">{item.title}</span>
+                  <span className="text-xs leading-none text-muted-foreground">{item.title}</span>
                 </button>
               )
             }
@@ -734,8 +731,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   style={{ zIndex: 10000, pointerEvents: 'auto' }}
                 >
                   <div className="relative">
-                    {/* Czarna ikona - bazowa */}
-                    <div style={{ filter: 'brightness(0) saturate(100%)' }}>
+                    {/* Ikona - bazowa */}
+                    <div className="dock-icon-base">
                       {item.icon}
                     </div>
                     {/* Biała ikona - overlay */}
@@ -754,7 +751,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                       {item.icon}
                     </motion.div>
                   </div>
-                  <span className="text-xs leading-none text-black/60">{item.title}</span>
+                  <span className="text-xs leading-none text-muted-foreground">{item.title}</span>
                 </button>
               )
             }
@@ -781,7 +778,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                       {item.icon}
                     </motion.div>
                   </div>
-                  <span className="text-xs leading-none text-black/60">{item.title}</span>
+                  <span className="text-xs leading-none text-muted-foreground">{item.title}</span>
                 </Link>
               )
             }
@@ -794,8 +791,8 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 className="flex flex-col items-center justify-center gap-4 flex-1 relative z-10 py-2"
               >
                 <div className="relative">
-                  {/* Czarna ikona - bazowa */}
-                  <div style={{ filter: 'brightness(0) saturate(100%)' }}>
+                  {/* Ikona - bazowa */}
+                  <div className="dock-icon-base">
                     {item.icon}
                   </div>
                   {/* Biała ikona - overlay */}
@@ -814,7 +811,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     {item.icon}
                   </motion.div>
                 </div>
-                <span className="text-xs leading-none text-black/60">{item.title}</span>
+                <span className="text-xs leading-none text-muted-foreground">{item.title}</span>
               </Link>
             )
           })}

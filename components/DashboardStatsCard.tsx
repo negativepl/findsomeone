@@ -46,7 +46,7 @@ export function DashboardStatsCard({ href, title, count, subtitle, iconType }: D
   return (
     <Link href={href}>
       <Card
-        className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full"
+        className="border border-border rounded-3xl bg-card hover:bg-muted/50 transition-all cursor-pointer h-full"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -61,11 +61,11 @@ export function DashboardStatsCard({ href, title, count, subtitle, iconType }: D
               />
             </div>
             <div className="flex-1 flex flex-col justify-center gap-1">
-              <p className="text-xs md:text-sm text-black/60 mb-1">{title}</p>
+              <p className="text-xs md:text-sm text-muted-foreground mb-1">{title}</p>
               <div>
-                <p className="text-xl md:text-3xl font-bold text-black leading-none">{count}</p>
+                <p className="text-xl md:text-3xl font-bold text-foreground leading-none">{count}</p>
                 {subtitle && (
-                  <p className="text-[10px] md:text-xs text-black/60 mt-1">{subtitle}</p>
+                  <p className="text-[10px] md:text-xs text-muted-foreground mt-1">{subtitle}</p>
                 )}
               </div>
             </div>

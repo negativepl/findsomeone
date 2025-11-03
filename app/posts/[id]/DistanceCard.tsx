@@ -66,7 +66,7 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
 
   if (loading) {
     return (
-      <Card className="border-0 rounded-3xl bg-white shadow-sm">
+      <Card className="border border-border rounded-3xl bg-card shadow-sm">
         <CardContent className="p-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -75,8 +75,8 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
               </svg>
             </div>
             <div>
-              <p className="text-base font-semibold text-black">Obliczam odległość...</p>
-              <p className="text-sm text-black/60">Sprawdzam lokalizację</p>
+              <p className="text-base font-semibold text-foreground">Obliczam odległość...</p>
+              <p className="text-sm text-muted-foreground">Sprawdzam lokalizację</p>
             </div>
           </div>
         </CardContent>
@@ -89,7 +89,7 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
   }
 
   return (
-    <Card className="border-0 rounded-3xl bg-white shadow-sm">
+    <Card className="border border-border rounded-3xl bg-card shadow-sm">
       <CardContent className="p-6">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -99,8 +99,8 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
             </svg>
           </div>
           <div>
-            <p className="text-base font-semibold text-black">Odległość od Ciebie</p>
-            <p className="text-sm text-black/60">
+            <p className="text-base font-semibold text-foreground">Odległość od Ciebie</p>
+            <p className="text-sm text-muted-foreground">
               {distance < 1
                 ? 'Mniej niż 1 km'
                 : distance < 5

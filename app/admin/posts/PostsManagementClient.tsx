@@ -500,14 +500,14 @@ export function PostsManagementClient() {
     }
   }
 
-  const getStatusColor = (status: string) => {
-    const colors = {
-      active: 'bg-green-500',
-      pending: 'bg-yellow-500',
-      expired: 'bg-gray-400',
-      archived: 'bg-blue-500',
+  const getStatusBadge = (status: string) => {
+    const badges = {
+      active: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', label: 'Aktywne' },
+      pending: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', label: 'Oczekujące' },
+      expired: { bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-200', label: 'Wygasłe' },
+      archived: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', label: 'Zarchiwizowane' },
     }
-    return colors[status as keyof typeof colors] || 'bg-gray-400'
+    return badges[status as keyof typeof badges] || badges.expired
   }
 
   if (loading) {
@@ -534,7 +534,7 @@ export function PostsManagementClient() {
                 placeholder="Szukaj po tytule, opisie, kategorii, użytkowniku, mieście..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-10 h-12 text-base rounded-xl border-2 border-black/10 focus:border-[#C44E35]/40 bg-white"
+                className="pl-12 pr-10 h-12 text-base border-2 border-black/10 focus:border-[#C44E35]/40 bg-white"
               />
               {searchQuery && (
                 <button
@@ -559,7 +559,7 @@ export function PostsManagementClient() {
                 </div>
 
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="h-9 min-w-[180px] rounded-lg border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                  <SelectTrigger className="h-9 min-w-[180px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -572,7 +572,7 @@ export function PostsManagementClient() {
                 </Select>
 
                 <Select value={aiFilter} onValueChange={setAiFilter}>
-                  <SelectTrigger className="h-9 min-w-[170px] rounded-lg border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                  <SelectTrigger className="h-9 min-w-[170px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
                     <SelectValue placeholder="Źródło" />
                   </SelectTrigger>
                   <SelectContent>
@@ -588,7 +588,7 @@ export function PostsManagementClient() {
                       variant="outline"
                       role="combobox"
                       aria-expanded={openCityPopover}
-                      className="h-9 min-w-[170px] justify-between rounded-lg border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors font-normal"
+                      className="h-9 min-w-[170px] justify-between border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors font-normal"
                     >
                       {cityFilter === 'all' ? 'Miasto' : cityFilter}
                       <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -634,7 +634,7 @@ export function PostsManagementClient() {
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
                   placeholder="Od"
-                  className="h-9 w-[160px] rounded-lg border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
+                  className="h-9 w-[160px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
                 />
 
                 <Input
@@ -642,32 +642,26 @@ export function PostsManagementClient() {
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
                   placeholder="Do"
-                  className="h-9 w-[160px] rounded-lg border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
+                  className="h-9 w-[160px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
                 />
               </div>
 
               {/* Actions & Stats */}
               <div className="flex items-center gap-3">
-                <div className="px-3 py-1.5 bg-black/[0.02] rounded-lg border border-black/5">
-                  <span className="text-xs text-black/50">Wyniki: </span>
-                  <span className="text-sm font-bold text-black">{filteredPosts.length}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-semibold text-black/70 whitespace-nowrap">Na stronę:</span>
+                  <Select value={postsPerPage.toString()} onValueChange={(val) => setPostsPerPage(Number(val))}>
+                    <SelectTrigger className="h-9 w-[90px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="25">25</SelectItem>
+                      <SelectItem value="50">50</SelectItem>
+                      <SelectItem value="100">100</SelectItem>
+                      <SelectItem value="200">200</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
-
-                <div className="h-6 w-px bg-black/10" />
-
-                <Select value={postsPerPage.toString()} onValueChange={(val) => setPostsPerPage(Number(val))}>
-                  <SelectTrigger className="h-9 w-[90px] rounded-lg border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="25">25</SelectItem>
-                    <SelectItem value="50">50</SelectItem>
-                    <SelectItem value="100">100</SelectItem>
-                    <SelectItem value="200">200</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <div className="h-6 w-px bg-black/10" />
 
                 {(dateFrom || dateTo || statusFilter !== 'all' || aiFilter !== 'all' || cityFilter !== 'all' || searchQuery) && (
                   <Button
@@ -681,33 +675,24 @@ export function PostsManagementClient() {
                       setDateFrom('')
                       setDateTo('')
                     }}
-                    className="h-9 px-3 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
+                    className="h-9 px-3 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 )}
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={fetchPosts}
-                  className="h-9 px-3 rounded-lg hover:bg-blue-50 hover:text-blue-600 transition-colors"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Bulk Actions */}
+      {/* Floating Bulk Actions */}
       {selectedPosts.size > 0 && (
-        <Card className="mb-6 border-2 border-[#C44E35]/30 bg-[#C44E35]/5 shadow-sm">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5">
+          <div className="bg-white shadow-2xl border-2 border-black/10 p-4 min-w-[800px]">
+            <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-3">
-                <div className="bg-[#C44E35] text-white rounded-full w-9 h-9 flex items-center justify-center font-semibold text-sm">
+                <div className="bg-[#C44E35] text-white w-10 h-10 flex items-center justify-center font-bold text-sm shadow-sm">
                   {selectedPosts.size}
                 </div>
                 <p className="font-semibold text-black">
@@ -719,16 +704,16 @@ export function PostsManagementClient() {
                 <Button
                   variant="outline"
                   onClick={() => setShowBulkCategorySelector(true)}
-                  className="h-10 gap-2 rounded-lg bg-white border-2 hover:bg-black/5"
+                  className="h-10 gap-2 bg-white border-2 border-black/10 hover:bg-black/5 hover:border-black/20"
                 >
                   <FolderTree className="h-4 w-4" />
-                  Przenieś kategorię
+                  Przenieś
                 </Button>
 
                 <div className="flex items-center gap-2">
                   <Select value={bulkStatusValue} onValueChange={setBulkStatusValue}>
-                    <SelectTrigger className="w-[160px] !h-10 rounded-lg bg-white border-2">
-                      <SelectValue placeholder="Zmień status" />
+                    <SelectTrigger className="w-[140px] !h-10 bg-white border-2 border-black/10">
+                      <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="active">Aktywne</SelectItem>
@@ -742,37 +727,39 @@ export function PostsManagementClient() {
                     <Button
                       variant="default"
                       onClick={confirmBulkStatusChange}
-                      className="h-10 gap-2 rounded-lg bg-[#C44E35] hover:bg-[#B33D2A] text-white"
+                      className="h-10 px-4 bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-sm"
                     >
-                      <Check className="h-4 w-4" />
-                      Zatwierdź
+                      OK
                     </Button>
                   )}
                 </div>
 
+                <div className="h-8 w-px bg-black/10" />
+
                 <Button
                   variant="outline"
                   onClick={handleBulkDelete}
-                  className="h-10 gap-2 rounded-lg text-red-600 hover:text-red-700 hover:bg-red-50 border-2 border-red-200 bg-white"
+                  className="h-10 px-4 text-red-600 hover:text-red-700 hover:bg-red-50 border-2 border-red-200 bg-white"
                 >
-                  <Trash2 className="h-4 w-4" />
                   Usuń
                 </Button>
 
                 <Button
                   variant="ghost"
+                  size="sm"
                   onClick={() => {
                     setSelectedPosts(new Set())
                     setBulkStatusValue('')
                   }}
-                  className="h-10 rounded-lg hover:bg-black/10"
+                  className="h-10 w-10 p-0 hover:bg-black/10"
+                  title="Anuluj zaznaczenie"
                 >
-                  Anuluj
+                  <X className="h-5 w-5" />
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Posts table */}
@@ -786,9 +773,9 @@ export function PostsManagementClient() {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
-                          className="h-5 w-5 flex items-center justify-center hover:bg-black/5 rounded-sm transition-colors"
+                          className="h-5 w-5 flex items-center justify-center hover:bg-black/5 transition-colors"
                         >
-                          <div className={`h-4 w-4 rounded-sm border-2 flex items-center justify-center transition-colors ${
+                          <div className={`h-4 w-4 border-2 flex items-center justify-center transition-colors ${
                             selectedPosts.size > 0
                               ? 'bg-[#C44E35] border-[#C44E35]'
                               : 'border-black/30 hover:border-black/40'
@@ -907,12 +894,14 @@ export function PostsManagementClient() {
                       <span className="text-sm text-black/70">{post.city}</span>
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <div className="flex items-center justify-center">
-                        <div
-                          className={`w-3 h-3 rounded-full ${getStatusColor(post.status)}`}
-                          title={post.status}
-                        />
-                      </div>
+                      {(() => {
+                        const badge = getStatusBadge(post.status)
+                        return (
+                          <span className={`inline-flex items-center gap-1 ${badge.bg} ${badge.text} px-2.5 py-1 text-xs font-semibold border ${badge.border}`}>
+                            {badge.label}
+                          </span>
+                        )
+                      })()}
                     </td>
                     <td className="px-4 py-4 text-center">
                       <span className="text-xs text-black/50">
@@ -929,7 +918,7 @@ export function PostsManagementClient() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-9 w-9 p-0 hover:bg-blue-50 hover:text-blue-600"
+                            className="h-9 w-9 p-0 bg-blue-50/50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 border border-blue-200/50 hover:border-blue-300 transition-colors "
                             title="Zobacz ogłoszenie"
                           >
                             <ExternalLink className="h-4 w-4" />
@@ -939,7 +928,7 @@ export function PostsManagementClient() {
                           variant="ghost"
                           size="sm"
                           onClick={() => openEditModal(post)}
-                          className="h-9 w-9 p-0 hover:bg-orange-50 hover:text-orange-600"
+                          className="h-9 w-9 p-0 bg-orange-50/50 text-orange-600 hover:bg-orange-100 hover:text-orange-700 border border-orange-200/50 hover:border-orange-300 transition-colors "
                           title="Edytuj"
                         >
                           <Edit2 className="h-4 w-4" />
@@ -948,7 +937,7 @@ export function PostsManagementClient() {
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(post.id)}
-                          className="h-9 w-9 p-0 hover:bg-red-50 hover:text-red-600"
+                          className="h-9 w-9 p-0 bg-red-50/50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200/50 hover:border-red-300 transition-colors "
                           title="Usuń"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -974,7 +963,7 @@ export function PostsManagementClient() {
                   size="sm"
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="rounded-xl"
+                  className=""
                 >
                   ← Poprzednia
                 </Button>
@@ -983,7 +972,7 @@ export function PostsManagementClient() {
                   size="sm"
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="rounded-xl"
+                  className=""
                 >
                   Następna →
                 </Button>
@@ -995,11 +984,11 @@ export function PostsManagementClient() {
 
       {/* Edit Modal */}
       <Dialog open={!!editingPost} onOpenChange={(open) => !open && setEditingPost(null)}>
-        <DialogContent className="!max-w-[1400px] sm:!max-w-[1400px] max-h-[95vh] overflow-hidden flex flex-col">
-          <DialogHeader className="flex-shrink-0">
-            <DialogTitle className="text-2xl">Edytuj ogłoszenie</DialogTitle>
-            <DialogDescription>
-              Wprowadź zmiany w ogłoszeniu
+        <DialogContent className="!max-w-[1400px] sm:!max-w-[1400px] max-h-[95vh] overflow-hidden flex flex-col ">
+          <DialogHeader className="flex-shrink-0 pb-4 border-b border-black/5">
+            <DialogTitle className="text-2xl font-bold text-black">Edytuj ogłoszenie</DialogTitle>
+            <DialogDescription className="text-black/60">
+              {editingPost?.title}
             </DialogDescription>
           </DialogHeader>
 
@@ -1013,7 +1002,7 @@ export function PostsManagementClient() {
                   id="edit-title"
                   value={editFormData.title}
                   onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-                  className="h-10 rounded-lg border-2"
+                  className="h-10 border-2"
                 />
               </div>
 
@@ -1023,7 +1012,7 @@ export function PostsManagementClient() {
                 <button
                   type="button"
                   onClick={() => setShowCategorySelector(true)}
-                  className="w-full h-10 rounded-lg border-2 border-black/10 px-3 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between text-sm"
+                  className="w-full h-10 border-2 border-black/10 px-3 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between text-sm"
                 >
                   <span className={categoryPath.length > 0 ? 'text-black truncate' : 'text-black/40'}>
                     {categoryPath.length > 0
@@ -1043,7 +1032,7 @@ export function PostsManagementClient() {
                     id="edit-city"
                     value={editFormData.city}
                     onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })}
-                    className="h-10 rounded-lg border-2"
+                    className="h-10 border-2"
                   />
                 </div>
                 <div>
@@ -1052,7 +1041,7 @@ export function PostsManagementClient() {
                     id="edit-district"
                     value={editFormData.district}
                     onChange={(e) => setEditFormData({ ...editFormData, district: e.target.value })}
-                    className="h-10 rounded-lg border-2"
+                    className="h-10 border-2"
                   />
                 </div>
               </div>
@@ -1067,7 +1056,7 @@ export function PostsManagementClient() {
                       setEditFormData({ ...editFormData, price_type: value })
                     }
                   >
-                    <SelectTrigger className="w-full !h-10 rounded-lg border-2">
+                    <SelectTrigger className="w-full !h-10 border-2">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1087,7 +1076,7 @@ export function PostsManagementClient() {
                     value={editFormData.price}
                     onChange={(e) => setEditFormData({ ...editFormData, price: e.target.value })}
                     disabled={editFormData.price_type === 'free'}
-                    className="h-10 rounded-lg border-2"
+                    className="h-10 border-2"
                   />
                 </div>
               </div>
@@ -1099,7 +1088,7 @@ export function PostsManagementClient() {
                   value={editFormData.status}
                   onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}
                 >
-                  <SelectTrigger className="w-full !h-10 rounded-lg border-2">
+                  <SelectTrigger className="w-full !h-10 border-2">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -1123,19 +1112,19 @@ export function PostsManagementClient() {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t flex-shrink-0">
+          <div className="flex justify-end gap-3 pt-6 border-t border-black/5 flex-shrink-0 mt-4">
             <Button
               variant="outline"
               onClick={() => setEditingPost(null)}
               disabled={saving}
-              className="rounded-lg h-10 px-5"
+              className="h-11 px-6 border-2 border-black/10 hover:border-black/20"
             >
               Anuluj
             </Button>
             <Button
               onClick={handleSaveEdit}
               disabled={saving}
-              className="bg-[#C44E35] hover:bg-[#B33D2A] rounded-lg h-10 px-6"
+              className="bg-[#C44E35] hover:bg-[#B33D2A] h-11 px-8 shadow-sm"
             >
               {saving ? (
                 <>
@@ -1180,7 +1169,7 @@ export function PostsManagementClient() {
                   setShowCategorySelector(true)
                 }, 100)
               }}
-              className="w-full rounded-xl border-2 border-black/10 p-4 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between"
+              className="w-full border-2 border-black/10 p-4 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between"
             >
               <span className={bulkCategoryPath.length > 0 ? 'text-black' : 'text-black/40'}>
                 {bulkCategoryPath.length > 0
@@ -1200,14 +1189,14 @@ export function PostsManagementClient() {
                 setBulkCategoryId('')
                 setBulkCategoryPath([])
               }}
-              className="rounded-xl"
+              className=""
             >
               Anuluj
             </Button>
             <Button
               onClick={handleBulkCategoryChange}
               disabled={!bulkCategoryId}
-              className="bg-[#C44E35] hover:bg-[#B33D2A] rounded-xl"
+              className="bg-[#C44E35] hover:bg-[#B33D2A] "
             >
               Przenieś ogłoszenia
             </Button>

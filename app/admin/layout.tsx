@@ -20,6 +20,13 @@ export default async function AdminLayoutWrapper({
     redirect('/dashboard')
   }
 
+  // Get user profile from database
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('full_name, avatar_url')
+    .eq('id', user.id)
+    .single()
+
   // Get statistics for badges
   const { count: bannedUsersCount } = await supabase
     .from('profiles')
@@ -43,6 +50,7 @@ export default async function AdminLayoutWrapper({
   return (
     <AdminLayout
       user={user}
+      profile={profile}
       stats={{
         reportsCount: reportsCount || 0,
         bannedUsersCount: bannedUsersCount || 0,

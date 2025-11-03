@@ -55,7 +55,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
     .order('display_order')
 
   return (
-    <header className={`fixed top-0 left-0 right-0 bg-white border-b border-black/5 ${noRounding ? '' : 'rounded-b-3xl'} before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-white before:-translate-y-full before:z-[-1]`} style={{ zIndex: 9999, paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+    <header className={`fixed top-0 left-0 right-0 bg-card border-b border-border ${noRounding ? '' : 'rounded-b-3xl'} before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-card before:-translate-y-full before:z-[-1]`} style={{ zIndex: 9999, paddingTop: 'env(safe-area-inset-top, 0px)' }}>
       <div className="container mx-auto px-6">
         <nav className="flex items-center justify-between gap-3 md:gap-4 h-16">
           {/* Left Section */}
@@ -83,7 +83,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
                   </Link>
                 )}
                 <div className="min-w-0 flex-1 flex items-center gap-2">
-                  <h1 className="text-lg font-bold text-black truncate">{pageTitle}</h1>
+                  <h1 className="text-lg font-bold text-foreground truncate">{pageTitle}</h1>
                   {otherUserId && (
                     <PresenceIndicator userId={otherUserId} showText={true} size="sm" />
                   )}

@@ -610,10 +610,10 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         {/* Draft Recovery Modal */}
         {showDraftModal && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-lg border p-6 shadow-lg max-w-md w-full">
+            <div className="bg-card rounded-lg border p-6 shadow-lg max-w-md w-full">
               <div className="mb-6">
-                <h2 className="text-lg font-semibold text-black mb-2">Niedokończone ogłoszenie</h2>
-                <p className="text-sm text-black/60">
+                <h2 className="text-lg font-semibold text-foreground mb-2">Niedokończone ogłoszenie</h2>
+                <p className="text-sm text-muted-foreground">
                   Znaleziono rozpoczęte wcześniej ogłoszenie. Możesz kontynuować jego tworzenie lub zacząć od początku.
                 </p>
               </div>
@@ -621,7 +621,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
                 <button
                   onClick={discardDraft}
-                  className="rounded-md border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-10 px-4 text-sm font-medium transition-colors"
+                  className="rounded-md border-2 border-border hover:border-border hover:bg-muted h-10 px-4 text-sm font-medium transition-colors"
                 >
                   Zacznij od początku
                 </button>
@@ -639,15 +639,15 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         {/* Page Header - Above Card - Hidden on mobile */}
         <div className="mb-8 hidden md:block">
           <div className="flex items-center justify-between mb-3">
-            <h1 className="text-4xl font-bold text-black">Dodaj nowe ogłoszenie</h1>
+            <h1 className="text-4xl font-bold text-foreground">Dodaj nowe ogłoszenie</h1>
           </div>
-          <p className="text-lg text-black/60">
+          <p className="text-lg text-muted-foreground">
             Opisz swoje ogłoszenie i znajdź odpowiednich klientów lub specjalistów
           </p>
         </div>
 
       {/* Desktop: Card wrapper */}
-      <Card className="hidden md:block border-0 rounded-3xl bg-white">
+      <Card className="hidden md:block border border-border rounded-3xl bg-card">
         <CardContent className="pt-6 px-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Desktop: All fields visible */}
@@ -655,12 +655,12 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Title */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor="title" className="text-base font-semibold text-black">
+                  <Label htmlFor="title" className="text-base font-semibold text-foreground">
                     Tytuł ogłoszenia <span className="text-[#C44E35]">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors" aria-label="Pomoc: Jak pisać dobry tytuł?">
+                      <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Pomoc: Jak pisać dobry tytuł?">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -684,9 +684,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     required
                     maxLength={80}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
+                    className="rounded-2xl border-2 border-border h-12 focus:border-border pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
                   />
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-gray-500 font-medium">
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-muted-foreground font-medium">
                     {formData.title.length}/80
                   </span>
                 </div>
@@ -695,7 +695,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Category Selector */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold text-black">Kategoria <span className="text-[#C44E35]">*</span></Label>
+                  <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-[#C44E35]">*</span></Label>
                   <Button
                     type="button"
                     variant="outline"
@@ -729,7 +729,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   className={`w-full rounded-2xl border-2 transition-all p-4 text-left group ${
                     categoryPath.length > 0
                       ? 'border-[#C44E35]/30 bg-[#C44E35]/5 hover:border-[#C44E35]/50'
-                      : 'border-black/10 hover:border-black/30 hover:bg-black/5'
+                      : 'border-border hover:border-border hover:bg-muted'
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -737,15 +737,15 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-black/5 group-hover:bg-black/10'
                     }`}>
                       <svg className={`w-6 h-6 transition-colors ${
-                        categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40 group-hover:text-black/60'
+                        categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground group-hover:text-foreground'
                       }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-xs text-black/60 mb-1">Kategoria</div>
+                      <div className="text-xs text-muted-foreground mb-1">Kategoria</div>
                       <div className={`font-medium truncate ${
-                        categoryPath.length > 0 ? 'text-black' : 'text-black/40'
+                        categoryPath.length > 0 ? 'text-foreground' : 'text-muted-foreground'
                       }`}>
                         {categoryPath.length > 0
                           ? categoryPath.map(c => c.name).join(' > ')
@@ -754,7 +754,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       </div>
                     </div>
                     <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
-                      categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40 group-hover:text-black/60'
+                      categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground group-hover:text-foreground'
                     }`} />
                   </div>
                 </button>
@@ -763,12 +763,12 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Description */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Label className="text-base font-semibold text-black">
+                  <Label className="text-base font-semibold text-foreground">
                     Opis <span className="text-[#C44E35]">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors" aria-label="Pomoc: Jak napisać dobry opis?">
+                      <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Pomoc: Jak napisać dobry opis?">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -798,12 +798,12 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Images */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <Label className="text-base font-semibold text-black">
+                  <Label className="text-base font-semibold text-foreground">
                     Zdjęcia <span className="text-[#C44E35]">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button type="button" className="text-black/40 hover:text-black/60 transition-colors" aria-label="Pomoc: Dlaczego zdjęcia są wymagane?">
+                      <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Pomoc: Dlaczego zdjęcia są wymagane?">
                         <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
@@ -833,7 +833,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Location */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold text-black">
+                  <Label className="text-base font-semibold text-foreground">
                     Lokalizacja <span className="text-[#C44E35]">*</span>
                   </Label>
                   <Button
@@ -850,7 +850,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 </div>
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-3">
-                    <Label className="text-sm text-black/60">
+                    <Label className="text-sm text-muted-foreground">
                       Miasto <span className="text-[#C44E35]">*</span>
                     </Label>
                     <Popover open={openCityCombobox} onOpenChange={setOpenCityCombobox}>
@@ -859,13 +859,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           variant="outline"
                           role="combobox"
                           aria-expanded={openCityCombobox}
-                          className="w-full justify-between rounded-2xl border-2 border-black/10 h-12 hover:border-black/30 hover:bg-black/5 font-normal"
+                          className="w-full justify-between rounded-2xl border-2 border-border h-12 hover:border-border hover:bg-muted font-normal"
                         >
                           {formData.city || "Wybierz miasto"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[500px] p-0 rounded-2xl border-2 border-black/10" align="start">
+                      <PopoverContent className="w-[500px] p-0 rounded-2xl border-2 border-border" align="start">
                         <Command className="rounded-2xl">
                           <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
                           <CommandList>
@@ -889,7 +889,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                                   <div className="flex items-center justify-between w-full">
                                     <span>{city.name}</span>
                                     {city.voivodeship && (
-                                      <span className="text-xs text-black/40 ml-2">{city.voivodeship}</span>
+                                      <span className="text-xs text-muted-foreground ml-2">{city.voivodeship}</span>
                                     )}
                                   </div>
                                 </CommandItem>
@@ -901,7 +901,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     </Popover>
                   </div>
                   <div className="space-y-3">
-                    <Label htmlFor="district" className="text-sm text-black/60">
+                    <Label htmlFor="district" className="text-sm text-muted-foreground">
                       Dzielnica (opcjonalnie)
                     </Label>
                     <Input
@@ -909,7 +909,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       placeholder="np. Śródmieście"
                       value={formData.district}
                       onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                      className="rounded-2xl border-2 border-border h-12 focus:border-border"
                     />
                   </div>
                 </div>
@@ -918,7 +918,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Price */}
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="space-y-3 w-full md:w-48">
-                  <Label className="text-base font-semibold text-black">Typ ceny <span className="text-[#C44E35]">*</span></Label>
+                  <Label className="text-base font-semibold text-foreground">Typ ceny <span className="text-[#C44E35]">*</span></Label>
                   <Select
                     value={formData.priceType}
                     onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
@@ -926,7 +926,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     }
                     required
                   >
-                    <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full" aria-label="Typ ceny">
+                    <SelectTrigger className="rounded-2xl border-2 border-border !h-12 w-full" aria-label="Typ ceny">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -937,7 +937,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </Select>
                 </div>
                 <div className="space-y-3 flex-1">
-                  <Label htmlFor="price" className="text-base font-semibold text-black">
+                  <Label htmlFor="price" className="text-base font-semibold text-foreground">
                     Cena (zł) {formData.priceType !== 'free' && <span className="text-[#C44E35]">*</span>}
                   </Label>
                   <div className="flex items-center gap-3">
@@ -951,7 +951,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                       disabled={formData.priceType === 'free'}
                       required={formData.priceType !== 'free'}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 disabled:opacity-50 disabled:cursor-not-allowed w-32"
+                      className="rounded-2xl border-2 border-border h-12 focus:border-border disabled:opacity-50 disabled:cursor-not-allowed w-32"
                     />
 
                     {/* Negotiable switch */}
@@ -963,7 +963,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
                           aria-label="Cena do negocjacji"
                         />
-                        <label htmlFor="priceNegotiable" className="text-sm text-black/70 cursor-pointer select-none whitespace-nowrap">
+                        <label htmlFor="priceNegotiable" className="text-sm text-muted-foreground cursor-pointer select-none whitespace-nowrap">
                           Cena do negocjacji
                         </label>
                       </div>
@@ -974,13 +974,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
             </div>
 
             {/* Desktop footer */}
-            <div className="hidden md:block mt-8 pt-6 border-t-2 border-black/5">
+            <div className="hidden md:block mt-8 pt-6 border-t-2 border-border">
               <div className="flex flex-row gap-3 justify-end">
                 <Link href="/dashboard">
                   <Button
                     type="button"
                     variant="outline"
-                    className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 px-6 text-sm"
+                    className="rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>
@@ -999,7 +999,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       </Card>
 
       {/* Mobile: Form without Card wrapper */}
-      <form onSubmit={handleSubmit} className="md:hidden flex-1 flex flex-col overflow-hidden bg-white">
+      <form onSubmit={handleSubmit} className="md:hidden flex-1 flex flex-col overflow-hidden bg-card">
         {/* Sticky Toolbar for Step 2 */}
         {currentStep === 2 && (
           <div className="sticky top-[124px] z-20 flex-shrink-0">
@@ -1011,9 +1011,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         <div className="flex-1 flex flex-col overflow-hidden">
               {/* Step 1: Podstawowe informacje */}
               {currentStep === 1 && (
-                <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 bg-white">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 bg-card">
                   <div className="space-y-2">
-                    <Label htmlFor="title-mobile" className="text-base font-semibold text-black">
+                    <Label htmlFor="title-mobile" className="text-base font-semibold text-foreground">
                       Tytuł ogłoszenia <span className="text-[#C44E35]">*</span>
                     </Label>
                     <div className="relative">
@@ -1030,23 +1030,23 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         }}
                         required
                         maxLength={80}
-                        className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 pr-14 text-base"
+                        className="rounded-2xl border-2 border-border h-12 focus:border-border pr-14 text-base"
                       />
-                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-500 font-medium">
+                      <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-medium">
                         {formData.title.length}/80
                       </span>
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-black">Kategoria <span className="text-[#C44E35]">*</span></Label>
+                    <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-[#C44E35]">*</span></Label>
                     <button
                       type="button"
                       onClick={() => setShowCategorySelector(true)}
                       className={`w-full rounded-2xl border-2 transition-all p-4 text-left active:scale-98 ${
                         categoryPath.length > 0
                           ? 'border-[#C44E35]/30 bg-[#C44E35]/5'
-                          : 'border-black/10 bg-white'
+                          : 'border-border bg-card'
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -1054,15 +1054,15 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-black/5'
                         }`}>
                           <svg className={`w-6 h-6 transition-colors ${
-                            categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40'
+                            categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground'
                           }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                           </svg>
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-xs text-black/60 mb-0.5">Kategoria</div>
+                          <div className="text-xs text-muted-foreground mb-0.5">Kategoria</div>
                           <div className={`font-medium text-base truncate ${
-                            categoryPath.length > 0 ? 'text-black' : 'text-black/40'
+                            categoryPath.length > 0 ? 'text-foreground' : 'text-muted-foreground'
                           }`}>
                             {categoryPath.length > 0
                               ? categoryPath.map(c => c.name).join(' > ')
@@ -1071,7 +1071,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           </div>
                         </div>
                         <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
-                          categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-black/40'
+                          categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground'
                         }`} />
                       </div>
                     </button>
@@ -1097,12 +1097,12 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
               {/* Step 3: Zdjęcia */}
               {currentStep === 3 && (
-                <div className="animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto bg-white flex flex-col">
+                <div className="animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto bg-card flex flex-col">
                   <div className="space-y-2 mb-4">
-                    <Label className="text-base font-semibold text-black">
+                    <Label className="text-base font-semibold text-foreground">
                       Zdjęcia <span className="text-[#C44E35]">*</span>
                     </Label>
-                    <p className="text-sm text-black/60">
+                    <p className="text-sm text-muted-foreground">
                       Ogłoszenia ze zdjęciami otrzymują 5x więcej odpowiedzi. Pierwsze zdjęcie będzie miniaturką.
                     </p>
                   </div>
@@ -1123,7 +1123,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {currentStep === 4 && (
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="flex items-center justify-between mb-2">
-                    <Label className="text-base font-semibold text-black">
+                    <Label className="text-base font-semibold text-foreground">
                       Lokalizacja <span className="text-[#C44E35]">*</span>
                     </Label>
                     <Button
@@ -1140,7 +1140,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-sm text-black/60">
+                    <Label className="text-sm text-muted-foreground">
                       Miasto <span className="text-[#C44E35]">*</span>
                     </Label>
                     <Popover open={openCityCombobox} onOpenChange={setOpenCityCombobox}>
@@ -1149,13 +1149,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           variant="outline"
                           role="combobox"
                           aria-expanded={openCityCombobox}
-                          className="w-full justify-between rounded-2xl border-2 border-black/10 h-12 hover:border-black/30 hover:bg-black/5 font-normal text-base bg-white"
+                          className="w-full justify-between rounded-2xl border-2 border-border h-12 hover:border-border hover:bg-muted font-normal text-base bg-card"
                         >
                           {formData.city || "Wybierz miasto"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[calc(100vw-2rem)] p-0 rounded-2xl border-2 border-black/10" align="start">
+                      <PopoverContent className="w-[calc(100vw-2rem)] p-0 rounded-2xl border-2 border-border" align="start">
                         <Command className="rounded-2xl">
                           <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
                           <CommandList>
@@ -1179,7 +1179,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                                   <div className="flex items-center justify-between w-full">
                                     <span>{city.name}</span>
                                     {city.voivodeship && (
-                                      <span className="text-xs text-black/40 ml-2">{city.voivodeship}</span>
+                                      <span className="text-xs text-muted-foreground ml-2">{city.voivodeship}</span>
                                     )}
                                   </div>
                                 </CommandItem>
@@ -1192,15 +1192,15 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="district-mobile" className="text-sm text-black/60">
-                      Dzielnica <span className="text-gray-600 font-normal">(opcjonalnie)</span>
+                    <Label htmlFor="district-mobile" className="text-sm text-muted-foreground">
+                      Dzielnica <span className="text-muted-foreground font-normal">(opcjonalnie)</span>
                     </Label>
                     <Input
                       id="district-mobile"
                       placeholder="np. Śródmieście"
                       value={formData.district}
                       onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
+                      className="rounded-2xl border-2 border-border h-12 focus:border-border text-base bg-card"
                     />
                   </div>
                 </div>
@@ -1210,7 +1210,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {currentStep === 5 && (
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-black">Typ ceny <span className="text-[#C44E35]">*</span></Label>
+                    <Label className="text-base font-semibold text-foreground">Typ ceny <span className="text-[#C44E35]">*</span></Label>
                     <Select
                       value={formData.priceType}
                       onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
@@ -1218,7 +1218,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       }
                       required
                     >
-                      <SelectTrigger className="rounded-2xl border-2 border-black/10 !h-12 w-full text-base bg-white" aria-label="Typ ceny">
+                      <SelectTrigger className="rounded-2xl border-2 border-border !h-12 w-full text-base bg-card" aria-label="Typ ceny">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -1232,7 +1232,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   {formData.priceType !== 'free' && (
                     <>
                       <div className="space-y-2">
-                        <Label htmlFor="price-mobile" className="text-base font-semibold text-black">
+                        <Label htmlFor="price-mobile" className="text-base font-semibold text-foreground">
                           Cena (zł) <span className="text-[#C44E35]">*</span>
                         </Label>
                         <div className="flex items-center gap-3">
@@ -1245,7 +1245,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                             value={formData.price}
                             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             required
-                            className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30 text-base bg-white"
+                            className="rounded-2xl border-2 border-border h-12 focus:border-border text-base bg-card"
                           />
 
                           {/* Negotiable switch */}
@@ -1256,7 +1256,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                               onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
                               aria-label="Cena do negocjacji"
                             />
-                            <label htmlFor="priceNegotiable-mobile" className="text-sm text-black/70 cursor-pointer select-none whitespace-nowrap">
+                            <label htmlFor="priceNegotiable-mobile" className="text-sm text-muted-foreground cursor-pointer select-none whitespace-nowrap">
                               Cena do negocjacji
                             </label>
                           </div>
@@ -1271,16 +1271,16 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {currentStep === 6 && (
                 <div className="space-y-4 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold text-black mb-1">Sprawdź swoje ogłoszenie</h3>
-                    <p className="text-sm text-black/60">Upewnij się, że wszystko jest poprawne</p>
+                    <h3 className="text-xl font-bold text-foreground mb-1">Sprawdź swoje ogłoszenie</h3>
+                    <p className="text-sm text-muted-foreground">Upewnij się, że wszystko jest poprawne</p>
                   </div>
 
                   {/* Main content card */}
-                  <div className="bg-white border-2 border-black/10 rounded-2xl p-4 space-y-4">
+                  <div className="bg-card border-2 border-border rounded-2xl p-4 space-y-4">
                     {/* Title - prominent with edit button */}
                     <div>
                       <div className="flex items-start justify-between gap-3 mb-2">
-                        <h4 className="text-lg font-bold text-black flex-1">{formData.title}</h4>
+                        <h4 className="text-lg font-bold text-foreground flex-1">{formData.title}</h4>
                         <button
                           type="button"
                           onClick={() => setCurrentStep(1)}
@@ -1289,15 +1289,15 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           Edytuj
                         </button>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-black/60">
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <span>{categories.find(c => c.slug === formData.category)?.name || formData.category}</span>
                       </div>
                     </div>
 
                     {/* Description with edit */}
-                    <div className="border-t border-black/10 pt-3">
+                    <div className="border-t border-border pt-3">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs font-semibold text-black/60">OPIS</p>
+                        <p className="text-xs font-semibold text-muted-foreground">OPIS</p>
                         <button
                           type="button"
                           onClick={() => setCurrentStep(2)}
@@ -1307,15 +1307,15 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         </button>
                       </div>
                       <div
-                        className="text-sm text-black/80 prose prose-sm max-w-none line-clamp-3"
+                        className="text-sm text-foreground prose prose-sm max-w-none line-clamp-3"
                         dangerouslySetInnerHTML={{ __html: formData.description }}
                       />
                     </div>
 
                     {/* Images if present */}
-                    <div className="border-t border-black/10 pt-3">
+                    <div className="border-t border-border pt-3">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs font-semibold text-black/60">ZDJĘCIA</p>
+                        <p className="text-xs font-semibold text-muted-foreground">ZDJĘCIA</p>
                         <button
                           type="button"
                           onClick={() => setCurrentStep(3)}
@@ -1326,20 +1326,20 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       </div>
                       {images.length > 0 ? (
                         <div className="flex items-center gap-2">
-                          <svg className="w-5 h-5 text-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                           </svg>
-                          <span className="text-sm font-medium text-black">{images.length} {images.length === 1 ? 'zdjęcie' : 'zdjęcia'}</span>
+                          <span className="text-sm font-medium text-foreground">{images.length} {images.length === 1 ? 'zdjęcie' : 'zdjęcia'}</span>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-500">Brak zdjęć</p>
+                        <p className="text-sm text-muted-foreground">Brak zdjęć</p>
                       )}
                     </div>
 
                     {/* Location */}
-                    <div className="border-t border-black/10 pt-3">
+                    <div className="border-t border-border pt-3">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs font-semibold text-black/60">LOKALIZACJA</p>
+                        <p className="text-xs font-semibold text-muted-foreground">LOKALIZACJA</p>
                         <button
                           type="button"
                           onClick={() => setCurrentStep(4)}
@@ -1349,20 +1349,20 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         </button>
                       </div>
                       <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
-                        <span className="text-sm font-medium text-black">
+                        <span className="text-sm font-medium text-foreground">
                           {formData.city}{formData.district && `, ${formData.district}`}
                         </span>
                       </div>
                     </div>
 
                     {/* Budget */}
-                    <div className="border-t border-black/10 pt-3">
+                    <div className="border-t border-border pt-3">
                       <div className="flex items-center justify-between mb-2">
-                        <p className="text-xs font-semibold text-black/60">BUDŻET</p>
+                        <p className="text-xs font-semibold text-muted-foreground">BUDŻET</p>
                         <button
                           type="button"
                           onClick={() => setCurrentStep(5)}
@@ -1372,22 +1372,22 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         </button>
                       </div>
                       <div className="flex items-center gap-2">
-                        <svg className="w-5 h-5 text-black/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <span className="text-sm font-medium text-black">
+                        <span className="text-sm font-medium text-foreground">
                           {formData.priceType === 'free' ? (
                             'Za darmo'
                           ) : (
                             <>
                               {formData.price ? `${formData.price} zł` : ''}
                               {formData.price && (
-                                <span className="text-black/60 ml-1">
+                                <span className="text-muted-foreground ml-1">
                                   ({formData.priceType === 'hourly' ? 'za godz.' : formData.priceType === 'fixed' ? 'stała' : 'do negocjacji'})
                                 </span>
                               )}
                               {!formData.price && (
-                                <span className="text-black/60">
+                                <span className="text-muted-foreground">
                                   {formData.priceType === 'hourly' ? 'Za godzinę' : formData.priceType === 'fixed' ? 'Stała cena' : 'Do negocjacji'}
                                 </span>
                               )}
@@ -1399,8 +1399,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   {/* Info message */}
-                  <div className="bg-black/5 rounded-2xl p-5 text-center border border-black/10">
-                    <p className="text-sm font-medium text-black/90 leading-relaxed">
+                  <div className="bg-muted rounded-2xl p-5 text-center border border-border">
+                    <p className="text-sm font-medium text-foreground leading-relaxed">
                       Twoje ogłoszenie zostanie automatycznie sprawdzone przez system moderacji AI przed publikacją
                     </p>
                   </div>
@@ -1408,7 +1408,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               )}
 
             {error && (
-              <div className="bg-red-50 border-2 border-red-200 text-red-600 p-4 rounded-2xl text-sm mx-3">
+              <div className="bg-red-500/10 border-2 border-red-500/20 text-red-600 dark:text-red-400 p-4 rounded-2xl text-sm mx-3">
                 {error}
               </div>
             )}
@@ -1427,11 +1427,11 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         />
 
       {/* Mobile: Fixed bottom action bar */}
-      <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-white z-30 pb-[72px] border-t border-black/10 overflow-hidden transition-transform duration-300 ${
+      <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-card z-30 pb-[72px] border-t border-border overflow-hidden transition-transform duration-300 ${
         (isDockVisible && !isMenuOpen) ? 'translate-y-0' : 'translate-y-full'
       }`}>
         {/* Progress bar */}
-        <div className="h-1 bg-black/5">
+        <div className="h-1 bg-muted">
           <div
             className="h-full bg-[#C44E35] transition-all duration-300 ease-out"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
@@ -1446,7 +1446,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
+                  className="w-full rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold"
                 >
                   Anuluj
                 </Button>
@@ -1458,7 +1458,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 type="button"
                 onClick={prevStep}
                 variant="outline"
-                className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11 text-sm font-semibold"
+                className="w-full rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold"
               >
                 Wstecz
               </Button>
@@ -1494,7 +1494,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       {/* Moderation Modal */}
       {showModerationModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+          <div className="bg-card rounded-3xl p-8 max-w-md w-full">
             {moderationInProgress ? (
               <div className="text-center">
                 <div className="w-20 h-20 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -1503,10 +1503,10 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 </div>
-                <h3 className="text-2xl font-bold text-black mb-2">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
                   Sprawdzanie ogłoszenia
                 </h3>
-                <p className="text-black/60">
+                <p className="text-muted-foreground">
                   Proszę czekać, weryfikujemy treść...
                 </p>
               </div>
@@ -1519,10 +1519,10 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Ogłoszenie zatwierdzone!
                     </h3>
-                    <p className="text-black/60">
+                    <p className="text-muted-foreground">
                       Twoje ogłoszenie jest aktywne i widoczne dla wszystkich użytkowników.
                     </p>
                   </div>
@@ -1533,10 +1533,10 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Wymaga weryfikacji
                     </h3>
-                    <p className="text-black/60">
+                    <p className="text-muted-foreground">
                       Twoje ogłoszenie zostanie sprawdzone przez moderatora w ciągu 24 godzin.
                     </p>
                   </div>
@@ -1547,10 +1547,10 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </div>
-                    <h3 className="text-2xl font-bold text-black mb-2">
+                    <h3 className="text-2xl font-bold text-foreground mb-2">
                       Ogłoszenie odrzucone
                     </h3>
-                    <p className="text-black/60">
+                    <p className="text-muted-foreground">
                       Twoje ogłoszenie nie spełnia naszych wymagań. Sprawdź, czy treść jest zgodna z regulaminem.
                     </p>
                   </div>

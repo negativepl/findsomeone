@@ -191,7 +191,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           {/* Back button */}
           <button
             onClick={() => setMobileViewingCategory(null)}
-            className="flex items-center gap-2 text-black hover:text-[#C44E35] transition-colors mb-4"
+            className="flex items-center gap-2 text-foreground hover:text-[#C44E35] transition-colors mb-4"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -204,9 +204,9 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
             <button
               onClick={() => updateFilter('category', category.name.toLowerCase())}
               data-navigate="true"
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-white border border-black/10 hover:bg-[#F5F1E8] transition-colors"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-card border border-border hover:bg-muted transition-colors"
             >
-              <CategoryIcon iconName={category.icon} className="w-6 h-6 text-black/60" />
+              <CategoryIcon iconName={category.icon} className="w-6 h-6 text-muted-foreground" />
               <span className="font-bold text-lg">{category.name}</span>
             </button>
           </div>
@@ -223,7 +223,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
                     isSelected
                       ? 'bg-[#C44E35] text-white'
-                      : 'bg-white text-black border border-black/10 hover:bg-[#F5F1E8]'
+                      : 'bg-card text-foreground border border-border hover:bg-muted'
                   }`}
                 >
                   <span className="font-medium">{subcategory.name}</span>
@@ -245,7 +245,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
             !currentCategory
               ? 'bg-[#C44E35] text-white'
-              : 'bg-white text-black border border-black/10 hover:bg-[#F5F1E8]'
+              : 'bg-card text-foreground border border-border hover:bg-muted'
           }`}
         >
           <span className="font-medium">Wszystkie kategorie</span>
@@ -272,16 +272,16 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
                   isMainSelected
                     ? 'bg-[#C44E35] text-white'
-                    : 'bg-white text-black border border-black/10 hover:bg-[#F5F1E8]'
+                    : 'bg-card text-foreground border border-border hover:bg-muted'
                 }`}
               >
                 <CategoryIcon
                   iconName={mainCategory.icon}
-                  className={`w-5 h-5 ${isMainSelected ? 'text-white' : 'text-black/60'}`}
+                  className={`w-5 h-5 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`}
                 />
                 <span className="font-medium flex-1">{mainCategory.name}</span>
                 {hasSubcategories && (
-                  <svg className="w-5 h-5 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                   </svg>
                 )}
@@ -305,7 +305,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all mb-2 ${
                 !currentCategory
                   ? 'bg-[#C44E35] text-white'
-                  : 'bg-white text-black border border-black/10 hover:bg-[#F5F1E8]'
+                  : 'bg-card text-foreground border border-border hover:bg-muted'
               }`}
             >
               <span className="font-medium">Wszystkie kategorie</span>
@@ -330,7 +330,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                     onMouseLeave={handleCategoryLeave}
                   >
                     {/* Main category button */}
-                    <div className="border border-black/10 rounded-2xl overflow-visible bg-white">
+                    <div className="border border-border rounded-2xl overflow-visible bg-card">
                       <button
                         onClick={() => updateFilter('category', mainCategory.name.toLowerCase())}
                         onMouseEnter={() => {
@@ -343,19 +343,19 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                           isMainSelected
                             ? 'bg-[#C44E35] text-white rounded-2xl'
                             : hasSelectedSubcategory || isExpanded
-                            ? 'bg-[#F5F1E8] text-black rounded-2xl'
-                            : 'bg-white text-black hover:bg-[#F5F1E8] rounded-2xl'
+                            ? 'bg-muted text-foreground rounded-2xl'
+                            : 'bg-card text-foreground hover:bg-muted rounded-2xl'
                         }`}
                       >
                         <CategoryIcon
                           iconName={mainCategory.icon}
-                          className={`w-5 h-5 flex-shrink-0 ${isMainSelected ? 'text-white' : 'text-black/60'}`}
+                          className={`w-5 h-5 flex-shrink-0 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`}
                         />
                         <span className="font-medium flex-1">{mainCategory.name}</span>
 
                         {/* Dropdown indicator for categories with subcategories */}
                         {hasSubcategories && (
-                          <svg className={`w-5 h-5 ${isMainSelected ? 'text-white' : 'text-black/40'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <svg className={`w-5 h-5 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                           </svg>
                         )}
@@ -383,7 +383,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                         />
 
                         <div
-                          className="bg-white border border-black/10 rounded-2xl shadow-xl p-2 space-y-1 overflow-y-auto max-h-full"
+                          className="bg-card border border-border rounded-2xl shadow-xl p-2 space-y-1 overflow-y-auto max-h-full"
                           style={{
                             scrollbarWidth: 'thin',
                             scrollbarColor: 'rgba(0,0,0,0.1) transparent'
@@ -400,7 +400,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                                 className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl text-left transition-colors ${
                                   isSubSelected
                                     ? 'bg-[#C44E35] text-white'
-                                    : 'hover:bg-[#F5F1E8] text-black'
+                                    : 'hover:bg-muted text-foreground'
                                 }`}
                               >
                                 <span className="text-sm">{subcategory.name}</span>
@@ -442,14 +442,14 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
 
       {/* Mobile: Slide-out menu */}
       <div
-        className={`lg:hidden fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-[#FAF8F3] z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+        className={`lg:hidden fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-background z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
         <div className="p-6 space-y-4">
           {/* Header */}
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-black">Kategorie</h3>
+            <h3 className="text-lg font-bold text-foreground">Kategorie</h3>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="p-2 hover:bg-black/5 rounded-full transition-colors"
@@ -477,7 +477,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
       <div className="hidden lg:block sticky top-4 space-y-4 max-h-[calc(100vh-32px)]">
         {/* Header */}
         <div className="flex items-center justify-between flex-shrink-0">
-          <h3 className="text-lg font-bold text-black">Kategorie</h3>
+          <h3 className="text-lg font-bold text-foreground">Kategorie</h3>
           {hasActiveFilters && (
             <button
               onClick={clearFilters}

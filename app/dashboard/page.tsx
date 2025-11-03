@@ -50,16 +50,16 @@ export default async function DashboardPage() {
   const firstName = profile?.full_name?.split(' ')[0] || 'Użytkowniku'
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-background">
       <NavbarWithHide user={user} pageTitle={`Witaj, ${firstName}!`} />
 
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
         {/* Header - Desktop only */}
         <div className="mb-8 hidden md:block">
-          <h2 className="text-4xl font-bold mb-3 text-black">
+          <h2 className="text-4xl font-bold mb-3 text-foreground">
             Witaj, {profile?.full_name || 'Użytkowniku'}!
           </h2>
-          <p className="text-lg text-black/60">
+          <p className="text-lg text-muted-foreground">
             Zarządzaj swoimi ogłoszeniami i sprawdź aktywność
           </p>
         </div>
@@ -104,7 +104,7 @@ export default async function DashboardPage() {
 
           {/* Quick Actions */}
           <div>
-            <h2 className="text-xl font-bold text-black mb-3">Szybkie akcje</h2>
+            <h2 className="text-xl font-bold text-foreground mb-3">Szybkie akcje</h2>
             <div className="space-y-3">
               <Link href="/dashboard/my-posts/new" className="block">
                 <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12 text-base">
@@ -112,7 +112,7 @@ export default async function DashboardPage() {
                 </Button>
               </Link>
               <Link href="/posts" className="block">
-                <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-12 text-base">
+                <Button variant="outline" className="w-full rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 h-12 text-base bg-card text-foreground">
                   Przeglądaj ogłoszenia
                 </Button>
               </Link>
@@ -121,15 +121,15 @@ export default async function DashboardPage() {
 
           {/* Account Actions */}
           <div>
-            <h2 className="text-xl font-bold text-black mb-3">Twoje konto</h2>
+            <h2 className="text-xl font-bold text-foreground mb-3">Twoje konto</h2>
             <div className="space-y-3">
               <Link href="/dashboard/profile" className="block">
-                <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-12 text-base">
+                <Button variant="outline" className="w-full rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 h-12 text-base bg-card text-foreground">
                   Edytuj profil
                 </Button>
               </Link>
               <Link href="/dashboard/settings" className="block">
-                <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-12 text-base">
+                <Button variant="outline" className="w-full rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 h-12 text-base bg-card text-foreground">
                   Ustawienia
                 </Button>
               </Link>
@@ -177,9 +177,9 @@ export default async function DashboardPage() {
 
           {/* Quick Actions */}
           <div className="grid grid-cols-2 gap-6 mb-8">
-            <Card className="border-0 rounded-3xl bg-white">
+            <Card className="border border-border rounded-3xl bg-card">
               <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-bold text-black">Szybkie akcje</CardTitle>
+                <CardTitle className="text-2xl font-bold text-foreground">Szybkie akcje</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Link href="/dashboard/my-posts/new" className="block">
@@ -188,25 +188,25 @@ export default async function DashboardPage() {
                   </Button>
                 </Link>
                 <Link href="/posts" className="block">
-                  <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-14 text-base">
+                  <Button variant="outline" className="w-full rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 h-14 text-base bg-card text-foreground">
                     Przeglądaj ogłoszenia
                   </Button>
                 </Link>
               </CardContent>
             </Card>
 
-            <Card className="border-0 rounded-3xl bg-white">
+            <Card className="border border-border rounded-3xl bg-card">
               <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-bold text-black">Twoje konto</CardTitle>
+                <CardTitle className="text-2xl font-bold text-foreground">Twoje konto</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <Link href="/dashboard/profile" className="block">
-                  <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-14 text-base">
+                  <Button variant="outline" className="w-full rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 h-14 text-base bg-card text-foreground">
                     Edytuj profil
                   </Button>
                 </Link>
                 <Link href="/dashboard/settings" className="block">
-                  <Button variant="outline" className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-14 text-base">
+                  <Button variant="outline" className="w-full rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 h-14 text-base bg-card text-foreground">
                     Ustawienia
                   </Button>
                 </Link>

@@ -98,7 +98,7 @@ export function ChatInput({
               disabled={disabled}
               rows={1}
               maxLength={MAX_MESSAGE_LENGTH}
-              className="w-full resize-none rounded-2xl border border-black/10 px-4 pr-20 text-base focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] disabled:bg-black/5 disabled:cursor-not-allowed max-h-32 overflow-y-auto flex items-center"
+              className="w-full resize-none rounded-2xl border border-border bg-background px-4 pr-20 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] disabled:bg-muted disabled:cursor-not-allowed max-h-32 overflow-y-auto flex items-center"
               style={{
                 minHeight: '44px',
                 maxHeight: '128px',
@@ -114,7 +114,7 @@ export function ChatInput({
             />
             {/* Character count inside textarea */}
             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs pointer-events-none">
-              <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-orange-500' : 'text-gray-600'}>
+              <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-orange-500' : 'text-muted-foreground'}>
                 {characterCount} / {MAX_MESSAGE_LENGTH}
               </span>
             </div>
@@ -123,7 +123,7 @@ export function ChatInput({
           <button
             type="submit"
             disabled={disabled || !isValid}
-            className="flex-shrink-0 w-11 h-11 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white disabled:bg-black/10 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+            className="flex-shrink-0 w-11 h-11 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white disabled:bg-muted disabled:cursor-not-allowed transition-colors flex items-center justify-center"
             aria-label="Wyślij wiadomość"
           >
             <svg

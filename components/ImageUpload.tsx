@@ -69,7 +69,7 @@ function SortableThumbnail({
       style={style}
       {...attributes}
       {...listeners}
-      className="relative group rounded-2xl bg-white border-2 border-black/10 h-40 w-40 md:h-32 md:w-32 cursor-grab active:cursor-grabbing"
+      className="relative group rounded-2xl bg-card border-2 border-border h-40 w-40 md:h-32 md:w-32 cursor-grab active:cursor-grabbing"
     >
       <div className="absolute inset-0 rounded-2xl overflow-hidden">
         <Image
@@ -80,7 +80,7 @@ function SortableThumbnail({
           style={{ transform: `rotate(${imageRotations[imageUrl] || 0}deg)` }}
         />
         {index === 0 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-black/50 backdrop-blur-sm text-white text-[11px] font-bold py-1 px-1 text-center">
+          <div className="absolute bottom-0 left-0 right-0 bg-muted0 backdrop-blur-sm text-white text-[11px] font-bold py-1 px-1 text-center">
             MINIATURKA
           </div>
         )}
@@ -93,7 +93,7 @@ function SortableThumbnail({
             e.stopPropagation()
             onRotate(imageUrl)
           }}
-          className="absolute top-1 left-1 p-1 bg-white text-black rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 z-20 shadow-md"
+          className="absolute top-1 left-1 p-1 bg-card text-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 z-20 shadow-md"
           aria-label={`Obróć zdjęcie ${index + 1}`}
         >
           <RotateCw className="w-3 h-3" aria-hidden="true" />
@@ -295,13 +295,13 @@ export function ImageUpload({
             <label
               key={`empty-${index}`}
               htmlFor="image-upload"
-              className="rounded-2xl border-2 border-dashed border-black/20 hover:border-black/40 bg-white hover:bg-black/5 cursor-pointer transition-colors flex items-center justify-center h-40 w-40 md:h-32 md:w-32"
+              className="rounded-2xl border-2 border-dashed border-border hover:border-border bg-card hover:bg-muted cursor-pointer transition-colors flex items-center justify-center h-40 w-40 md:h-32 md:w-32"
               aria-label={`Dodaj zdjęcie ${images.length + index + 1}`}
             >
               {uploading && index === 0 ? (
-                <div className="w-8 h-8 border-2 border-black/20 border-t-black/60 rounded-full animate-spin" aria-label="Przesyłanie zdjęcia" />
+                <div className="w-8 h-8 border-2 border-border border-t-black/60 rounded-full animate-spin" aria-label="Przesyłanie zdjęcia" />
               ) : (
-                <ImageIcon className="w-8 h-8 text-black/30" aria-hidden="true" />
+                <ImageIcon className="w-8 h-8 text-muted-foreground" aria-hidden="true" />
               )}
             </label>
           ))}
@@ -310,7 +310,7 @@ export function ImageUpload({
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border-2 border-red-200 text-red-600 p-3 rounded-2xl text-sm">
+        <div className="bg-red-500/10 border-2 border-red-500/20 text-red-600 dark:text-red-400 p-3 rounded-2xl text-sm">
           {error}
         </div>
       )}

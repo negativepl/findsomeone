@@ -214,12 +214,12 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
       {/* Mega Menu Panel */}
       {isOpen && (
         <div className="hidden md:block fixed bottom-24 left-8 animate-in fade-in slide-in-from-bottom-4 duration-200" style={{ zIndex: 9999 }}>
-          <div className="bg-white rounded-3xl shadow-2xl border border-black/5 p-8" style={{ width: '950px', maxHeight: '75vh', overflowY: 'auto' }}>
+          <div className="bg-card rounded-3xl shadow-2xl border border-border p-8" style={{ width: '950px', maxHeight: '75vh', overflowY: 'auto' }}>
             <div className="flex gap-12">
               {/* Left side - All categories grid */}
               <div className="flex-1 pr-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-lg font-bold text-black">Wszystkie kategorie</h3>
+                  <h3 className="text-lg font-bold text-foreground">Wszystkie kategorie</h3>
                   <div className="relative w-64">
                     <input
                       ref={searchInputRef}
@@ -230,7 +230,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                       className="w-full h-9 pl-9 pr-4 rounded-full border border-black/10 focus:border-[#C44E35] focus:outline-none text-sm transition-all"
                     />
                     <svg
-                      className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-black/40"
+                      className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -253,7 +253,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
 
                     if (filteredCategories.length === 0) {
                       return (
-                        <div className="col-span-4 text-center py-12 text-black/60">
+                        <div className="col-span-4 text-center py-12 text-muted-foreground">
                           Nie znaleziono kategorii
                         </div>
                       )
@@ -267,7 +267,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                           key={cat.id}
                           onMouseEnter={() => handleCategoryHover(cat.id)}
                           onMouseLeave={handleCategoryLeave}
-                          className="flex flex-col items-center gap-2 p-3 rounded-2xl hover:bg-[#FAF8F3] transition-all duration-300 text-center group relative overflow-hidden"
+                          className="flex flex-col items-center gap-2 p-3 rounded-2xl hover:bg-muted transition-all duration-300 text-center group relative overflow-hidden"
                         >
                           {/* Shine effect on hover */}
                           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700 pointer-events-none" />
@@ -281,10 +281,10 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                           </div>
                           <div className="flex flex-col items-center">
                             <span className={`text-xs font-medium transition-colors duration-300 ${
-                              hoveredCategory === cat.id ? 'text-[#C44E35]' : 'text-black'
+                              hoveredCategory === cat.id ? 'text-[#C44E35]' : 'text-foreground'
                             }`}>{cat.name}</span>
                             {count > 0 && (
-                              <span className="text-[10px] text-black/40 mt-0.5">
+                              <span className="text-[10px] text-muted-foreground mt-0.5">
                                 ({count})
                               </span>
                             )}
@@ -321,7 +321,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                           <div className="w-10 h-10 rounded-xl bg-[#C44E35] text-white flex items-center justify-center">
                             <CategoryIcon iconName={hoveredCat.icon} className="w-5 h-5" />
                           </div>
-                          <h4 className="text-lg font-bold text-black">{hoveredCat.name}</h4>
+                          <h4 className="text-lg font-bold text-foreground">{hoveredCat.name}</h4>
                         </div>
 
                         {/* Subcategories */}
@@ -331,7 +331,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                               <Link
                                 key={sub.id}
                                 href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
-                                className="block px-4 py-2.5 rounded-xl hover:bg-[#FAF8F3] transition-all text-sm font-medium text-black/80 hover:text-black"
+                                className="block px-4 py-2.5 rounded-xl hover:bg-muted transition-all text-sm font-medium text-muted-foreground hover:text-foreground"
                                 onClick={() => setIsOpen(false)}
                               >
                                 {sub.name}
@@ -346,7 +346,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                             </Link>
                           </div>
                         ) : (
-                          <p className="text-sm text-black/60">Brak podkategorii</p>
+                          <p className="text-sm text-muted-foreground">Brak podkategorii</p>
                         )}
                       </>
                     ) : null

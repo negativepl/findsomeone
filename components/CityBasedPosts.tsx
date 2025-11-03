@@ -95,8 +95,8 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
       {/* Mobile: flat design */}
       <div className="md:hidden">
         <div className="mb-6">
-          <h3 className="text-2xl font-bold text-black mb-2">W Twoim mieście</h3>
-          <p className="text-sm text-black/60">Ogłoszenia z miasta {city}</p>
+          <h3 className="text-2xl font-bold text-foreground mb-2">W Twoim mieście</h3>
+          <p className="text-sm text-muted-foreground">Ogłoszenia z miasta {city}</p>
         </div>
 
         <div className="relative -mx-6">
@@ -118,11 +118,11 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section overflow-visible">
+      <div className="hidden md:block bg-card rounded-3xl p-8 shadow-sm group/section overflow-visible">
         <div className="flex items-center justify-between mb-12">
           <div>
-            <h3 className="text-4xl font-bold text-black mb-2">W Twoim mieście</h3>
-            <p className="text-lg text-black/60">Ogłoszenia z miasta {city}</p>
+            <h3 className="text-4xl font-bold text-foreground mb-2">W Twoim mieście</h3>
+            <p className="text-lg text-muted-foreground">Ogłoszenia z miasta {city}</p>
           </div>
           <Link href={`/posts?city=${encodeURIComponent(city)}`} className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white px-6 py-2.5 text-sm font-medium transition-colors inline-block">
             Zobacz wszystkie

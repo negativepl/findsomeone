@@ -54,10 +54,10 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
   }
 
   return (
-    <div className={`${noBorder ? 'h-full flex flex-col' : 'border-2 border-black/10 rounded-2xl focus-within:border-black/30 transition-colors'} overflow-hidden ${className || ''}`}>
+    <div className={`${noBorder ? 'h-full flex flex-col' : 'border-2 border-border rounded-2xl focus-within:border-border transition-colors'} overflow-hidden ${className || ''}`}>
       {/* Toolbar */}
       {!hideToolbar && (
-      <div className="border-b border-black/10 bg-black/5 p-1 md:p-2 flex md:flex-wrap gap-0.5 md:gap-1 overflow-x-auto md:overflow-x-visible scrollbar-hide snap-x snap-mandatory">
+      <div className="border-b border-border bg-muted p-1 md:p-2 flex md:flex-wrap gap-0.5 md:gap-1 overflow-x-auto md:overflow-x-visible scrollbar-hide snap-x snap-mandatory">
         <style jsx global>{`
           .scrollbar-hide::-webkit-scrollbar {
             display: none;
@@ -73,8 +73,8 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           disabled={!editor.can().chain().focus().toggleBold().run()}
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('bold')
-              ? 'bg-black text-white'
-              : 'bg-white hover:bg-black/5 text-black'
+              ? 'bg-foreground text-background'
+              : 'bg-card hover:bg-muted text-foreground'
           }`}
         >
           B
@@ -85,8 +85,8 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           disabled={!editor.can().chain().focus().toggleItalic().run()}
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm italic font-medium transition-colors ${
             editor.isActive('italic')
-              ? 'bg-black text-white'
-              : 'bg-white hover:bg-black/5 text-black'
+              ? 'bg-foreground text-background'
+              : 'bg-card hover:bg-muted text-foreground'
           }`}
         >
           I
@@ -97,8 +97,8 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           disabled={!editor.can().chain().focus().toggleStrike().run()}
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm line-through font-medium transition-colors ${
             editor.isActive('strike')
-              ? 'bg-black text-white'
-              : 'bg-white hover:bg-black/5 text-black'
+              ? 'bg-foreground text-background'
+              : 'bg-card hover:bg-muted text-foreground'
           }`}
         >
           S
@@ -111,8 +111,8 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('heading', { level: 2 })
-              ? 'bg-black text-white'
-              : 'bg-white hover:bg-black/5 text-black'
+              ? 'bg-foreground text-background'
+              : 'bg-card hover:bg-muted text-foreground'
           }`}
         >
           H2
@@ -122,8 +122,8 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('heading', { level: 3 })
-              ? 'bg-black text-white'
-              : 'bg-white hover:bg-black/5 text-black'
+              ? 'bg-foreground text-background'
+              : 'bg-card hover:bg-muted text-foreground'
           }`}
         >
           H3
@@ -136,8 +136,8 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('bulletList')
-              ? 'bg-black text-white'
-              : 'bg-white hover:bg-black/5 text-black'
+              ? 'bg-foreground text-background'
+              : 'bg-card hover:bg-muted text-foreground'
           }`}
         >
           • Lista
@@ -147,8 +147,8 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('orderedList')
-              ? 'bg-black text-white'
-              : 'bg-white hover:bg-black/5 text-black'
+              ? 'bg-foreground text-background'
+              : 'bg-card hover:bg-muted text-foreground'
           }`}
         >
           1. Lista
@@ -161,8 +161,8 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('blockquote')
-              ? 'bg-black text-white'
-              : 'bg-white hover:bg-black/5 text-black'
+              ? 'bg-foreground text-background'
+              : 'bg-card hover:bg-muted text-foreground'
           }`}
         >
           " Cytat
@@ -173,7 +173,7 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
         <button
           type="button"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          className="flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm bg-white hover:bg-black/5 text-black transition-colors whitespace-nowrap"
+          className="flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm bg-card hover:bg-muted text-foreground transition-colors whitespace-nowrap"
         >
           ─ Linia
         </button>
@@ -182,7 +182,7 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
 
       {/* Editor */}
       <div
-        className={`${noBorder ? 'flex-1 h-full' : 'flex-1 overflow-auto min-h-[250px]'} bg-white cursor-text`}
+        className={`${noBorder ? 'flex-1 h-full' : 'flex-1 overflow-auto min-h-[250px]'} bg-card cursor-text`}
         onClick={() => editor.commands.focus()}
       >
         <EditorContent

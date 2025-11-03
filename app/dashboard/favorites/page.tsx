@@ -18,16 +18,16 @@ export default async function FavoritesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3] flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col">
       <NavbarWithHide user={user} pageTitle="Ulubione" />
 
       {/* Main Content */}
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8 flex-1">
         <div className="mb-8 hidden md:block">
-          <h2 className="text-4xl font-bold mb-3 text-black">
+          <h2 className="text-4xl font-bold mb-3 text-foreground">
             Ulubione ogłoszenia
           </h2>
-          <p className="text-lg text-black/60">
+          <p className="text-lg text-muted-foreground">
             Twoje zapisane ogłoszenia
           </p>
         </div>

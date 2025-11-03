@@ -89,7 +89,7 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
 
-      <div className="min-h-screen bg-[#FAF8F3] relative">
+      <div className="min-h-screen bg-background relative">
         {/* Gradient overlay - covers entire viewport from top */}
         <div
           className="fixed inset-0 pointer-events-none"

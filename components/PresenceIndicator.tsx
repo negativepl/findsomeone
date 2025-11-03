@@ -38,7 +38,7 @@ export function PresenceIndicator({ userId, showText = false, size = 'md' }: Pre
     return (
       <div className="flex items-center gap-2">
         <span className={`${sizeClasses[size]} rounded-full ${isOnline ? 'bg-green-500' : 'bg-gray-400'}`} />
-        <span className="text-sm text-black/60">
+        <span className="text-sm text-muted-foreground">
           {isOnline ? 'Online' : getLastSeenText()}
         </span>
       </div>

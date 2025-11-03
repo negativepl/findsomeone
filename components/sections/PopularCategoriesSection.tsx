@@ -60,17 +60,17 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
         {/* Mobile: flat design without card */}
         <div className="md:hidden">
           <div className="mb-6">
-            <h3 className="text-2xl font-bold text-black mb-2">{title}</h3>
-            <p className="text-sm text-black/60">{subtitle}</p>
+            <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
+            <p className="text-sm text-muted-foreground">{subtitle}</p>
           </div>
           {layoutMobile === 'carousel' ? renderCarousel() : renderGrid()}
         </div>
 
         {/* Desktop: card design */}
-        <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+        <div className="hidden md:block bg-card rounded-3xl p-8 shadow-sm group/section">
           <div className="mb-12">
-            <h3 className="text-4xl font-bold text-black mb-2">{title}</h3>
-            <p className="text-lg text-black/60">{subtitle}</p>
+            <h3 className="text-4xl font-bold text-foreground mb-2">{title}</h3>
+            <p className="text-lg text-muted-foreground">{subtitle}</p>
           </div>
           {layoutDesktop === 'carousel' ? renderCarousel() : renderGrid()}
         </div>
@@ -84,17 +84,17 @@ export async function PopularCategoriesSection({ section }: PopularCategoriesSec
       {/* Mobile: flat design */}
       <div className="md:hidden">
         <div className="mb-6">
-          <h3 className="text-2xl font-bold text-black mb-2">{title}</h3>
-          <p className="text-sm text-black/60">{subtitle}</p>
+          <h3 className="text-2xl font-bold text-foreground mb-2">{title}</h3>
+          <p className="text-sm text-muted-foreground">{subtitle}</p>
         </div>
         {layoutMobile === 'carousel' ? renderCarousel() : renderGrid()}
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section">
+      <div className="hidden md:block bg-card rounded-3xl p-8 shadow-sm group/section">
         <div className="mb-12">
-          <h3 className="text-4xl font-bold text-black mb-2">{title}</h3>
-          <p className="text-lg text-black/60">{subtitle}</p>
+          <h3 className="text-4xl font-bold text-foreground mb-2">{title}</h3>
+          <p className="text-lg text-muted-foreground">{subtitle}</p>
         </div>
         {layoutMobile === 'carousel' ? renderCarousel() : renderGrid()}
       </div>

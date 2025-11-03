@@ -42,12 +42,12 @@ export function DeleteAccountDialog() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="rounded-full border-2 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400 whitespace-nowrap"
+          className="rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 whitespace-nowrap"
         >
           Usuń konto
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md border-0 rounded-3xl bg-white shadow-xl">
+      <DialogContent className="sm:max-w-md border border-border rounded-3xl bg-card shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-red-600">Usuń konto</DialogTitle>
           <DialogDescription className="text-base text-red-700">
@@ -57,7 +57,7 @@ export function DeleteAccountDialog() {
         <form action={handleSubmit}>
           <div className="space-y-5 py-4">
             <div className="space-y-3">
-              <Label htmlFor="password" className="text-base font-semibold text-black">
+              <Label htmlFor="password" className="text-base font-semibold text-foreground">
                 Hasło
               </Label>
               <Input
@@ -71,7 +71,7 @@ export function DeleteAccountDialog() {
               <p className="text-xs text-red-600">Potwierdź swoją tożsamość</p>
             </div>
             <div className="space-y-3">
-              <Label htmlFor="confirmation" className="text-base font-semibold text-black">
+              <Label htmlFor="confirmation" className="text-base font-semibold text-foreground">
                 Wpisz <span className="font-bold text-red-600">USUŃ KONTO</span> aby potwierdzić
               </Label>
               <Input
@@ -86,14 +86,14 @@ export function DeleteAccountDialog() {
               <p className="text-xs text-red-600">To działanie jest nieodwracalne!</p>
             </div>
           </div>
-          <div className="mt-8 pt-6 border-t-2 border-red-100">
+          <div className="mt-8 pt-6 border-t-2 border-red-500/20">
             <DialogFooter className="gap-2 sm:gap-2">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+              className="rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10"
             >
               Anuluj
             </Button>

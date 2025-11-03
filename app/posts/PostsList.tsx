@@ -124,7 +124,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
       }`}>
         {posts.map((post: Post) => (
           <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
-            <Card className={`border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden gap-0 py-0 cursor-pointer relative ${
+            <Card className={`border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden gap-0 py-0 cursor-pointer relative ${
               viewMode === 'list' ? 'flex flex-col' : 'flex flex-col h-full'
             }`}>
               {viewMode === 'list' ? (
@@ -144,7 +144,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                     <div className="flex gap-3 p-4 pb-0 items-center">
                       {/* Image */}
                       {post.images && post.images.length > 0 && (
-                        <div className="relative bg-black/5 overflow-hidden w-20 h-20 rounded-xl flex-shrink-0">
+                        <div className="relative bg-muted overflow-hidden w-20 h-20 rounded-xl flex-shrink-0">
                           <Image
                             src={post.images[0]}
                             alt={post.title}
@@ -156,12 +156,12 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                       {/* Content */}
                       <div className="flex-1 flex flex-col justify-between min-w-0 min-h-[80px]">
-                        <h3 className="text-base font-bold text-black mb-2 line-clamp-2">
+                        <h3 className="text-base font-bold text-foreground mb-2 line-clamp-2">
                           {post.title}
                         </h3>
 
                         {/* Location and Date */}
-                        <div className="flex items-center justify-between gap-2 text-xs text-black/60">
+                        <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
                           <div className="flex items-center gap-1 min-w-0">
                             <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -176,7 +176,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                     {/* Footer - full width */}
                     <div className="pb-4 mt-3 px-4">
-                      <div className="pt-3 border-t-2 border-black/5">
+                      <div className="pt-3 border-t-2 border-border">
                         <div className="flex items-center justify-between gap-2">
                         {/* User info */}
                         <div className="flex items-center gap-2 min-w-0 flex-1">
@@ -190,13 +190,13 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                             />
                           ) : (
                             <div className="w-9 h-9 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
-                              <span className="text-sm font-semibold text-black">
+                              <span className="text-sm font-semibold text-foreground">
                                 {post.profiles?.full_name?.charAt(0) || 'U'}
                               </span>
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
-                            <p className="text-sm font-semibold text-black truncate">
+                            <p className="text-sm font-semibold text-foreground truncate">
                               {post.profiles?.full_name || 'Anonymous'}
                             </p>
                             <RatingDisplay
@@ -212,10 +212,10 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                         {/* Price */}
                         {post.price ? (
                           <div className="text-right flex-shrink-0">
-                            <p className="text-base font-bold text-black whitespace-nowrap">
+                            <p className="text-base font-bold text-foreground whitespace-nowrap">
                               {post.price} zł{post.price_negotiable ? '*' : ''}
                             </p>
-                            <p className="text-xs text-black/60 whitespace-nowrap">
+                            <p className="text-xs text-muted-foreground whitespace-nowrap">
                               {post.price_negotiable
                                 ? 'do negocjacji'
                                 : post.price_type === 'hourly'
@@ -237,7 +237,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                   <div className="hidden md:flex h-full">
                     {/* Image container - left side, full height */}
                     {post.images && post.images.length > 0 && (
-                      <div className="relative bg-black/5 overflow-hidden w-64 flex-shrink-0 rounded-l-3xl">
+                      <div className="relative bg-muted overflow-hidden w-64 flex-shrink-0 rounded-l-3xl">
                         <Image
                           src={post.images[0]}
                           alt={post.title}
@@ -259,7 +259,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                     <div className="flex-1 flex flex-col p-6">
                       {/* Main content area - tylko tytuł */}
                       <div className="flex-1 pb-6">
-                        <h3 className="text-xl font-bold text-black line-clamp-2">
+                        <h3 className="text-xl font-bold text-foreground line-clamp-2">
                           {post.title}
                         </h3>
                       </div>
@@ -267,7 +267,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                       {/* Footer - bottom of content */}
                       <div className="space-y-3">
                         {/* Location and Date */}
-                        <div className="flex items-center justify-between gap-4 text-sm text-black/60">
+                        <div className="flex items-center justify-between gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -282,7 +282,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                         {/* Border separator */}
                         <div>
-                          <div className="border-t-2 border-black/5"></div>
+                          <div className="border-t-2 border-border"></div>
                         </div>
 
                         {/* User info and Price */}
@@ -299,13 +299,13 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                               />
                             ) : (
                               <div className="w-10 h-10 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
-                                <span className="text-sm font-semibold text-black">
+                                <span className="text-sm font-semibold text-foreground">
                                   {post.profiles?.full_name?.charAt(0) || 'U'}
                                 </span>
                               </div>
                             )}
                             <div className="min-w-0 flex-1">
-                              <p className="text-base font-semibold text-black truncate">
+                              <p className="text-base font-semibold text-foreground truncate">
                                 {post.profiles?.full_name || 'Anonymous'}
                               </p>
                               <RatingDisplay
@@ -321,10 +321,10 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                           {/* Price - right side */}
                           {post.price ? (
                             <div className="text-right flex-shrink-0">
-                              <p className="text-xl font-bold text-black whitespace-nowrap">
+                              <p className="text-xl font-bold text-foreground whitespace-nowrap">
                                 {post.price} zł
                               </p>
-                              <p className="text-sm text-black/60 whitespace-nowrap">
+                              <p className="text-sm text-muted-foreground whitespace-nowrap">
                                 {post.price_negotiable
                                   ? 'do negocjacji'
                                   : post.price_type === 'hourly'
@@ -347,7 +347,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                 <>
                   {/* Image */}
                   {post.images && post.images.length > 0 && (
-                    <div className="relative bg-black/5 overflow-hidden w-full h-40 md:h-48 rounded-t-3xl">
+                    <div className="relative bg-muted overflow-hidden w-full h-40 md:h-48 rounded-t-3xl">
                       <Image
                         src={post.images[0]}
                         alt={post.title}
@@ -366,11 +366,11 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                   <div className="flex-1 flex flex-col min-h-0">
                     <CardHeader className="pb-4 pt-4 px-4 md:pt-6 md:px-6">
-                      <CardTitle className="text-base md:text-xl font-bold text-black">
+                      <CardTitle className="text-base md:text-xl font-bold text-foreground">
                         {post.title}
                       </CardTitle>
                       {/* Mobile - Location and date in header */}
-                      <div className="flex md:hidden items-center justify-between gap-2 mt-2 text-xs text-black/60">
+                      <div className="flex md:hidden items-center justify-between gap-2 mt-2 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -387,11 +387,11 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                     <CardContent className="pb-4 px-4 md:pb-6 md:px-6 mt-auto space-y-0 md:space-y-3 flex-shrink-0">
                       {/* Mobile - Border separator */}
                       <div className="md:hidden mb-3">
-                        <div className="border-t-2 border-black/5"></div>
+                        <div className="border-t-2 border-border"></div>
                       </div>
 
                       {/* Desktop - Location and date above user info */}
-                      <div className="hidden md:flex items-center justify-between gap-4 text-sm text-black/60 mb-3">
+                      <div className="hidden md:flex items-center justify-between gap-4 text-sm text-muted-foreground mb-3">
                         <div className="flex items-center gap-1">
                           <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -406,7 +406,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
 
                       {/* Desktop - Border separator */}
                       <div className="hidden md:block mb-3">
-                        <div className="border-t-2 border-black/5"></div>
+                        <div className="border-t-2 border-border"></div>
                       </div>
 
                       <div className="flex items-center justify-between gap-2">
@@ -421,13 +421,13 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                             />
                           ) : (
                             <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
-                              <span className="text-xs font-semibold text-black">
+                              <span className="text-xs font-semibold text-foreground">
                                 {post.profiles?.full_name?.charAt(0) || 'U'}
                               </span>
                             </div>
                           )}
                           <div className="min-w-0 flex-1">
-                            <p className="text-xs md:text-sm font-semibold text-black truncate">
+                            <p className="text-xs md:text-sm font-semibold text-foreground truncate">
                               {post.profiles?.full_name || 'Anonymous'}
                             </p>
                             {/* Rating - all devices */}
@@ -444,10 +444,10 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                         {/* Price */}
                         {post.price ? (
                           <div className="text-right flex-shrink-0">
-                            <p className="text-base md:text-xl font-bold text-black whitespace-nowrap">
+                            <p className="text-base md:text-xl font-bold text-foreground whitespace-nowrap">
                               {post.price} zł
                             </p>
-                            <p className="text-xs md:text-sm text-black/60 whitespace-nowrap">
+                            <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">
                               {post.price_negotiable
                                 ? 'do negocjacji'
                                 : post.price_type === 'hourly'
@@ -474,7 +474,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
       {hasMore && (
         <div ref={observerTarget} className="py-8 text-center">
           {loading && (
-            <div className="flex items-center justify-center gap-2 text-black/60">
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />

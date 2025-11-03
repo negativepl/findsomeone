@@ -310,7 +310,7 @@ export default async function PostsPage({
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-background">
       {/* Structured Data for SEO */}
       <StructuredData
         type="breadcrumb"
@@ -333,10 +333,10 @@ export default async function PostsPage({
       {/* Main Content */}
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
         <div className="hidden md:block md:mb-4">
-          <h2 className="text-2xl md:text-4xl font-bold mb-3 text-black">
+          <h2 className="text-2xl md:text-4xl font-bold mb-3 text-foreground">
             {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Wszystkie ogłoszenia'}
           </h2>
-          <p className="text-base md:text-lg text-black/60">
+          <p className="text-base md:text-lg text-muted-foreground">
             {searchQuery || cityQuery || categoryQuery ? (
               <>
                 Znaleziono {posts?.length || 0} {posts?.length === 1 ? 'ogłoszenie' : 'ogłoszeń'}
@@ -377,8 +377,8 @@ export default async function PostsPage({
             ) : (
               <div className="col-span-full text-center py-20">
                 <div className="max-w-md mx-auto">
-                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/5 flex items-center justify-center">
-                    <svg className="w-10 h-10 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                    <svg className="w-10 h-10 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       {searchQuery || cityQuery || categoryQuery ? (
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                       ) : (
@@ -386,10 +386,10 @@ export default async function PostsPage({
                       )}
                     </svg>
                   </div>
-                  <p className="text-xl font-semibold text-black mb-2">
+                  <p className="text-xl font-semibold text-foreground mb-2">
                     {searchQuery || cityQuery || categoryQuery ? 'Nie znaleziono wyników' : 'Brak ogłoszeń'}
                   </p>
-                  <p className="text-black/60 mb-6">
+                  <p className="text-muted-foreground mb-6">
                     {searchQuery || cityQuery || categoryQuery ? (
                       <>Spróbuj zmienić kryteria wyszukiwania lub wyczyść filtry</>
                     ) : (
@@ -398,14 +398,14 @@ export default async function PostsPage({
                   </p>
                   {searchQuery || cityQuery || categoryQuery ? (
                     <Link href="/posts">
-                      <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
+                      <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border px-8">
                         Wyczyść filtry
                       </Button>
                     </Link>
                   ) : (
                     user && (
                       <Link href="/dashboard/my-posts/new">
-                        <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
+                        <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border px-8">
                           Dodaj ogłoszenie
                         </Button>
                       </Link>

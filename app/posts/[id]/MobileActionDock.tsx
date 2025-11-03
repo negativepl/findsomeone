@@ -90,7 +90,7 @@ export function MobileActionDock({
   }
 
   return (
-    <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-black/10 z-30 pb-[72px] transition-transform duration-300 ${
+    <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border z-30 pb-[72px] transition-transform duration-300 ${
       (isVisible && !isMenuOpen) ? 'translate-y-0' : 'translate-y-full'
     }`}>
       {/* Action buttons */}
@@ -112,7 +112,7 @@ export function MobileActionDock({
               <div className="flex-1">
                 <Button
                   onClick={handlePhoneClick}
-                  className="w-full rounded-full bg-white hover:bg-black/5 text-black border-2 border-black/10 hover:border-black/30 h-11 text-sm font-semibold gap-0"
+                  className="w-full rounded-full bg-card hover:bg-muted text-foreground border-2 border-border hover:border-border h-11 text-sm font-semibold gap-0"
                 >
                   Zadzwoń
                 </Button>

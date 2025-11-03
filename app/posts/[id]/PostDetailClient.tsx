@@ -38,11 +38,11 @@ export function PostDetailClientWrapper({ children, postTitle }: PostDetailClien
         isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
       }`}>
         {/* White background extending to the top */}
-        <div className="absolute inset-0 -top-[60px] bg-white" />
+        <div className="absolute inset-0 -top-[60px] bg-card" />
 
         {/* Content */}
-        <div className="relative bg-white border-b border-black/5 px-4 pt-6 pb-4">
-          <h1 className="text-lg font-bold text-black leading-tight">{postTitle}</h1>
+        <div className="relative bg-card border-b border-border px-4 pt-6 pb-4">
+          <h1 className="text-lg font-bold text-foreground leading-tight">{postTitle}</h1>
         </div>
       </div>
 

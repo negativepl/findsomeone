@@ -18,7 +18,7 @@ export function FAQSection({ section }: FAQSectionProps) {
     return (
       <section className="py-12 md:py-14">
         <div className="container mx-auto px-6">
-          <div className="text-center text-black/40 py-12 border-2 border-dashed border-black/10 rounded-2xl">
+          <div className="text-center text-foreground/40 py-12 border-2 border-dashed border-black/10 rounded-2xl">
             Brak pytań FAQ. Dodaj pytania w konfiguracji sekcji.
           </div>
         </div>
@@ -32,11 +32,11 @@ export function FAQSection({ section }: FAQSectionProps) {
         <div className="container mx-auto px-6">
           {section.title && (
             <div className="text-center mb-12">
-              <h2 className="text-2xl md:text-4xl font-bold text-black mb-3">
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3">
                 {section.title}
               </h2>
               {section.subtitle && (
-                <p className="text-sm md:text-lg text-black/60">
+                <p className="text-sm md:text-lg text-muted-foreground">
                   {section.subtitle}
                 </p>
               )}
@@ -50,13 +50,13 @@ export function FAQSection({ section }: FAQSectionProps) {
               return (
                 <div
                   key={index}
-                  className="bg-white border-2 border-black/10 rounded-2xl overflow-hidden hover:border-[#C44E35]/30 transition-all"
+                  className="bg-card border-2 border-border rounded-2xl overflow-hidden hover:border-[#C44E35]/30 transition-all"
                 >
                   <button
                     onClick={() => setOpenIndex(isOpen ? null : index)}
                     className="w-full px-6 py-5 flex items-center justify-between gap-4 text-left"
                   >
-                    <span className="font-semibold text-black text-lg">
+                    <span className="font-semibold text-foreground text-lg">
                       {item.question}
                     </span>
                     <ChevronDown
@@ -67,7 +67,7 @@ export function FAQSection({ section }: FAQSectionProps) {
                   </button>
 
                   {isOpen && (
-                    <div className="px-6 pb-5 text-black/70 leading-relaxed">
+                    <div className="px-6 pb-5 text-foreground/70 leading-relaxed">
                       {item.answer}
                     </div>
                   )}
@@ -94,11 +94,11 @@ export function FAQSection({ section }: FAQSectionProps) {
       <div className="container mx-auto px-6">
         {section.title && (
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-black mb-3">
+            <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3">
               {section.title}
             </h2>
             {section.subtitle && (
-              <p className="text-sm md:text-lg text-black/60">
+              <p className="text-sm md:text-lg text-muted-foreground">
                 {section.subtitle}
               </p>
             )}
@@ -109,12 +109,12 @@ export function FAQSection({ section }: FAQSectionProps) {
           {items.map((item: any, index: number) => (
             <div
               key={index}
-              className="bg-white border-2 border-black/10 rounded-2xl p-6"
+              className="bg-card border-2 border-border rounded-2xl p-6"
             >
-              <h3 className="font-semibold text-black text-lg mb-3">
+              <h3 className="font-semibold text-foreground text-lg mb-3">
                 {item.question}
               </h3>
-              <p className="text-black/70 leading-relaxed">
+              <p className="text-foreground/70 leading-relaxed">
                 {item.answer}
               </p>
             </div>

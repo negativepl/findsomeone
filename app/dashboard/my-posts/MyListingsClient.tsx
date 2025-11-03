@@ -402,7 +402,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
         {/* Right side - Sort */}
         <Select value={sortBy} onValueChange={handleSortChange}>
-          <SelectTrigger className="w-auto rounded-xl border-black/10 h-9 bg-white focus:ring-0 focus:ring-offset-0 focus:border-black/20 px-2.5 gap-1 justify-start" aria-label="Sortuj według">
+          <SelectTrigger className="w-auto rounded-xl border-border h-9 bg-card focus:ring-0 focus:ring-offset-0 focus:border-border px-2.5 gap-1 justify-start" aria-label="Sortuj według">
             <span className="text-sm">Sortuj według</span>
           </SelectTrigger>
           <SelectContent>
@@ -418,7 +418,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
       {filteredPosts && filteredPosts.length > 0 ? (
         <div className={viewMode === 'list' ? 'space-y-4' : 'grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3'}>
           {filteredPosts.map((post: Post) => (
-            <Card key={post.id} className={`border-0 rounded-3xl bg-white shadow-sm hover:shadow-md transition-shadow group relative ${
+            <Card key={post.id} className={`border border-border rounded-3xl bg-card shadow-sm hover:shadow-md transition-shadow group relative ${
               viewMode === 'list' ? '' : 'flex flex-col h-full'
             }`}>
               {/* Clickable overlay for entire card */}
@@ -437,7 +437,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                       <div className="flex gap-3 p-4 pb-0 items-start">
                         {/* Image thumbnail */}
                         {post.images && post.images.length > 0 && (
-                          <div className="relative overflow-hidden bg-black/5 flex-shrink-0 w-20 h-20 rounded-xl">
+                          <div className="relative overflow-hidden bg-muted flex-shrink-0 w-20 h-20 rounded-xl">
                             <Image
                               src={post.images[0]}
                               alt={post.title}
@@ -449,9 +449,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                         {/* Content */}
                         <div className="flex-1 flex flex-col min-w-0">
-                          {/* Status badge in top right */}
+                          {/* Title with optional status badge */}
                           <div className="flex items-start justify-between gap-2 mb-2">
-                            <h3 className="text-base font-bold text-black line-clamp-2 flex-1">
+                            <h3 className="text-base font-bold text-foreground line-clamp-2 flex-1">
                               {post.title}
                             </h3>
                             {post.moderation_status === 'rejected' ? (
@@ -464,22 +464,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 <Clock className="w-3 h-3 text-yellow-600" />
                                 <span className="text-xs font-semibold text-yellow-700">Oczekuje</span>
                               </div>
-                            ) : post.status === 'active' ? (
-                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-green-50 border border-green-200 rounded-lg flex-shrink-0">
-                                <CheckCircle2 className="w-3 h-3 text-green-600" />
-                                <span className="text-xs font-semibold text-green-700">Aktywne</span>
-                              </div>
-                            ) : post.status === 'completed' ? (
-                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-50 border border-gray-200 rounded-lg flex-shrink-0">
-                                <CheckCircle className="w-3 h-3 text-gray-600" />
-                                <span className="text-xs font-semibold text-gray-700">Zakończone</span>
-                              </div>
-                            ) : (
-                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-50 border border-gray-200 rounded-lg flex-shrink-0">
-                                <PauseCircle className="w-3 h-3 text-gray-600" />
-                                <span className="text-xs font-semibold text-gray-700">Nieaktywne</span>
-                              </div>
-                            )}
+                            ) : null}
                           </div>
 
                           {/* Rejection reason */}
@@ -492,7 +477,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           )}
 
                           {/* Location and Stats */}
-                          <div className="flex items-center gap-2 text-xs text-black/60 flex-wrap">
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                             <div className="flex items-center gap-1">
                               <MapPin className="w-3 h-3" />
                               <span className="truncate">{post.city}</span>
@@ -519,16 +504,16 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                       </div>
 
                       {/* Footer - full width */}
-                      <div className="pt-3 pb-4 mt-3 border-t-2 border-black/5 px-4">
+                      <div className="pt-3 pb-4 mt-3 border-t-2 border-border px-4">
                         <div className="flex items-center justify-between gap-2">
                           {/* Price */}
                           {post.price ? (
                             <div className="text-left">
-                              <p className="text-base font-bold text-black">
+                              <p className="text-base font-bold text-foreground">
                                 {post.price} zł
                               </p>
                               {post.price_type && (
-                                <p className="text-xs text-black/60">
+                                <p className="text-xs text-muted-foreground">
                                   {post.price_type === 'hourly'
                                     ? 'za godzinę'
                                     : post.price_type === 'fixed'
@@ -542,14 +527,14 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           )}
 
                         {/* Actions Container */}
-                        <div className="bg-black/[0.02] rounded-xl p-2 flex items-center gap-1.5">
+                        <div className="bg-muted/50 rounded-xl p-2 flex items-center gap-1.5">
                           {post.status === 'active' && post.expires_at && getDaysUntilExpiry(post.expires_at) !== null && getDaysUntilExpiry(post.expires_at)! <= 7 && (
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <button
                                     onClick={(e) => handleExtendPost(post.id, e)}
-                                    className="h-8 w-8 rounded-lg bg-white border border-[#C44E35]/30 text-[#C44E35] hover:bg-[#C44E35]/10 flex items-center justify-center transition-all relative z-20"
+                                    className="h-8 w-8 rounded-lg bg-card border border-[#C44E35]/30 text-[#C44E35] hover:bg-[#C44E35]/10 flex items-center justify-center transition-all relative z-20"
                                     disabled={isPending}
                                   >
                                     <RefreshCw className="w-3 h-3" />
@@ -571,7 +556,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       e.preventDefault()
                                       openAppealDialog(post.id)
                                     }}
-                                    className="h-8 w-8 rounded-lg bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
+                                    className="h-8 w-8 rounded-lg bg-card border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
                                   >
                                     <MessageSquare className="w-3 h-3" />
                                   </button>
@@ -587,7 +572,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             <TooltipProvider>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <div className="h-8 px-3 rounded-lg bg-white border border-yellow-200 text-yellow-700 flex items-center justify-center gap-1.5">
+                                  <div className="h-8 px-3 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-1.5">
                                     <Clock className="w-3 h-3" />
                                     <span className="text-xs font-semibold">W trakcie</span>
                                   </div>
@@ -603,8 +588,8 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
-                                  <button className="h-8 w-8 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all">
-                                    <Pencil className="w-3 h-3 text-black" />
+                                  <button className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
+                                    <Pencil className="w-3 h-3 text-foreground" />
                                   </button>
                                 </Link>
                               </TooltipTrigger>
@@ -624,10 +609,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         e.preventDefault()
                                         handleStatusChange(post.id, 'closed')
                                       }}
-                                      className="h-8 w-8 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                      className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                       disabled={isPending}
                                     >
-                                      <PauseCircle className="w-3 h-3 text-black" />
+                                      <PauseCircle className="w-3 h-3 text-foreground" />
                                     </button>
                                   </TooltipTrigger>
                                   <TooltipContent sideOffset={5}>
@@ -643,10 +628,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         e.preventDefault()
                                         handleStatusChange(post.id, 'completed')
                                       }}
-                                      className="h-8 w-8 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                      className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                       disabled={isPending}
                                     >
-                                      <CheckCircle className="w-3 h-3 text-black" />
+                                      <CheckCircle className="w-3 h-3 text-foreground" />
                                     </button>
                                   </TooltipTrigger>
                                   <TooltipContent sideOffset={5}>
@@ -667,10 +652,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         e.preventDefault()
                                         handleStatusChange(post.id, 'active')
                                       }}
-                                      className="h-8 w-8 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                      className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                       disabled={isPending}
                                     >
-                                      <PlayCircle className="w-3 h-3 text-black" />
+                                      <PlayCircle className="w-3 h-3 text-foreground" />
                                     </button>
                                   </TooltipTrigger>
                                   <TooltipContent sideOffset={5}>
@@ -686,10 +671,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         e.preventDefault()
                                         handleStatusChange(post.id, 'completed')
                                       }}
-                                      className="h-8 w-8 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                      className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                       disabled={isPending}
                                     >
-                                      <CheckCircle className="w-3 h-3 text-black" />
+                                      <CheckCircle className="w-3 h-3 text-foreground" />
                                     </button>
                                   </TooltipTrigger>
                                   <TooltipContent sideOffset={5}>
@@ -709,10 +694,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       e.preventDefault()
                                       handleStatusChange(post.id, 'active')
                                     }}
-                                    className="h-8 w-8 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                    className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                     disabled={isPending}
                                   >
-                                    <PlayCircle className="w-3 h-3 text-black" />
+                                    <PlayCircle className="w-3 h-3 text-foreground" />
                                   </button>
                                 </TooltipTrigger>
                                 <TooltipContent sideOffset={5}>
@@ -730,7 +715,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                     e.preventDefault()
                                     openDeleteDialog(post.id)
                                   }}
-                                  className="h-8 w-8 rounded-lg bg-white border border-red-200 text-red-600 hover:bg-red-50 flex items-center justify-center transition-all relative z-20"
+                                  className="h-8 w-8 rounded-lg bg-red-50 border-2 border-red-300 text-red-600 hover:bg-red-100 hover:border-red-400 flex items-center justify-center transition-all relative z-20"
                                   disabled={isPending}
                                 >
                                   <Trash2 className="w-3 h-3" />
@@ -750,7 +735,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                     <div className="hidden md:flex h-full overflow-hidden rounded-3xl">
                       {/* Image container - left side, full height */}
                       {post.images && post.images.length > 0 && (
-                        <div className="relative bg-black/5 w-64 flex-shrink-0">
+                        <div className="relative bg-muted w-64 flex-shrink-0">
                           <Image
                             src={post.images[0]}
                             alt={post.title}
@@ -764,10 +749,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                       <div className="flex-1 flex flex-col p-6">
                         {/* Top section */}
                         <div className="flex items-start justify-between gap-3 mb-3">
-                          <h3 className="text-xl font-bold text-black flex-1">
+                          <h3 className="text-xl font-bold text-foreground flex-1">
                             {post.title}
                           </h3>
-                          {/* Status badge */}
+                          {/* Status badge (only important states) */}
                           {post.moderation_status === 'rejected' ? (
                             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg flex-shrink-0">
                               <XCircle className="w-4 h-4 text-red-600" />
@@ -778,22 +763,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               <Clock className="w-4 h-4 text-yellow-600" />
                               <span className="text-sm font-semibold text-yellow-700">Oczekuje</span>
                             </div>
-                          ) : post.status === 'active' ? (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg flex-shrink-0">
-                              <CheckCircle2 className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-semibold text-green-700">Aktywne</span>
-                            </div>
-                          ) : post.status === 'completed' ? (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg flex-shrink-0">
-                              <CheckCircle className="w-4 h-4 text-gray-600" />
-                              <span className="text-sm font-semibold text-gray-700">Zakończone</span>
-                            </div>
-                          ) : (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg flex-shrink-0">
-                              <PauseCircle className="w-4 h-4 text-gray-600" />
-                              <span className="text-sm font-semibold text-gray-700">Nieaktywne</span>
-                            </div>
-                          )}
+                          ) : null}
                         </div>
 
                         {/* Rejection reason */}
@@ -811,7 +781,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                         {/* Bottom section */}
                         <div className="space-y-3">
                           {/* Location and Stats */}
-                          <div className="flex items-center gap-4 text-sm text-black/60">
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
                             <div className="flex items-center gap-1">
                               <MapPin className="w-4 h-4" />
                               <span>{post.city}</span>
@@ -841,18 +811,18 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           </div>
 
                           {/* Border separator */}
-                          <div className="border-t-2 border-black/5"></div>
+                          <div className="border-t-2 border-border"></div>
 
                           {/* Price and Actions */}
                           <div className="flex items-center justify-between gap-4">
                             {/* Price */}
                             {post.price && (
                               <div className="text-left">
-                                <p className="text-xl font-bold text-black">
+                                <p className="text-xl font-bold text-foreground">
                                   {post.price} zł
                                 </p>
                                 {post.price_type && (
-                                  <p className="text-sm text-black/60">
+                                  <p className="text-sm text-muted-foreground">
                                     {post.price_type === 'hourly'
                                       ? 'za godzinę'
                                       : post.price_type === 'fixed'
@@ -864,7 +834,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             )}
 
                             {/* Actions Container */}
-                            <div className="bg-black/[0.02] rounded-xl p-2 flex items-center gap-2">
+                            <div className="bg-muted/50 rounded-xl p-2 flex items-center gap-2">
                               {post.moderation_status === 'rejected' && !post.appeal_status && (
                                 <TooltipProvider>
                                   <Tooltip>
@@ -874,7 +844,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           e.preventDefault()
                                           openAppealDialog(post.id)
                                         }}
-                                        className="h-10 w-10 rounded-lg bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
+                                        className="h-10 w-10 rounded-lg bg-card border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
                                       >
                                         <MessageSquare className="w-4 h-4" />
                                       </button>
@@ -890,7 +860,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 <TooltipProvider>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <div className="h-10 px-4 rounded-lg bg-white border border-yellow-200 text-yellow-700 flex items-center justify-center gap-2">
+                                      <div className="h-10 px-4 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-2">
                                         <Clock className="w-4 h-4" />
                                         <span className="text-sm font-semibold">W trakcie</span>
                                       </div>
@@ -906,8 +876,8 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
-                                      <button className="h-10 w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all">
-                                        <Pencil className="w-4 h-4 text-black" />
+                                      <button className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
+                                        <Pencil className="w-4 h-4 text-foreground" />
                                       </button>
                                     </Link>
                                   </TooltipTrigger>
@@ -927,10 +897,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                             e.preventDefault()
                                             handleStatusChange(post.id, 'closed')
                                           }}
-                                          className="h-10 w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                           disabled={isPending}
                                         >
-                                          <PauseCircle className="w-4 h-4 text-black" />
+                                          <PauseCircle className="w-4 h-4 text-foreground" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent sideOffset={5}>
@@ -946,10 +916,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                             e.preventDefault()
                                             handleStatusChange(post.id, 'completed')
                                           }}
-                                          className="h-10 w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                           disabled={isPending}
                                         >
-                                          <CheckCircle className="w-4 h-4 text-black" />
+                                          <CheckCircle className="w-4 h-4 text-foreground" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent sideOffset={5}>
@@ -970,10 +940,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                             e.preventDefault()
                                             handleStatusChange(post.id, 'active')
                                           }}
-                                          className="h-10 w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                           disabled={isPending}
                                         >
-                                          <PlayCircle className="w-4 h-4 text-black" />
+                                          <PlayCircle className="w-4 h-4 text-foreground" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent sideOffset={5}>
@@ -989,10 +959,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                             e.preventDefault()
                                             handleStatusChange(post.id, 'completed')
                                           }}
-                                          className="h-10 w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                           disabled={isPending}
                                         >
-                                          <CheckCircle className="w-4 h-4 text-black" />
+                                          <CheckCircle className="w-4 h-4 text-foreground" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent sideOffset={5}>
@@ -1012,10 +982,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           e.preventDefault()
                                           handleStatusChange(post.id, 'active')
                                         }}
-                                        className="h-10 w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                        className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                         disabled={isPending}
                                       >
-                                        <PlayCircle className="w-4 h-4 text-black" />
+                                        <PlayCircle className="w-4 h-4 text-foreground" />
                                       </button>
                                     </TooltipTrigger>
                                     <TooltipContent sideOffset={5}>
@@ -1033,7 +1003,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         e.preventDefault()
                                         openDeleteDialog(post.id)
                                       }}
-                                      className="h-10 w-10 rounded-lg bg-white border border-red-200 text-red-600 hover:bg-red-50 flex items-center justify-center transition-all relative z-20"
+                                      className="h-10 w-10 rounded-lg bg-red-50 border-2 border-red-300 text-red-600 hover:bg-red-100 hover:border-red-400 flex items-center justify-center transition-all relative z-20"
                                       disabled={isPending}
                                     >
                                       <Trash2 className="w-4 h-4" />
@@ -1055,7 +1025,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                   <>
                     {/* Image thumbnail */}
                     {post.images && post.images.length > 0 && (
-                      <div className="relative overflow-hidden bg-black/5 flex-shrink-0 w-full h-40 md:h-48 rounded-t-3xl">
+                      <div className="relative overflow-hidden bg-muted flex-shrink-0 w-full h-40 md:h-48 rounded-t-3xl">
                         <Image
                           src={post.images[0]}
                           alt={post.title}
@@ -1070,7 +1040,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                       {/* Top section - Title and Status */}
                       <div className="flex-1">
                         <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
-                          {/* Status badge in top right */}
+                          {/* Status badge (only important states) */}
                           {post.moderation_status === 'rejected' ? (
                             <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-red-50 border border-red-200 rounded-lg flex-shrink-0">
                               <XCircle className="w-3 h-3 md:w-4 md:h-4 text-red-600" />
@@ -1081,25 +1051,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               <Clock className="w-3 h-3 md:w-4 md:h-4 text-yellow-600" />
                               <span className="text-xs md:text-sm font-semibold text-yellow-700">Oczekuje</span>
                             </div>
-                          ) : post.status === 'active' ? (
-                            <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-green-50 border border-green-200 rounded-lg flex-shrink-0">
-                              <CheckCircle2 className="w-3 h-3 md:w-4 md:h-4 text-green-600" />
-                              <span className="text-xs md:text-sm font-semibold text-green-700">Aktywne</span>
-                            </div>
-                          ) : post.status === 'completed' ? (
-                            <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-gray-50 border border-gray-200 rounded-lg flex-shrink-0">
-                              <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-gray-600" />
-                              <span className="text-xs md:text-sm font-semibold text-gray-700">Zakończone</span>
-                            </div>
-                          ) : (
-                            <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-gray-50 border border-gray-200 rounded-lg flex-shrink-0">
-                              <PauseCircle className="w-3 h-3 md:w-4 md:h-4 text-gray-600" />
-                              <span className="text-xs md:text-sm font-semibold text-gray-700">Nieaktywne</span>
-                            </div>
-                          )}
+                          ) : null}
                         </div>
 
-                        <h3 className="text-base md:text-xl font-bold text-black mb-2 md:mb-3 line-clamp-2">
+                        <h3 className="text-base md:text-xl font-bold text-foreground mb-2 md:mb-3 line-clamp-2">
                           {post.title}
                         </h3>
 
@@ -1116,7 +1071,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                       {/* Bottom section - Stats/Price and Actions */}
                       <div className="mt-auto">
                         {/* Location and Stats in one row */}
-                        <div className="flex items-center justify-between gap-2 md:gap-3 text-xs md:text-sm text-black/60 mb-3">
+                        <div className="flex items-center justify-between gap-2 md:gap-3 text-xs md:text-sm text-muted-foreground mb-3">
                             {/* Location - left */}
                             <div className="flex items-center gap-1 md:gap-1.5 min-w-0">
                               <MapPin className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" />
@@ -1137,16 +1092,16 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                         </div>
 
                         {/* Footer with price and actions */}
-                        <div className="pt-3 md:pt-4 border-t-2 border-black/5">
+                        <div className="pt-3 md:pt-4 border-t-2 border-border">
                           <div className="flex items-center justify-between gap-2 md:gap-4">
                             {/* Price */}
                             {post.price ? (
                               <div className="text-left">
-                                <p className="text-base md:text-xl font-bold text-black">
+                                <p className="text-base md:text-xl font-bold text-foreground">
                                   {post.price} zł
                                 </p>
                                 {post.price_type && (
-                                  <p className="text-xs md:text-sm text-black/60">
+                                  <p className="text-xs md:text-sm text-muted-foreground">
                                     {post.price_type === 'hourly'
                                       ? 'za godzinę'
                                       : post.price_type === 'fixed'
@@ -1160,7 +1115,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             )}
 
                             {/* Actions Container */}
-                            <div className="bg-black/[0.02] rounded-xl p-2 flex items-center gap-1.5 md:gap-2">
+                            <div className="bg-muted/50 rounded-xl p-2 flex items-center gap-1.5 md:gap-2">
                               {post.moderation_status === 'rejected' && !post.appeal_status && (
                                 <TooltipProvider>
                                   <Tooltip>
@@ -1170,7 +1125,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           e.preventDefault()
                                           openAppealDialog(post.id)
                                         }}
-                                        className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
+                                        className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
                                       >
                                         <MessageSquare className="w-3 h-3 md:w-4 md:h-4" />
                                       </button>
@@ -1186,7 +1141,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 <TooltipProvider>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <div className="h-8 px-2 md:h-10 md:px-3 rounded-lg bg-white border border-yellow-200 text-yellow-700 flex items-center justify-center gap-1">
+                                      <div className="h-8 px-2 md:h-10 md:px-3 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-1">
                                         <Clock className="w-3 h-3 md:w-4 md:h-4" />
                                         <span className="text-xs md:text-sm font-semibold hidden md:inline">W trakcie</span>
                                       </div>
@@ -1202,8 +1157,8 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
-                                      <button className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all">
-                                        <Pencil className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                      <button className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
+                                        <Pencil className="w-3 h-3 md:w-4 md:h-4 text-foreground" />
                                       </button>
                                     </Link>
                                   </TooltipTrigger>
@@ -1223,10 +1178,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                             e.preventDefault()
                                             handleStatusChange(post.id, 'closed')
                                           }}
-                                          className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                           disabled={isPending}
                                         >
-                                          <PauseCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                          <PauseCircle className="w-3 h-3 md:w-4 md:h-4 text-foreground" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent sideOffset={5}>
@@ -1242,10 +1197,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                             e.preventDefault()
                                             handleStatusChange(post.id, 'completed')
                                           }}
-                                          className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                           disabled={isPending}
                                         >
-                                          <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                          <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-foreground" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent sideOffset={5}>
@@ -1266,10 +1221,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                             e.preventDefault()
                                             handleStatusChange(post.id, 'active')
                                           }}
-                                          className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                           disabled={isPending}
                                         >
-                                          <PlayCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                          <PlayCircle className="w-3 h-3 md:w-4 md:h-4 text-foreground" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent sideOffset={5}>
@@ -1285,10 +1240,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                             e.preventDefault()
                                             handleStatusChange(post.id, 'completed')
                                           }}
-                                          className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                          className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                           disabled={isPending}
                                         >
-                                          <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                          <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-foreground" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent sideOffset={5}>
@@ -1308,10 +1263,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           e.preventDefault()
                                           handleStatusChange(post.id, 'active')
                                         }}
-                                        className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-black/10 hover:bg-black/5 flex items-center justify-center transition-all relative z-20"
+                                        className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                         disabled={isPending}
                                       >
-                                        <PlayCircle className="w-3 h-3 md:w-4 md:h-4 text-black" />
+                                        <PlayCircle className="w-3 h-3 md:w-4 md:h-4 text-foreground" />
                                       </button>
                                     </TooltipTrigger>
                                     <TooltipContent sideOffset={5}>
@@ -1329,7 +1284,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         e.preventDefault()
                                         openDeleteDialog(post.id)
                                       }}
-                                      className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-white border border-red-200 text-red-600 hover:bg-red-50 flex items-center justify-center transition-all relative z-20"
+                                      className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-red-50 border-2 border-red-300 text-red-600 hover:bg-red-100 hover:border-red-400 flex items-center justify-center transition-all relative z-20"
                                       disabled={isPending}
                                     >
                                       <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
@@ -1353,14 +1308,14 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
         </div>
       ) : (
         <div className="text-center py-20">
-          <Card className="border-0 rounded-3xl bg-white max-w-md mx-auto">
+          <Card className="border border-border rounded-3xl bg-card max-w-md mx-auto">
             <CardContent className="p-12">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-black/5 flex items-center justify-center">
-                <svg className="w-10 h-10 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                <svg className="w-10 h-10 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                 </svg>
               </div>
-              <p className="text-xl font-semibold text-black mb-2">
+              <p className="text-xl font-semibold text-foreground mb-2">
                 {activeTab === 'all'
                   ? 'Nie masz jeszcze żadnych ogłoszeń'
                   : `Nie masz ogłoszeń w kategorii "${
@@ -1370,7 +1325,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                     }"`
                 }
               </p>
-              <p className="text-black/60 mb-6">
+              <p className="text-muted-foreground mb-6">
                 {activeTab === 'all'
                   ? 'Dodaj swoje pierwsze ogłoszenie i zacznij pomagać innym!'
                   : 'Zmień filtr lub dodaj nowe ogłoszenie'
@@ -1392,7 +1347,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
       {hasMore && filteredPosts.length > 0 && (
         <div ref={observerTarget} className="py-8 text-center">
           {loading && (
-            <div className="flex items-center justify-center gap-2 text-black/60">
+            <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -1414,10 +1369,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               Czy na pewno chcesz usunąć to ogłoszenie? Ta akcja jest nieodwracalna.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="mt-8 pt-6 border-t-2 border-black/5">
+          <div className="mt-8 pt-6 border-t-2 border-border">
             <AlertDialogFooter className="gap-2 sm:gap-2">
               <AlertDialogCancel
-                className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+                className="rounded-full border-2 border-border hover:border-border hover:bg-muted"
                 disabled={isPending}
               >
                 Anuluj
@@ -1454,17 +1409,17 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               value={appealMessage}
               onChange={(e) => setAppealMessage(e.target.value)}
               placeholder="np. Moje ogłoszenie nie zawiera treści zabronionych. Podane informacje są zgodne z regulaminem..."
-              className="rounded-2xl border-2 border-black/10 min-h-[120px] focus:border-black/30"
+              className="rounded-2xl border-2 border-border min-h-[120px] focus:border-border"
               maxLength={500}
             />
             <p className="text-xs text-muted-foreground mt-1">
               {appealMessage.length}/500 znaków
             </p>
           </div>
-          <div className="mt-8 pt-6 border-t-2 border-black/5">
+          <div className="mt-8 pt-6 border-t-2 border-border">
             <AlertDialogFooter className="gap-3 sm:gap-3">
             <AlertDialogCancel
-              className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 h-11"
+              className="rounded-full border-2 border-border hover:border-border hover:bg-muted h-11"
               disabled={isPending}
             >
               Anuluj

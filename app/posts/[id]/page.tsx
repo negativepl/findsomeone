@@ -296,7 +296,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-background">
       {/* JSON-LD structured data */}
       <script
         type="application/ld+json"
@@ -335,7 +335,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
           {/* Left Column - Post Details */}
           <div className="lg:col-span-2 space-y-4 md:space-y-6">
             {/* Main Card */}
-            <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
+            <Card className="border border-border rounded-2xl md:rounded-3xl bg-card shadow-sm">
               <CardContent className="p-0">
                 {/* Images Gallery */}
                 {post.images && post.images.length > 0 && (
@@ -356,7 +356,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Date and Price - Mobile Only */}
                 <div className="lg:hidden px-4 pt-4 pb-2 space-y-2">
-                  <div className="text-sm text-black/60">
+                  <div className="text-sm text-muted-foreground">
                     Dodano {new Date(post.created_at).toLocaleDateString('pl-PL', {
                       day: 'numeric',
                       month: 'long',
@@ -366,10 +366,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                   {post.price ? (
                     <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="text-3xl font-bold text-black">
+                      <span className="text-3xl font-bold text-foreground">
                         {post.price} zł{post.price_negotiable ? '*' : ''}
                       </span>
-                      <span className="text-base text-black/60">
+                      <span className="text-base text-muted-foreground">
                         {post.price_negotiable
                           ? '/ do negocjacji'
                           : post.price_type === 'hourly'
@@ -385,7 +385,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 {/* Badges Section - Above Description */}
                 {post.categories && (
                   <div className="px-4 md:px-8 pt-2 md:pt-0 pb-3 md:pb-4">
-                    <Badge variant="outline" className="rounded-full border-black/10 text-black/60 px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm">
+                    <Badge variant="outline" className="rounded-full border-border text-muted-foreground px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm">
                       {post.categories.name}
                     </Badge>
                   </div>
@@ -393,19 +393,19 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Description Section */}
                 <div className="px-4 md:px-8 pb-4 md:pb-6">
-                  <h2 className="text-xl md:text-2xl font-bold text-black mb-3 md:mb-4">Opis</h2>
+                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3 md:mb-4">Opis</h2>
                   <div
-                    className="prose prose-base max-w-none text-black/70 leading-relaxed"
+                    className="prose prose-base max-w-none text-muted-foreground leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: post.description }}
                   />
                 </div>
 
                 {/* Footer Section with Views, Post ID, and Report Button */}
                 <div className="px-4 md:px-8 pb-4 md:pb-8">
-                  <div className="border-t border-black/5 pt-3 md:pt-6">
+                  <div className="border-t border-border pt-3 md:pt-6">
                     {/* Mobile: stacked layout */}
                     <div className="flex flex-col items-center gap-2 md:hidden">
-                      <div className="text-black/70 text-xs">
+                      <div className="text-muted-foreground text-xs">
                         <span>{post.views || 0} wyświetleń</span>
                       </div>
                       <div className="flex items-center justify-center gap-2">
@@ -424,7 +424,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                           <ReportPostDialog postId={post.id} onReport={reportPost} />
                         )}
                       </div>
-                      <div className="text-black/70 text-sm">
+                      <div className="text-muted-foreground text-sm">
                         <span>{post.views || 0} wyświetleń</span>
                       </div>
                     </div>
@@ -437,11 +437,11 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
           {/* Right Column - Author Info & Contact */}
           <div className="space-y-4 md:space-y-6 lg:sticky lg:top-24 lg:self-start">
             {/* Title and Budget Section - Desktop Only */}
-            <Card className="hidden lg:block border-0 rounded-3xl bg-white shadow-sm">
+            <Card className="hidden lg:block border border-border rounded-3xl bg-card shadow-sm">
               <CardContent className="p-6 space-y-4">
                 {/* Date and Favorite Button */}
                 <div className="flex items-center justify-between gap-4">
-                  <div className="text-sm text-black/60">
+                  <div className="text-sm text-muted-foreground">
                     Dodano {new Date(post.created_at).toLocaleDateString('pl-PL', {
                       day: 'numeric',
                       month: 'long',
@@ -457,17 +457,17 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Title */}
                 <div>
-                  <p className="text-2xl md:text-3xl font-bold text-black leading-tight">{post.title}</p>
+                  <p className="text-2xl md:text-3xl font-bold text-foreground leading-tight">{post.title}</p>
                 </div>
 
                 {/* Budget */}
                 {post.price ? (
-                  <div className="pt-4 border-t border-black/5">
+                  <div className="pt-4 border-t border-border">
                     <div className="flex items-baseline gap-2 flex-wrap">
-                      <span className="text-3xl font-bold text-black">
+                      <span className="text-3xl font-bold text-foreground">
                         {post.price} zł{post.price_negotiable ? '*' : ''}
                       </span>
-                      <span className="text-base text-black/60">
+                      <span className="text-base text-muted-foreground">
                         {post.price_negotiable
                           ? '/ do negocjacji'
                           : post.price_type === 'hourly'
@@ -477,7 +477,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     </div>
                   </div>
                 ) : post.price_type === 'free' ? (
-                  <div className="pt-4 border-t border-black/5">
+                  <div className="pt-4 border-t border-border">
                     <div className="text-3xl font-bold text-green-600">Za darmo</div>
                   </div>
                 ) : null}
@@ -485,10 +485,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             </Card>
 
             {/* Author Card */}
-            <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm overflow-hidden">
+            <Card className="border border-border rounded-2xl md:rounded-3xl bg-card shadow-sm overflow-hidden">
               {/* Banner */}
               {post.profiles?.banner_url && (
-                <div className="relative w-full h-24 md:h-32 overflow-hidden bg-black/5">
+                <div className="relative w-full h-24 md:h-32 overflow-hidden bg-muted">
                   <Image
                     src={post.profiles.banner_url}
                     alt=""
@@ -514,7 +514,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       />
                     ) : (
                       <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-black/10 flex items-center justify-center">
-                        <span className="text-xl md:text-2xl font-semibold text-black">
+                        <span className="text-xl md:text-2xl font-semibold text-foreground">
                           {post.profiles?.full_name?.charAt(0) || 'U'}
                         </span>
                       </div>
@@ -528,7 +528,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h2 className="text-xl font-bold text-black">
+                    <h2 className="text-xl font-bold text-foreground">
                       {post.profiles?.full_name || 'Anonymous'}
                     </h2>
                     <RatingDisplay
@@ -541,7 +541,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
 
                 {/* Member Since Info & Activity Status */}
-                <div className="flex flex-wrap items-center justify-center gap-2 text-xs md:text-sm text-black/60 mb-4 md:mb-6">
+                <div className="flex flex-wrap items-center justify-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">
                   <span>
                     {daysOnPlatform === 0
                       ? 'Dołączył dzisiaj'
@@ -554,17 +554,17 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       : `Na platformie od ${Math.floor(daysOnPlatform / 365)} lat`}
                   </span>
 
-                  <span className="text-black/30">•</span>
+                  <span className="text-foreground/30">•</span>
 
-                  <span className={isOnline ? 'text-green-600' : 'text-black/60'}>
+                  <span className={isOnline ? 'text-green-600' : 'text-muted-foreground'}>
                     {lastActiveText}
                   </span>
                 </div>
 
                 {post.profiles?.bio && (
                   <>
-                    <div className="border-t border-black/5 mb-4" />
-                    <p className="text-sm text-black/70 leading-relaxed mb-4">
+                    <div className="border-t border-border mb-4" />
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                       {post.profiles.bio}
                     </p>
                   </>
@@ -600,17 +600,17 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   </div>
                 ) : !user ? (
                   <Link href="/login">
-                    <Button className="w-full rounded-full bg-black hover:bg-black/80 text-white border-0 py-5 md:py-6 text-base md:text-lg">
+                    <Button className="w-full rounded-full bg-black hover:bg-black/80 text-white border border-border py-5 md:py-6 text-base md:text-lg">
                       Zaloguj się aby skontaktować
                     </Button>
                   </Link>
                 ) : (
                   <div className="hidden md:block space-y-3">
-                    <div className="bg-black/5 rounded-full py-3 text-center">
-                      <p className="text-base text-black/60">To Twoje ogłoszenie</p>
+                    <div className="bg-muted rounded-full py-3 text-center">
+                      <p className="text-base text-muted-foreground">To Twoje ogłoszenie</p>
                     </div>
                     <Link href={`/dashboard/my-posts/${post.id}/edit`}>
-                      <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 py-6 text-lg">
+                      <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border py-6 text-lg">
                         Edytuj ogłoszenie
                       </Button>
                     </Link>
@@ -626,9 +626,9 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
             {/* Other Posts from Author */}
             {otherPosts && otherPosts.length > 0 && (
-              <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-sm">
+              <Card className="border border-border rounded-2xl md:rounded-3xl bg-card shadow-sm">
                 <CardContent className="p-4 md:p-6">
-                  <h2 className="text-base md:text-lg font-bold text-black mb-3 md:mb-4">
+                  <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">
                     Inne ogłoszenia użytkownika
                   </h2>
 
@@ -637,10 +637,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-140px)]">
                       {otherPosts.map((otherPost: any) => (
                         <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
-                          <div className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                          <div className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
                             {/* Image */}
                             {otherPost.images && otherPost.images.length > 0 && (
-                              <div className="relative w-full h-40 bg-black/5">
+                              <div className="relative w-full h-40 bg-muted">
                                 <Image
                                   src={otherPost.images[0]}
                                   alt={otherPost.title}
@@ -654,16 +654,16 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                             <div className="p-4 flex flex-col flex-1">
                               {otherPost.categories && (
                                 <div className="mb-2">
-                                  <Badge variant="outline" className="rounded-full border-black/10 text-black/60 text-xs">
+                                  <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
                                     {otherPost.categories.name}
                                   </Badge>
                                 </div>
                               )}
-                              <h3 className="text-base font-bold text-black mb-3">{otherPost.title}</h3>
+                              <h3 className="text-base font-bold text-foreground mb-3">{otherPost.title}</h3>
 
                               <div className="flex items-center justify-between gap-2 mt-auto">
                                 {/* Location - Left */}
-                                <div className="flex items-center gap-1 text-xs text-black/60 min-w-0">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
                                   <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -673,7 +673,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                                 {/* Price - Right */}
                                 {otherPost.price && (
-                                  <p className="text-sm font-bold text-black whitespace-nowrap">
+                                  <p className="text-sm font-bold text-foreground whitespace-nowrap">
                                     {otherPost.price} zł
                                   </p>
                                 )}
@@ -690,10 +690,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
                       {otherPosts.map((otherPost: any) => (
                         <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
-                          <div className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                          <div className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
                             {/* Image */}
                             {otherPost.images && otherPost.images.length > 0 && (
-                              <div className="relative w-full h-40 bg-black/5">
+                              <div className="relative w-full h-40 bg-muted">
                                 <Image
                                   src={otherPost.images[0]}
                                   alt={otherPost.title}
@@ -707,16 +707,16 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                             <div className="p-4 flex flex-col flex-1">
                               {otherPost.categories && (
                                 <div className="mb-2">
-                                  <Badge variant="outline" className="rounded-full border-black/10 text-black/60 text-xs">
+                                  <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
                                     {otherPost.categories.name}
                                   </Badge>
                                 </div>
                               )}
-                              <h3 className="text-base font-bold text-black mb-3">{otherPost.title}</h3>
+                              <h3 className="text-base font-bold text-foreground mb-3">{otherPost.title}</h3>
 
                               <div className="flex items-center justify-between gap-2 mt-auto">
                                 {/* Location - Left */}
-                                <div className="flex items-center gap-1 text-xs text-black/60 min-w-0">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
                                   <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -726,7 +726,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                                 {/* Price - Right */}
                                 {otherPost.price && (
-                                  <p className="text-sm font-bold text-black whitespace-nowrap">
+                                  <p className="text-sm font-bold text-foreground whitespace-nowrap">
                                     {otherPost.price} zł
                                   </p>
                                 )}

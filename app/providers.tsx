@@ -6,6 +6,7 @@ import { Toaster } from 'sonner'
 import { useState, useEffect } from 'react'
 import { PresenceManager } from '@/components/PresenceManager'
 import { createClient } from '@/lib/supabase/client'
+import { ThemeProvider } from '@/contexts/ThemeContext'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [userId, setUserId] = useState<string | undefined>(undefined)
@@ -46,19 +47,21 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <PresenceManager userId={userId} />
-      {children}
-      <Toaster
-        position="top-right"
-        richColors
-        closeButton
-        duration={4000}
-        toastOptions={{
-          className: 'sonner-toast',
-        }}
-      />
-      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
-    </QueryClientProvider>
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <PresenceManager userId={userId} />
+        {children}
+        <Toaster
+          position="top-right"
+          richColors
+          closeButton
+          duration={4000}
+          toastOptions={{
+            className: 'sonner-toast',
+          }}
+        />
+        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+      </QueryClientProvider>
+    </ThemeProvider>
   )
 }

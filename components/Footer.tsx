@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { LogoWithText } from '@/components/Logo'
+import { ThemeToggle } from '@/components/ThemeToggle'
 
 export function Footer() {
   const [openSection, setOpenSection] = useState<string | null>(null)
@@ -12,7 +13,7 @@ export function Footer() {
   }
 
   return (
-    <footer className="border-t border-black/5 bg-white rounded-t-3xl">
+    <footer className="border-t border-border bg-card rounded-t-3xl">
       <div className="container mx-auto px-6 pt-8 pb-24 md:py-12">
         <div className="grid md:grid-cols-4 gap-4 md:gap-8 mb-8">
           {/* Logo i opis */}
@@ -23,15 +24,15 @@ export function Footer() {
 
             {/* Kontakt */}
             <div className="mt-6">
-              <div className="text-sm font-semibold text-black mb-3">Kontakt</div>
-              <div className="space-y-2 text-sm text-black/60">
-                <a href="mailto:kontakt@findsomeone.app" className="flex items-center gap-2 hover:text-black transition-colors">
+              <div className="text-sm font-semibold text-foreground mb-3">Kontakt</div>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <a href="mailto:kontakt@findsomeone.app" className="flex items-center gap-2 hover:text-foreground transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
                   kontakt@findsomeone.app
                 </a>
-                <a href="mailto:pomoc@findsomeone.app" className="flex items-center gap-2 hover:text-black transition-colors">
+                <a href="mailto:pomoc@findsomeone.app" className="flex items-center gap-2 hover:text-foreground transition-colors">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
@@ -50,9 +51,9 @@ export function Footer() {
               aria-label="Rozwiń sekcję Główne"
               aria-expanded={openSection === 'main'}
             >
-              <div className="font-semibold text-lg text-black">Główne</div>
+              <div className="font-semibold text-lg text-foreground">Główne</div>
               <svg
-                className={`w-5 h-5 text-black/60 transition-transform duration-200 ease-out md:hidden ${
+                className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ease-out md:hidden ${
                   openSection === 'main' ? 'rotate-180' : ''
                 }`}
                 fill="none"
@@ -64,13 +65,13 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 md:!block ${
+              className={`space-y-2 text-sm text-muted-foreground md:!block ${
                 openSection === 'main' ? 'block mb-4' : 'hidden md:max-h-none'
               }`}
             >
-              <li><Link href="/how-it-works" className="hover:text-black transition-colors inline-block py-2">Jak to działa</Link></li>
-              <li><Link href="/install" className="hover:text-black transition-colors inline-block py-2">Zainstaluj aplikację</Link></li>
-              <li><Link href="/faq" className="hover:text-black transition-colors inline-block py-2">FAQ</Link></li>
+              <li><Link href="/how-it-works" className="hover:text-foreground transition-colors inline-block py-2">Jak to działa</Link></li>
+              <li><Link href="/install" className="hover:text-foreground transition-colors inline-block py-2">Zainstaluj aplikację</Link></li>
+              <li><Link href="/faq" className="hover:text-foreground transition-colors inline-block py-2">FAQ</Link></li>
             </ul>
           </div>
 
@@ -82,9 +83,9 @@ export function Footer() {
               aria-label="Rozwiń sekcję Kategorie"
               aria-expanded={openSection === 'categories'}
             >
-              <div className="font-semibold text-lg text-black">Kategorie</div>
+              <div className="font-semibold text-lg text-foreground">Kategorie</div>
               <svg
-                className={`w-5 h-5 text-black/60 transition-transform duration-200 ease-out md:hidden ${
+                className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ease-out md:hidden ${
                   openSection === 'categories' ? 'rotate-180' : ''
                 }`}
                 fill="none"
@@ -96,14 +97,14 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 md:!block ${
+              className={`space-y-2 text-sm text-muted-foreground md:!block ${
                 openSection === 'categories' ? 'block mb-4' : 'hidden md:max-h-none'
               }`}
             >
-              <li><Link href="/posts?category=elektronika" className="hover:text-black transition-colors inline-block py-2">Elektronika</Link></li>
-              <li><Link href="/posts?category=dom-i-ogrod" className="hover:text-black transition-colors inline-block py-2">Dom i ogród</Link></li>
-              <li><Link href="/posts?category=sport-i-hobby" className="hover:text-black transition-colors inline-block py-2">Sport i hobby</Link></li>
-              <li><Link href="/posts" className="hover:text-black transition-colors inline-block py-2">Zobacz wszystkie</Link></li>
+              <li><Link href="/posts?category=elektronika" className="hover:text-foreground transition-colors inline-block py-2">Elektronika</Link></li>
+              <li><Link href="/posts?category=dom-i-ogrod" className="hover:text-foreground transition-colors inline-block py-2">Dom i ogród</Link></li>
+              <li><Link href="/posts?category=sport-i-hobby" className="hover:text-foreground transition-colors inline-block py-2">Sport i hobby</Link></li>
+              <li><Link href="/posts" className="hover:text-foreground transition-colors inline-block py-2">Zobacz wszystkie</Link></li>
             </ul>
           </div>
 
@@ -115,9 +116,9 @@ export function Footer() {
               aria-label="Rozwiń sekcję Firma"
               aria-expanded={openSection === 'company'}
             >
-              <div className="font-semibold text-lg text-black">Firma</div>
+              <div className="font-semibold text-lg text-foreground">Firma</div>
               <svg
-                className={`w-5 h-5 text-black/60 transition-transform duration-200 ease-out md:hidden ${
+                className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ease-out md:hidden ${
                   openSection === 'company' ? 'rotate-180' : ''
                 }`}
                 fill="none"
@@ -129,23 +130,29 @@ export function Footer() {
               </svg>
             </button>
             <ul
-              className={`space-y-2 text-sm text-black/60 md:!block ${
+              className={`space-y-2 text-sm text-muted-foreground md:!block ${
                 openSection === 'company' ? 'block mb-4' : 'hidden md:max-h-none'
               }`}
             >
-              <li><Link href="/about" className="hover:text-black transition-colors inline-block py-2">O nas</Link></li>
-              <li><Link href="/terms" className="hover:text-black transition-colors inline-block py-2">Regulamin</Link></li>
-              <li><Link href="/privacy" className="hover:text-black transition-colors inline-block py-2">Polityka prywatności</Link></li>
-              <li><Link href="/contact" className="hover:text-black transition-colors inline-block py-2">Kontakt</Link></li>
+              <li><Link href="/about" className="hover:text-foreground transition-colors inline-block py-2">O nas</Link></li>
+              <li><Link href="/terms" className="hover:text-foreground transition-colors inline-block py-2">Regulamin</Link></li>
+              <li><Link href="/privacy" className="hover:text-foreground transition-colors inline-block py-2">Polityka prywatności</Link></li>
+              <li><Link href="/contact" className="hover:text-foreground transition-colors inline-block py-2">Kontakt</Link></li>
             </ul>
           </div>
         </div>
 
         {/* Copyright & Social */}
-        <div className="border-t border-black/5 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-black/60">&copy; 2025 FindSomeone. Wszystkie prawa zastrzeżone.</p>
+        <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-muted-foreground">&copy; 2025 FindSomeone. Wszystkie prawa zastrzeżone.</p>
 
           <div className="flex items-center gap-4">
+            {/* Dark Mode Toggle */}
+            <ThemeToggle />
+
+            {/* Separator */}
+            <div className="w-px h-6 bg-border" />
+
             {/* Social Media Icons */}
             <a
               href="https://facebook.com"
@@ -166,7 +173,7 @@ export function Footer() {
               aria-label="X"
               className="transition-transform hover:scale-110"
             >
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="#000000">
+              <svg className="w-6 h-6 text-foreground" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
               </svg>
             </a>
@@ -199,7 +206,7 @@ export function Footer() {
               aria-label="TikTok"
               className="transition-transform hover:scale-110"
             >
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="#000000">
+              <svg className="w-6 h-6 text-foreground" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
               </svg>
             </a>
@@ -212,7 +219,7 @@ export function Footer() {
               aria-label="GitHub"
               className="transition-transform hover:scale-110"
             >
-              <svg className="w-6 h-6" viewBox="0 0 24 24" fill="#24292e">
+              <svg className="w-6 h-6 text-foreground" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
               </svg>
             </a>

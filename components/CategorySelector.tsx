@@ -148,13 +148,13 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
-        <DialogHeader>
-          <DialogTitle className="text-xl">Wybierz kategorię</DialogTitle>
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col ">
+        <DialogHeader className="pb-4 border-b border-black/5">
+          <DialogTitle className="text-2xl font-bold text-black">Wybierz kategorię</DialogTitle>
         </DialogHeader>
 
         {/* Breadcrumbs */}
-        <div className="flex items-center gap-2 text-sm text-black/60 overflow-x-auto pb-3 border-b border-[#C44E35]/20">
+        <div className="flex items-center gap-2 text-sm text-black/60 overflow-x-auto py-4 border-b border-black/5">
           <button
             onClick={() => handleBreadcrumbClick(-1)}
             className="hover:text-[#C44E35] transition-colors whitespace-nowrap font-medium"
@@ -181,7 +181,7 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
             {breadcrumbs.length > 0 && (
               <button
                 onClick={handleGoBack}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-left hover:bg-[#C44E35]/5 text-black/70 hover:text-[#C44E35] mb-2 border border-transparent hover:border-[#C44E35]/20"
+                className="w-full flex items-center gap-3 px-4 py-3 transition-all text-left hover:bg-[#C44E35]/5 text-black/70 hover:text-[#C44E35] mb-2 border border-transparent hover:border-[#C44E35]/20"
               >
                 <ArrowLeft className="w-5 h-5 flex-shrink-0" />
                 <span className="font-medium">Powrót</span>
@@ -199,7 +199,7 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
                   key={category.id}
                   onClick={() => handleCategoryClick(category)}
                   className={`
-                    w-full flex items-center px-4 py-3 rounded-xl transition-all text-left border
+                    w-full flex items-center px-4 py-3 transition-all text-left border
                     ${isMainCategory ? 'gap-3' : 'justify-between'}
                     ${isSelected
                       ? 'bg-[#C44E35]/10 text-black font-medium border-[#C44E35]/30'
@@ -238,12 +238,12 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
         </div>
 
         {/* Footer */}
-        <div className="flex justify-end gap-2 pt-4 border-t">
+        <div className="flex justify-end gap-3 pt-6 border-t border-black/5 mt-4">
           <Button
             type="button"
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="rounded-full"
+            className="h-11 px-6 border-2 border-black/10 hover:border-black/20"
           >
             Anuluj
           </Button>
@@ -251,7 +251,7 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
             type="button"
             onClick={handleConfirm}
             disabled={!selectedId}
-            className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white"
+            className="h-11 px-8 bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-sm"
           >
             Potwierdź
           </Button>

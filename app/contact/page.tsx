@@ -20,14 +20,14 @@ export default async function ContactPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-background">
       <NavbarWithHide user={user} pageTitle="Kontakt" />
 
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
         {/* Header - Desktop only */}
         <div className="mb-8 hidden md:block">
-          <h1 className="text-4xl font-bold text-black mb-3">Kontakt</h1>
-          <p className="text-lg text-black/60">
+          <h1 className="text-4xl font-bold text-foreground mb-3">Kontakt</h1>
+          <p className="text-lg text-muted-foreground">
             Masz pytania? Chętnie pomożemy!
           </p>
         </div>

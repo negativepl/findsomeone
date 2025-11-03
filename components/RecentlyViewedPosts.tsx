@@ -80,8 +80,8 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
       {/* Mobile: flat design */}
       <div className="md:hidden">
         <div className="mb-6">
-          <h3 className="text-2xl font-bold text-black mb-2">Ostatnio wyświetlane</h3>
-          <p className="text-sm text-black/60">Ostatnio przeglądane ogłoszenia</p>
+          <h3 className="text-2xl font-bold text-foreground mb-2">Ostatnio wyświetlane</h3>
+          <p className="text-sm text-muted-foreground">Ostatnio przeglądane ogłoszenia</p>
         </div>
 
         <div className="relative -mx-6">
@@ -95,7 +95,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
                 <>
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div key={i} className="flex-shrink-0 snap-center" style={{ width: '320px' }}>
-                      <Card className="border-0 rounded-3xl bg-white h-full flex flex-col animate-pulse">
+                      <Card className="border-0 rounded-3xl bg-card h-full flex flex-col animate-pulse">
                         <div className="w-full h-48 bg-black/5 rounded-t-3xl" />
                         <CardHeader className="pb-4 pt-6">
                           <div className="flex items-start justify-between mb-3">
@@ -136,10 +136,10 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-white rounded-3xl p-8 shadow-sm group/section overflow-visible">
+      <div className="hidden md:block bg-card rounded-3xl p-8 shadow-sm group/section overflow-visible">
         <div className="mb-12">
-          <h3 className="text-4xl font-bold text-black mb-2">Ostatnio wyświetlane</h3>
-          <p className="text-lg text-black/60">Ostatnio przeglądane ogłoszenia</p>
+          <h3 className="text-4xl font-bold text-foreground mb-2">Ostatnio wyświetlane</h3>
+          <p className="text-lg text-muted-foreground">Ostatnio przeglądane ogłoszenia</p>
         </div>
 
         <div className="relative -mx-8">
@@ -156,7 +156,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
                 <>
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div key={i} className="flex-shrink-0 snap-center" style={{ width: '320px' }}>
-                      <Card className="border-0 rounded-3xl bg-white h-full flex flex-col animate-pulse">
+                      <Card className="border-0 rounded-3xl bg-card h-full flex flex-col animate-pulse">
                         <div className="w-full h-48 bg-black/5 rounded-t-3xl" />
                         <CardHeader className="pb-4 pt-6">
                           <div className="flex items-start justify-between mb-3">

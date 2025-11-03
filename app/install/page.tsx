@@ -15,54 +15,54 @@ export default async function InstallPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-background">
       <NavbarWithHide user={user} pageTitle="Zainstaluj aplikację" />
 
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
         <div className="hidden md:block md:mb-4">
-          <h1 className="text-2xl md:text-4xl font-bold text-black mb-3">Zainstaluj aplikację</h1>
-          <p className="text-base md:text-lg text-black/60">
+          <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-3">Zainstaluj aplikację</h1>
+          <p className="text-base md:text-lg text-muted-foreground">
             Korzystaj z FindSomeone jak z natywnej aplikacji mobilnej
           </p>
         </div>
 
         {/* Korzyści z instalacji */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-black mb-8 text-center">
+          <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
             Dlaczego warto zainstalować?
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
-            <Card className="border-0 rounded-3xl bg-white">
+            <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white flex items-center justify-center mx-auto mb-6">
                   <Zap className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-black mb-3">Szybszy dostęp</h3>
-                <p className="text-black/60">
+                <h3 className="text-xl font-bold text-foreground mb-3">Szybszy dostęp</h3>
+                <p className="text-muted-foreground">
                   Aplikacja uruchamia się błyskawicznie z ekranu głównego, bez potrzeby otwierania przeglądarki
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-0 rounded-3xl bg-white">
+            <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white flex items-center justify-center mx-auto mb-6">
                   <Smartphone className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-black mb-3">Natywne wrażenia</h3>
-                <p className="text-black/60">
+                <h3 className="text-xl font-bold text-foreground mb-3">Natywne wrażenia</h3>
+                <p className="text-muted-foreground">
                   Pełnoekranowy interfejs bez elementów przeglądarki dla lepszej wygody użytkowania
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="border-0 rounded-3xl bg-white">
+            <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white flex items-center justify-center mx-auto mb-6">
                   <Wifi className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-black mb-3">Działa offline</h3>
-                <p className="text-black/60">
+                <h3 className="text-xl font-bold text-foreground mb-3">Działa offline</h3>
+                <p className="text-muted-foreground">
                   Przeglądaj zapisane treści nawet bez połączenia z internetem
                 </p>
               </CardContent>
@@ -72,17 +72,17 @@ export default async function InstallPage() {
 
         {/* Instrukcje dla telefonu */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-black mb-8">
+          <h2 className="text-3xl font-bold text-foreground mb-8">
             Instalacja na telefonie
           </h2>
 
           {/* iPhone / Safari */}
-          <Card className="border-0 rounded-3xl bg-white mb-6">
+          <Card className="border border-border rounded-3xl bg-card mb-6">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4">
+              <h3 className="text-xl font-bold text-foreground mb-4">
                 iPhone / iPad (Safari)
               </h3>
-              <ol className="space-y-3 text-black/70">
+              <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
                   <span className="font-bold text-[#C44E35] min-w-[24px]">1.</span>
                   <span>Otwórz stronę FindSomeone.pl w przeglądarce Safari</span>
@@ -108,12 +108,12 @@ export default async function InstallPage() {
           </Card>
 
           {/* Android / Chrome */}
-          <Card className="border-0 rounded-3xl bg-white">
+          <Card className="border border-border rounded-3xl bg-card">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4">
+              <h3 className="text-xl font-bold text-foreground mb-4">
                 Android (Chrome)
               </h3>
-              <ol className="space-y-3 text-black/70">
+              <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
                   <span className="font-bold text-[#C44E35] min-w-[24px]">1.</span>
                   <span>Otwórz stronę FindSomeone.pl w przeglądarce Chrome</span>
@@ -141,17 +141,17 @@ export default async function InstallPage() {
 
         {/* Instrukcje dla komputera */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-black mb-8">
+          <h2 className="text-3xl font-bold text-foreground mb-8">
             Instalacja na komputerze
           </h2>
 
           {/* Chrome */}
-          <Card className="border-0 rounded-3xl bg-white mb-6">
+          <Card className="border border-border rounded-3xl bg-card mb-6">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4">
+              <h3 className="text-xl font-bold text-foreground mb-4">
                 Google Chrome
               </h3>
-              <ol className="space-y-3 text-black/70">
+              <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
                   <span className="font-bold text-[#C44E35] min-w-[24px]">1.</span>
                   <span>Otwórz stronę FindSomeone.pl w przeglądarce Chrome</span>
@@ -173,12 +173,12 @@ export default async function InstallPage() {
           </Card>
 
           {/* Edge */}
-          <Card className="border-0 rounded-3xl bg-white mb-6">
+          <Card className="border border-border rounded-3xl bg-card mb-6">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4">
+              <h3 className="text-xl font-bold text-foreground mb-4">
                 Microsoft Edge
               </h3>
-              <ol className="space-y-3 text-black/70">
+              <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
                   <span className="font-bold text-[#C44E35] min-w-[24px]">1.</span>
                   <span>Otwórz stronę FindSomeone.pl w przeglądarce Edge</span>
@@ -204,15 +204,15 @@ export default async function InstallPage() {
           </Card>
 
           {/* Safari (Mac) */}
-          <Card className="border-0 rounded-3xl bg-white">
+          <Card className="border border-border rounded-3xl bg-card">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-black mb-4">
+              <h3 className="text-xl font-bold text-foreground mb-4">
                 Safari (macOS)
               </h3>
-              <p className="text-black/60 mb-4">
+              <p className="text-muted-foreground mb-4">
                 Safari na macOS nie wspiera natywnej instalacji PWA. Zalecamy użycie Chrome lub Edge dla pełnej funkcjonalności aplikacji.
               </p>
-              <p className="text-black/60">
+              <p className="text-muted-foreground">
                 Alternatywnie możesz dodać zakładkę do Docka lub paska narzędzi dla szybkiego dostępu.
               </p>
             </CardContent>
@@ -221,36 +221,36 @@ export default async function InstallPage() {
 
         {/* FAQ */}
         <section className="mb-16">
-          <h2 className="text-3xl font-bold text-black mb-8">
+          <h2 className="text-3xl font-bold text-foreground mb-8">
             Często zadawane pytania
           </h2>
 
-          <Card className="border-0 rounded-3xl bg-white">
+          <Card className="border border-border rounded-3xl bg-card">
             <CardContent className="p-8 space-y-6">
               <div>
-                <h3 className="text-lg font-bold text-black mb-2">Czy instalacja aplikacji jest bezpieczna?</h3>
-                <p className="text-black/60">
+                <h3 className="text-lg font-bold text-foreground mb-2">Czy instalacja aplikacji jest bezpieczna?</h3>
+                <p className="text-muted-foreground">
                   Tak, jest całkowicie bezpieczna. Instalujesz oficjalną wersję strony FindSomeone jako aplikację Progressive Web App (PWA). Nie pobierasz żadnych zewnętrznych plików.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-black mb-2">Czy aplikacja zajmuje dużo miejsca?</h3>
-                <p className="text-black/60">
+                <h3 className="text-lg font-bold text-foreground mb-2">Czy aplikacja zajmuje dużo miejsca?</h3>
+                <p className="text-muted-foreground">
                   Nie, PWA są bardzo lekkie i zajmują znacznie mniej miejsca niż tradycyjne aplikacje mobilne - zazwyczaj tylko kilka megabajtów.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-black mb-2">Czy mogę odinstalować aplikację?</h3>
-                <p className="text-black/60">
+                <h3 className="text-lg font-bold text-foreground mb-2">Czy mogę odinstalować aplikację?</h3>
+                <p className="text-muted-foreground">
                   Tak, aplikację możesz odinstalować w każdej chwili tak samo jak każdą inną aplikację na swoim urządzeniu - przytrzymaj ikonę i wybierz &quot;Odinstaluj&quot; lub &quot;Usuń&quot;.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-lg font-bold text-black mb-2">Czy aplikacja aktualizuje się automatycznie?</h3>
-                <p className="text-black/60">
+                <h3 className="text-lg font-bold text-foreground mb-2">Czy aplikacja aktualizuje się automatycznie?</h3>
+                <p className="text-muted-foreground">
                   Tak, aplikacja PWA aktualizuje się automatycznie przy każdym uruchomieniu, gdy jest połączenie z internetem. Zawsze masz najnowszą wersję.
                 </p>
               </div>

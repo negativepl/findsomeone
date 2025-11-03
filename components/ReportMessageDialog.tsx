@@ -71,41 +71,41 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="text-black/40 hover:text-red-600 transition-colors p-1" aria-label="Zgłoś wiadomość">
+      <DialogTrigger className="text-muted-foreground hover:text-red-600 dark:hover:text-red-400 transition-colors p-1" aria-label="Zgłoś wiadomość">
         <Flag className="w-4 h-4" aria-hidden="true" />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md border-0 rounded-3xl shadow-xl">
+      <DialogContent className="sm:max-w-md bg-card border border-border rounded-3xl shadow-xl">
         {success ? (
           <div className="text-center py-8">
-            <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <p className="text-lg font-semibold text-black mb-2">Zgłoszenie wysłane</p>
-            <p className="text-black/60">Dziękujemy. Sprawdzimy tę wiadomość.</p>
+            <p className="text-lg font-semibold text-foreground mb-2">Zgłoszenie wysłane</p>
+            <p className="text-muted-foreground">Dziękujemy. Sprawdzimy tę wiadomość.</p>
           </div>
         ) : (
           <>
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center">
-                  <Flag className="w-5 h-5 text-red-600" />
+                <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
+                  <Flag className="w-5 h-5 text-red-600 dark:text-red-400" />
                 </div>
-                <DialogTitle className="text-2xl">Zgłoś wiadomość</DialogTitle>
+                <DialogTitle className="text-2xl text-foreground">Zgłoś wiadomość</DialogTitle>
               </div>
-              <DialogDescription className="text-base">
+              <DialogDescription className="text-base text-muted-foreground">
                 Zgłoś tę wiadomość, jeśli narusza regulamin lub zawiera nieodpowiednie treści.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit}>
               <div className="space-y-5 py-4">
                 <div className="space-y-3">
-                  <Label htmlFor="reason" className="text-base font-semibold">
+                  <Label htmlFor="reason" className="text-base font-semibold text-foreground">
                     Powód zgłoszenia *
                   </Label>
                   <Select value={reason} onValueChange={setReason} disabled={isSubmitting}>
-                    <SelectTrigger className="w-full rounded-2xl border-2 border-black/10 h-12 focus:border-black/30">
+                    <SelectTrigger className="w-full rounded-2xl border-2 border-border h-12 focus:border-[#C44E35] bg-background text-foreground">
                       <SelectValue placeholder="Wybierz powód..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -119,14 +119,14 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
                 </div>
 
                 <div className="space-y-3">
-                  <Label htmlFor="description" className="text-base font-semibold">
+                  <Label htmlFor="description" className="text-base font-semibold text-foreground">
                     Dodatkowe informacje (opcjonalnie)
                   </Label>
                   <textarea
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-black/10 focus:outline-none focus:ring-2 focus:ring-[#C44E35] focus:border-black/30 resize-none"
+                    className="w-full px-4 py-3 rounded-2xl border-2 border-border focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] resize-none bg-background text-foreground placeholder:text-muted-foreground"
                     rows={4}
                     placeholder="Opisz problem..."
                     disabled={isSubmitting}
@@ -134,24 +134,24 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
                 </div>
 
                 {error && (
-                  <div className="p-3 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-700">
+                  <div className="p-3 bg-red-500/10 border border-red-500/30 rounded-2xl text-sm text-red-600 dark:text-red-400">
                     {error}
                   </div>
                 )}
 
-                <p className="text-xs text-black/50 text-center">
+                <p className="text-xs text-muted-foreground text-center">
                   Zgłoszenia są weryfikowane przez nasz zespół w ciągu 24-48h
                 </p>
               </div>
 
-              <div className="mt-8 pt-6 border-t-2 border-black/5">
+              <div className="mt-8 pt-6 border-t-2 border-border">
                 <DialogFooter className="gap-2 sm:gap-2">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setOpen(false)}
                     disabled={isSubmitting}
-                    className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+                    className="rounded-full border-2"
                   >
                     Anuluj
                   </Button>

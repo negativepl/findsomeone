@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
-    <nav className="flex items-center gap-2 text-sm text-black/60 mb-6 overflow-x-auto scrollbar-hide">
+    <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-6 overflow-x-auto scrollbar-hide">
       {items.map((item, index) => {
         const isLast = index === items.length - 1
 
@@ -28,7 +28,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
                 {item.label}
               </Link>
             ) : (
-              <span className={`whitespace-nowrap ${isLast ? 'text-black font-medium truncate max-w-[150px] md:max-w-none' : ''}`}>
+              <span className={`whitespace-nowrap ${isLast ? 'text-foreground font-medium truncate max-w-[150px] md:max-w-none' : ''}`}>
                 {item.label}
               </span>
             )}

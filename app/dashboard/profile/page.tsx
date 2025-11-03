@@ -28,7 +28,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F3]">
+    <div className="min-h-screen bg-background">
       <NavbarWithHide user={user} pageTitle="Mój profil" />
       <ProfileClient initialUser={user} initialProfile={profile} />
       <Footer />

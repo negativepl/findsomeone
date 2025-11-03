@@ -283,8 +283,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
     <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
       {/* Header - Desktop only */}
       <div className="mb-8 hidden md:block">
-        <h1 className="text-4xl font-bold text-black mb-3">Mój profil</h1>
-        <p className="text-lg text-black/60">
+        <h1 className="text-4xl font-bold text-foreground mb-3">Mój profil</h1>
+        <p className="text-lg text-muted-foreground">
           Zarządzaj swoimi danymi i informacjami kontaktowymi
         </p>
       </div>
@@ -292,7 +292,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
       {/* Mobile: single column flat design */}
       <div className="md:hidden space-y-6">
         {/* Avatar Section */}
-        <Card className="border-0 rounded-2xl bg-white shadow-sm">
+        <Card className="border border-border rounded-2xl bg-card shadow-sm">
           <CardContent className="p-5 text-center">
             <div className="mb-4 relative inline-block">
               <div className="relative w-32 h-32 mx-auto">
@@ -354,7 +354,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   className="hidden"
                 />
               </div>
-              <p className="text-xs text-gray-600 mt-2">Kliknij ikonę aby zmienić</p>
+              <p className="text-xs text-muted-foreground mt-2">Kliknij ikonę aby zmienić</p>
 
               {/* Remove Avatar Button */}
               {profile?.avatar_url && (
@@ -363,23 +363,23 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   variant="outline"
                   onClick={handleAvatarRemove}
                   disabled={uploading}
-                  className="mt-2 text-xs rounded-full border-2 border-red-200 text-red-600 hover:text-red-600 hover:bg-red-50 hover:border-red-300 h-8 px-3"
+                  className="mt-2 text-xs rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-8 px-3"
                 >
                   Usuń avatar
                 </Button>
               )}
             </div>
 
-            <h2 className="text-2xl font-bold text-black mb-1">
+            <h2 className="text-2xl font-bold text-foreground mb-1">
               {formData.full_name || 'Użytkownik'}
             </h2>
-            <p className="text-sm text-black/60 mb-4">{initialUser?.email}</p>
+            <p className="text-sm text-muted-foreground mb-4">{initialUser?.email}</p>
 
             {/* Stats */}
-            <div className="bg-[#FAF8F3] rounded-2xl p-4 mb-4 space-y-3 text-left">
+            <div className="bg-muted/50 rounded-2xl p-4 mb-4 space-y-3 text-left">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-black/60">Ocena</span>
-                <span className="font-semibold text-black flex items-center gap-1">
+                <span className="text-sm text-muted-foreground">Ocena</span>
+                <span className="font-semibold text-foreground flex items-center gap-1">
                   <svg className="w-4 h-4 text-[#C44E35]" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
@@ -387,8 +387,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 </span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-black/60">Opinie</span>
-                <span className="font-semibold text-black">{profile?.total_reviews || 0}</span>
+                <span className="text-sm text-muted-foreground">Opinie</span>
+                <span className="font-semibold text-foreground">{profile?.total_reviews || 0}</span>
               </div>
             </div>
 
@@ -403,12 +403,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
         {/* Edit Profile Form */}
         <div>
-          <h2 className="text-xl font-bold text-black mb-4">Edytuj profil</h2>
-          <div className="bg-white rounded-2xl p-5">
+          <h2 className="text-xl font-bold text-foreground mb-4">Edytuj profil</h2>
+          <div className="bg-card rounded-2xl p-5">
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Full Name */}
               <div className="space-y-2">
-                <Label htmlFor="full_name_mobile" className="text-sm font-semibold text-black">
+                <Label htmlFor="full_name_mobile" className="text-sm font-semibold text-foreground">
                   Imię i nazwisko *
                 </Label>
                 <Input
@@ -417,13 +417,13 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                   required
-                  className="rounded-2xl border-2 border-black/10 h-11 focus:border-black/30"
+                  className="rounded-2xl border-2 border-border h-11 focus:border-border"
                 />
               </div>
 
               {/* Phone */}
               <div className="space-y-2">
-                <Label htmlFor="phone_mobile" className="text-sm font-semibold text-black">
+                <Label htmlFor="phone_mobile" className="text-sm font-semibold text-foreground">
                   Telefon
                 </Label>
                 <Input
@@ -432,13 +432,13 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   placeholder="np. +48 123 456 789"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="rounded-2xl border-2 border-black/10 h-11 focus:border-black/30"
+                  className="rounded-2xl border-2 border-border h-11 focus:border-border"
                 />
               </div>
 
               {/* City */}
               <div className="space-y-2">
-                <Label htmlFor="city_mobile" className="text-sm font-semibold text-black">
+                <Label htmlFor="city_mobile" className="text-sm font-semibold text-foreground">
                   Miasto
                 </Label>
                 <Input
@@ -446,13 +446,13 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   placeholder="np. Warszawa"
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="rounded-2xl border-2 border-black/10 h-11 focus:border-black/30"
+                  className="rounded-2xl border-2 border-border h-11 focus:border-border"
                 />
               </div>
 
               {/* Bio */}
               <div className="space-y-2">
-                <Label htmlFor="bio_mobile" className="text-sm font-semibold text-black">
+                <Label htmlFor="bio_mobile" className="text-sm font-semibold text-foreground">
                   O mnie
                 </Label>
                 <Textarea
@@ -461,7 +461,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   rows={4}
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  className="rounded-2xl border-2 border-black/10 focus:border-black/30 resize-none"
+                  className="rounded-2xl border-2 border-border focus:border-border resize-none"
                 />
               </div>
 
@@ -478,9 +478,9 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
         {/* Banner Section */}
         <div>
-          <h2 className="text-xl font-bold text-black mb-4">Banner profilu</h2>
-          <div className="bg-white rounded-2xl p-5">
-            <p className="text-sm text-black/60 mb-4">
+          <h2 className="text-xl font-bold text-foreground mb-4">Banner profilu</h2>
+          <div className="bg-card rounded-2xl p-5">
+            <p className="text-sm text-muted-foreground mb-4">
               Dodaj banner do swojego profilu - idealny dla firm (logo, zdjęcie lokalu, itp.)
             </p>
 
@@ -517,7 +517,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       onMouseLeave={() => setIsBannerHovered(false)}
                       className="cursor-pointer flex flex-col items-center"
                     >
-                      <div className="bg-white rounded-full p-3 hover:bg-gray-100 transition-colors flex items-center justify-center">
+                      <div className="bg-card rounded-full p-3 hover:bg-muted transition-colors flex items-center justify-center">
                         {uploadingBanner ? (
                           <svg className="animate-spin w-5 h-5 text-[#C44E35]" fill="none" viewBox="0 0 24 24">
                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -541,7 +541,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   htmlFor="banner-upload-mobile"
                   onMouseEnter={() => setIsBannerHovered(true)}
                   onMouseLeave={() => setIsBannerHovered(false)}
-                  className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-black/20 rounded-2xl cursor-pointer hover:border-black/40 hover:bg-black/5 transition-all"
+                  className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-border rounded-2xl cursor-pointer hover:border-border hover:bg-muted transition-all"
                 >
                   <div className="flex flex-col items-center justify-center pt-4 pb-4 px-4">
                     {uploadingBanner ? (
@@ -554,11 +554,11 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                         <LottieIcon
                           animationPath="/animations/photo.json"
                           fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
-                          className="w-8 h-8 mb-2 text-black/40"
+                          className="w-8 h-8 mb-2 text-muted-foreground"
                           isHovered={isBannerHovered}
                         />
-                        <p className="mb-1 text-sm text-black/70 font-semibold">Kliknij aby dodać banner</p>
-                        <p className="text-xs text-black/50">1488×496px, Max. 5MB</p>
+                        <p className="mb-1 text-sm text-muted-foreground font-semibold">Kliknij aby dodać banner</p>
+                        <p className="text-xs text-muted-foreground">1488×496px, Max. 5MB</p>
                       </>
                     )}
                   </div>
@@ -600,7 +600,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     }
                   }
                 }}
-                className="w-full rounded-full border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 h-11"
+                className="w-full rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-11"
               >
                 Usuń banner
               </Button>
@@ -610,20 +610,20 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
         {/* Privacy Settings */}
         <div>
-          <h2 className="text-xl font-bold text-black mb-4">Ustawienia prywatności</h2>
-          <div className="bg-white rounded-2xl p-5">
-            <p className="text-sm text-black/60 mb-4">
+          <h2 className="text-xl font-bold text-foreground mb-4">Ustawienia prywatności</h2>
+          <div className="bg-card rounded-2xl p-5">
+            <p className="text-sm text-muted-foreground mb-4">
               Kontroluj, jakie informacje są widoczne w Twoich ogłoszeniach
             </p>
 
             <form onSubmit={handlePrivacySubmit} className="space-y-4">
               {/* Show Phone */}
-              <div className="flex items-center justify-between p-3 bg-[#FAF8F3] rounded-xl">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
                 <div className="flex-1 pr-3">
-                  <Label htmlFor="show_phone_mobile" className="text-sm font-semibold text-black cursor-pointer">
+                  <Label htmlFor="show_phone_mobile" className="text-sm font-semibold text-foreground cursor-pointer">
                     Pokazuj numer telefonu
                   </Label>
-                  <p className="text-xs text-black/60 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Widoczny w ogłoszeniach
                   </p>
                 </div>
@@ -636,12 +636,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               </div>
 
               {/* Show Messages */}
-              <div className="flex items-center justify-between p-3 bg-[#FAF8F3] rounded-xl">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
                 <div className="flex-1 pr-3">
-                  <Label htmlFor="show_messages_mobile" className="text-sm font-semibold text-black cursor-pointer">
+                  <Label htmlFor="show_messages_mobile" className="text-sm font-semibold text-foreground cursor-pointer">
                     Pokazuj "Wyślij wiadomość"
                   </Label>
-                  <p className="text-xs text-black/60 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     Użytkownicy mogą wysyłać wiadomości
                   </p>
                 </div>
@@ -669,7 +669,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
       <div className="hidden md:grid grid-cols-3 gap-6">
         {/* Left sidebar - Profile Summary */}
         <div className="col-span-1">
-          <Card className="border-0 rounded-3xl bg-white sticky top-24 overflow-visible">
+          <Card className="border border-border rounded-3xl bg-card sticky top-24 overflow-visible">
             <CardContent className="p-6 text-center overflow-visible">
               {/* Avatar */}
               <div className="mb-6 relative inline-block">
@@ -732,7 +732,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     className="hidden"
                   />
                 </div>
-                <p className="text-xs text-gray-600 mt-2">Kliknij ikonę aby zmienić</p>
+                <p className="text-xs text-muted-foreground mt-2">Kliknij ikonę aby zmienić</p>
 
                 {/* Remove Avatar Button */}
                 {profile?.avatar_url && (
@@ -741,23 +741,23 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     variant="outline"
                     onClick={handleAvatarRemove}
                     disabled={uploading}
-                    className="mt-2 text-xs rounded-full border-2 border-red-200 text-red-600 hover:text-red-600 hover:bg-red-50 hover:border-red-300 h-8 px-3"
+                    className="mt-2 text-xs rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-8 px-3"
                   >
                     Usuń avatar
                   </Button>
                 )}
               </div>
 
-              <h2 className="text-2xl font-bold text-black mb-1">
+              <h2 className="text-2xl font-bold text-foreground mb-1">
                 {formData.full_name || 'Użytkownik'}
               </h2>
-              <p className="text-sm text-black/60 mb-4">{initialUser?.email}</p>
+              <p className="text-sm text-muted-foreground mb-4">{initialUser?.email}</p>
 
               {/* Stats */}
-              <div className="space-y-3 text-left bg-[#FAF8F3] rounded-2xl p-4 mb-4">
+              <div className="space-y-3 text-left bg-muted/50 rounded-2xl p-4 mb-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-black/60">Ocena</span>
-                  <span className="font-semibold text-black flex items-center gap-1">
+                  <span className="text-sm text-muted-foreground">Ocena</span>
+                  <span className="font-semibold text-foreground flex items-center gap-1">
                     <svg className="w-4 h-4 text-[#C44E35]" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
@@ -765,8 +765,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-black/60">Opinie</span>
-                  <span className="font-semibold text-black">{profile?.total_reviews || 0}</span>
+                  <span className="text-sm text-muted-foreground">Opinie</span>
+                  <span className="font-semibold text-foreground">{profile?.total_reviews || 0}</span>
                 </div>
               </div>
 
@@ -784,10 +784,10 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
         {/* Right side - Edit Form */}
         <div className="col-span-2">
-          <Card className="border-0 rounded-3xl bg-white">
+          <Card className="border border-border rounded-3xl bg-card">
             <CardHeader>
-              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Edytuj profil</CardTitle>
-              <CardDescription className="text-sm md:text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-foreground">Edytuj profil</CardTitle>
+              <CardDescription className="text-sm md:text-base text-muted-foreground">
                 Zaktualizuj swoje dane i informacje kontaktowe
               </CardDescription>
             </CardHeader>
@@ -797,7 +797,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 <div className="grid md:grid-cols-2 gap-6">
                   {/* Full Name */}
                   <div className="space-y-3">
-                    <Label htmlFor="full_name" className="text-base font-semibold text-black">
+                    <Label htmlFor="full_name" className="text-base font-semibold text-foreground">
                       Imię i nazwisko *
                     </Label>
                     <Input
@@ -806,13 +806,13 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       value={formData.full_name}
                       onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                       required
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                      className="rounded-2xl border-2 border-border h-12 focus:border-border"
                     />
                   </div>
 
                   {/* Phone */}
                   <div className="space-y-3">
-                    <Label htmlFor="phone" className="text-base font-semibold text-black">
+                    <Label htmlFor="phone" className="text-base font-semibold text-foreground">
                       Telefon
                     </Label>
                     <Input
@@ -821,14 +821,14 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       placeholder="np. +48 123 456 789"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                      className="rounded-2xl border-2 border-border h-12 focus:border-border"
                     />
                   </div>
                 </div>
 
                 {/* Row 2: City (full width) */}
                 <div className="space-y-3">
-                  <Label htmlFor="city" className="text-base font-semibold text-black">
+                  <Label htmlFor="city" className="text-base font-semibold text-foreground">
                     Miasto
                   </Label>
                   <Input
@@ -836,13 +836,13 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     placeholder="np. Warszawa"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                    className="rounded-2xl border-2 border-border h-12 focus:border-border"
                   />
                 </div>
 
                 {/* Bio */}
                 <div className="space-y-3">
-                  <Label htmlFor="bio" className="text-base font-semibold text-black">
+                  <Label htmlFor="bio" className="text-base font-semibold text-foreground">
                     O mnie
                   </Label>
                   <Textarea
@@ -851,12 +851,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     rows={6}
                     value={formData.bio}
                     onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                    className="rounded-2xl border-2 border-black/10 focus:border-black/30 resize-none"
+                    className="rounded-2xl border-2 border-border focus:border-border resize-none"
                   />
                 </div>
 
                 {/* Footer with buttons */}
-                <div className="mt-8 pt-6 border-t-2 border-black/5">
+                <div className="mt-8 pt-6 border-t-2 border-border">
                   <div className="flex justify-end">
                     <Button
                       type="submit"
@@ -872,10 +872,10 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
           </Card>
 
           {/* Profile Banner Card */}
-          <Card className="border-0 rounded-3xl bg-white mt-6">
+          <Card className="border border-border rounded-3xl bg-card mt-6">
             <CardHeader>
-              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Banner profilu</CardTitle>
-              <CardDescription className="text-sm md:text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-foreground">Banner profilu</CardTitle>
+              <CardDescription className="text-sm md:text-base text-muted-foreground">
                 Dodaj banner do swojego profilu - idealny dla firm (logo, zdjęcie lokalu, itp.)
               </CardDescription>
             </CardHeader>
@@ -913,7 +913,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                         onMouseLeave={() => setIsBannerHovered(false)}
                         className="cursor-pointer flex flex-col items-center"
                       >
-                        <div className="bg-white rounded-full p-4 hover:bg-gray-100 transition-colors flex items-center justify-center">
+                        <div className="bg-card rounded-full p-4 hover:bg-muted transition-colors flex items-center justify-center">
                           {uploadingBanner ? (
                             <svg className="animate-spin w-6 h-6 text-[#C44E35]" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
@@ -937,7 +937,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     htmlFor="banner-upload"
                     onMouseEnter={() => setIsBannerHovered(true)}
                     onMouseLeave={() => setIsBannerHovered(false)}
-                    className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-black/20 rounded-2xl cursor-pointer hover:border-black/40 hover:bg-black/5 transition-all"
+                    className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-border rounded-2xl cursor-pointer hover:border-border hover:bg-muted transition-all"
                   >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4">
                       {uploadingBanner ? (
@@ -950,14 +950,14 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                           <LottieIcon
                             animationPath="/animations/photo.json"
                             fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
-                            className="w-10 h-10 mb-3 text-black/40"
+                            className="w-10 h-10 mb-3 text-muted-foreground"
                             isHovered={isBannerHovered}
                           />
-                          <p className="mb-2 text-sm text-black/70">
+                          <p className="mb-2 text-sm text-muted-foreground">
                             <span className="font-semibold">Kliknij aby dodać banner</span>
                           </p>
-                          <p className="text-xs text-black/50">1488×496px</p>
-                          <p className="text-xs text-black/50 mt-1">Max. 5MB</p>
+                          <p className="text-xs text-muted-foreground">1488×496px</p>
+                          <p className="text-xs text-muted-foreground mt-1">Max. 5MB</p>
                         </>
                       )}
                     </div>
@@ -999,7 +999,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       }
                     }
                   }}
-                  className="w-full rounded-full border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                  className="w-full rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50"
                 >
                   Usuń banner
                 </Button>
@@ -1008,22 +1008,22 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
           </Card>
 
           {/* Privacy Settings Card */}
-          <Card className="border-0 rounded-3xl bg-white mt-6">
+          <Card className="border border-border rounded-3xl bg-card mt-6">
             <CardHeader>
-              <CardTitle className="text-2xl md:text-3xl font-bold text-black">Ustawienia prywatności</CardTitle>
-              <CardDescription className="text-sm md:text-base text-black/60">
+              <CardTitle className="text-2xl md:text-3xl font-bold text-foreground">Ustawienia prywatności</CardTitle>
+              <CardDescription className="text-sm md:text-base text-muted-foreground">
                 Kontroluj, jakie informacje są widoczne w Twoich ogłoszeniach
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
               <form onSubmit={handlePrivacySubmit} className="space-y-6">
                 {/* Show Phone */}
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F3] rounded-2xl">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-2xl">
                   <div className="flex-1 pr-4">
-                    <Label htmlFor="show_phone" className="text-base font-semibold text-black cursor-pointer">
+                    <Label htmlFor="show_phone" className="text-base font-semibold text-foreground cursor-pointer">
                       Pokazuj numer telefonu
                     </Label>
-                    <p className="text-sm text-black/60 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Twój numer telefonu będzie widoczny na stronie szczegółów ogłoszenia
                     </p>
                   </div>
@@ -1036,12 +1036,12 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 </div>
 
                 {/* Show Messages */}
-                <div className="flex items-center justify-between p-4 bg-[#FAF8F3] rounded-2xl">
+                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-2xl">
                   <div className="flex-1 pr-4">
-                    <Label htmlFor="show_messages" className="text-base font-semibold text-black cursor-pointer">
+                    <Label htmlFor="show_messages" className="text-base font-semibold text-foreground cursor-pointer">
                       Pokazuj przycisk "Wyślij wiadomość"
                     </Label>
-                    <p className="text-sm text-black/60 mt-1">
+                    <p className="text-sm text-muted-foreground mt-1">
                       Inni użytkownicy będą mogli wysyłać do Ciebie wiadomości przez platformę
                     </p>
                   </div>
@@ -1054,7 +1054,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 </div>
 
                 {/* Footer with buttons */}
-                <div className="mt-8 pt-6 border-t-2 border-black/5">
+                <div className="mt-8 pt-6 border-t-2 border-border">
                   <div className="flex justify-end">
                     <Button
                       type="submit"

@@ -16,7 +16,7 @@ export function FeatureCard({ animationPath, fallbackSvg, title, description }: 
 
   return (
     <Card
-      className="border-0 rounded-3xl bg-white shadow-sm"
+      className="border-0 rounded-3xl bg-card shadow-sm"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -25,9 +25,9 @@ export function FeatureCard({ animationPath, fallbackSvg, title, description }: 
           <div className="w-20 h-20 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 mb-5">
             <LottieIcon animationPath={animationPath} fallbackSvg={fallbackSvg} className="w-12 h-12" isHovered={isHovered} />
           </div>
-          <h2 className="text-2xl font-bold text-black">{title}</h2>
+          <h2 className="text-2xl font-bold text-foreground">{title}</h2>
         </div>
-        <p className="text-black/60 leading-relaxed">
+        <p className="text-muted-foreground leading-relaxed">
           {description}
         </p>
       </CardContent>

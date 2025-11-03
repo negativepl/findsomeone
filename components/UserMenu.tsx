@@ -24,7 +24,7 @@ interface MenuItemWithIconProps {
   className?: string
 }
 
-function MenuItemWithIcon({ href, icon, fallbackIcon, children, onClick, isButton = false, className = "flex items-center gap-3 px-4 py-2.5 text-sm text-black hover:bg-black/5 transition-colors" }: MenuItemWithIconProps) {
+function MenuItemWithIcon({ href, icon, fallbackIcon, children, onClick, isButton = false, className = "flex items-center gap-3 px-4 py-2.5 text-sm text-foreground hover:bg-accent transition-colors" }: MenuItemWithIconProps) {
   const iconRef = useRef<LordIconRef>(null)
   const [isHovering, setIsHovering] = useState(false)
 
@@ -191,7 +191,7 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 lg:gap-3 hover:bg-black/5 rounded-full p-1.5 lg:p-2 transition-all"
+        className="flex items-center gap-2 lg:gap-3 hover:bg-accent rounded-full p-1.5 lg:p-2 transition-all"
       >
         {/* User Avatar */}
         {profile?.avatar_url ? (
@@ -218,12 +218,12 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
             }
           }
         `}</style>
-        <span className="user-name-text text-black font-medium text-sm">
+        <span className="user-name-text text-foreground font-medium text-sm">
           {getUserName()}
         </span>
         {/* Arrow Icon */}
         <svg
-          className={`hidden md:block w-4 h-4 text-black/60 transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`}
+          className={`hidden md:block w-4 h-4 text-muted-foreground transition-transform shrink-0 ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -234,10 +234,10 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute top-full right-0 w-64 bg-white rounded-2xl shadow-lg border border-black/10 py-2 z-50">
-          <div className="px-4 py-3 border-b border-black/5">
-            <p className="text-sm font-semibold text-black">{getUserName()}</p>
-            <p className="text-xs text-black/60 truncate">{user.email}</p>
+        <div className="absolute top-full right-0 w-64 bg-card rounded-2xl shadow-lg border border-border py-2 z-50">
+          <div className="px-4 py-3 border-b border-border">
+            <p className="text-sm font-semibold text-foreground">{getUserName()}</p>
+            <p className="text-xs text-muted-foreground truncate">{user.email}</p>
           </div>
 
           <div className="py-1">

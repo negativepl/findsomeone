@@ -49,11 +49,11 @@ export function AIPostCard({
     >
       <Link
         href={url}
-        className="flex flex-col h-full group bg-white rounded-xl border border-black/10 hover:border-[#C44E35]/40 hover:bg-[#C44E35]/[0.02] transition-all overflow-hidden"
+        className="flex flex-col h-full group bg-card rounded-xl border-2 border-border hover:border-[#C44E35]/40 hover:bg-[#C44E35]/[0.02] transition-all overflow-hidden"
       >
         {/* Image */}
         {image && (
-          <div className="relative w-full h-32 bg-black/5">
+          <div className="relative w-full h-32 bg-muted">
             <Image
               src={image}
               alt={title}
@@ -66,7 +66,7 @@ export function AIPostCard({
 
         <div className="flex flex-col flex-1 p-3.5">
           {/* Title */}
-          <h4 className="font-semibold text-black text-base mb-3 pb-3 border-b border-black/5 group-hover:text-[#C44E35] transition-colors">
+          <h4 className="font-semibold text-foreground text-base mb-3 pb-3 border-b border-border group-hover:text-[#C44E35] transition-colors">
             {title}
           </h4>
 
@@ -79,7 +79,7 @@ export function AIPostCard({
                 <path stroke="#c44e35" d="M270 178.4c0 30.4-24.6 55-55 55s-55-24.6-55-55 24.6-55 55-55 55 24.6 55 55"/>
               </g>
             </svg>
-            <span className="text-black/70">{city}</span>
+            <span className="text-muted-foreground">{city}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <svg width="16" height="16" viewBox="0 0 430 430" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +88,7 @@ export function AIPostCard({
                 <path stroke="#c44e35" strokeWidth="18" d="M327.453 102.547h.021"/>
               </g>
             </svg>
-            <span className="font-semibold text-black/70">{price}</span>
+            <span className="font-semibold text-muted-foreground">{price}</span>
           </div>
         </div>
         </div>

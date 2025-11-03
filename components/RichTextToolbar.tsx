@@ -10,7 +10,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
   }
 
   return (
-    <div className="bg-white border-b border-black/10 pt-3 pb-2 px-2 flex items-center gap-1 overflow-x-auto scrollbar-hide snap-x snap-mandatory overscroll-x-contain">
+    <div className="bg-card border-b border-border pt-3 pb-2 px-2 flex items-center gap-1 overflow-x-auto scrollbar-hide snap-x snap-mandatory overscroll-x-contain">
       <style jsx global>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
@@ -26,8 +26,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         disabled={!editor.can().chain().focus().toggleBold().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors border ${
           editor.isActive('bold')
-            ? 'bg-black text-white border-black'
-            : 'bg-white hover:bg-black/5 text-black border-black/10'
+            ? 'bg-foreground text-background border-foreground'
+            : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
         B
@@ -38,8 +38,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm italic font-medium transition-colors border ${
           editor.isActive('italic')
-            ? 'bg-black text-white border-black'
-            : 'bg-white hover:bg-black/5 text-black border-black/10'
+            ? 'bg-foreground text-background border-foreground'
+            : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
         I
@@ -50,8 +50,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         disabled={!editor.can().chain().focus().toggleStrike().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm line-through font-medium transition-colors border ${
           editor.isActive('strike')
-            ? 'bg-black text-white border-black'
-            : 'bg-white hover:bg-black/5 text-black border-black/10'
+            ? 'bg-foreground text-background border-foreground'
+            : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
         S
@@ -64,8 +64,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors border ${
           editor.isActive('heading', { level: 2 })
-            ? 'bg-black text-white border-black'
-            : 'bg-white hover:bg-black/5 text-black border-black/10'
+            ? 'bg-foreground text-background border-foreground'
+            : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
         H2
@@ -75,8 +75,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors border ${
           editor.isActive('heading', { level: 3 })
-            ? 'bg-black text-white border-black'
-            : 'bg-white hover:bg-black/5 text-black border-black/10'
+            ? 'bg-foreground text-background border-foreground'
+            : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
         H3
@@ -89,8 +89,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm transition-colors whitespace-nowrap border ${
           editor.isActive('bulletList')
-            ? 'bg-black text-white border-black'
-            : 'bg-white hover:bg-black/5 text-black border-black/10'
+            ? 'bg-foreground text-background border-foreground'
+            : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
         • Lista
@@ -100,8 +100,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm transition-colors whitespace-nowrap border ${
           editor.isActive('orderedList')
-            ? 'bg-black text-white border-black'
-            : 'bg-white hover:bg-black/5 text-black border-black/10'
+            ? 'bg-foreground text-background border-foreground'
+            : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
         1. Lista
@@ -114,8 +114,8 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm transition-colors whitespace-nowrap border ${
           editor.isActive('blockquote')
-            ? 'bg-black text-white border-black'
-            : 'bg-white hover:bg-black/5 text-black border-black/10'
+            ? 'bg-foreground text-background border-foreground'
+            : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
         " Cytat
@@ -126,7 +126,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
       <button
         type="button"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
-        className="flex-shrink-0 px-3 py-1.5 rounded-lg text-sm bg-white hover:bg-black/5 text-black border border-black/10 transition-colors whitespace-nowrap"
+        className="flex-shrink-0 px-3 py-1.5 rounded-lg text-sm bg-card hover:bg-muted text-foreground border border-border transition-colors whitespace-nowrap"
       >
         ─ Linia
       </button>
