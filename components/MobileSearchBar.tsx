@@ -76,18 +76,18 @@ export function MobileSearchBar({ isOpen, onClose }: MobileSearchBarProps) {
       {/* Search Bar */}
       <div
         className={cn(
-          "fixed left-0 right-0 top-0 bg-white rounded-b-3xl shadow-lg z-50 overflow-hidden",
+          "fixed left-0 right-0 top-0 bg-card rounded-b-3xl shadow-lg z-50 overflow-hidden",
           isClosing ? "animate-out slide-out-to-top duration-300" : "animate-in slide-in-from-top duration-400"
         )}
       >
         <div className="p-6">
           {/* Header */}
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-black">Wyszukaj</h2>
+            <h2 className="text-xl font-bold text-foreground">Wyszukaj</h2>
             <button
               type="button"
               onClick={handleClose}
-              className="text-black/60 hover:text-black transition-colors p-2 -mr-2 rounded-full hover:bg-black/5"
+              className="text-muted-foreground hover:text-foreground transition-colors p-2 -mr-2 rounded-full hover:bg-accent"
             >
               <svg className="w-5 h-5" viewBox="0 0 20 20" stroke="currentColor" fill="none">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15L15 5M5 5L15 15" />
@@ -97,22 +97,22 @@ export function MobileSearchBar({ isOpen, onClose }: MobileSearchBarProps) {
 
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Search input */}
-            <div className="flex items-center gap-2 px-4 py-3 bg-[#FAF8F3] rounded-2xl">
-              <Search className="w-5 h-5 text-black/40 flex-shrink-0" />
+            <div className="flex items-center gap-2 px-4 py-3 bg-secondary rounded-2xl">
+              <Search className="w-5 h-5 text-muted-foreground flex-shrink-0" />
               <input
                 ref={searchInputRef}
                 type="text"
                 placeholder="Czego szukasz?"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 outline-none text-base text-black placeholder:text-black/40 bg-transparent"
+                className="flex-1 outline-none text-base text-foreground placeholder:text-muted-foreground bg-transparent"
                 autoComplete="off"
               />
             </div>
 
             {/* City input */}
-            <div className="flex items-center gap-2 px-4 py-3 bg-[#FAF8F3] rounded-2xl">
-              <svg className="w-5 h-5 text-black/40 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center gap-2 px-4 py-3 bg-secondary rounded-2xl">
+              <svg className="w-5 h-5 text-muted-foreground flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
@@ -121,7 +121,7 @@ export function MobileSearchBar({ isOpen, onClose }: MobileSearchBarProps) {
                 placeholder="Miasto"
                 value={cityQuery}
                 onChange={(e) => setCityQuery(e.target.value)}
-                className="flex-1 outline-none text-base text-black placeholder:text-black/40 bg-transparent"
+                className="flex-1 outline-none text-base text-foreground placeholder:text-muted-foreground bg-transparent"
                 autoComplete="off"
               />
             </div>

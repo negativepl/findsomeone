@@ -15,7 +15,7 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
     return (
       <section className="py-12 md:py-14">
         <div className="container mx-auto px-6">
-          <div className="text-center text-black/40 py-12 border-2 border-dashed border-black/10 rounded-2xl">
+          <div className="text-center text-muted-foreground py-12 border-2 border-dashed border-border rounded-2xl">
             Brak cech/funkcji. Dodaj funkcje w konfiguracji sekcji.
           </div>
         </div>
@@ -45,11 +45,11 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
       <div className="container mx-auto px-6">
         {section.title && (
           <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-black mb-3">
+            <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-3">
               {section.title}
             </h2>
             {section.subtitle && (
-              <p className="text-sm md:text-lg text-black/60">
+              <p className="text-sm md:text-lg text-muted-foreground">
                 {section.subtitle}
               </p>
             )}
@@ -61,7 +61,7 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
             {features.map((feature: any, index: number) => (
               <div
                 key={index}
-                className="flex gap-4 p-6 rounded-2xl border-2 border-black/5 hover:border-black/10 transition-colors"
+                className="flex gap-4 p-6 rounded-2xl border-2 border-border hover:border-[#C44E35]/30 transition-colors bg-card"
               >
                 {feature.icon && (
                   <div className="flex-shrink-0 mt-1">
@@ -70,10 +70,10 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
                 )}
 
                 <div className="flex-1">
-                  <h3 className="text-xl font-bold text-black mb-2">
+                  <h3 className="text-xl font-bold text-foreground mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-black/70 leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -94,10 +94,10 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
                 )}
 
                 <div>
-                  <h3 className="text-xl font-bold text-black mb-2">
+                  <h3 className="text-xl font-bold text-foreground mb-2">
                     {feature.title}
                   </h3>
-                  <p className="text-black/70 leading-relaxed">
+                  <p className="text-muted-foreground leading-relaxed">
                     {feature.description}
                   </p>
                 </div>

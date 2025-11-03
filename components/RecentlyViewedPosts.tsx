@@ -96,22 +96,22 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div key={i} className="flex-shrink-0 snap-center" style={{ width: '320px' }}>
                       <Card className="border-0 rounded-3xl bg-card h-full flex flex-col animate-pulse">
-                        <div className="w-full h-48 bg-black/5 rounded-t-3xl" />
+                        <div className="w-full h-48 bg-muted rounded-t-3xl" />
                         <CardHeader className="pb-4 pt-6">
                           <div className="flex items-start justify-between mb-3">
-                            <div className="h-6 w-20 bg-black/5 rounded-full" />
-                            <div className="h-6 w-24 bg-black/5 rounded-full" />
+                            <div className="h-6 w-20 bg-muted rounded-full" />
+                            <div className="h-6 w-24 bg-muted rounded-full" />
                           </div>
-                          <div className="h-6 w-3/4 bg-black/5 rounded" />
+                          <div className="h-6 w-3/4 bg-muted rounded" />
                         </CardHeader>
                         <CardContent className="pb-6 mt-auto space-y-3">
-                          <div className="h-4 w-1/2 bg-black/5 rounded" />
+                          <div className="h-4 w-1/2 bg-muted rounded" />
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-full bg-black/5" />
-                              <div className="h-4 w-24 bg-black/5 rounded" />
+                              <div className="w-8 h-8 rounded-full bg-muted" />
+                              <div className="h-4 w-24 bg-muted rounded" />
                             </div>
-                            <div className="h-6 w-20 bg-black/5 rounded" />
+                            <div className="h-6 w-20 bg-muted rounded" />
                           </div>
                         </CardContent>
                       </Card>
@@ -136,7 +136,7 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-card rounded-3xl p-8 shadow-sm group/section overflow-visible">
+      <div className="hidden md:block bg-card border border-border rounded-3xl p-8 shadow-sm group/section overflow-visible">
         <div className="mb-12">
           <h3 className="text-4xl font-bold text-foreground mb-2">Ostatnio wyświetlane</h3>
           <p className="text-lg text-muted-foreground">Ostatnio przeglądane ogłoszenia</p>
@@ -157,22 +157,22 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
                   {[1, 2, 3, 4, 5, 6].map((i) => (
                     <div key={i} className="flex-shrink-0 snap-center" style={{ width: '320px' }}>
                       <Card className="border-0 rounded-3xl bg-card h-full flex flex-col animate-pulse">
-                        <div className="w-full h-48 bg-black/5 rounded-t-3xl" />
+                        <div className="w-full h-48 bg-muted rounded-t-3xl" />
                         <CardHeader className="pb-4 pt-6">
                           <div className="flex items-start justify-between mb-3">
-                            <div className="h-6 w-20 bg-black/5 rounded-full" />
-                            <div className="h-6 w-24 bg-black/5 rounded-full" />
+                            <div className="h-6 w-20 bg-muted rounded-full" />
+                            <div className="h-6 w-24 bg-muted rounded-full" />
                           </div>
-                          <div className="h-6 w-3/4 bg-black/5 rounded" />
+                          <div className="h-6 w-3/4 bg-muted rounded" />
                         </CardHeader>
                         <CardContent className="pb-6 mt-auto space-y-3">
-                          <div className="h-4 w-1/2 bg-black/5 rounded" />
+                          <div className="h-4 w-1/2 bg-muted rounded" />
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-full bg-black/5" />
-                              <div className="h-4 w-24 bg-black/5 rounded" />
+                              <div className="w-8 h-8 rounded-full bg-muted" />
+                              <div className="h-4 w-24 bg-muted rounded" />
                             </div>
-                            <div className="h-6 w-20 bg-black/5 rounded" />
+                            <div className="h-6 w-20 bg-muted rounded" />
                           </div>
                         </CardContent>
                       </Card>

@@ -10,11 +10,11 @@ export function Logo({ className = "w-8 h-8" }: { className?: string }) {
       role="img"
       aria-label="FindSomeone logo"
     >
-      {/* Lewa sylwetka - czarna */}
-      <circle cx="32" cy="28" r="11" fill="#1A1A1A" />
+      {/* Lewa sylwetka - czarna w light mode, biała w dark mode */}
+      <circle cx="32" cy="28" r="11" className="fill-foreground" />
       <path
         d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z"
-        fill="#1A1A1A"
+        className="fill-foreground"
       />
 
       {/* Prawa sylwetka - pomarańczowa */}

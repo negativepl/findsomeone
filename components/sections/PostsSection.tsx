@@ -102,7 +102,7 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
       </div>
 
       {/* Desktop: card design */}
-      <div className="hidden md:block bg-card rounded-3xl p-8 shadow-sm group/section overflow-visible">
+      <div className="hidden md:block bg-card border border-border rounded-3xl p-8 shadow-sm group/section overflow-visible">
         <div className="flex items-center justify-between mb-12">
           <div>
             <h3 className="text-4xl font-bold text-foreground mb-2">{title}</h3>

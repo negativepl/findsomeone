@@ -93,11 +93,15 @@ export default async function PostsPage({
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Fetch categories for filters
-  const { data: categories } = await supabase
+  // Fetch categories for filters with 3 levels
+  const { data: rawCategories } = await supabase
     .from('categories')
-    .select('id, name, slug, icon, parent_id')
+    .select('id, name, slug, icon, parent_id, display_order')
     .order('display_order')
+
+  // Sort all categories by display_order (since we get them flat)
+  const sortedCategories = rawCategories?.sort((a, b) => (a.display_order || 0) - (b.display_order || 0)) || []
+  const categories = sortedCategories
 
   const searchQuery = params.search || ''
   const cityQuery = params.city || ''

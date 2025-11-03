@@ -23,7 +23,7 @@ export async function MobileDockWrapper({ user }: MobileDockWrapperProps) {
     profile = data
   }
 
-  // Fetch categories
+  // Fetch categories with 3 levels (category > subcategory > subsubcategory)
   const { data: categories } = await supabase
     .from('categories')
     .select(`
@@ -31,10 +31,29 @@ export async function MobileDockWrapper({ user }: MobileDockWrapperProps) {
       name,
       slug,
       icon,
-      subcategories:categories!parent_id(id, name, slug)
+      display_order,
+      subcategories:categories!parent_id(
+        id,
+        name,
+        slug,
+        display_order,
+        subcategories:categories!parent_id(id, name, slug, display_order)
+      )
     `)
     .is('parent_id', null)
     .order('display_order')
 
-  return <MobileDock user={user} profile={profile} isAdmin={isAdmin} categories={categories || []} />
+  // Manually sort subcategories and sub-subcategories by display_order
+  // Supabase doesn't automatically sort nested relations
+  const sortedCategories = categories?.map(cat => ({
+    ...cat,
+    subcategories: cat.subcategories
+      ?.sort((a: any, b: any) => (a.display_order || 0) - (b.display_order || 0))
+      .map((sub: any) => ({
+        ...sub,
+        subcategories: sub.subcategories?.sort((a: any, b: any) => (a.display_order || 0) - (b.display_order || 0))
+      }))
+  })) || []
+
+  return <MobileDock user={user} profile={profile} isAdmin={isAdmin} categories={sortedCategories} />
 }

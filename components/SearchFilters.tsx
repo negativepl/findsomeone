@@ -24,11 +24,15 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
+  const [hoveredSubcategory, setHoveredSubcategory] = useState<string | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mobileViewingCategory, setMobileViewingCategory] = useState<string | null>(null)
+  const [mobileViewingSubcategory, setMobileViewingSubcategory] = useState<string | null>(null)
   const [dropdownPosition, setDropdownPosition] = useState<{ [key: string]: { position: 'top' | 'bottom', maxHeight?: number } }>({})
   const categoryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
+  const subcategoryRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const subCloseTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const currentCategory = searchParams.get('category') || ''
   const currentType = searchParams.get('type') || ''
@@ -39,6 +43,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   useEffect(() => {
     setIsMobileMenuOpen(false)
     setMobileViewingCategory(null)
+    setMobileViewingSubcategory(null)
   }, [searchParams])
 
   // Prevent body scroll when mobile menu is open
@@ -53,11 +58,14 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     }
   }, [isMobileMenuOpen])
 
-  // Cleanup timeout on unmount
+  // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
       if (closeTimeoutRef.current) {
         clearTimeout(closeTimeoutRef.current)
+      }
+      if (subCloseTimeoutRef.current) {
+        clearTimeout(subCloseTimeoutRef.current)
       }
     }
   }, [])
@@ -123,7 +131,74 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     // Delay closing to allow moving to next category
     closeTimeoutRef.current = setTimeout(() => {
       setExpandedCategory(null)
+      setHoveredSubcategory(null)
     }, 100)
+  }
+
+  const handleSubcategoryHover = (subcategoryId: string) => {
+    // Cancel any pending close
+    if (subCloseTimeoutRef.current) {
+      clearTimeout(subCloseTimeoutRef.current)
+      subCloseTimeoutRef.current = null
+    }
+
+    setHoveredSubcategory(subcategoryId)
+  }
+
+  const handleSubcategoryLeave = () => {
+    // Delay closing to allow moving to next subcategory
+    subCloseTimeoutRef.current = setTimeout(() => {
+      setHoveredSubcategory(null)
+    }, 100)
+  }
+
+  const getSubSubDropdownStyle = (subcategoryId: string) => {
+    const element = subcategoryRefs.current[subcategoryId]
+    if (!element) return {}
+
+    const rect = element.getBoundingClientRect()
+    const subSubcategories = getSubcategories(subcategoryId)
+
+    // Calculate available space
+    const spaceBelow = window.innerHeight - rect.top - 20
+    const spaceAbove = rect.bottom - 20
+
+    // Estimate dropdown height
+    const idealDropdownHeight = subSubcategories.length * 36 + 16
+
+    let position: 'top' | 'bottom' = 'bottom'
+    let maxHeight: number | undefined
+
+    if (spaceBelow >= idealDropdownHeight) {
+      position = 'bottom'
+      maxHeight = undefined
+    } else if (spaceAbove >= idealDropdownHeight) {
+      position = 'top'
+      maxHeight = undefined
+    } else {
+      if (spaceBelow > spaceAbove) {
+        position = 'bottom'
+        maxHeight = spaceBelow - 20
+      } else {
+        position = 'top'
+        maxHeight = spaceAbove - 20
+      }
+    }
+
+    const style: React.CSSProperties = {
+      position: 'fixed' as const,
+      left: `${rect.right + 12}px`,
+      [position === 'top' ? 'bottom' : 'top']: position === 'top'
+        ? `${window.innerHeight - rect.bottom}px`
+        : `${rect.top}px`,
+      zIndex: 60
+    }
+
+    if (maxHeight) {
+      style.maxHeight = `${maxHeight}px`
+    }
+
+    return style
   }
 
   const getDropdownStyle = (categoryId: string) => {
@@ -179,6 +254,61 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   const hasActiveFilters = currentCategory || currentSearch || currentCity
 
   const MobileMenuContent = () => {
+    // If viewing a specific subcategory's sub-subcategories (third level)
+    if (mobileViewingSubcategory) {
+      const subcategory = categories?.find(cat => cat.id === mobileViewingSubcategory)
+      if (!subcategory) return null
+
+      const subSubcategories = getSubcategories(subcategory.id)
+
+      return (
+        <div className="space-y-3">
+          {/* Back button */}
+          <button
+            onClick={() => setMobileViewingSubcategory(null)}
+            className="flex items-center gap-2 text-foreground hover:text-[#C44E35] transition-colors mb-4"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            <span className="font-medium">Powrót</span>
+          </button>
+
+          {/* Subcategory header */}
+          <div className="mb-4">
+            <button
+              onClick={() => updateFilter('category', subcategory.name.toLowerCase())}
+              data-navigate="true"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-card border border-border hover:bg-muted transition-colors"
+            >
+              <span className="font-bold text-lg">{subcategory.name}</span>
+            </button>
+          </div>
+
+          {/* Sub-subcategories */}
+          <div className="space-y-2">
+            {subSubcategories.map((subSubcategory) => {
+              const isSelected = currentCategory.toLowerCase() === subSubcategory.name.toLowerCase()
+              return (
+                <button
+                  key={subSubcategory.id}
+                  onClick={() => updateFilter('category', subSubcategory.name.toLowerCase())}
+                  data-navigate="true"
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
+                    isSelected
+                      ? 'bg-[#C44E35] text-white'
+                      : 'bg-card text-foreground border border-border hover:bg-muted'
+                  }`}
+                >
+                  <span className="font-medium">{subSubcategory.name}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      )
+    }
+
     // If viewing a specific category's subcategories
     if (mobileViewingCategory) {
       const category = mainCategories.find(cat => cat.id === mobileViewingCategory)
@@ -215,18 +345,32 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           <div className="space-y-2">
             {subcategories.map((subcategory) => {
               const isSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
+              const subSubcategories = getSubcategories(subcategory.id)
+              const hasSubSubcategories = subSubcategories.length > 0
+
               return (
                 <button
                   key={subcategory.id}
-                  onClick={() => updateFilter('category', subcategory.name.toLowerCase())}
-                  data-navigate="true"
+                  onClick={() => {
+                    if (hasSubSubcategories) {
+                      setMobileViewingSubcategory(subcategory.id)
+                    } else {
+                      updateFilter('category', subcategory.name.toLowerCase())
+                    }
+                  }}
+                  {...(!hasSubSubcategories && { 'data-navigate': 'true' })}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
                     isSelected
                       ? 'bg-[#C44E35] text-white'
                       : 'bg-card text-foreground border border-border hover:bg-muted'
                   }`}
                 >
-                  <span className="font-medium">{subcategory.name}</span>
+                  <span className="font-medium flex-1">{subcategory.name}</span>
+                  {hasSubSubcategories && (
+                    <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  )}
                 </button>
               )
             })}
@@ -391,20 +535,88 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                         >
                           {subcategories.map((subcategory) => {
                             const isSubSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
+                            const subSubcategories = getSubcategories(subcategory.id)
+                            const hasSubSubcategories = subSubcategories.length > 0
 
                             return (
-                              <button
-                                key={subcategory.id}
-                                onClick={() => updateFilter('category', subcategory.name.toLowerCase())}
-                                data-navigate="true"
-                                className={`w-full flex items-center gap-3 px-4 py-2 rounded-xl text-left transition-colors ${
-                                  isSubSelected
-                                    ? 'bg-[#C44E35] text-white'
-                                    : 'hover:bg-muted text-foreground'
-                                }`}
-                              >
-                                <span className="text-sm">{subcategory.name}</span>
-                              </button>
+                              <div key={subcategory.id} className="relative">
+                                <button
+                                  ref={(el) => { subcategoryRefs.current[subcategory.id] = el }}
+                                  onClick={() => updateFilter('category', subcategory.name.toLowerCase())}
+                                  onMouseEnter={() => {
+                                    if (hasSubSubcategories) {
+                                      handleSubcategoryHover(subcategory.id)
+                                    }
+                                  }}
+                                  onMouseLeave={handleSubcategoryLeave}
+                                  data-navigate="true"
+                                  className={`w-full flex items-center gap-2 px-4 py-2 rounded-xl text-left transition-colors ${
+                                    isSubSelected
+                                      ? 'bg-[#C44E35] text-white'
+                                      : 'hover:bg-muted text-foreground'
+                                  }`}
+                                >
+                                  <span className="text-sm flex-1">{subcategory.name}</span>
+                                  {hasSubSubcategories && (
+                                    <svg
+                                      className={`w-4 h-4 flex-shrink-0 ${isSubSelected ? 'text-white' : 'text-muted-foreground'}`}
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                    </svg>
+                                  )}
+                                </button>
+
+                                {/* Sub-subcategories dropdown - appears on the right */}
+                                {hasSubSubcategories && hoveredSubcategory === subcategory.id && (
+                                  <div
+                                    style={getSubSubDropdownStyle(subcategory.id)}
+                                    className="min-w-[220px]"
+                                    onMouseEnter={() => {
+                                      // Cancel close timeout when hovering dropdown
+                                      if (subCloseTimeoutRef.current) {
+                                        clearTimeout(subCloseTimeoutRef.current)
+                                        subCloseTimeoutRef.current = null
+                                      }
+                                    }}
+                                    onMouseLeave={handleSubcategoryLeave}
+                                  >
+                                    {/* Invisible bridge */}
+                                    <div
+                                      className="absolute right-full top-0 bottom-0"
+                                      style={{ width: '12px' }}
+                                    />
+
+                                    <div
+                                      className="bg-card border border-border rounded-2xl shadow-xl p-2 space-y-1 overflow-y-auto max-h-full"
+                                      style={{
+                                        scrollbarWidth: 'thin',
+                                        scrollbarColor: 'rgba(0,0,0,0.1) transparent'
+                                      }}
+                                    >
+                                      {subSubcategories.map((subSubcategory) => {
+                                        const isSubSubSelected = currentCategory.toLowerCase() === subSubcategory.name.toLowerCase()
+                                        return (
+                                          <button
+                                            key={subSubcategory.id}
+                                            onClick={() => updateFilter('category', subSubcategory.name.toLowerCase())}
+                                            data-navigate="true"
+                                            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-colors ${
+                                              isSubSubSelected
+                                                ? 'bg-[#C44E35] text-white'
+                                                : 'hover:bg-muted text-foreground'
+                                            }`}
+                                          >
+                                            <span className="text-xs">{subSubcategory.name}</span>
+                                          </button>
+                                        )
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             )
                           })}
                         </div>
