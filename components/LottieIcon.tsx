@@ -119,11 +119,19 @@ export function LottieIcon({
 
   // Show SVG fallback if animation not loaded yet
   if (!animationData) {
-    // Show nothing until mounted to avoid flash
+    // If we have both light and dark versions, render both and let CSS control visibility
+    if (fallbackSvgLight && fallbackSvgDark) {
+      return (
+        <div className={className}>
+          <div className="dark:hidden">{fallbackSvgLight}</div>
+          <div className="hidden dark:block">{fallbackSvgDark}</div>
+        </div>
+      )
+    }
+    // Otherwise render single fallback (after mounted to avoid mismatch)
     if (!mounted) {
       return <div className={className} />
     }
-    // Render only the appropriate SVG based on current theme
     return <div className={className}>{currentFallbackSvg}</div>
   }
 
