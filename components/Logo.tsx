@@ -10,14 +10,14 @@ export function Logo({ className = "w-8 h-8" }: { className?: string }) {
       role="img"
       aria-label="FindSomeone logo"
     >
-      {/* Lewa sylwetka - czarna w light mode, biała w dark mode */}
-      <circle cx="32" cy="28" r="11" className="fill-foreground" />
+      {/* Lewa sylwetka - jaśniejszy pomarańczowy */}
+      <circle cx="32" cy="28" r="11" fill="#E87B5C" />
       <path
         d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z"
-        className="fill-foreground"
+        fill="#E87B5C"
       />
 
-      {/* Prawa sylwetka - pomarańczowa */}
+      {/* Prawa sylwetka - ciemniejszy pomarańczowy */}
       <circle cx="68" cy="28" r="11" fill="#C44E35" />
       <path
         d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z"
@@ -29,11 +29,10 @@ export function Logo({ className = "w-8 h-8" }: { className?: string }) {
 
 export function LogoWithText({ className = "" }: { className?: string }) {
   return (
-    <div className={`flex items-center gap-3 ${className}`}>
+    <div className={`flex items-center gap-2 ${className}`}>
       <Logo className="w-9 h-9 flex-shrink-0" />
-      <div className="hidden xl:flex flex-col -mt-1">
-        <span className="text-xl font-bold text-foreground leading-none">FindSomeone</span>
-        <span className="text-xs text-muted-foreground mt-0.5 leading-none text-left">Łączymy ludzi lokalnie</span>
+      <div className="hidden xl:flex flex-col">
+        <span className="text-xl font-bold text-foreground leading-none font-[family-name:var(--font-lora)]">FindSomeone</span>
       </div>
     </div>
   )

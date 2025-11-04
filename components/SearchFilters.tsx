@@ -382,19 +382,6 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     // Main categories view
     return (
       <div className="space-y-3">
-        {/* All categories button */}
-        <button
-          onClick={() => updateFilter('category', '')}
-          data-navigate="true"
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
-            !currentCategory
-              ? 'bg-[#C44E35] text-white'
-              : 'bg-card text-foreground border border-border hover:bg-muted'
-          }`}
-        >
-          <span className="font-medium">Wszystkie kategorie</span>
-        </button>
-
         {/* Main categories */}
         <div className="space-y-2">
           {mainCategories.map((mainCategory) => {
@@ -439,196 +426,8 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
 
   const DesktopMenuContent = () => (
     <>
-        {/* Category Filter */}
-        {categories && categories.length > 0 && (
-          <>
-            {/* All categories badge */}
-            <button
-              onClick={() => updateFilter('category', '')}
-              data-navigate="true"
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all mb-2 ${
-                !currentCategory
-                  ? 'bg-[#C44E35] text-white'
-                  : 'bg-card text-foreground border border-border hover:bg-muted'
-              }`}
-            >
-              <span className="font-medium">Wszystkie kategorie</span>
-            </button>
-
-            {/* Main categories with subcategories - scrollable */}
-            <div className="space-y-2">
-              {mainCategories.map((mainCategory) => {
-                const subcategories = getSubcategories(mainCategory.id)
-                const hasSubcategories = subcategories.length > 0
-                const isExpanded = expandedCategory === mainCategory.id
-                const isMainSelected = currentCategory.toLowerCase() === mainCategory.name.toLowerCase()
-                const hasSelectedSubcategory = subcategories.some(
-                  sub => currentCategory.toLowerCase() === sub.name.toLowerCase()
-                )
-
-                return (
-                  <div
-                    key={mainCategory.id}
-                    ref={(el) => { categoryRefs.current[mainCategory.id] = el }}
-                    className="relative"
-                    onMouseLeave={handleCategoryLeave}
-                  >
-                    {/* Main category button */}
-                    <div className="border border-border rounded-2xl overflow-visible bg-card">
-                      <button
-                        onClick={() => updateFilter('category', mainCategory.name.toLowerCase())}
-                        onMouseEnter={() => {
-                          if (hasSubcategories) {
-                            handleCategoryHover(mainCategory.id)
-                          }
-                        }}
-                        data-navigate="true"
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors relative ${
-                          isMainSelected
-                            ? 'bg-[#C44E35] text-white rounded-2xl'
-                            : hasSelectedSubcategory || isExpanded
-                            ? 'bg-muted text-foreground rounded-2xl'
-                            : 'bg-card text-foreground hover:bg-muted rounded-2xl'
-                        }`}
-                      >
-                        <CategoryIcon
-                          iconName={mainCategory.icon}
-                          className={`w-5 h-5 flex-shrink-0 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`}
-                        />
-                        <span className="font-medium flex-1">{mainCategory.name}</span>
-
-                        {/* Dropdown indicator for categories with subcategories */}
-                        {hasSubcategories && (
-                          <svg className={`w-5 h-5 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-
-                    {/* Dropdown menu for subcategories - appears on the right using fixed positioning */}
-                    {hasSubcategories && isExpanded && (
-                      <div
-                        style={getDropdownStyle(mainCategory.id)}
-                        className="min-w-[250px]"
-                        onMouseEnter={() => {
-                          // Cancel close timeout when hovering dropdown
-                          if (closeTimeoutRef.current) {
-                            clearTimeout(closeTimeoutRef.current)
-                            closeTimeoutRef.current = null
-                          }
-                        }}
-                        onMouseLeave={handleCategoryLeave}
-                      >
-                        {/* Invisible bridge to connect category button with dropdown */}
-                        <div
-                          className="absolute right-full top-0 bottom-0"
-                          style={{ width: '8px' }}
-                        />
-
-                        <div
-                          className="bg-card border border-border rounded-2xl shadow-xl p-2 space-y-1 overflow-y-auto max-h-full"
-                          style={{
-                            scrollbarWidth: 'thin',
-                            scrollbarColor: 'rgba(0,0,0,0.1) transparent'
-                          }}
-                        >
-                          {subcategories.map((subcategory) => {
-                            const isSubSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
-                            const subSubcategories = getSubcategories(subcategory.id)
-                            const hasSubSubcategories = subSubcategories.length > 0
-
-                            return (
-                              <div key={subcategory.id} className="relative">
-                                <button
-                                  ref={(el) => { subcategoryRefs.current[subcategory.id] = el }}
-                                  onClick={() => updateFilter('category', subcategory.name.toLowerCase())}
-                                  onMouseEnter={() => {
-                                    if (hasSubSubcategories) {
-                                      handleSubcategoryHover(subcategory.id)
-                                    }
-                                  }}
-                                  onMouseLeave={handleSubcategoryLeave}
-                                  data-navigate="true"
-                                  className={`w-full flex items-center gap-2 px-4 py-2 rounded-xl text-left transition-colors ${
-                                    isSubSelected
-                                      ? 'bg-[#C44E35] text-white'
-                                      : 'hover:bg-muted text-foreground'
-                                  }`}
-                                >
-                                  <span className="text-sm flex-1">{subcategory.name}</span>
-                                  {hasSubSubcategories && (
-                                    <svg
-                                      className={`w-4 h-4 flex-shrink-0 ${isSubSelected ? 'text-white' : 'text-muted-foreground'}`}
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                    </svg>
-                                  )}
-                                </button>
-
-                                {/* Sub-subcategories dropdown - appears on the right */}
-                                {hasSubSubcategories && hoveredSubcategory === subcategory.id && (
-                                  <div
-                                    style={getSubSubDropdownStyle(subcategory.id)}
-                                    className="min-w-[220px]"
-                                    onMouseEnter={() => {
-                                      // Cancel close timeout when hovering dropdown
-                                      if (subCloseTimeoutRef.current) {
-                                        clearTimeout(subCloseTimeoutRef.current)
-                                        subCloseTimeoutRef.current = null
-                                      }
-                                    }}
-                                    onMouseLeave={handleSubcategoryLeave}
-                                  >
-                                    {/* Invisible bridge */}
-                                    <div
-                                      className="absolute right-full top-0 bottom-0"
-                                      style={{ width: '12px' }}
-                                    />
-
-                                    <div
-                                      className="bg-card border border-border rounded-2xl shadow-xl p-2 space-y-1 overflow-y-auto max-h-full"
-                                      style={{
-                                        scrollbarWidth: 'thin',
-                                        scrollbarColor: 'rgba(0,0,0,0.1) transparent'
-                                      }}
-                                    >
-                                      {subSubcategories.map((subSubcategory) => {
-                                        const isSubSubSelected = currentCategory.toLowerCase() === subSubcategory.name.toLowerCase()
-                                        return (
-                                          <button
-                                            key={subSubcategory.id}
-                                            onClick={() => updateFilter('category', subSubcategory.name.toLowerCase())}
-                                            data-navigate="true"
-                                            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-left transition-colors ${
-                                              isSubSubSelected
-                                                ? 'bg-[#C44E35] text-white'
-                                                : 'hover:bg-muted text-foreground'
-                                            }`}
-                                          >
-                                            <span className="text-xs">{subSubcategory.name}</span>
-                                          </button>
-                                        )
-                                      })}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          </>
-        )}
-      </>
+      {/* Desktop content will be added later */}
+    </>
   )
 
   return (
@@ -685,35 +484,9 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
         </div>
       </div>
 
-      {/* Desktop: Sticky sidebar with scroll */}
-      <div className="hidden lg:block sticky top-4 space-y-4 max-h-[calc(100vh-32px)]">
-        {/* Header */}
-        <div className="flex items-center justify-between flex-shrink-0">
-          <h3 className="text-lg font-bold text-foreground">Kategorie</h3>
-          {hasActiveFilters && (
-            <button
-              onClick={clearFilters}
-              data-navigate="true"
-              className="text-sm text-[#B33D2A] hover:text-[#A02C1F] font-medium"
-            >
-              Wyczyść
-            </button>
-          )}
-        </div>
-
-        {/* Scrollable content area */}
-        <div
-          className="overflow-y-auto pr-2 flex-1"
-          style={{
-            maxHeight: 'calc(100vh - 120px)',
-            scrollbarWidth: 'thin',
-            scrollbarColor: 'rgba(0,0,0,0.1) transparent',
-            paddingBottom: '32px'
-          }}
-          onScroll={() => setExpandedCategory(null)}
-        >
-          <DesktopMenuContent />
-        </div>
+      {/* Desktop: Sticky sidebar with scroll - temporarily hidden */}
+      <div className="hidden">
+        {/* Will be redesigned */}
       </div>
     </>
   )

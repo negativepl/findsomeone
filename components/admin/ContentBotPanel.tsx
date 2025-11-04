@@ -524,7 +524,7 @@ export default function ContentBotPanel() {
 
       {/* Generation Progress */}
       {generationProgress && (
-        <div className="bg-white rounded-3xl shadow-sm overflow-hidden border-2 border-[#C44E35]/30">
+        <div className="bg-white rounded-3xl shadow-sm overflow-hidden border border-[#C44E35]/30">
           <div className="p-6 space-y-3">
             <div className="flex items-center gap-3 mb-4">
               <Loader2 className="h-6 w-6 animate-spin text-[#C44E35]" />

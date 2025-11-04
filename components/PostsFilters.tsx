@@ -43,7 +43,7 @@ export function PostsFilters({
         <SelectTrigger className="w-auto rounded-xl border-border h-9 bg-card focus:ring-0 focus:ring-offset-0 focus:border-border px-2.5 gap-1 justify-start" aria-label="Sortuj według">
           <span className="text-sm">Sortuj według</span>
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent align="end">
           <SelectItem value="newest">Najnowsze najpierw</SelectItem>
           <SelectItem value="oldest">Najstarsze najpierw</SelectItem>
           <SelectItem value="price_asc">Cena: rosnąco</SelectItem>

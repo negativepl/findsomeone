@@ -121,7 +121,7 @@ export function MegaMenu() {
     }
 
     const path = findPath(categories, categoryId)
-    return path ? `/kategoria/${path.join('/')}` : '#'
+    return path ? `/category/${path.join('/')}` : '#'
   }
 
   const getIconComponent = (iconName: string | null): LucideIcon | null => {
@@ -152,7 +152,28 @@ export function MegaMenu() {
         aria-label="Menu kategorii"
         aria-expanded={isOpen}
       >
-        <Menu className="h-5 w-5 text-white" />
+        <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+          <motion.line
+            x1="3" y1="6" x2="21" y2="6"
+            animate={isOpen ? { rotate: 45, y: 6, x: 0 } : { rotate: 0, y: 0, x: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            style={{ originX: "50%", originY: "50%" }}
+            className="text-brand-foreground"
+          />
+          <motion.line
+            x1="3" y1="12" x2="21" y2="12"
+            animate={isOpen ? { opacity: 0, x: -10 } : { opacity: 1, x: 0 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="text-brand-foreground"
+          />
+          <motion.line
+            x1="3" y1="18" x2="21" y2="18"
+            animate={isOpen ? { rotate: -45, y: -6, x: 0 } : { rotate: 0, y: 0, x: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            style={{ originX: "50%", originY: "50%" }}
+            className="text-brand-foreground"
+          />
+        </svg>
       </button>
 
       <AnimatePresence>

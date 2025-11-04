@@ -184,7 +184,7 @@ export function HeroBannerSection({ section }: HeroBannerSectionProps) {
                 <Button
                   asChild
                   size="lg"
-                  className="w-full md:w-auto text-lg px-12 py-8 rounded-full border-2 transition-all min-h-[56px]"
+                  className="w-full md:w-auto text-lg px-12 py-8 rounded-full border transition-all min-h-[56px]"
                   style={{
                     backgroundColor: buttonColorSecondary,
                     color: buttonTextColorSecondary,

@@ -39,7 +39,7 @@ export function ChangePasswordDialog() {
         <Button
           variant="outline"
           size="sm"
-          className="rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 bg-card text-foreground"
+          className="rounded-full border border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 bg-card text-foreground"
         >
           Zmień
         </Button>
@@ -63,7 +63,7 @@ export function ChangePasswordDialog() {
                 type="password"
                 required
                 disabled={loading}
-                className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                className="rounded-2xl border border-black/10 h-12 focus:border-black/30"
               />
             </div>
             <div className="space-y-3">
@@ -77,7 +77,7 @@ export function ChangePasswordDialog() {
                 required
                 minLength={8}
                 disabled={loading}
-                className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                className="rounded-2xl border border-black/10 h-12 focus:border-black/30"
               />
               <p className="text-xs text-muted-foreground">Minimum 8 znaków</p>
             </div>
@@ -92,7 +92,7 @@ export function ChangePasswordDialog() {
                 required
                 minLength={8}
                 disabled={loading}
-                className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                className="rounded-2xl border border-black/10 h-12 focus:border-black/30"
               />
             </div>
           </div>
@@ -103,7 +103,7 @@ export function ChangePasswordDialog() {
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10"
+              className="rounded-full border border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10"
             >
               Anuluj
             </Button>

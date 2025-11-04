@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Dancing_Script } from "next/font/google";
+import { Geist, Geist_Mono, Dancing_Script, Lora } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { ConditionalAnalytics } from "@/components/ConditionalAnalytics";
@@ -22,6 +22,11 @@ const geistMono = Geist_Mono({
 
 const dancingScript = Dancing_Script({
   variable: "--font-dancing-script",
+  subsets: ["latin", "latin-ext"],
+});
+
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin", "latin-ext"],
 });
 
@@ -98,10 +103,13 @@ export default async function RootLayout({
               (function() {
                 try {
                   var theme = localStorage.getItem('theme');
-                  var isDark = theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  var isDark = theme === 'dark' || ((theme === 'system' || !theme) && prefersDark);
+
                   if (isDark) {
                     document.documentElement.classList.add('dark');
                   }
+
                   // Update theme-color meta tag
                   var themeColorMeta = document.querySelector('meta[name="theme-color"]');
                   if (themeColorMeta) {
@@ -114,7 +122,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} ${lora.variable} antialiased`}
       >
         <Suspense fallback={null}>
           <TopLoader />

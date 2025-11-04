@@ -54,7 +54,7 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
   }
 
   return (
-    <div className={`${noBorder ? 'h-full flex flex-col' : 'border-2 border-border rounded-2xl focus-within:border-border transition-colors'} overflow-hidden ${className || ''}`}>
+    <div className={`${noBorder ? 'h-full flex flex-col' : 'border border-border rounded-2xl focus-within:border-border transition-colors'} overflow-hidden ${className || ''}`}>
       {/* Toolbar */}
       {!hideToolbar && (
       <div className="border-b border-border bg-muted p-1 md:p-2 flex md:flex-wrap gap-0.5 md:gap-1 overflow-x-auto md:overflow-x-visible scrollbar-hide snap-x snap-mandatory">

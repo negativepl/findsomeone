@@ -68,7 +68,7 @@ export function DeleteCategoryDialog({ category, onClose, onDeleted }: DeleteCat
         <div className="mt-8 pt-6 border-t-2 border-black/5">
           <AlertDialogFooter className="gap-2 sm:gap-2">
             <AlertDialogCancel
-              className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+              className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5"
               disabled={loading}
             >
               Anuluj

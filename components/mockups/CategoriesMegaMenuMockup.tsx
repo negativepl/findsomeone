@@ -44,7 +44,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
             <Button
               onClick={() => setIsOpen(!isOpen)}
               variant="outline"
-              className="h-10 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 transition-all px-4 gap-2 whitespace-nowrap"
+              className="h-10 rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 transition-all px-4 gap-2 whitespace-nowrap"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -66,7 +66,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                 <input
                   type="text"
                   placeholder="Czego szukasz?"
-                  className="w-full h-10 pl-10 pr-4 rounded-full border-2 border-black/10 focus:border-black/30 focus:outline-none transition-all"
+                  className="w-full h-10 pl-10 pr-4 rounded-full border border-black/10 focus:border-black/30 focus:outline-none transition-all"
                   disabled
                 />
                 <svg
@@ -87,7 +87,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
               onClick={() => setIsOpen(!isOpen)}
               variant="outline"
               size="icon"
-              className="h-10 w-10 rounded-full border-2 border-black/10"
+              className="h-10 w-10 rounded-full border border-black/10"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />

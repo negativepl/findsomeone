@@ -52,7 +52,7 @@ export function AnimatedTestimonials({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.5 }}
-            className="w-full aspect-square rounded-2xl md:rounded-3xl overflow-hidden relative border-2 border-black/10 shadow-2xl"
+            className="w-full aspect-square rounded-2xl md:rounded-3xl overflow-hidden relative border border-black/10 shadow-2xl"
           >
             <img
               src={testimonials[active].src}

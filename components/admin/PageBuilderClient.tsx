@@ -256,7 +256,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
               const metadata = SECTION_TYPES[section.type]
               const title = section.title || metadata?.label || section.type
               return (
-                <div key={section.id} className="border-2 rounded-2xl p-6 border-black/10 bg-white">
+                <div key={section.id} className="border rounded-2xl p-6 border-black/10 bg-white">
                   <div className="text-lg font-bold text-black">{title}</div>
                 </div>
               )

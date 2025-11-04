@@ -44,7 +44,7 @@ export function EmbeddingsManager() {
   }
 
   return (
-    <Card className="p-6 border-2 border-black/10 rounded-3xl">
+    <Card className="p-6 border border-black/10 rounded-3xl">
       <div className="mb-6">
         <h3 className="text-2xl font-bold text-black mb-2">
           Semantic Search (AI Embeddings)
@@ -84,7 +84,7 @@ export function EmbeddingsManager() {
       >
         {isGenerating ? (
           <>
-            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-3" />
+            <div className="w-5 h-5 border border-white/30 border-t-white rounded-full animate-spin mr-3" />
             Generuję embeddingi...
           </>
         ) : (

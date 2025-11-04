@@ -78,7 +78,7 @@ function SortableCategory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl bg-white border-2 border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
+      className={`group relative rounded-xl bg-white border border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
       onClick={onClick}
     >
       {/* Drag Handle */}
@@ -128,7 +128,7 @@ function SortableCategory({
           variant="outline"
           size="sm"
           onClick={onDelete}
-          className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+          className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
         >
           Usuń
         </Button>
@@ -177,7 +177,7 @@ function SortableSubcategory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl bg-white border-2 border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
+      className={`group relative rounded-xl bg-white border border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
       onClick={hasChildren ? onClick : undefined}
     >
       {/* Drag Handle */}
@@ -221,7 +221,7 @@ function SortableSubcategory({
           variant="outline"
           size="sm"
           onClick={onDelete}
-          className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+          className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
         >
           Usuń
         </Button>
@@ -408,7 +408,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
             placeholder="Szukaj kategorii..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 pr-10 h-12 text-base rounded-xl border-2 border-black/10 focus:border-[#C44E35]/40 bg-white"
+            className="pl-12 pr-10 h-12 text-base rounded-xl border border-black/10 focus:border-[#C44E35]/40 bg-white"
           />
           {searchQuery && (
             <button
@@ -471,7 +471,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
             Znaleziono {searchResults.length} {searchResults.length === 1 ? 'kategorię' : searchResults.length < 5 ? 'kategorie' : 'kategorii'}
           </p>
           {searchResults.length === 0 ? (
-            <div className="text-center py-12 rounded-xl border-2 border-dashed border-black/10">
+            <div className="text-center py-12 rounded-xl border border-dashed border-black/10">
               <p className="text-black/40">Brak kategorii pasujących do "{searchQuery}"</p>
             </div>
           ) : (
@@ -481,7 +481,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                 return (
                   <div
                     key={cat.id}
-                    className="group relative rounded-xl bg-white border-2 border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 transition-all"
+                    className="group relative rounded-xl bg-white border border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 transition-all"
                   >
                     {cat.icon && (
                       <div className="w-12 h-12 rounded-lg bg-black/5 group-hover:bg-black/10 flex items-center justify-center shrink-0 transition-colors">
@@ -505,7 +505,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                         variant="outline"
                         size="sm"
                         onClick={() => setDeletingCategory(cat)}
-                        className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+                        className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
                       >
                         Usuń
                       </Button>
@@ -529,7 +529,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
       {!selectedParentCategory && !searchResults && (
         <>
           {parentCategories.length === 0 ? (
-            <div className="text-center py-12 rounded-xl border-2 border-dashed border-black/10">
+            <div className="text-center py-12 rounded-xl border border-dashed border-black/10">
               <p className="text-black/40">Brak kategorii</p>
             </div>
           ) : (
@@ -573,7 +573,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
       {selectedParentCategory && !searchResults && (
         <div>
           {/* Header with Back Button */}
-          <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] border-2 border-black/10">
+          <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] border border-black/10">
             <div className="flex items-center gap-4">
               <Button
                 onClick={() => {
@@ -584,7 +584,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                   }
                 }}
                 variant="outline"
-                className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-sm px-6 gap-2"
+                className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-sm px-6 gap-2"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Cofnij
@@ -629,7 +629,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
           </DndContext>
 
           {subcategories.length === 0 && (
-            <div className="text-center py-12 rounded-xl border-2 border-dashed border-black/10">
+            <div className="text-center py-12 rounded-xl border border-dashed border-black/10">
               <p className="text-black/40">Brak podkategorii</p>
             </div>
           )}

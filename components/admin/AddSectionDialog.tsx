@@ -64,7 +64,7 @@ export function AddSectionDialog({ categories, onAdd, onClose }: AddSectionDialo
               <button
                 key={sectionType.type}
                 onClick={() => handleSelect(sectionType.type)}
-                className="border-2 border-black/10 rounded-2xl p-5 text-left hover:border-[#C44E35]/50 hover:bg-[#C44E35]/5 hover:shadow-md transition-all group"
+                className="border border-black/10 rounded-2xl p-5 text-left hover:border-[#C44E35]/50 hover:bg-[#C44E35]/5 hover:shadow-md transition-all group"
               >
                 <div className="flex items-start gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C44E35]/10 to-[#C44E35]/5 flex items-center justify-center group-hover:from-[#C44E35]/20 group-hover:to-[#C44E35]/10 transition-all flex-shrink-0">

@@ -50,7 +50,7 @@ export function SortAlphabeticallyButton({ parentId, onSorted }: SortAlphabetica
       onClick={handleSort}
       disabled={isSorting}
       variant="outline"
-      className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-sm px-6 gap-2"
+      className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-sm px-6 gap-2"
     >
       <ArrowUpDown className="w-4 h-4" />
       {isSorting ? 'Sortuję...' : 'Sortuj alfabetycznie'}

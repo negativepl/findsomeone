@@ -192,7 +192,7 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
                   type="button"
                   variant="outline"
                   onClick={onClose}
-                  className="w-full sm:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+                  className="w-full sm:w-auto rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5"
                   disabled={loading}
                 >
                   Anuluj

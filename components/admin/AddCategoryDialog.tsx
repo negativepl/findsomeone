@@ -260,7 +260,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                       size="sm"
                       onClick={handleGenerateDescription}
                       disabled={generatingDescription || !formData.name.trim()}
-                      className="rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4 gap-2"
+                      className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4 gap-2"
                     >
                       <Zap className="w-3 h-3" />
                       {generatingDescription ? 'Generuję...' : 'Wygeneruj opis'}
@@ -296,7 +296,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                   type="button"
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="w-full sm:w-auto rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+                  className="w-full sm:w-auto rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5"
                   disabled={loading}
                 >
                   Anuluj

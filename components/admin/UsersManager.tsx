@@ -161,7 +161,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
   return (
     <div className="space-y-6">
       {/* Search */}
-      <Card className="border-2 border-black/5 shadow-sm">
+      <Card className="border border-black/5 shadow-sm">
         <CardContent className="p-4">
           <div className="relative">
             <svg
@@ -177,7 +177,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
               placeholder="Szukaj użytkownika po nazwie, email lub ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-10 h-12 text-base border-2 border-black/10 focus:border-[#C44E35]/40 bg-white"
+              className="pl-12 pr-10 h-12 text-base border border-black/10 focus:border-[#C44E35]/40 bg-white"
             />
             {searchQuery && (
               <button
@@ -194,7 +194,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       </Card>
 
       {/* Users Table */}
-      <Card className="border-2 border-black/5 shadow-sm">
+      <Card className="border border-black/5 shadow-sm">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">

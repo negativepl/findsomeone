@@ -51,7 +51,7 @@ export default async function MockupPage() {
             </div>
           </div>
 
-          <div className="mt-8 p-6 bg-blue-50 rounded-2xl border-2 border-blue-200">
+          <div className="mt-8 p-6 bg-blue-50 rounded-2xl border border-blue-200">
             <h3 className="font-bold mb-2 text-blue-900">Zalety tego rozwiązania:</h3>
             <ul className="text-blue-800 space-y-1">
               <li>✅ Kategorie zawsze dostępne (1 kliknięcie)</li>

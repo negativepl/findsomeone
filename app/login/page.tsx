@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
+import { motion } from 'framer-motion'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -85,20 +86,37 @@ export default function LoginPage() {
   if (showForgotPassword) {
     if (resetEmailSent) {
       return (
-        <div className="min-h-screen bg-background flex items-center justify-center p-6 pb-safe">
-          <div className="w-full max-w-md pb-20">
+        <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
+          {/* Left side - Video (hidden on mobile) */}
+          <div className="hidden lg:flex items-center justify-end pr-24 pl-6">
+            <motion.video
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full max-w-lg rounded-3xl"
+            >
+              <source src="/login-video.mp4" type="video/mp4" />
+            </motion.video>
+          </div>
+
+          {/* Right side - Success message */}
+          <div className="flex items-center justify-start p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
+            <div className="w-full max-w-md pb-20 lg:pb-0">
             {/* Logo/Header */}
             <div className="text-center mb-8">
-              <Link href="/" className="inline-flex flex-col items-center gap-3">
-                <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <circle cx="32" cy="28" r="11" className="fill-foreground" />
-                  <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" className="fill-foreground" />
-                  <circle cx="68" cy="28" r="11" className="fill-brand" />
-                  <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" className="fill-brand" />
+              <Link href="/" className="inline-flex flex-row items-center gap-2">
+                <svg className="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="32" cy="28" r="11" fill="#E87B5C" />
+                  <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#E87B5C" />
+                  <circle cx="68" cy="28" r="11" fill="#C44E35" />
+                  <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#C44E35" />
                 </svg>
-                <h1 className="text-3xl font-bold text-foreground">FindSomeone</h1>
+                <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-lora)]">FindSomeone</h1>
               </Link>
-              <p className="text-muted-foreground mt-2">Resetowanie hasła</p>
             </div>
 
             <Card className="border-0 rounded-3xl shadow-sm">
@@ -126,26 +144,44 @@ export default function LoginPage() {
                 ← Powrót do logowania
               </button>
             </div>
+            </div>
           </div>
         </div>
       )
     }
 
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6 pb-safe">
-        <div className="w-full max-w-md pb-20">
+      <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
+        {/* Left side - Video (hidden on mobile) */}
+        <div className="hidden lg:flex items-center justify-end pr-24 pl-6">
+          <motion.video
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-full max-w-lg rounded-3xl"
+          >
+            <source src="/login-video.mp4" type="video/mp4" />
+          </motion.video>
+        </div>
+
+        {/* Right side - Reset form */}
+        <div className="flex items-center justify-start p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
+          <div className="w-full max-w-md pb-20 lg:pb-0">
           {/* Logo/Header */}
           <div className="text-center mb-8">
-            <Link href="/" className="inline-flex flex-col items-center gap-3">
-              <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="32" cy="28" r="11" className="fill-foreground" />
-                <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" className="fill-foreground" />
-                <circle cx="68" cy="28" r="11" className="fill-brand" />
-                <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" className="fill-brand" />
+            <Link href="/" className="inline-flex flex-row items-center gap-2">
+              <svg className="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="28" r="11" fill="#E87B5C" />
+                <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#E87B5C" />
+                <circle cx="68" cy="28" r="11" fill="#C44E35" />
+                <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#C44E35" />
               </svg>
-              <h1 className="text-3xl font-bold text-foreground">FindSomeone</h1>
+              <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-lora)]">FindSomeone</h1>
             </Link>
-            <p className="text-muted-foreground mt-2">Resetowanie hasła</p>
           </div>
 
           <Card className="border-0 rounded-3xl shadow-sm">
@@ -197,26 +233,44 @@ export default function LoginPage() {
               ← Powrót do logowania
             </button>
           </div>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-6 pb-safe">
-      <div className="w-full max-w-md pb-20">
+    <div className="min-h-screen bg-background lg:grid lg:grid-cols-2">
+      {/* Left side - Video (hidden on mobile) */}
+      <div className="hidden lg:flex items-center justify-end pr-24 pl-6">
+        <motion.video
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full max-w-lg rounded-3xl"
+        >
+          <source src="/login-video.mp4" type="video/mp4" />
+        </motion.video>
+      </div>
+
+      {/* Right side - Login form */}
+      <div className="flex items-center justify-start p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
+        <div className="w-full max-w-md pb-20 lg:pb-0">
         {/* Logo/Header */}
         <div className="text-center mb-8">
-          <Link href="/" className="inline-flex flex-col items-center gap-3">
-            <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="32" cy="28" r="11" className="fill-foreground" />
-              <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" className="fill-foreground" />
-              <circle cx="68" cy="28" r="11" className="fill-brand" />
-              <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" className="fill-brand" />
+          <Link href="/" className="inline-flex flex-row items-center gap-2">
+            <svg className="w-8 h-8" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="32" cy="28" r="11" fill="#E87B5C" />
+              <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#E87B5C" />
+              <circle cx="68" cy="28" r="11" fill="#C44E35" />
+              <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#C44E35" />
             </svg>
-            <h1 className="text-3xl font-bold text-foreground">FindSomeone</h1>
+            <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-lora)]">FindSomeone</h1>
           </Link>
-          <p className="text-muted-foreground mt-2">Zaloguj się do swojego konta</p>
         </div>
 
         <Card className="border-0 rounded-3xl shadow-sm">
@@ -348,6 +402,7 @@ export default function LoginPage() {
           <Link href="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
             ← Powrót do strony głównej
           </Link>
+        </div>
         </div>
       </div>
     </div>

@@ -320,7 +320,7 @@ export function AIAssistant() {
           isHovered={isButtonHovered}
         />
         {mounted && messages.length > 0 && (
-          <span className="absolute -top-1 -right-1 w-2 h-2 bg-background rounded-full border-2 border-brand" />
+          <span className="absolute -top-1 -right-1 w-2 h-2 bg-background rounded-full border border-brand" />
         )}
       </button>
 
@@ -396,7 +396,7 @@ export function AIAssistant() {
                     setIsOpen(false)
                     setIsPinned(false)
                   }}
-                  className="w-8 h-8 rounded-full hover:bg-black/5 flex items-center justify-center transition-colors"
+                  className="w-8 h-8 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground flex items-center justify-center transition-colors"
                   title="Zamknij"
                 >
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -497,7 +497,7 @@ export function AIAssistant() {
                           <button
                             key={i}
                             onClick={() => setInput(suggestion)}
-                            className="w-full text-left px-4 py-3 rounded-xl bg-background hover:bg-brand/10 hover:text-brand transition-all text-sm border border-border/30"
+                            className="w-full text-left px-4 py-3 rounded-xl bg-card hover:bg-muted transition-all text-sm border border-border/50 text-foreground"
                           >
                             {suggestion}
                           </button>
@@ -591,7 +591,7 @@ export function AIAssistant() {
                                 <button
                                   key={idx}
                                   onClick={() => setInput(suggestion)}
-                                  className="px-3 py-1.5 bg-muted hover:bg-brand/10 hover:text-brand text-foreground rounded-full text-xs transition-all"
+                                  className="px-3 py-1.5 bg-card hover:bg-muted text-foreground rounded-full text-xs transition-all border border-border/50"
                                 >
                                   {suggestion}
                                 </button>
@@ -679,10 +679,10 @@ export function AIAssistant() {
                 <button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isLoading}
-                  className="w-[46px] h-[46px] flex-shrink-0 rounded-full bg-brand hover:bg-brand/90 disabled:bg-muted disabled:text-muted-foreground disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg hover:shadow-xl disabled:shadow-none"
+                  className="w-[46px] h-[46px] flex-shrink-0 rounded-full bg-brand hover:brightness-110 disabled:bg-muted disabled:hover:brightness-100 text-brand-foreground disabled:text-border disabled:cursor-not-allowed flex items-center justify-center transition-all shadow-lg hover:shadow-xl disabled:shadow-none border border-border/50"
                   aria-label="Wyślij wiadomość"
                 >
-                  <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                   </svg>
                 </button>

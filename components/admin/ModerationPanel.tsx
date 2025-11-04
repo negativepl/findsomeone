@@ -207,7 +207,7 @@ export function ModerationPanel({
         <Card className="border-0 rounded-3xl bg-white">
           <CardContent className="py-20 text-center">
             <div className="flex items-center justify-center gap-3">
-              <div className="w-6 h-6 border-2 border-[#C44E35] border-t-transparent rounded-full animate-spin" />
+              <div className="w-6 h-6 border border-[#C44E35] border-t-transparent rounded-full animate-spin" />
               <span className="text-black/60">Ładowanie...</span>
             </div>
           </CardContent>
@@ -293,7 +293,7 @@ export function ModerationPanel({
                       {post.appeal_message && (
                         <div>
                           <div className="text-sm font-semibold text-black mb-2">Odwołanie użytkownika:</div>
-                          <div className="text-sm text-blue-800 bg-blue-50 p-3 rounded-xl border-2 border-blue-200">
+                          <div className="text-sm text-blue-800 bg-blue-50 p-3 rounded-xl border border-blue-200">
                             {post.appeal_message}
                           </div>
                           {post.appealed_at && (
@@ -329,7 +329,7 @@ export function ModerationPanel({
                               onChange={(e) =>
                                 setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
                               }
-                              className="rounded-2xl border-2 border-black/10"
+                              className="rounded-2xl border border-black/10"
                               rows={2}
                             />
                           </div>
@@ -346,7 +346,7 @@ export function ModerationPanel({
                               onClick={() => handleAction(post.id, 'reject_appeal')}
                               disabled={actionLoading === post.id}
                               variant="outline"
-                              className="rounded-full border-2 border-red-600 text-red-600 hover:bg-red-50"
+                              className="rounded-full border border-red-600 text-red-600 hover:bg-red-50"
                             >
                               Odrzuć odwołanie
                             </Button>
@@ -366,7 +366,7 @@ export function ModerationPanel({
                               onChange={(e) =>
                                 setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
                               }
-                              className="rounded-2xl border-2 border-black/10"
+                              className="rounded-2xl border border-black/10"
                               rows={2}
                             />
                           </div>
@@ -383,7 +383,7 @@ export function ModerationPanel({
                               onClick={() => handleAction(post.id, 'reject')}
                               disabled={actionLoading === post.id}
                               variant="outline"
-                              className="rounded-full border-2 border-red-600 text-red-600 hover:bg-red-50"
+                              className="rounded-full border border-red-600 text-red-600 hover:bg-red-50"
                             >
                               Odrzuć
                             </Button>
@@ -391,7 +391,7 @@ export function ModerationPanel({
                               onClick={() => handleAction(post.id, 'delete')}
                               disabled={actionLoading === post.id}
                               variant="outline"
-                              className="rounded-full border-2 border-black/10 text-black/60 hover:bg-black/5"
+                              className="rounded-full border border-black/10 text-black/60 hover:bg-black/5"
                             >
                               Usuń
                             </Button>
@@ -412,7 +412,7 @@ export function ModerationPanel({
                 variant="outline"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="rounded-full border-2 border-black/10"
+                className="rounded-full border border-black/10"
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
@@ -426,7 +426,7 @@ export function ModerationPanel({
                     className={`rounded-full w-10 h-10 p-0 ${
                       currentPage === page
                         ? 'bg-[#C44E35] hover:bg-[#B33D2A] text-white'
-                        : 'border-2 border-black/10'
+                        : 'border border-black/10'
                     }`}
                   >
                     {page}
@@ -438,7 +438,7 @@ export function ModerationPanel({
                 variant="outline"
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="rounded-full border-2 border-black/10"
+                className="rounded-full border border-black/10"
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>

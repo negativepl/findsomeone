@@ -16,7 +16,7 @@ export function TestimonialsSection({ section }: TestimonialsSectionProps) {
     return (
       <section className="py-12 md:py-14">
         <div className="container mx-auto px-6">
-          <div className="text-center text-foreground/40 py-12 border-2 border-dashed border-black/10 rounded-2xl">
+          <div className="text-center text-foreground/40 py-12 border border-dashed border-black/10 rounded-2xl">
             Brak opinii. Dodaj opinie w konfiguracji sekcji.
           </div>
         </div>
@@ -107,7 +107,7 @@ export function TestimonialsSection({ section }: TestimonialsSectionProps) {
               {testimonials.map((testimonial: any, index: number) => (
                 <div
                   key={index}
-                  className="bg-card border-2 border-border rounded-2xl p-6 hover:border-[#C44E35]/30 transition-all w-[350px] flex-shrink-0"
+                  className="bg-card border border-border rounded-2xl p-6 hover:border-[#C44E35]/30 transition-all w-[350px] flex-shrink-0"
                 >
                   {showRatings && testimonial.rating && (
                     <div className="flex gap-1 mb-4">

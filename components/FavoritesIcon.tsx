@@ -67,7 +67,7 @@ export function FavoritesIcon({ user }: FavoritesIconProps) {
               duration: hasChanged ? 0.4 : 0.2,
               ease: [0.34, 1.56, 0.64, 1]
             }}
-            className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-white text-[#C44E35] text-xs font-bold rounded-full border-2 border-[#C44E35]"
+            className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-white text-[#C44E35] text-xs font-bold rounded-full border border-[#C44E35]"
           >
             {displayCount > 99 ? '99+' : displayCount}
           </motion.span>

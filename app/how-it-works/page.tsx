@@ -136,7 +136,7 @@ export default async function HowItWorksPage() {
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button variant="outline" className="rounded-full border-2 border-border hover:border-border hover:bg-muted px-10 py-6 text-base font-semibold">
+                <Button variant="outline" className="rounded-full border border-border hover:border-border hover:bg-muted px-10 py-6 text-base font-semibold">
                   Przeglądaj ogłoszenia
                 </Button>
               </Link>

@@ -42,7 +42,7 @@ export function DeleteAccountDialog() {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 whitespace-nowrap"
+          className="rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 whitespace-nowrap"
         >
           Usuń konto
         </Button>
@@ -66,7 +66,7 @@ export function DeleteAccountDialog() {
                 type="password"
                 required
                 disabled={loading}
-                className="rounded-2xl border-2 border-red-200 h-12 focus:border-red-400"
+                className="rounded-2xl border border-red-200 h-12 focus:border-red-400"
               />
               <p className="text-xs text-red-600">Potwierdź swoją tożsamość</p>
             </div>
@@ -81,7 +81,7 @@ export function DeleteAccountDialog() {
                 required
                 placeholder="USUŃ KONTO"
                 disabled={loading}
-                className="rounded-2xl border-2 border-red-200 h-12 focus:border-red-400"
+                className="rounded-2xl border border-red-200 h-12 focus:border-red-400"
               />
               <p className="text-xs text-red-600">To działanie jest nieodwracalne!</p>
             </div>
@@ -93,7 +93,7 @@ export function DeleteAccountDialog() {
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10"
+              className="rounded-full border border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10"
             >
               Anuluj
             </Button>

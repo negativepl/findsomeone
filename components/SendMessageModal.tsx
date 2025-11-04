@@ -186,7 +186,7 @@ export function SendMessageModal({
                 onChange={(e) => setMessage(e.target.value)}
                 required
                 rows={6}
-                className="rounded-2xl border-2 border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-[#C44E35] resize-none"
+                className="rounded-2xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-[#C44E35] resize-none"
                 disabled={loading}
               />
               <div className="flex justify-between items-center text-sm">
@@ -213,7 +213,7 @@ export function SendMessageModal({
                   type="button"
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="rounded-full border-2"
+                  className="rounded-full border"
                   disabled={loading}
                 >
                   Anuluj

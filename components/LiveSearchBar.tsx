@@ -384,12 +384,12 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
               autoComplete="off"
             />
             {isLoading && (
-              <div className="w-4 h-4 border-2 border-black/20 border-t-black/60 rounded-full animate-spin" />
+              <div className="w-4 h-4 border border-black/20 border-t-black/60 rounded-full animate-spin" />
             )}
 
             {/* Enhanced Dropdown with sections */}
             {isOpen && !isLoading && hasResults && (
-              <Card className="absolute top-full left-0 right-0 mt-[1.125rem] border-2 border-black/10 rounded-3xl bg-white shadow-lg max-h-[500px] z-50 flex flex-col overflow-hidden">
+              <Card className="absolute top-full left-0 right-0 mt-[1.125rem] border border-black/10 rounded-3xl bg-white shadow-lg max-h-[500px] z-50 flex flex-col overflow-hidden">
                 {/* Scrollable content */}
                 <div className="overflow-y-auto p-4 flex-1">
                   {/* Query correction - "Czy chodziło ci o..." */}
@@ -783,12 +783,12 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
               autoComplete="off"
             />
             {isCityLoading && (
-              <div className="w-4 h-4 border-2 border-black/20 border-t-black/60 rounded-full animate-spin absolute right-2" />
+              <div className="w-4 h-4 border border-black/20 border-t-black/60 rounded-full animate-spin absolute right-2" />
             )}
 
             {/* City Autocomplete Dropdown */}
             {isCityDropdownOpen && (
-              <div className="absolute top-full left-0 mt-[1.125rem] p-4 bg-white border-2 border-black/10 rounded-3xl shadow-lg max-h-96 overflow-y-auto z-[60] min-w-[300px] md:min-w-[350px]">
+              <div className="absolute top-full left-0 mt-[1.125rem] p-4 bg-white border border-black/10 rounded-3xl shadow-lg max-h-96 overflow-y-auto z-[60] min-w-[300px] md:min-w-[350px]">
                 {/* Geolocation option */}
                 <button
                   type="button"
@@ -797,7 +797,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                   className="w-full text-left px-3 py-2 hover:bg-black/5 rounded-xl transition-colors flex items-center gap-3 mb-2"
                 >
                   {userLocation.loading ? (
-                    <div className="w-4 h-4 border-2 border-black/20 border-t-black/60 rounded-full animate-spin flex-shrink-0" />
+                    <div className="w-4 h-4 border border-black/20 border-t-black/60 rounded-full animate-spin flex-shrink-0" />
                   ) : (
                     <svg className="w-4 h-4 text-[#C44E35] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

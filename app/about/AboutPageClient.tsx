@@ -501,7 +501,7 @@ export function AboutPageClient() {
                 </button>
               </a>
               <a href="/posts">
-                <button className="px-8 md:px-12 py-4 md:py-6 rounded-full bg-white border-2 border-[#C44E35] text-[#C44E35] font-semibold text-base md:text-xl min-w-[200px] md:min-w-[240px] hover:bg-[#C44E35]/10 transition-colors">
+                <button className="px-8 md:px-12 py-4 md:py-6 rounded-full bg-white border border-[#C44E35] text-[#C44E35] font-semibold text-base md:text-xl min-w-[200px] md:min-w-[240px] hover:bg-[#C44E35]/10 transition-colors">
                   Przeglądaj ogłoszenia
                 </button>
               </a>

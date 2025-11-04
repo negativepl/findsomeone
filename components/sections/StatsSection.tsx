@@ -72,7 +72,7 @@ export function StatsSection({ section }: StatsSectionProps) {
     return (
       <section className="py-12 md:py-14">
         <div className="container mx-auto px-6">
-          <div className="text-center text-black/40 py-12 border-2 border-dashed border-black/10 rounded-2xl">
+          <div className="text-center text-black/40 py-12 border border-dashed border-black/10 rounded-2xl">
             Brak statystyk. Dodaj statystyki w konfiguracji sekcji.
           </div>
         </div>

@@ -69,7 +69,7 @@ function SortableThumbnail({
       style={style}
       {...attributes}
       {...listeners}
-      className="relative group rounded-2xl bg-card border-2 border-border h-40 w-40 md:h-32 md:w-32 cursor-grab active:cursor-grabbing"
+      className="relative group rounded-2xl bg-card border border-border h-40 w-40 md:h-32 md:w-32 cursor-grab active:cursor-grabbing"
     >
       <div className="absolute inset-0 rounded-2xl overflow-hidden">
         <Image
@@ -295,11 +295,11 @@ export function ImageUpload({
             <label
               key={`empty-${index}`}
               htmlFor="image-upload"
-              className="rounded-2xl border-2 border-dashed border-border hover:border-border bg-card hover:bg-muted cursor-pointer transition-colors flex items-center justify-center h-40 w-40 md:h-32 md:w-32"
+              className="rounded-2xl border border-dashed border-border hover:border-border bg-card hover:bg-muted cursor-pointer transition-colors flex items-center justify-center h-40 w-40 md:h-32 md:w-32"
               aria-label={`Dodaj zdjęcie ${images.length + index + 1}`}
             >
               {uploading && index === 0 ? (
-                <div className="w-8 h-8 border-2 border-border border-t-black/60 rounded-full animate-spin" aria-label="Przesyłanie zdjęcia" />
+                <div className="w-8 h-8 border border-border border-t-black/60 rounded-full animate-spin" aria-label="Przesyłanie zdjęcia" />
               ) : (
                 <ImageIcon className="w-8 h-8 text-muted-foreground" aria-hidden="true" />
               )}
@@ -310,7 +310,7 @@ export function ImageUpload({
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-500/10 border-2 border-red-500/20 text-red-600 dark:text-red-400 p-3 rounded-2xl text-sm">
+        <div className="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 p-3 rounded-2xl text-sm">
           {error}
         </div>
       )}

@@ -688,7 +688,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               type="button"
               onClick={detectLocation}
               disabled={isDetectingLocation}
-              className="w-full rounded-full bg-card border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/5 text-foreground h-12 text-sm font-semibold transition-colors"
+              className="w-full rounded-full bg-card border border-border hover:border-[#C44E35] hover:bg-[#C44E35]/5 text-foreground h-12 text-sm font-semibold transition-colors"
             >
               {isDetectingLocation ? (
                 <>
@@ -807,7 +807,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, priceType: 'fixed' })}
-                className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
+                className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                   formData.priceType === 'fixed'
                     ? 'border-[#C44E35] bg-[#C44E35]/5'
                     : 'border-border bg-card hover:border-black/20'
@@ -823,7 +823,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, priceType: 'hourly' })}
-                className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
+                className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                   formData.priceType === 'hourly'
                     ? 'border-[#C44E35] bg-[#C44E35]/5'
                     : 'border-border bg-card hover:border-black/20'
@@ -839,7 +839,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               <button
                 type="button"
                 onClick={() => setFormData({ ...formData, priceType: 'free' })}
-                className={`w-full flex items-start p-4 rounded-2xl border-2 cursor-pointer transition-all text-left ${
+                className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                   formData.priceType === 'free'
                     ? 'border-[#C44E35] bg-[#C44E35]/5'
                     : 'border-border bg-card hover:border-black/20'
@@ -904,7 +904,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
         {currentStep === 6 && (
           <div className="p-4 space-y-4 animate-in fade-in duration-300">
             {/* Title */}
-            <div className="bg-card rounded-2xl border-2 border-border p-4">
+            <div className="bg-card rounded-2xl border border-border p-4">
               <h2 className="text-xl font-bold text-foreground mb-1">{formData.title}</h2>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Tag className="w-4 h-4" />
@@ -916,7 +916,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             </div>
 
             {/* Description */}
-            <div className="bg-card rounded-2xl border-2 border-border p-4">
+            <div className="bg-card rounded-2xl border border-border p-4">
               <div className="flex items-center gap-2 mb-3">
                 <FileText className="w-5 h-5 text-muted-foreground" />
                 <h3 className="font-semibold text-foreground">Opis</h3>
@@ -929,14 +929,14 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
             {/* Images */}
             {images.length > 0 && (
-              <div className="bg-card rounded-2xl border-2 border-border p-4">
+              <div className="bg-card rounded-2xl border border-border p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <ImageIcon className="w-5 h-5 text-muted-foreground" />
                   <h3 className="font-semibold text-foreground">Zdjęcia ({images.length})</h3>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {images.map((imageUrl, index) => (
-                    <div key={imageUrl} className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-border">
+                    <div key={imageUrl} className="relative w-20 h-20 rounded-xl overflow-hidden border border-border">
                       <Image
                         src={imageUrl}
                         alt={`Zdjęcie ${index + 1}`}
@@ -956,7 +956,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             )}
 
             {/* Location */}
-            <div className="bg-card rounded-2xl border-2 border-border p-4">
+            <div className="bg-card rounded-2xl border border-border p-4">
               <div className="flex items-center gap-2 mb-3">
                 <MapPin className="w-5 h-5 text-muted-foreground" />
                 <h3 className="font-semibold text-foreground">Lokalizacja</h3>
@@ -968,7 +968,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             </div>
 
             {/* Price */}
-            <div className="bg-card rounded-2xl border-2 border-border p-4">
+            <div className="bg-card rounded-2xl border border-border p-4">
               <div className="flex items-center gap-2 mb-3">
                 <DollarSign className="w-5 h-5 text-muted-foreground" />
                 <h3 className="font-semibold text-foreground">Cena</h3>
@@ -977,7 +977,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             </div>
 
             {/* Info */}
-            <div className="bg-[#C44E35]/5 border-2 border-[#C44E35]/20 rounded-2xl p-4">
+            <div className="bg-[#C44E35]/5 border border-[#C44E35]/20 rounded-2xl p-4">
               <p className="text-sm text-foreground/70 text-center">
                 Sprawdź dokładnie wszystkie informacje przed opublikowaniem ogłoszenia
               </p>
@@ -992,14 +992,14 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           {currentStep === 1 ? (
             <button
               onClick={handleCancel}
-              className="flex-1 rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold text-foreground transition-colors"
+              className="flex-1 rounded-full border border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold text-foreground transition-colors"
             >
               Anuluj
             </button>
           ) : (
             <button
               onClick={prevStep}
-              className="flex-1 rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold text-foreground transition-colors"
+              className="flex-1 rounded-full border border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold text-foreground transition-colors"
             >
               Wstecz
             </button>

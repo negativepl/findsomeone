@@ -105,7 +105,7 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
                     Powód zgłoszenia *
                   </Label>
                   <Select value={reason} onValueChange={setReason} disabled={isSubmitting}>
-                    <SelectTrigger className="w-full rounded-2xl border-2 border-border h-12 focus:border-[#C44E35] bg-background text-foreground">
+                    <SelectTrigger className="w-full rounded-2xl border border-border h-12 focus:border-[#C44E35] bg-background text-foreground">
                       <SelectValue placeholder="Wybierz powód..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -126,7 +126,7 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
                     id="description"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border-2 border-border focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] resize-none bg-background text-foreground placeholder:text-muted-foreground"
+                    className="w-full px-4 py-3 rounded-2xl border border-border focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] resize-none bg-background text-foreground placeholder:text-muted-foreground"
                     rows={4}
                     placeholder="Opisz problem..."
                     disabled={isSubmitting}
@@ -151,7 +151,7 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
                     variant="outline"
                     onClick={() => setOpen(false)}
                     disabled={isSubmitting}
-                    className="rounded-full border-2"
+                    className="rounded-full border"
                   >
                     Anuluj
                   </Button>

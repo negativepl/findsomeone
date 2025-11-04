@@ -526,7 +526,7 @@ export function PostsManagementClient() {
       {/* Search & Filters */}
       <div className="mb-6 space-y-4">
         {/* Search Bar - Full Width */}
-        <Card className="border-2 border-black/5 shadow-sm">
+        <Card className="border border-black/5 shadow-sm">
           <CardContent className="p-4">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-black/40" />
@@ -534,7 +534,7 @@ export function PostsManagementClient() {
                 placeholder="Szukaj po tytule, opisie, kategorii, użytkowniku, mieście..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-10 h-12 text-base border-2 border-black/10 focus:border-[#C44E35]/40 bg-white"
+                className="pl-12 pr-10 h-12 text-base border border-black/10 focus:border-[#C44E35]/40 bg-white"
               />
               {searchQuery && (
                 <button
@@ -549,7 +549,7 @@ export function PostsManagementClient() {
         </Card>
 
         {/* Filters & Actions */}
-        <Card className="border-2 border-black/5 shadow-sm">
+        <Card className="border border-black/5 shadow-sm">
           <CardContent className="p-4">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
               {/* Filters */}
@@ -559,7 +559,7 @@ export function PostsManagementClient() {
                 </div>
 
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="h-9 min-w-[180px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                  <SelectTrigger className="h-9 min-w-[180px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -572,7 +572,7 @@ export function PostsManagementClient() {
                 </Select>
 
                 <Select value={aiFilter} onValueChange={setAiFilter}>
-                  <SelectTrigger className="h-9 min-w-[170px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                  <SelectTrigger className="h-9 min-w-[170px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
                     <SelectValue placeholder="Źródło" />
                   </SelectTrigger>
                   <SelectContent>
@@ -588,7 +588,7 @@ export function PostsManagementClient() {
                       variant="outline"
                       role="combobox"
                       aria-expanded={openCityPopover}
-                      className="h-9 min-w-[170px] justify-between border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors font-normal"
+                      className="h-9 min-w-[170px] justify-between border border-black/10 text-sm bg-white hover:border-black/20 transition-colors font-normal"
                     >
                       {cityFilter === 'all' ? 'Miasto' : cityFilter}
                       <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -634,7 +634,7 @@ export function PostsManagementClient() {
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
                   placeholder="Od"
-                  className="h-9 w-[160px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
+                  className="h-9 w-[160px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
                 />
 
                 <Input
@@ -642,7 +642,7 @@ export function PostsManagementClient() {
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
                   placeholder="Do"
-                  className="h-9 w-[160px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
+                  className="h-9 w-[160px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
                 />
               </div>
 
@@ -651,7 +651,7 @@ export function PostsManagementClient() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-black/70 whitespace-nowrap">Na stronę:</span>
                   <Select value={postsPerPage.toString()} onValueChange={(val) => setPostsPerPage(Number(val))}>
-                    <SelectTrigger className="h-9 w-[90px] border-2 border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                    <SelectTrigger className="h-9 w-[90px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -689,7 +689,7 @@ export function PostsManagementClient() {
       {/* Floating Bulk Actions */}
       {selectedPosts.size > 0 && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5">
-          <div className="bg-white shadow-2xl border-2 border-black/10 p-4 min-w-[800px]">
+          <div className="bg-white shadow-2xl border border-black/10 p-4 min-w-[800px]">
             <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-3">
                 <div className="bg-[#C44E35] text-white w-10 h-10 flex items-center justify-center font-bold text-sm shadow-sm">
@@ -704,7 +704,7 @@ export function PostsManagementClient() {
                 <Button
                   variant="outline"
                   onClick={() => setShowBulkCategorySelector(true)}
-                  className="h-10 gap-2 bg-white border-2 border-black/10 hover:bg-black/5 hover:border-black/20"
+                  className="h-10 gap-2 bg-white border border-black/10 hover:bg-black/5 hover:border-black/20"
                 >
                   <FolderTree className="h-4 w-4" />
                   Przenieś
@@ -712,7 +712,7 @@ export function PostsManagementClient() {
 
                 <div className="flex items-center gap-2">
                   <Select value={bulkStatusValue} onValueChange={setBulkStatusValue}>
-                    <SelectTrigger className="w-[140px] !h-10 bg-white border-2 border-black/10">
+                    <SelectTrigger className="w-[140px] !h-10 bg-white border border-black/10">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -739,7 +739,7 @@ export function PostsManagementClient() {
                 <Button
                   variant="outline"
                   onClick={handleBulkDelete}
-                  className="h-10 px-4 text-red-600 hover:text-red-700 hover:bg-red-50 border-2 border-red-200 bg-white"
+                  className="h-10 px-4 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 bg-white"
                 >
                   Usuń
                 </Button>
@@ -763,7 +763,7 @@ export function PostsManagementClient() {
       )}
 
       {/* Posts table */}
-      <Card className="border-2 border-black/5">
+      <Card className="border border-black/5">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -775,7 +775,7 @@ export function PostsManagementClient() {
                         <button
                           className="h-5 w-5 flex items-center justify-center hover:bg-black/5 transition-colors"
                         >
-                          <div className={`h-4 w-4 border-2 flex items-center justify-center transition-colors ${
+                          <div className={`h-4 w-4 border flex items-center justify-center transition-colors ${
                             selectedPosts.size > 0
                               ? 'bg-[#C44E35] border-[#C44E35]'
                               : 'border-black/30 hover:border-black/40'
@@ -1002,7 +1002,7 @@ export function PostsManagementClient() {
                   id="edit-title"
                   value={editFormData.title}
                   onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-                  className="h-10 border-2"
+                  className="h-10 border"
                 />
               </div>
 
@@ -1012,7 +1012,7 @@ export function PostsManagementClient() {
                 <button
                   type="button"
                   onClick={() => setShowCategorySelector(true)}
-                  className="w-full h-10 border-2 border-black/10 px-3 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between text-sm"
+                  className="w-full h-10 border border-black/10 px-3 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between text-sm"
                 >
                   <span className={categoryPath.length > 0 ? 'text-black truncate' : 'text-black/40'}>
                     {categoryPath.length > 0
@@ -1032,7 +1032,7 @@ export function PostsManagementClient() {
                     id="edit-city"
                     value={editFormData.city}
                     onChange={(e) => setEditFormData({ ...editFormData, city: e.target.value })}
-                    className="h-10 border-2"
+                    className="h-10 border"
                   />
                 </div>
                 <div>
@@ -1041,7 +1041,7 @@ export function PostsManagementClient() {
                     id="edit-district"
                     value={editFormData.district}
                     onChange={(e) => setEditFormData({ ...editFormData, district: e.target.value })}
-                    className="h-10 border-2"
+                    className="h-10 border"
                   />
                 </div>
               </div>
@@ -1056,7 +1056,7 @@ export function PostsManagementClient() {
                       setEditFormData({ ...editFormData, price_type: value })
                     }
                   >
-                    <SelectTrigger className="w-full !h-10 border-2">
+                    <SelectTrigger className="w-full !h-10 border">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1076,7 +1076,7 @@ export function PostsManagementClient() {
                     value={editFormData.price}
                     onChange={(e) => setEditFormData({ ...editFormData, price: e.target.value })}
                     disabled={editFormData.price_type === 'free'}
-                    className="h-10 border-2"
+                    className="h-10 border"
                   />
                 </div>
               </div>
@@ -1088,7 +1088,7 @@ export function PostsManagementClient() {
                   value={editFormData.status}
                   onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}
                 >
-                  <SelectTrigger className="w-full !h-10 border-2">
+                  <SelectTrigger className="w-full !h-10 border">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -1117,7 +1117,7 @@ export function PostsManagementClient() {
               variant="outline"
               onClick={() => setEditingPost(null)}
               disabled={saving}
-              className="h-11 px-6 border-2 border-black/10 hover:border-black/20"
+              className="h-11 px-6 border border-black/10 hover:border-black/20"
             >
               Anuluj
             </Button>
@@ -1169,7 +1169,7 @@ export function PostsManagementClient() {
                   setShowCategorySelector(true)
                 }, 100)
               }}
-              className="w-full border-2 border-black/10 p-4 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between"
+              className="w-full border border-black/10 p-4 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between"
             >
               <span className={bulkCategoryPath.length > 0 ? 'text-black' : 'text-black/40'}>
                 {bulkCategoryPath.length > 0

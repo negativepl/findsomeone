@@ -183,7 +183,7 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
                 onScaleChange(initialScale)
                 setIsEditing(false)
               }}
-              className="flex-1 rounded-full border-2 border-black/10 text-black text-sm font-semibold py-2 hover:bg-black/5 transition-colors"
+              className="flex-1 rounded-full border border-black/10 text-black text-sm font-semibold py-2 hover:bg-black/5 transition-colors"
               disabled={isSaving}
             >
               Anuluj

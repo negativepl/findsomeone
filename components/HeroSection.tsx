@@ -95,19 +95,18 @@ export function HeroSection({ user }: HeroSectionProps) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.3, delay: 0.6 }}
-          className="flex flex-row gap-2 md:gap-6 justify-center items-center w-full md:w-auto px-4 md:px-0"
+          className="flex flex-row gap-2 md:gap-6 justify-center items-center w-full md:w-auto"
         >
           <Link href="/posts" className="flex-1 md:flex-none md:w-auto">
-            <Button
-              variant="outline"
-              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full border-2 border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 transition-all h-[44px] md:h-[56px] md:min-w-[200px] bg-card text-foreground"
+            <button
+              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full hover:bg-accent transition-all h-[44px] md:h-[56px] md:min-w-[200px] text-foreground font-semibold inline-flex items-center justify-center"
             >
               Przeglądaj ogłoszenia
-            </Button>
+            </button>
           </Link>
           <Link href={user ? "/dashboard/my-posts/new" : "/signup"} className="flex-1 md:flex-none md:w-auto">
             <Button
-              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 transition-all h-[44px] md:h-[56px] md:min-w-[200px]"
+              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 transition-all h-[44px] md:h-[56px] md:min-w-[200px]"
             >
               Dodaj ogłoszenie
             </Button>

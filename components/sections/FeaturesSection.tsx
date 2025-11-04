@@ -15,7 +15,7 @@ export function FeaturesSection({ section }: FeaturesSectionProps) {
     return (
       <section className="py-12 md:py-14">
         <div className="container mx-auto px-6">
-          <div className="text-center text-muted-foreground py-12 border-2 border-dashed border-border rounded-2xl">
+          <div className="text-center text-muted-foreground py-12 border border-dashed border-border rounded-2xl">
             Brak cech/funkcji. Dodaj funkcje w konfiguracji sekcji.
           </div>
         </div>

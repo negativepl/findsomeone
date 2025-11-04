@@ -148,7 +148,7 @@ function ResetPasswordForm() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  className="rounded-2xl border border-black/10 h-12 focus:border-black/30"
                 />
               </div>
 
@@ -164,7 +164,7 @@ function ResetPasswordForm() {
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="rounded-2xl border-2 border-black/10 h-12 focus:border-black/30"
+                  className="rounded-2xl border border-black/10 h-12 focus:border-black/30"
                 />
               </div>
 

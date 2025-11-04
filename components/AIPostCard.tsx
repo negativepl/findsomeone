@@ -49,7 +49,7 @@ export function AIPostCard({
     >
       <Link
         href={url}
-        className="flex flex-col h-full group bg-card rounded-xl border-2 border-border hover:border-brand/40 hover:bg-brand/[0.02] transition-all overflow-hidden"
+        className="flex flex-col h-full group bg-card rounded-xl border border-border hover:border-brand/40 hover:bg-brand/[0.02] transition-all overflow-hidden"
       >
         {/* Image */}
         {image && (

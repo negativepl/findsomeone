@@ -98,7 +98,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors text-sm"
                 placeholder="twoj@email.pl"
                 disabled={loading}
               />
@@ -120,7 +120,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 disabled={loading}
                 required
               >
-                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-11 text-sm" aria-label="Kategoria kontaktu">
+                <SelectTrigger className="w-full px-4 rounded-xl border border-border bg-card focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-11 text-sm" aria-label="Kategoria kontaktu">
                   <SelectValue placeholder="Wybierz kategorię" />
                 </SelectTrigger>
                 <SelectContent>
@@ -140,7 +140,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 required
                 value={formData.subject}
                 onChange={handleChange}
-                className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors text-sm"
                 placeholder="W czym możemy pomóc?"
                 disabled={loading}
                 minLength={3}
@@ -158,7 +158,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 value={formData.message}
                 onChange={handleChange}
                 rows={4}
-                className="w-full px-4 py-2.5 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors resize-none text-sm"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors resize-none text-sm"
                 placeholder="Opisz swój problem lub pytanie..."
                 disabled={loading}
                 minLength={10}
@@ -178,7 +178,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="mt-0.5 w-4 h-4 rounded border-2 border-border text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
+                  className="mt-0.5 w-4 h-4 rounded border border-border text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
                 />
                 <span className="text-xs text-muted-foreground leading-relaxed">
                   Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}
@@ -220,7 +220,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 required
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors"
                 placeholder="twoj@email.pl"
                 disabled={loading}
               />
@@ -242,7 +242,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 disabled={loading}
                 required
               >
-                <SelectTrigger className="w-full px-4 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-12" aria-label="Kategoria kontaktu">
+                <SelectTrigger className="w-full px-4 rounded-xl border border-border bg-card focus:border-[#C44E35] focus:ring-[#C44E35] transition-colors !h-12" aria-label="Kategoria kontaktu">
                   <SelectValue placeholder="Wybierz kategorię" />
                 </SelectTrigger>
                 <SelectContent>
@@ -262,7 +262,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 required
                 value={formData.subject}
                 onChange={handleChange}
-                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors"
                 placeholder="W czym możemy pomóc?"
                 disabled={loading}
                 minLength={3}
@@ -280,7 +280,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 value={formData.message}
                 onChange={handleChange}
                 rows={5}
-                className="w-full px-4 py-3 rounded-xl border-2 border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors resize-none"
+                className="w-full px-4 py-3 rounded-xl border border-border bg-card focus:border-[#C44E35] focus:outline-none transition-colors resize-none"
                 placeholder="Opisz swój problem lub pytanie..."
                 disabled={loading}
                 minLength={10}
@@ -300,7 +300,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                   onChange={handleChange}
                   required
                   disabled={loading}
-                  className="mt-1 w-4 h-4 rounded border-2 border-border text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
+                  className="mt-1 w-4 h-4 rounded border border-border text-[#C44E35] focus:ring-[#C44E35] focus:ring-offset-0 cursor-pointer"
                 />
                 <span className="text-sm text-muted-foreground leading-relaxed">
                   Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}

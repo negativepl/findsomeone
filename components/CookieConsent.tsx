@@ -71,45 +71,63 @@ export default function CookieConsent() {
   if (!showBanner) return null
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-black/10 shadow-2xl pb-[84px] md:pb-0">
-      <div className="container mx-auto px-4 py-5 md:py-6 max-w-4xl">
-        <div className="mb-4">
-          <h3 className="text-lg font-bold text-black">Używamy ciasteczek</h3>
+    <div className="fixed bottom-0 left-0 right-0 md:left-6 md:right-auto md:bottom-6 z-50 bg-card border-t md:border border-border shadow-2xl pb-[84px] md:pb-0 rounded-t-3xl md:rounded-3xl md:max-w-md">
+      <div className="mx-auto px-4 py-4 md:px-4 md:py-4">
+        <div className="mb-2 md:mb-3">
+          <h3 className="text-base md:text-lg font-bold text-foreground">Używamy ciasteczek</h3>
         </div>
 
-        <p className="text-sm text-black/70 mb-4 leading-relaxed">
-          Używamy plików cookie, aby zapewnić podstawowe funkcje witryny i ulepszyć korzystanie z niej.
-          Możesz wybrać dla każdej kategorii opcję włączenia/wyłączenia w dowolnym momencie.
-          Aby uzyskać więcej informacji na temat plików cookie i innych wrażliwych danych, przeczytaj pełną{' '}
-          <Link href="/privacy" className="text-[#C44E35] hover:underline font-medium">
-            politykę prywatności
+        <p className="text-xs md:text-sm text-muted-foreground mb-2 leading-snug">
+          Używamy plików cookie, aby zapewnić podstawowe funkcje witryny i ulepszyć korzystanie z niej. Więcej informacji znajdziesz w{' '}
+          <Link href="/privacy" className="text-brand hover:underline font-medium">
+            polityce prywatności
           </Link>.
         </p>
+
+        {/* Customize button - moved up */}
+        {!showDetails && (
+          <button
+            onClick={handleCustomize}
+            className="text-xs text-muted-foreground hover:text-foreground underline mb-3 transition-colors"
+          >
+            Dostosuj ustawienia
+          </button>
+        )}
 
         {/* Cookie Categories */}
         {showDetails && (
           <>
-            <div className="space-y-3 mb-4 bg-[#FAF8F3] rounded-2xl p-4">
+            {/* Back button */}
+            <button
+              onClick={handleCustomize}
+              className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground mb-2 transition-colors"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+              Wróć
+            </button>
+            <div className="space-y-2 mb-3 bg-secondary rounded-xl p-3 max-h-[40vh] md:max-h-[50vh] overflow-y-auto">
             {/* Required Cookies */}
-            <div className="flex items-start justify-between gap-4 pb-3 border-b border-black/5">
+            <div className="flex items-start justify-between gap-3 pb-2 border-b border-border">
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-black mb-1">Wymagane ciasteczka</h4>
-                <p className="text-xs text-black/60">
-                  Niezbędne do podstawowego działania witryny. Nie można ich wyłączyć.
+                <h4 className="text-xs md:text-sm font-semibold text-foreground mb-0.5">Wymagane</h4>
+                <p className="text-[10px] md:text-xs text-muted-foreground">
+                  Niezbędne do działania witryny.
                 </p>
               </div>
-              <div className="flex items-center gap-2 pt-1">
-                <span className="text-xs text-black/50">Zawsze aktywne</span>
+              <div className="flex items-center gap-1.5 pt-0.5">
+                <span className="text-[10px] md:text-xs text-muted-foreground">Aktywne</span>
                 <Switch checked={true} disabled className="opacity-50" />
               </div>
             </div>
 
             {/* Analytics Cookies */}
-            <div className="flex items-start justify-between gap-4 pb-3 border-b border-black/5">
+            <div className="flex items-start justify-between gap-3 pb-2 border-b border-border">
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-black mb-1">Ciasteczka wydajnościowe i analityczne</h4>
-                <p className="text-xs text-black/60">
-                  Pozwalają nam analizować sposób korzystania z witryny i mierzyć jej wydajność.
+                <h4 className="text-xs md:text-sm font-semibold text-foreground mb-0.5">Analityczne</h4>
+                <p className="text-[10px] md:text-xs text-muted-foreground">
+                  Analizują korzystanie z witryny.
                 </p>
               </div>
               <Switch
@@ -119,11 +137,11 @@ export default function CookieConsent() {
             </div>
 
             {/* Advertising Cookies */}
-            <div className="flex items-start justify-between gap-4 pb-3 border-b border-black/5">
+            <div className="flex items-start justify-between gap-3 pb-2 border-b border-border">
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-black mb-1">Personalizacja reklam</h4>
-                <p className="text-xs text-black/60">
-                  Służą do wyświetlania reklam dopasowanych do Twoich zainteresowań.
+                <h4 className="text-xs md:text-sm font-semibold text-foreground mb-0.5">Reklamy</h4>
+                <p className="text-[10px] md:text-xs text-muted-foreground">
+                  Dopasowane do zainteresowań.
                 </p>
               </div>
               <Switch
@@ -133,11 +151,11 @@ export default function CookieConsent() {
             </div>
 
             {/* Personalization Cookies */}
-            <div className="flex items-start justify-between gap-4 pb-3 border-b border-black/5">
+            <div className="flex items-start justify-between gap-3 pb-2 border-b border-border">
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-black mb-1">Personalizacja strony</h4>
-                <p className="text-xs text-black/60">
-                  Zapamiętują Twoje preferencje i ustawienia dla lepszego doświadczenia.
+                <h4 className="text-xs md:text-sm font-semibold text-foreground mb-0.5">Personalizacja</h4>
+                <p className="text-[10px] md:text-xs text-muted-foreground">
+                  Zapamiętują preferencje.
                 </p>
               </div>
               <Switch
@@ -147,11 +165,11 @@ export default function CookieConsent() {
             </div>
 
             {/* Security Cookies */}
-            <div className="flex items-start justify-between gap-4">
+            <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
-                <h4 className="text-sm font-semibold text-black mb-1">Bezpieczeństwo</h4>
-                <p className="text-xs text-black/60">
-                  Chronią przed nieautoryzowanym dostępem i zapewniają bezpieczną komunikację.
+                <h4 className="text-xs md:text-sm font-semibold text-foreground mb-0.5">Bezpieczeństwo</h4>
+                <p className="text-[10px] md:text-xs text-muted-foreground">
+                  Chronią przed dostępem.
                 </p>
               </div>
               <Switch
@@ -162,10 +180,10 @@ export default function CookieConsent() {
           </div>
 
           {/* Save Button - only visible when details are shown */}
-          <div className="mt-4">
+          <div className="mt-3">
             <button
               onClick={acceptSelected}
-              className="w-full px-6 py-3 bg-black hover:bg-black/90 text-white font-semibold rounded-xl transition-colors"
+              className="w-full px-4 py-2 md:py-2.5 bg-brand hover:bg-brand/90 text-brand-foreground text-sm font-semibold rounded-full transition-colors"
             >
               Zapisz wybór
             </button>
@@ -175,24 +193,18 @@ export default function CookieConsent() {
 
         {/* Action Buttons - always visible */}
         {!showDetails && (
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+          <div className="flex gap-2">
             <button
               onClick={acceptOnlyNecessary}
-              className="flex-1 px-6 py-3 border-2 border-black/10 hover:border-black/30 hover:bg-black/5 text-black font-semibold rounded-xl transition-all"
+              className="flex-1 px-3 py-1.5 md:py-2 hover:bg-accent text-foreground text-xs md:text-sm font-semibold rounded-full transition-all"
             >
               Tylko niezbędne
             </button>
             <button
-              onClick={handleCustomize}
-              className="flex-1 px-6 py-3 bg-black hover:bg-black/90 text-white font-semibold rounded-xl transition-colors"
-            >
-              Dostosuj zgody
-            </button>
-            <button
               onClick={acceptAll}
-              className="flex-1 px-6 py-3 bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold rounded-xl transition-colors"
+              className="flex-1 px-3 py-1.5 md:py-2 bg-brand hover:bg-brand/90 text-brand-foreground text-xs md:text-sm font-semibold rounded-full transition-colors"
             >
-              Zaakceptuj wszystkie
+              Akceptuj wszystkie
             </button>
           </div>
         )}

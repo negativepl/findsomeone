@@ -27,7 +27,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { deletePost, updatePostStatus, appealRejectedPost } from './actions'
 import { useRouter } from 'next/navigation'
-import { Pencil, PauseCircle, CheckCircle, PlayCircle, Trash2, MapPin, Clock, Eye, Phone, XCircle, CalendarClock, RefreshCw, AlertCircle, MessageSquare, CheckCircle2, ShieldAlert, ShieldCheck } from 'lucide-react'
+import { Pencil, PauseCircle, CheckCircle, PlayCircle, Trash2, MapPin, Clock, Eye, Phone, XCircle, CalendarClock, RefreshCw, AlertCircle, MessageSquare, CheckCircle2, ShieldAlert, ShieldCheck, ExternalLink } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
@@ -363,14 +363,24 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
   // Don't render until we've loaded the saved preference
   if (!isLoaded) {
-    return null
+    return (
+      <div className="flex items-center justify-center py-20">
+        <div className="flex flex-col items-center gap-3">
+          <svg className="animate-spin w-8 h-8 text-brand" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+          <span className="text-sm text-muted-foreground">Ładowanie ogłoszeń...</span>
+        </div>
+      </div>
+    )
   }
 
   return (
     <>
       {/* Pending Moderation Alert */}
       {pendingModerationPosts.length > 0 && (
-        <div className="mb-6 bg-yellow-50 border-2 border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
+        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
             <h3 className="font-semibold text-yellow-900 mb-1">
@@ -405,7 +415,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
           <SelectTrigger className="w-auto rounded-xl border-border h-9 bg-card focus:ring-0 focus:ring-offset-0 focus:border-border px-2.5 gap-1 justify-start" aria-label="Sortuj według">
             <span className="text-sm">Sortuj według</span>
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent align="end">
             <SelectItem value="newest">Najnowsze najpierw</SelectItem>
             <SelectItem value="oldest">Najstarsze najpierw</SelectItem>
             <SelectItem value="views_desc">Wyświetlenia: malejąco</SelectItem>
@@ -418,7 +428,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
       {filteredPosts && filteredPosts.length > 0 ? (
         <div className={viewMode === 'list' ? 'space-y-4' : 'grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3'}>
           {filteredPosts.map((post: Post) => (
-            <Card key={post.id} className={`border border-border rounded-3xl bg-card shadow-sm hover:shadow-md transition-shadow group relative ${
+            <Card key={post.id} className={`border border-border hover:border-foreground/20 rounded-3xl bg-card transition-all group relative ${
               viewMode === 'list' ? '' : 'flex flex-col h-full'
             }`}>
               {/* Clickable overlay for entire card */}
@@ -442,7 +452,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               src={post.images[0]}
                               alt={post.title}
                               fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              className="object-cover"
                             />
                           </div>
                         )}
@@ -529,7 +539,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                         {/* Actions Container */}
                         <div className="bg-muted/50 rounded-xl p-2 flex items-center gap-1.5">
                           {post.status === 'active' && post.expires_at && getDaysUntilExpiry(post.expires_at) !== null && getDaysUntilExpiry(post.expires_at)! <= 7 && (
-                            <TooltipProvider>
+                            <TooltipProvider delayDuration={500}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <button
@@ -548,7 +558,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           )}
 
                           {post.moderation_status === 'rejected' && !post.appeal_status && (
-                            <TooltipProvider>
+                            <TooltipProvider delayDuration={500}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <button
@@ -569,7 +579,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           )}
 
                           {post.appeal_status === 'pending' && (
-                            <TooltipProvider>
+                            <TooltipProvider delayDuration={500}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <div className="h-8 px-3 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-1.5">
@@ -584,7 +594,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             </TooltipProvider>
                           )}
 
-                          <TooltipProvider>
+                          <TooltipProvider delayDuration={500}>
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
@@ -599,9 +609,24 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             </Tooltip>
                           </TooltipProvider>
 
+                          <TooltipProvider delayDuration={500}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Link href={`/posts/${post.id}`} className="relative z-20" target="_blank">
+                                  <button className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
+                                    <ExternalLink className="w-3 h-3 text-foreground" />
+                                  </button>
+                                </Link>
+                              </TooltipTrigger>
+                              <TooltipContent sideOffset={5}>
+                                <p>Podgląd</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+
                           {post.status === 'active' && (
                             <>
-                              <TooltipProvider>
+                              <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <button
@@ -620,7 +645,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
-                              <TooltipProvider>
+                              <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <button
@@ -644,7 +669,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                           {post.status === 'closed' && (
                             <>
-                              <TooltipProvider>
+                              <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <button
@@ -663,7 +688,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                   </TooltipContent>
                                 </Tooltip>
                               </TooltipProvider>
-                              <TooltipProvider>
+                              <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <button
@@ -686,7 +711,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           )}
 
                           {post.status === 'completed' && (
-                            <TooltipProvider>
+                            <TooltipProvider delayDuration={500}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <button
@@ -715,10 +740,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                     e.preventDefault()
                                     openDeleteDialog(post.id)
                                   }}
-                                  className="h-8 w-8 rounded-lg bg-red-50 border-2 border-red-300 text-red-600 hover:bg-red-100 hover:border-red-400 flex items-center justify-center transition-all relative z-20"
+                                  className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                   disabled={isPending}
                                 >
-                                  <Trash2 className="w-3 h-3" />
+                                  <Trash2 className="w-3 h-3 text-red-600" />
                                 </button>
                               </TooltipTrigger>
                               <TooltipContent sideOffset={5}>
@@ -740,7 +765,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             src={post.images[0]}
                             alt={post.title}
                             fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="object-cover"
                           />
                         </div>
                       )}
@@ -836,7 +861,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             {/* Actions Container */}
                             <div className="bg-muted/50 rounded-xl p-2 flex items-center gap-2">
                               {post.moderation_status === 'rejected' && !post.appeal_status && (
-                                <TooltipProvider>
+                                <TooltipProvider delayDuration={500}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <button
@@ -857,7 +882,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               )}
 
                               {post.appeal_status === 'pending' && (
-                                <TooltipProvider>
+                                <TooltipProvider delayDuration={500}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <div className="h-10 px-4 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-2">
@@ -872,7 +897,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 </TooltipProvider>
                               )}
 
-                              <TooltipProvider>
+                              <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
@@ -887,9 +912,24 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 </Tooltip>
                               </TooltipProvider>
 
+                              <TooltipProvider delayDuration={500}>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Link href={`/posts/${post.id}`} className="relative z-20" target="_blank">
+                                      <button className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
+                                        <ExternalLink className="w-4 h-4 text-foreground" />
+                                      </button>
+                                    </Link>
+                                  </TooltipTrigger>
+                                  <TooltipContent sideOffset={5}>
+                                    <p>Podgląd</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+
                               {post.status === 'active' && (
                                 <>
-                                  <TooltipProvider>
+                                  <TooltipProvider delayDuration={500}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
@@ -908,7 +948,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       </TooltipContent>
                                     </Tooltip>
                                   </TooltipProvider>
-                                  <TooltipProvider>
+                                  <TooltipProvider delayDuration={500}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
@@ -932,7 +972,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                               {post.status === 'closed' && (
                                 <>
-                                  <TooltipProvider>
+                                  <TooltipProvider delayDuration={500}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
@@ -951,7 +991,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       </TooltipContent>
                                     </Tooltip>
                                   </TooltipProvider>
-                                  <TooltipProvider>
+                                  <TooltipProvider delayDuration={500}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
@@ -974,7 +1014,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               )}
 
                               {post.status === 'completed' && (
-                                <TooltipProvider>
+                                <TooltipProvider delayDuration={500}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <button
@@ -995,7 +1035,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 </TooltipProvider>
                               )}
 
-                              <TooltipProvider>
+                              <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <button
@@ -1003,10 +1043,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         e.preventDefault()
                                         openDeleteDialog(post.id)
                                       }}
-                                      className="h-10 w-10 rounded-lg bg-red-50 border-2 border-red-300 text-red-600 hover:bg-red-100 hover:border-red-400 flex items-center justify-center transition-all relative z-20"
+                                      className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                       disabled={isPending}
                                     >
-                                      <Trash2 className="w-4 h-4" />
+                                      <Trash2 className="w-4 h-4 text-red-600" />
                                     </button>
                                   </TooltipTrigger>
                                   <TooltipContent sideOffset={5}>
@@ -1030,7 +1070,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           src={post.images[0]}
                           alt={post.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="object-cover"
                         />
                       </div>
                     )}
@@ -1117,7 +1157,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             {/* Actions Container */}
                             <div className="bg-muted/50 rounded-xl p-2 flex items-center gap-1.5 md:gap-2">
                               {post.moderation_status === 'rejected' && !post.appeal_status && (
-                                <TooltipProvider>
+                                <TooltipProvider delayDuration={500}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <button
@@ -1138,7 +1178,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               )}
 
                               {post.appeal_status === 'pending' && (
-                                <TooltipProvider>
+                                <TooltipProvider delayDuration={500}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <div className="h-8 px-2 md:h-10 md:px-3 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-1">
@@ -1153,7 +1193,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 </TooltipProvider>
                               )}
 
-                              <TooltipProvider>
+                              <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
@@ -1168,9 +1208,24 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 </Tooltip>
                               </TooltipProvider>
 
+                              <TooltipProvider delayDuration={500}>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Link href={`/posts/${post.id}`} className="relative z-20" target="_blank">
+                                      <button className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
+                                        <ExternalLink className="w-3 h-3 md:w-4 md:h-4 text-foreground" />
+                                      </button>
+                                    </Link>
+                                  </TooltipTrigger>
+                                  <TooltipContent sideOffset={5}>
+                                    <p>Podgląd</p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+
                               {post.status === 'active' && (
                                 <>
-                                  <TooltipProvider>
+                                  <TooltipProvider delayDuration={500}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
@@ -1189,7 +1244,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       </TooltipContent>
                                     </Tooltip>
                                   </TooltipProvider>
-                                  <TooltipProvider>
+                                  <TooltipProvider delayDuration={500}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
@@ -1213,7 +1268,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                               {post.status === 'closed' && (
                                 <>
-                                  <TooltipProvider>
+                                  <TooltipProvider delayDuration={500}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
@@ -1232,7 +1287,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       </TooltipContent>
                                     </Tooltip>
                                   </TooltipProvider>
-                                  <TooltipProvider>
+                                  <TooltipProvider delayDuration={500}>
                                     <Tooltip>
                                       <TooltipTrigger asChild>
                                         <button
@@ -1255,7 +1310,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               )}
 
                               {post.status === 'completed' && (
-                                <TooltipProvider>
+                                <TooltipProvider delayDuration={500}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
                                       <button
@@ -1276,7 +1331,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 </TooltipProvider>
                               )}
 
-                              <TooltipProvider>
+                              <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
                                     <button
@@ -1284,10 +1339,10 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                         e.preventDefault()
                                         openDeleteDialog(post.id)
                                       }}
-                                      className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-red-50 border-2 border-red-300 text-red-600 hover:bg-red-100 hover:border-red-400 flex items-center justify-center transition-all relative z-20"
+                                      className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                       disabled={isPending}
                                     >
-                                      <Trash2 className="w-3 h-3 md:w-4 md:h-4" />
+                                      <Trash2 className="w-3 h-3 md:w-4 md:h-4 text-red-600" />
                                     </button>
                                   </TooltipTrigger>
                                   <TooltipContent sideOffset={5}>
@@ -1345,14 +1400,14 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
       {/* Observer target for infinite scroll */}
       {hasMore && filteredPosts.length > 0 && (
-        <div ref={observerTarget} className="py-8 text-center">
+        <div ref={observerTarget} className="py-12 text-center">
           {loading && (
-            <div className="flex items-center justify-center gap-2 text-muted-foreground">
-              <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+            <div className="flex flex-col items-center gap-3">
+              <svg className="animate-spin w-8 h-8 text-brand" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              <span>Ładowanie...</span>
+              <span className="text-sm text-muted-foreground">Ładowanie więcej ogłoszeń...</span>
             </div>
           )}
         </div>
@@ -1372,7 +1427,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
           <div className="mt-8 pt-6 border-t-2 border-border">
             <AlertDialogFooter className="gap-2 sm:gap-2">
               <AlertDialogCancel
-                className="rounded-full border-2 border-border hover:border-border hover:bg-muted"
+                className="rounded-full border border-border hover:border-border hover:bg-muted"
                 disabled={isPending}
               >
                 Anuluj
@@ -1409,7 +1464,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               value={appealMessage}
               onChange={(e) => setAppealMessage(e.target.value)}
               placeholder="np. Moje ogłoszenie nie zawiera treści zabronionych. Podane informacje są zgodne z regulaminem..."
-              className="rounded-2xl border-2 border-border min-h-[120px] focus:border-border"
+              className="rounded-2xl border border-border min-h-[120px] focus:border-border"
               maxLength={500}
             />
             <p className="text-xs text-muted-foreground mt-1">
@@ -1419,7 +1474,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
           <div className="mt-8 pt-6 border-t-2 border-border">
             <AlertDialogFooter className="gap-3 sm:gap-3">
             <AlertDialogCancel
-              className="rounded-full border-2 border-border hover:border-border hover:bg-muted h-11"
+              className="rounded-full border border-border hover:border-border hover:bg-muted h-11"
               disabled={isPending}
             >
               Anuluj

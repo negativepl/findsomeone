@@ -111,7 +111,7 @@ export default async function SettingsPage() {
                 Nieodwracalne akcje - zachowaj ostrożność
               </p>
             </div>
-            <div className="flex flex-col gap-4 p-5 rounded-2xl bg-red-500/10 border-2 border-red-500/20">
+            <div className="flex flex-col gap-4 p-5 rounded-2xl bg-red-500/10 border border-red-500/20">
               <div className="flex-1">
                 <p className="text-base font-semibold text-red-600 dark:text-red-400 mb-2">Usuń konto</p>
                 <p className="text-sm text-red-600 dark:text-red-400">
@@ -192,7 +192,7 @@ export default async function SettingsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-red-500/10 border-2 border-red-500/20">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-red-500/10 border border-red-500/20">
                 <div className="flex-1">
                   <p className="text-lg font-semibold text-red-600 dark:text-red-400 mb-2">Usuń konto</p>
                   <p className="text-sm text-red-600 dark:text-red-400">

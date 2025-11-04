@@ -477,7 +477,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
         <p className="text-lg text-muted-foreground mb-4">
           Zaktualizuj informacje w swoim ogłoszeniu
         </p>
-        <div className="bg-yellow-50 dark:bg-yellow-950/30 border-2 border-yellow-200 dark:border-yellow-800 rounded-2xl p-4 flex items-start gap-3">
+        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-4 flex items-start gap-3">
           <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
@@ -509,7 +509,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
                   maxLength={80}
-                  className="rounded-2xl border-2 border-border h-12 focus:border-border pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
+                  className="rounded-2xl border border-border h-12 focus:border-border pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
                 />
                 <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-muted-foreground font-medium">
                   {formData.title.length}/80
@@ -527,7 +527,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   size="sm"
                   onClick={handleSuggestCategory}
                   disabled={suggestingCategory || (!formData.title && !formData.description)}
-                  className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-full border border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {suggestingCategory ? (
                     <>
@@ -550,7 +550,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
               <button
                 type="button"
                 onClick={() => setShowCategorySelector(true)}
-                className={`w-full rounded-2xl border-2 transition-all p-4 text-left group ${
+                className={`w-full rounded-2xl border transition-all p-4 text-left group ${
                   categoryPath.length > 0
                     ? 'border-[#C44E35]/30 bg-[#C44E35]/5 hover:border-[#C44E35]/50'
                     : 'border-border hover:border-border/70 hover:bg-muted'
@@ -624,7 +624,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   size="sm"
                   onClick={handleDetectLocation}
                   disabled={detectingLocation}
-                  className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-full border border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <MapPin className="w-3.5 h-3.5 mr-1.5" />
                   {detectingLocation ? 'Wykrywam...' : 'Wykryj lokalizację'}
@@ -641,13 +641,13 @@ export function EditPostClient({ post }: EditPostClientProps) {
                         variant="outline"
                         role="combobox"
                         aria-expanded={openCityCombobox}
-                        className="w-full justify-between rounded-2xl border-2 border-border h-12 hover:border-border/70 hover:bg-muted font-normal"
+                        className="w-full justify-between rounded-2xl border border-border h-12 hover:border-border/70 hover:bg-muted font-normal"
                       >
                         {formData.city || "Wybierz miasto"}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-[500px] p-0 rounded-2xl border-2 border-border" align="start">
+                    <PopoverContent className="w-[500px] p-0 rounded-2xl border border-border" align="start">
                       <Command className="rounded-2xl">
                         <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
                         <CommandList>
@@ -691,7 +691,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     placeholder="np. Śródmieście"
                     value={formData.district}
                     onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                    className="rounded-2xl border-2 border-border h-12 focus:border-border"
+                    className="rounded-2xl border border-border h-12 focus:border-border"
                   />
                 </div>
               </div>
@@ -708,7 +708,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   }
                   required
                 >
-                  <SelectTrigger className="rounded-2xl border-2 border-border !h-12 w-full" aria-label="Typ ceny">
+                  <SelectTrigger className="rounded-2xl border border-border !h-12 w-full" aria-label="Typ ceny">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -733,7 +733,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     disabled={formData.priceType === 'free'}
                     required={formData.priceType !== 'free'}
-                    className="rounded-2xl border-2 border-border h-12 focus:border-border disabled:opacity-50 disabled:cursor-not-allowed w-32"
+                    className="rounded-2xl border border-border h-12 focus:border-border disabled:opacity-50 disabled:cursor-not-allowed w-32"
                   />
 
                   {/* Negotiable switch */}
@@ -755,7 +755,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
             </div>
 
             {error && (
-              <div className="bg-red-50 dark:bg-red-950/30 border-2 border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-2xl text-sm">
+              <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 p-4 rounded-2xl text-sm">
                 {error}
               </div>
             )}
@@ -767,7 +767,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full md:w-auto rounded-full border-2 border-border hover:border-border/70 hover:bg-muted h-11 px-6 text-sm"
+                    className="w-full md:w-auto rounded-full border border-border hover:border-border/70 hover:bg-muted h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>

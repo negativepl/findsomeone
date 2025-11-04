@@ -34,7 +34,7 @@ export function PhoneNumber({ phone }: PhoneNumberProps) {
         <Button
           onClick={() => setIsRevealed(true)}
           variant="outline"
-          className="w-full rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5 py-6 text-base"
+          className="w-full rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 py-6 text-base"
         >
           <Phone className="w-4 h-4 mr-2" />
           {maskedPhone()}
@@ -43,7 +43,7 @@ export function PhoneNumber({ phone }: PhoneNumberProps) {
         <a href={`tel:${phone}`}>
           <Button
             variant="outline"
-            className="w-full rounded-full border-2 border-green-500 bg-green-50 hover:bg-green-100 text-green-700 py-6 text-base"
+            className="w-full rounded-full border border-green-500 bg-green-50 hover:bg-green-100 text-green-700 py-6 text-base"
           >
             <Phone className="w-4 h-4 mr-2" />
             {formatPhone(phone)}

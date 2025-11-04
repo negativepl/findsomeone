@@ -662,7 +662,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
                 <button
                   onClick={discardDraft}
-                  className="rounded-md border-2 border-border hover:border-border hover:bg-muted h-10 px-4 text-sm font-medium transition-colors"
+                  className="rounded-md border border-border hover:border-border hover:bg-muted h-10 px-4 text-sm font-medium transition-colors"
                 >
                   Zacznij od początku
                 </button>
@@ -725,7 +725,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     required
                     maxLength={80}
-                    className="rounded-2xl border-2 border-border h-12 focus:border-border pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
+                    className="rounded-2xl border border-border h-12 focus:border-border pr-16 text-sm md:text-base placeholder:text-xs md:placeholder:text-sm"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs md:text-sm text-muted-foreground font-medium">
                     {formData.title.length}/80
@@ -743,7 +743,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     size="sm"
                     onClick={handleSuggestCategory}
                     disabled={suggestingCategory || (!formData.title && !formData.description)}
-                    className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-full border border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {suggestingCategory ? (
                       <>
@@ -767,7 +767,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <button
                   type="button"
                   onClick={() => setShowCategorySelector(true)}
-                  className={`w-full rounded-2xl border-2 transition-all p-4 text-left group ${
+                  className={`w-full rounded-2xl border transition-all p-4 text-left group ${
                     categoryPath.length > 0
                       ? 'border-[#C44E35]/30 bg-[#C44E35]/5 hover:border-[#C44E35]/50'
                       : 'border-border hover:border-border hover:bg-muted'
@@ -883,7 +883,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     size="sm"
                     onClick={handleDetectLocation}
                     disabled={detectingLocation}
-                    className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-full border border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <MapPin className="w-3.5 h-3.5 mr-1.5" />
                     {detectingLocation ? 'Wykrywam...' : 'Wykryj lokalizację'}
@@ -900,13 +900,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           variant="outline"
                           role="combobox"
                           aria-expanded={openCityCombobox}
-                          className="w-full justify-between rounded-2xl border-2 border-border h-12 hover:border-border hover:bg-muted font-normal"
+                          className="w-full justify-between rounded-2xl border border-border h-12 hover:border-border hover:bg-muted font-normal"
                         >
                           {formData.city || "Wybierz miasto"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[500px] p-0 rounded-2xl border-2 border-border" align="start">
+                      <PopoverContent className="w-[500px] p-0 rounded-2xl border border-border" align="start">
                         <Command className="rounded-2xl">
                           <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
                           <CommandList>
@@ -950,7 +950,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       placeholder="np. Śródmieście"
                       value={formData.district}
                       onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                      className="rounded-2xl border-2 border-border h-12 focus:border-border"
+                      className="rounded-2xl border border-border h-12 focus:border-border"
                     />
                   </div>
                 </div>
@@ -967,7 +967,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     }
                     required
                   >
-                    <SelectTrigger className="rounded-2xl border-2 border-border !h-12 w-full" aria-label="Typ ceny">
+                    <SelectTrigger className="rounded-2xl border border-border !h-12 w-full" aria-label="Typ ceny">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -992,7 +992,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                       disabled={formData.priceType === 'free'}
                       required={formData.priceType !== 'free'}
-                      className="rounded-2xl border-2 border-border h-12 focus:border-border disabled:opacity-50 disabled:cursor-not-allowed w-32"
+                      className="rounded-2xl border border-border h-12 focus:border-border disabled:opacity-50 disabled:cursor-not-allowed w-32"
                     />
 
                     {/* Negotiable switch */}
@@ -1021,7 +1021,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 px-6 text-sm"
+                    className="rounded-full border border-border hover:border-border hover:bg-muted h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>
@@ -1071,7 +1071,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         }}
                         required
                         maxLength={80}
-                        className="rounded-2xl border-2 border-border h-12 focus:border-border pr-14 text-base"
+                        className="rounded-2xl border border-border h-12 focus:border-border pr-14 text-base"
                       />
                       <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-medium">
                         {formData.title.length}/80
@@ -1084,7 +1084,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <button
                       type="button"
                       onClick={() => setShowCategorySelector(true)}
-                      className={`w-full rounded-2xl border-2 transition-all p-4 text-left active:scale-98 ${
+                      className={`w-full rounded-2xl border transition-all p-4 text-left active:scale-98 ${
                         categoryPath.length > 0
                           ? 'border-[#C44E35]/30 bg-[#C44E35]/5'
                           : 'border-border bg-card'
@@ -1173,7 +1173,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       size="sm"
                       onClick={handleDetectLocation}
                       disabled={detectingLocation}
-                      className="rounded-full border-2 border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="rounded-full border border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <MapPin className="w-3.5 h-3.5 mr-1.5" />
                       {detectingLocation ? 'Wykrywam...' : 'Wykryj'}
@@ -1190,13 +1190,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           variant="outline"
                           role="combobox"
                           aria-expanded={openCityCombobox}
-                          className="w-full justify-between rounded-2xl border-2 border-border h-12 hover:border-border hover:bg-muted font-normal text-base bg-card"
+                          className="w-full justify-between rounded-2xl border border-border h-12 hover:border-border hover:bg-muted font-normal text-base bg-card"
                         >
                           {formData.city || "Wybierz miasto"}
                           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-[calc(100vw-2rem)] p-0 rounded-2xl border-2 border-border" align="start">
+                      <PopoverContent className="w-[calc(100vw-2rem)] p-0 rounded-2xl border border-border" align="start">
                         <Command className="rounded-2xl">
                           <CommandInput placeholder="Szukaj miasta..." className="rounded-t-2xl" />
                           <CommandList>
@@ -1241,7 +1241,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       placeholder="np. Śródmieście"
                       value={formData.district}
                       onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                      className="rounded-2xl border-2 border-border h-12 focus:border-border text-base bg-card"
+                      className="rounded-2xl border border-border h-12 focus:border-border text-base bg-card"
                     />
                   </div>
                 </div>
@@ -1259,7 +1259,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       }
                       required
                     >
-                      <SelectTrigger className="rounded-2xl border-2 border-border !h-12 w-full text-base bg-card" aria-label="Typ ceny">
+                      <SelectTrigger className="rounded-2xl border border-border !h-12 w-full text-base bg-card" aria-label="Typ ceny">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -1286,7 +1286,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                             value={formData.price}
                             onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                             required
-                            className="rounded-2xl border-2 border-border h-12 focus:border-border text-base bg-card"
+                            className="rounded-2xl border border-border h-12 focus:border-border text-base bg-card"
                           />
 
                           {/* Negotiable switch */}
@@ -1317,7 +1317,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   {/* Main content card */}
-                  <div className="bg-card border-2 border-border rounded-2xl p-4 space-y-4">
+                  <div className="bg-card border border-border rounded-2xl p-4 space-y-4">
                     {/* Title - prominent with edit button */}
                     <div>
                       <div className="flex items-start justify-between gap-3 mb-2">
@@ -1449,7 +1449,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               )}
 
             {error && (
-              <div className="bg-red-500/10 border-2 border-red-500/20 text-red-600 dark:text-red-400 p-4 rounded-2xl text-sm mx-3">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 p-4 rounded-2xl text-sm mx-3">
                 {error}
               </div>
             )}
@@ -1487,7 +1487,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <Button
                   type="button"
                   variant="outline"
-                  className="w-full rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold"
+                  className="w-full rounded-full border border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold"
                 >
                   Anuluj
                 </Button>
@@ -1499,7 +1499,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 type="button"
                 onClick={prevStep}
                 variant="outline"
-                className="w-full rounded-full border-2 border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold"
+                className="w-full rounded-full border border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold"
               >
                 Wstecz
               </Button>

@@ -146,7 +146,7 @@ export function ReviewModal({
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               maxLength={500}
-              className="rounded-2xl border-2 border-black/10 focus:border-black/30 resize-none"
+              className="rounded-2xl border border-black/10 focus:border-black/30 resize-none"
             />
             <p className="text-xs text-black/40 text-right">
               {comment.length}/500
@@ -154,7 +154,7 @@ export function ReviewModal({
           </div>
 
           {error && (
-            <div className="bg-red-50 border-2 border-red-200 text-red-600 p-4 rounded-2xl text-sm">
+            <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-2xl text-sm">
               {error}
             </div>
           )}
@@ -165,7 +165,7 @@ export function ReviewModal({
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              className="flex-1 rounded-full border-2 border-black/10 hover:border-black/30 hover:bg-black/5"
+              className="flex-1 rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5"
               disabled={loading}
             >
               Anuluj

@@ -363,7 +363,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   variant="outline"
                   onClick={handleAvatarRemove}
                   disabled={uploading}
-                  className="mt-2 text-xs rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-8 px-3"
+                  className="mt-2 text-xs rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-8 px-3"
                 >
                   Usuń avatar
                 </Button>
@@ -417,7 +417,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   value={formData.full_name}
                   onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                   required
-                  className="rounded-2xl border-2 border-border h-11 focus:border-border"
+                  className="rounded-2xl border border-border h-11 focus:border-border"
                 />
               </div>
 
@@ -432,7 +432,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   placeholder="np. +48 123 456 789"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  className="rounded-2xl border-2 border-border h-11 focus:border-border"
+                  className="rounded-2xl border border-border h-11 focus:border-border"
                 />
               </div>
 
@@ -446,7 +446,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   placeholder="np. Warszawa"
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="rounded-2xl border-2 border-border h-11 focus:border-border"
+                  className="rounded-2xl border border-border h-11 focus:border-border"
                 />
               </div>
 
@@ -461,7 +461,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   rows={4}
                   value={formData.bio}
                   onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                  className="rounded-2xl border-2 border-border focus:border-border resize-none"
+                  className="rounded-2xl border border-border focus:border-border resize-none"
                 />
               </div>
 
@@ -541,7 +541,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   htmlFor="banner-upload-mobile"
                   onMouseEnter={() => setIsBannerHovered(true)}
                   onMouseLeave={() => setIsBannerHovered(false)}
-                  className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-border rounded-2xl cursor-pointer hover:border-border hover:bg-muted transition-all"
+                  className="flex flex-col items-center justify-center w-full aspect-[3/1] border border-dashed border-border rounded-2xl cursor-pointer hover:border-border hover:bg-muted transition-all"
                 >
                   <div className="flex flex-col items-center justify-center pt-4 pb-4 px-4">
                     {uploadingBanner ? (
@@ -600,7 +600,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     }
                   }
                 }}
-                className="w-full rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-11"
+                className="w-full rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-11"
               >
                 Usuń banner
               </Button>
@@ -741,7 +741,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     variant="outline"
                     onClick={handleAvatarRemove}
                     disabled={uploading}
-                    className="mt-2 text-xs rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-8 px-3"
+                    className="mt-2 text-xs rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-8 px-3"
                   >
                     Usuń avatar
                   </Button>
@@ -806,7 +806,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       value={formData.full_name}
                       onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                       required
-                      className="rounded-2xl border-2 border-border h-12 focus:border-border"
+                      className="rounded-2xl border border-border h-12 focus:border-border"
                     />
                   </div>
 
@@ -821,7 +821,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       placeholder="np. +48 123 456 789"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="rounded-2xl border-2 border-border h-12 focus:border-border"
+                      className="rounded-2xl border border-border h-12 focus:border-border"
                     />
                   </div>
                 </div>
@@ -836,7 +836,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     placeholder="np. Warszawa"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    className="rounded-2xl border-2 border-border h-12 focus:border-border"
+                    className="rounded-2xl border border-border h-12 focus:border-border"
                   />
                 </div>
 
@@ -851,7 +851,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     rows={6}
                     value={formData.bio}
                     onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                    className="rounded-2xl border-2 border-border focus:border-border resize-none"
+                    className="rounded-2xl border border-border focus:border-border resize-none"
                   />
                 </div>
 
@@ -937,7 +937,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     htmlFor="banner-upload"
                     onMouseEnter={() => setIsBannerHovered(true)}
                     onMouseLeave={() => setIsBannerHovered(false)}
-                    className="flex flex-col items-center justify-center w-full aspect-[3/1] border-2 border-dashed border-border rounded-2xl cursor-pointer hover:border-border hover:bg-muted transition-all"
+                    className="flex flex-col items-center justify-center w-full aspect-[3/1] border border-dashed border-border rounded-2xl cursor-pointer hover:border-border hover:bg-muted transition-all"
                   >
                     <div className="flex flex-col items-center justify-center pt-5 pb-6 px-4">
                       {uploadingBanner ? (
@@ -999,7 +999,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       }
                     }
                   }}
-                  className="w-full rounded-full border-2 border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50"
+                  className="w-full rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50"
                 >
                   Usuń banner
                 </Button>

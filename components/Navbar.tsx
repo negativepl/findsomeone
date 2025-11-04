@@ -112,7 +112,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
               <>
                 {showAddButton && (
                   <Link href="/dashboard/my-posts/new">
-                    <Button className="bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold rounded-full h-10 px-3 lg:px-6 transition-all border-0">
+                    <Button className="bg-brand hover:bg-brand/90 text-brand-foreground font-semibold rounded-full h-10 px-3 lg:px-6 transition-all border-0">
                       <img src="/icons/plus.svg" alt="" className="w-5 h-5 lg:hidden" />
                       <span className="hidden lg:inline">Dodaj ogłoszenie</span>
                     </Button>
@@ -131,7 +131,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
                   </Button>
                 </Link>
                 <Link href="/signup">
-                  <Button className="bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold rounded-full h-10 px-4 lg:px-6 transition-all border-0">
+                  <Button className="bg-brand hover:bg-brand/90 text-brand-foreground font-semibold rounded-full h-10 px-4 lg:px-6 transition-all border-0">
                     Zarejestruj
                   </Button>
                 </Link>

@@ -392,14 +392,14 @@ export function ReportsList({ initialReports }: ReportsListProps) {
                 <button
                   onClick={handleDismiss}
                   disabled={isProcessing}
-                  className="px-4 py-2.5 rounded-full bg-white border-2 border-black/10 hover:bg-black/5 text-black font-medium transition-colors disabled:opacity-50 text-sm"
+                  className="px-4 py-2.5 rounded-full bg-white border border-black/10 hover:bg-black/5 text-black font-medium transition-colors disabled:opacity-50 text-sm"
                 >
                   Odrzuć
                 </button>
                 <button
                   onClick={handleWarning}
                   disabled={isProcessing}
-                  className="px-4 py-2.5 rounded-full bg-yellow-50 border-2 border-yellow-200 hover:bg-yellow-100 text-yellow-700 font-medium transition-colors disabled:opacity-50 text-sm"
+                  className="px-4 py-2.5 rounded-full bg-yellow-50 border border-yellow-200 hover:bg-yellow-100 text-yellow-700 font-medium transition-colors disabled:opacity-50 text-sm"
                 >
                   Ostrzeż
                 </button>

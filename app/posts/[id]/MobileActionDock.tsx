@@ -112,7 +112,7 @@ export function MobileActionDock({
               <div className="flex-1">
                 <Button
                   onClick={handlePhoneClick}
-                  className="w-full rounded-full bg-card hover:bg-muted text-foreground border-2 border-border hover:border-border h-11 text-sm font-semibold gap-0"
+                  className="w-full rounded-full bg-card hover:bg-muted text-foreground border border-border hover:border-border h-11 text-sm font-semibold gap-0"
                 >
                   Zadzwoń
                 </Button>

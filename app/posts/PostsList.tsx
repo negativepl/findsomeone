@@ -49,9 +49,14 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
   const [posts, setPosts] = useState<Post[]>(initialPosts)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(initialPosts.length < totalCount)
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
   const observerTarget = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = parseInt(searchParams.limit || '12', 10)
+
+  const handleImageLoad = (postId: string) => {
+    setLoadedImages(prev => new Set(prev).add(postId))
+  }
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
@@ -68,6 +73,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
     // Reset posts when search params change
     setPosts(initialPosts)
     setHasMore(initialPosts.length < totalCount)
+    setLoadedImages(new Set())
   }, [initialPosts, totalCount])
 
   useEffect(() => {
@@ -122,8 +128,11 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
         itemsPerPage >= 12 ? 'md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3' :
         'md:grid-cols-1 lg:grid-cols-2'
       }`}>
-        {posts.map((post: Post) => (
-          <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
+        {posts.map((post: Post) => {
+          const isImageLoaded = !post.images || post.images.length === 0 || loadedImages.has(post.id)
+
+          return (
+          <Link key={post.id} href={`/posts/${post.id}`} className="block h-full" style={{ opacity: isImageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}>
             <Card className={`border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden gap-0 py-0 cursor-pointer relative ${
               viewMode === 'list' ? 'flex flex-col' : 'flex flex-col h-full'
             }`}>
@@ -150,6 +159,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                             alt={post.title}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            onLoad={() => handleImageLoad(post.id)}
                           />
                         </div>
                       )}
@@ -243,6 +253,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                           alt={post.title}
                           fill
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          onLoad={() => handleImageLoad(post.id)}
                         />
                         {/* Favorite button - top left corner */}
                         <div className="absolute top-4 left-4 z-10" data-no-loader="true">
@@ -353,6 +364,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
                         alt={post.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        onLoad={() => handleImageLoad(post.id)}
                       />
                       <div className="absolute top-3 left-3 z-10" data-no-loader="true">
                         <FavoriteButtonWrapper
@@ -467,19 +479,20 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
               )}
             </Card>
           </Link>
-        ))}
+          )
+        })}
       </div>
 
       {/* Observer target for infinite scroll */}
       {hasMore && (
-        <div ref={observerTarget} className="py-8 text-center">
+        <div ref={observerTarget} className="py-12 text-center">
           {loading && (
-            <div className="flex items-center justify-center gap-2 text-muted-foreground">
-              <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+            <div className="flex flex-col items-center gap-3">
+              <svg className="animate-spin w-8 h-8 text-brand" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
               </svg>
-              <span>Ładowanie...</span>
+              <span className="text-sm text-muted-foreground">Ładowanie więcej ogłoszeń...</span>
             </div>
           )}
         </div>

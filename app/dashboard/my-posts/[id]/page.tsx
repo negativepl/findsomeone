@@ -187,7 +187,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 {post.images && post.images.length > 0 && (
                   <div className="px-8 pb-6">
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                      {post.images.map((image, index) => (
+                      {post.images.map((image: string, index: number) => (
                         <div key={index} className="relative aspect-square rounded-2xl overflow-hidden bg-black/5">
                           <Image
                             src={image}
@@ -262,7 +262,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     )}
                     {/* Online Status Indicator */}
                     <div
-                      className={`absolute bottom-0 right-0 w-4 h-4 border-2 border-white rounded-full ${
+                      className={`absolute bottom-0 right-0 w-4 h-4 border border-white rounded-full ${
                         isOnline ? 'bg-green-500' : 'bg-gray-400'
                       }`}
                       title={isOnline ? 'Online' : 'Offline'}

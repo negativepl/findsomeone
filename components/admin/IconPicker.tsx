@@ -24,7 +24,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
       <Label>Wybierz ikonkę</Label>
 
       {/* Container with rounded design */}
-      <div className="border-2 border-black/10 rounded-2xl overflow-hidden bg-white">
+      <div className="border border-black/10 rounded-2xl overflow-hidden bg-white">
         {/* Search */}
         <div className="p-3 bg-[#FAF8F3] border-b-2 border-black/5">
           <div className="relative">
@@ -57,7 +57,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
                   key={iconName}
                   type="button"
                   onClick={() => onChange(iconName)}
-                  className={`p-3 rounded-xl border-2 transition-all hover:border-[#C44E35] hover:bg-[#C44E35]/5 flex items-center justify-center ${
+                  className={`p-3 rounded-xl border transition-all hover:border-[#C44E35] hover:bg-[#C44E35]/5 flex items-center justify-center ${
                     value === iconName
                       ? 'border-[#C44E35] bg-[#C44E35]/10'
                       : 'border-black/10'

@@ -521,7 +521,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     )}
                     {/* Online Status Indicator */}
                     <div
-                      className={`absolute bottom-0 right-0 w-3 h-3 md:w-4 md:h-4 border-2 border-white rounded-full ${
+                      className={`absolute bottom-0 right-0 w-3 h-3 md:w-4 md:h-4 border border-white rounded-full ${
                         isOnline ? 'bg-green-500' : 'bg-gray-400'
                       }`}
                       title={isOnline ? 'Online' : 'Offline'}

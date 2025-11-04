@@ -49,7 +49,7 @@ export default function NotFound() {
             <Link href="/posts">
               <Button
                 variant="outline"
-                className="rounded-full border-2 border-brand bg-card text-brand hover:bg-accent hover:text-brand px-8 py-6 text-lg font-semibold transition-colors w-full sm:w-auto"
+                className="rounded-full border border-brand bg-card text-brand hover:bg-accent hover:text-brand px-8 py-6 text-lg font-semibold transition-colors w-full sm:w-auto"
               >
                 Przeglądaj ogłoszenia
               </Button>

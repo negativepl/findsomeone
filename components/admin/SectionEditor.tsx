@@ -139,7 +139,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                     }
 
                     return (
-                      <div className="rounded-2xl border-2 border-black/10 p-6">
+                      <div className="rounded-2xl border border-black/10 p-6">
                         <div className="flex items-center justify-between mb-4">
                           <div>
                             <Label htmlFor={field.name} className="text-base font-semibold">{field.label}</Label>
@@ -172,7 +172,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                   })()}
 
                   {field.type === 'boolean' && (
-                    <div className="flex items-center justify-between rounded-2xl border-2 border-black/10 p-4">
+                    <div className="flex items-center justify-between rounded-2xl border border-black/10 p-4">
                       <div>
                         <Label htmlFor={field.name}>{field.label}</Label>
                         {field.description && (
@@ -217,7 +217,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                                 key={option.value}
                                 type="button"
                                 onClick={() => handleConfigChange(field.name, option.value)}
-                                className={`flex flex-row items-center gap-2 px-4 py-3 rounded-xl border-2 transition-all ${
+                                className={`flex flex-row items-center gap-2 px-4 py-3 rounded-xl border transition-all ${
                                   isSelected
                                     ? 'border-[#C44E35] bg-[#C44E35]/5'
                                     : 'border-black/10 hover:border-black/20 hover:bg-black/5'
@@ -259,7 +259,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                       {field.description && (
                         <p className="text-xs text-black/60 mb-2">{field.description}</p>
                       )}
-                      <div className="border-2 border-black/10 rounded-2xl p-4 max-h-48 overflow-y-auto">
+                      <div className="border border-black/10 rounded-2xl p-4 max-h-48 overflow-y-auto">
                         {categories.map((category) => (
                           <label
                             key={category.id}
@@ -331,7 +331,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                   })()}
 
                   {field.type === 'color' && (
-                    <div className="rounded-2xl border-2 border-black/10 p-4">
+                    <div className="rounded-2xl border border-black/10 p-4">
                       <Label htmlFor={field.name} className="mb-2 block font-semibold">{field.label}</Label>
                       {field.description && (
                         <p className="text-xs text-black/60 mb-3">{field.description}</p>
@@ -339,7 +339,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                       <div className="flex items-center gap-2">
                         <label
                           htmlFor={field.name}
-                          className="w-12 h-12 rounded-lg cursor-pointer border-2 border-black/10 overflow-hidden block relative shrink-0"
+                          className="w-12 h-12 rounded-lg cursor-pointer border border-black/10 overflow-hidden block relative shrink-0"
                           style={{
                             backgroundColor: editedSection.config[field.name] || field.default || '#FFFFFF'
                           }}
@@ -375,13 +375,13 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Background Color */}
-              <div className="rounded-2xl border-2 border-black/10 p-4">
+              <div className="rounded-2xl border border-black/10 p-4">
                 <Label htmlFor="background_color" className="mb-2 block font-semibold">Kolor tła</Label>
                 <p className="text-xs text-black/60 mb-3">Nadpisuje domyślny kolor sekcji</p>
                 <div className="flex items-center gap-2">
                   <label
                     htmlFor="background_color"
-                    className="w-12 h-12 rounded-lg cursor-pointer border-2 border-black/10 overflow-hidden block relative shrink-0"
+                    className="w-12 h-12 rounded-lg cursor-pointer border border-black/10 overflow-hidden block relative shrink-0"
                     style={{
                       backgroundColor: editedSection.background_color || '#FAF8F3'
                     }}
@@ -419,13 +419,13 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
               </div>
 
               {/* Text Color */}
-              <div className="rounded-2xl border-2 border-black/10 p-4">
+              <div className="rounded-2xl border border-black/10 p-4">
                 <Label htmlFor="text_color" className="mb-2 block font-semibold">Kolor tekstu</Label>
                 <p className="text-xs text-black/60 mb-3">Nadpisuje domyślny kolor tekstu</p>
                 <div className="flex items-center gap-2">
                   <label
                     htmlFor="text_color"
-                    className="w-12 h-12 rounded-lg cursor-pointer border-2 border-black/10 overflow-hidden block relative shrink-0"
+                    className="w-12 h-12 rounded-lg cursor-pointer border border-black/10 overflow-hidden block relative shrink-0"
                     style={{
                       backgroundColor: editedSection.text_color || '#000000'
                     }}
@@ -465,7 +465,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
 
             {/* Visibility Controls */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center justify-between rounded-2xl border-2 border-black/10 p-5">
+              <div className="flex items-center justify-between rounded-2xl border border-black/10 p-5">
                 <div>
                   <Label htmlFor="visible_on_mobile" className="mb-1 block font-semibold">Widoczna na mobile</Label>
                   <p className="text-xs text-black/60">Pokaż sekcję na urządzeniach mobilnych</p>
@@ -479,7 +479,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                 />
               </div>
 
-              <div className="flex items-center justify-between rounded-2xl border-2 border-black/10 p-5">
+              <div className="flex items-center justify-between rounded-2xl border border-black/10 p-5">
                 <div>
                   <Label htmlFor="visible_on_desktop" className="mb-1 block font-semibold">Widoczna na desktop</Label>
                   <p className="text-xs text-black/60">Pokaż sekcję na komputerach</p>

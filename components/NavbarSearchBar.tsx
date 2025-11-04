@@ -609,7 +609,7 @@ export function NavbarSearchBar() {
       <form onSubmit={handleSubmit} className="flex-1" suppressHydrationWarning>
         <div
           onClick={() => searchInputRef.current?.focus()}
-          className="relative flex items-center bg-muted rounded-full pr-2 py-2 h-10 transition-colors cursor-text border border-border"
+          className="relative flex items-center bg-muted hover:bg-accent hover:border-foreground/20 rounded-full pr-2 py-2 h-10 transition-all cursor-text border border-border"
           style={{ paddingLeft: '20px' }}
         >
           <input
@@ -640,7 +640,7 @@ export function NavbarSearchBar() {
             type="submit"
             onMouseEnter={() => setIsSearchButtonHovered(true)}
             onMouseLeave={() => setIsSearchButtonHovered(false)}
-            className="h-8 w-8 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 transition-colors flex-shrink-0 flex items-center justify-center"
+            className="h-8 w-8 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 transition-colors flex-shrink-0 flex items-center justify-center"
             aria-label="Szukaj"
           >
             <LottieIcon
@@ -848,7 +848,7 @@ export function NavbarSearchBar() {
           type="button"
           onMouseEnter={handleLocationButtonMouseEnter}
           onMouseLeave={handleLocationButtonMouseLeave}
-          className="flex items-center gap-2 bg-muted hover:bg-accent rounded-full h-10 transition-colors flex-shrink-0 px-4 border border-border"
+          className="flex items-center gap-2 bg-muted hover:bg-accent hover:border-foreground/20 rounded-full h-10 transition-all flex-shrink-0 px-4 border border-border"
           aria-expanded={isCityDropdownOpen}
         >
           <LottieIcon
@@ -915,7 +915,7 @@ export function NavbarSearchBar() {
                   autoComplete="off"
                 />
                 {isLoadingCities && (
-                  <div className="w-4 h-4 border-2 border-muted-foreground/20 border-t-muted-foreground/60 rounded-full animate-spin ml-2" />
+                  <div className="w-4 h-4 border border-muted-foreground/20 border-t-muted-foreground/60 rounded-full animate-spin ml-2" />
                 )}
               </div>
             </div>
@@ -931,7 +931,7 @@ export function NavbarSearchBar() {
               >
                 <div className="w-8 h-8 rounded-lg bg-[#C44E35]/20 flex items-center justify-center flex-shrink-0">
                   {isDetectingLocation ? (
-                    <div className="w-4 h-4 border-2 border-[#C44E35]/30 border-t-[#C44E35] rounded-full animate-spin" />
+                    <div className="w-4 h-4 border border-[#C44E35]/30 border-t-[#C44E35] rounded-full animate-spin" />
                   ) : (
                     <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

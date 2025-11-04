@@ -309,7 +309,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-background/95 z-30 transition-all duration-300" />
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-border bg-card"
+            className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col rounded-t-3xl max-h-[75vh] border-t border-border bg-card"
             style={{
               paddingBottom: '84px'
             }}
@@ -393,7 +393,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
       </Drawer.Root>
 
       {/* Category Detail Drawer */}
-      <Drawer.Root open={!!selectedCategory} onOpenChange={(open) => {
+      <Drawer.Root open={!!selectedCategory && !selectedSubcategory} onOpenChange={(open) => {
         if (!open) {
           setSelectedCategory(null)
           setCategoriesOpen(true)
@@ -402,7 +402,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-background/95 z-30 transition-all duration-300" />
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-border bg-card"
+            className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col rounded-t-3xl max-h-[75vh] border-t border-border bg-card"
             style={{
               paddingBottom: '84px'
             }}
@@ -464,8 +464,9 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                           onClick={() => {
                             triggerHaptic()
                             if (hasSubSubcategories) {
-                              // Open third level
+                              // Open third level and close current
                               setSelectedSubcategory(sub)
+                              // Don't close selectedCategory yet - we'll handle it in the drawer
                             } else {
                               // Navigate directly
                               router.push(`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`)
@@ -501,12 +502,13 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
       <Drawer.Root open={!!selectedSubcategory} onOpenChange={(open) => {
         if (!open) {
           setSelectedSubcategory(null)
+          // Category drawer will automatically reopen since selectedCategory is still set
         }
       }} modal={true}>
         <Drawer.Portal>
-          <Drawer.Overlay className="fixed inset-0 bg-background/95 z-30 transition-all duration-300" />
+          <Drawer.Overlay className="fixed inset-0 bg-background/95 z-40 transition-all duration-300" />
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-50 flex flex-col rounded-t-3xl max-h-[75vh] border-t border-border bg-card"
+            className="fixed bottom-0 left-0 right-0 z-[70] flex flex-col rounded-t-3xl max-h-[75vh] border-t border-border bg-card"
             style={{
               paddingBottom: '84px'
             }}
@@ -586,7 +588,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
         <Drawer.Portal>
           <Drawer.Overlay className="fixed inset-0 bg-background/95 z-30 transition-all duration-300" />
           <Drawer.Content
-            className="fixed bottom-0 left-0 right-0 z-40 flex flex-col rounded-t-3xl max-h-[80vh] border-t border-border bg-card"
+            className="fixed bottom-0 left-0 right-0 z-[60] flex flex-col rounded-t-3xl max-h-[80vh] border-t border-border bg-card"
             style={{
               paddingBottom: '84px'
             }}
