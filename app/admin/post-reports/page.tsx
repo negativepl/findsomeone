@@ -20,8 +20,8 @@ export default async function AdminPostReportsPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Zgłoszenia ogłoszeń</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Zgłoszenia ogłoszeń</h1>
+        <p className="text-muted-foreground">
           Moderacja zgłoszonych ogłoszeń przez użytkowników
         </p>
       </div>

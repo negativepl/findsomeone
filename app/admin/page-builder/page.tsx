@@ -47,8 +47,8 @@ export default async function PageBuilderPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Page Builder</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Page Builder</h1>
+        <p className="text-muted-foreground">
           Zarządzaj sekcjami strony głównej - przeciągaj, edytuj i dodawaj nowe
         </p>
       </div>

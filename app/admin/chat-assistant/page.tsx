@@ -18,8 +18,8 @@ export default async function ChatAssistantPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Asystent czatu</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Asystent czatu</h1>
+        <p className="text-muted-foreground">
           Zarządzaj AI chatbotem dla użytkowników
         </p>
       </div>

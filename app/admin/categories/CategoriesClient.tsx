@@ -38,7 +38,7 @@ export function CategoriesClient() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="text-black/60">Ładowanie kategorii...</div>
+        <div className="text-muted-foreground">Ładowanie kategorii...</div>
       </div>
     )
   }
@@ -48,15 +48,15 @@ export function CategoriesClient() {
       {/* Header */}
       <div className="mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-black mb-2">Zarządzanie kategoriami</h1>
-          <p className="text-black/60">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Zarządzanie kategoriami</h1>
+          <p className="text-muted-foreground">
             Dodawaj, edytuj i usuwaj kategorie ogłoszeń
           </p>
         </div>
       </div>
 
       {/* Categories List */}
-      <Card className="border border-black/5 shadow-sm">
+      <Card className="border border-border shadow-sm">
         <CardContent className="p-6">
           <CategoryList categories={categories} onCategoriesRefresh={fetchCategories} />
         </CardContent>

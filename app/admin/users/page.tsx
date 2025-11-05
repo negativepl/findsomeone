@@ -18,8 +18,8 @@ export default async function UsersManagementPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Zarządzanie użytkownikami</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Zarządzanie użytkownikami</h1>
+        <p className="text-muted-foreground">
           Zarządzaj weryfikacją, statusem firmy i innymi flagami użytkowników
         </p>
       </div>

@@ -515,7 +515,7 @@ export function PostsManagementClient() {
       <div className="flex items-center justify-center py-20">
         <div className="text-center">
           <Loader2 className="h-10 w-10 animate-spin text-[#C44E35] mx-auto mb-4" />
-          <p className="text-black/60">Ładowanie ogłoszeń...</p>
+          <p className="text-muted-foreground">Ładowanie ogłoszeń...</p>
         </div>
       </div>
     )
@@ -526,20 +526,20 @@ export function PostsManagementClient() {
       {/* Search & Filters */}
       <div className="mb-6 space-y-4">
         {/* Search Bar - Full Width */}
-        <Card className="border border-black/5 shadow-sm">
+        <Card className="border border-border shadow-sm">
           <CardContent className="p-4">
             <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-black/40" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 placeholder="Szukaj po tytule, opisie, kategorii, użytkowniku, mieście..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-10 h-12 text-base border border-black/10 focus:border-[#C44E35]/40 bg-white"
+                className="pl-12 pr-10 h-12 text-base border border-input focus:border-[#C44E35]/40 bg-background"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -549,17 +549,17 @@ export function PostsManagementClient() {
         </Card>
 
         {/* Filters & Actions */}
-        <Card className="border border-black/5 shadow-sm">
+        <Card className="border border-border shadow-sm">
           <CardContent className="p-4">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
               {/* Filters */}
               <div className="flex flex-wrap items-center gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-black/70 whitespace-nowrap">Filtry:</span>
+                  <span className="text-sm font-semibold text-muted-foreground whitespace-nowrap">Filtry:</span>
                 </div>
 
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="h-9 min-w-[180px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                  <SelectTrigger className="h-9 min-w-[180px] border border-input text-sm bg-background hover:border-border transition-colors">
                     <SelectValue placeholder="Status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -572,7 +572,7 @@ export function PostsManagementClient() {
                 </Select>
 
                 <Select value={aiFilter} onValueChange={setAiFilter}>
-                  <SelectTrigger className="h-9 min-w-[170px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                  <SelectTrigger className="h-9 min-w-[170px] border border-input text-sm bg-background hover:border-border transition-colors">
                     <SelectValue placeholder="Źródło" />
                   </SelectTrigger>
                   <SelectContent>
@@ -588,7 +588,7 @@ export function PostsManagementClient() {
                       variant="outline"
                       role="combobox"
                       aria-expanded={openCityPopover}
-                      className="h-9 min-w-[170px] justify-between border border-black/10 text-sm bg-white hover:border-black/20 transition-colors font-normal"
+                      className="h-9 min-w-[170px] justify-between border border-input text-sm bg-background hover:border-border transition-colors font-normal"
                     >
                       {cityFilter === 'all' ? 'Miasto' : cityFilter}
                       <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -627,14 +627,14 @@ export function PostsManagementClient() {
                   </PopoverContent>
                 </Popover>
 
-                <div className="h-6 w-px bg-black/10" />
+                <div className="h-6 w-px bg-border" />
 
                 <Input
                   type="date"
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
                   placeholder="Od"
-                  className="h-9 w-[160px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
+                  className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors"
                 />
 
                 <Input
@@ -642,16 +642,16 @@ export function PostsManagementClient() {
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
                   placeholder="Do"
-                  className="h-9 w-[160px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors"
+                  className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors"
                 />
               </div>
 
               {/* Actions & Stats */}
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-black/70 whitespace-nowrap">Na stronę:</span>
+                  <span className="text-sm font-semibold text-muted-foreground whitespace-nowrap">Na stronę:</span>
                   <Select value={postsPerPage.toString()} onValueChange={(val) => setPostsPerPage(Number(val))}>
-                    <SelectTrigger className="h-9 w-[90px] border border-black/10 text-sm bg-white hover:border-black/20 transition-colors">
+                    <SelectTrigger className="h-9 w-[90px] border border-input text-sm bg-background hover:border-border transition-colors">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -689,13 +689,13 @@ export function PostsManagementClient() {
       {/* Floating Bulk Actions */}
       {selectedPosts.size > 0 && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5">
-          <div className="bg-white shadow-2xl border border-black/10 p-4 min-w-[800px]">
+          <div className="bg-card shadow-2xl border border-border p-4 min-w-[800px]">
             <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-3">
-                <div className="bg-[#C44E35] text-white w-10 h-10 flex items-center justify-center font-bold text-sm shadow-sm">
+                <div className="bg-[#C44E35] text-primary-foreground w-10 h-10 flex items-center justify-center font-bold text-sm shadow-sm">
                   {selectedPosts.size}
                 </div>
-                <p className="font-semibold text-black">
+                <p className="font-semibold text-foreground">
                   Wybrano {selectedPosts.size} {selectedPosts.size === 1 ? 'ogłoszenie' : 'ogłoszeń'}
                 </p>
               </div>
@@ -704,7 +704,7 @@ export function PostsManagementClient() {
                 <Button
                   variant="outline"
                   onClick={() => setShowBulkCategorySelector(true)}
-                  className="h-10 gap-2 bg-white border border-black/10 hover:bg-black/5 hover:border-black/20"
+                  className="h-10 gap-2 bg-background border border-input hover:bg-accent hover:border-border"
                 >
                   <FolderTree className="h-4 w-4" />
                   Przenieś
@@ -712,7 +712,7 @@ export function PostsManagementClient() {
 
                 <div className="flex items-center gap-2">
                   <Select value={bulkStatusValue} onValueChange={setBulkStatusValue}>
-                    <SelectTrigger className="w-[140px] !h-10 bg-white border border-black/10">
+                    <SelectTrigger className="w-[140px] !h-10 bg-background border border-input">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -727,19 +727,19 @@ export function PostsManagementClient() {
                     <Button
                       variant="default"
                       onClick={confirmBulkStatusChange}
-                      className="h-10 px-4 bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-sm"
+                      className="h-10 px-4 bg-[#C44E35] hover:bg-[#B33D2A] text-primary-foreground shadow-sm"
                     >
                       OK
                     </Button>
                   )}
                 </div>
 
-                <div className="h-8 w-px bg-black/10" />
+                <div className="h-8 w-px bg-border" />
 
                 <Button
                   variant="outline"
                   onClick={handleBulkDelete}
-                  className="h-10 px-4 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 bg-white"
+                  className="h-10 px-4 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 bg-background"
                 >
                   Usuń
                 </Button>
@@ -751,7 +751,7 @@ export function PostsManagementClient() {
                     setSelectedPosts(new Set())
                     setBulkStatusValue('')
                   }}
-                  className="h-10 w-10 p-0 hover:bg-black/10"
+                  className="h-10 w-10 p-0 hover:bg-accent"
                   title="Anuluj zaznaczenie"
                 >
                   <X className="h-5 w-5" />
@@ -763,25 +763,25 @@ export function PostsManagementClient() {
       )}
 
       {/* Posts table */}
-      <Card className="border border-black/5">
+      <Card className="border border-border">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-black/[0.02] border-b-2 border-black/5">
+              <thead className="bg-muted/50 border-b-2 border-border">
                 <tr>
                   <th className="px-4 py-4 text-center w-10">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
-                          className="h-5 w-5 flex items-center justify-center hover:bg-black/5 transition-colors"
+                          className="h-5 w-5 flex items-center justify-center hover:bg-accent transition-colors"
                         >
                           <div className={`h-4 w-4 border flex items-center justify-center transition-colors ${
                             selectedPosts.size > 0
                               ? 'bg-[#C44E35] border-[#C44E35]'
-                              : 'border-black/30 hover:border-black/40'
+                              : 'border-input hover:border-border'
                           }`}>
                             {selectedPosts.size > 0 && (
-                              <Check className="h-3 w-3 text-white" />
+                              <Check className="h-3 w-3 text-primary-foreground" />
                             )}
                           </div>
                         </button>
@@ -792,17 +792,17 @@ export function PostsManagementClient() {
                             <CheckSquare className="h-4 w-4" />
                           </div>
                           <span className="flex-1">Zaznacz na tej stronie</span>
-                          <span className="text-xs text-black/50 ml-2">({currentPosts.length})</span>
+                          <span className="text-xs text-muted-foreground ml-2">({currentPosts.length})</span>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={selectAllFiltered} className="py-2.5 cursor-pointer">
                           <div className="mr-3 h-4 w-4 flex-shrink-0 flex items-center justify-center relative">
                             <CheckSquare className="h-3.5 w-3.5 absolute -left-0.5 -top-0.5 opacity-40" />
-                            <div className="absolute left-0.5 top-0.5 bg-white">
+                            <div className="absolute left-0.5 top-0.5 bg-background">
                               <CheckSquare className="h-3.5 w-3.5" />
                             </div>
                           </div>
                           <span className="flex-1">Zaznacz na wszystkich stronach</span>
-                          <span className="text-xs text-black/50 ml-2">({filteredPosts.length})</span>
+                          <span className="text-xs text-muted-foreground ml-2">({filteredPosts.length})</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={deselectAll} disabled={selectedPosts.size === 0} className="py-2.5 cursor-pointer">
@@ -812,10 +812,10 @@ export function PostsManagementClient() {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </th>
-                  <th className="px-4 py-4 text-center text-sm font-semibold text-black/80">
+                  <th className="px-4 py-4 text-center text-sm font-semibold text-foreground/80">
                     <button
                       onClick={() => handleSort('title')}
-                      className="flex items-center gap-2 hover:text-black transition-colors mx-auto"
+                      className="flex items-center gap-2 hover:text-foreground transition-colors mx-auto"
                     >
                       Ogłoszenie
                       {sortField === 'title' && (
@@ -824,11 +824,11 @@ export function PostsManagementClient() {
                       {sortField !== 'title' && <ArrowUpDown className="h-3 w-3 opacity-30" />}
                     </button>
                   </th>
-                  <th className="px-4 py-4 text-center text-sm font-semibold text-black/80">Użytkownik</th>
-                  <th className="px-4 py-4 text-center text-sm font-semibold text-black/80">
+                  <th className="px-4 py-4 text-center text-sm font-semibold text-foreground/80">Użytkownik</th>
+                  <th className="px-4 py-4 text-center text-sm font-semibold text-foreground/80">
                     <button
                       onClick={() => handleSort('city')}
-                      className="flex items-center gap-2 hover:text-black transition-colors mx-auto"
+                      className="flex items-center gap-2 hover:text-foreground transition-colors mx-auto"
                     >
                       Lokalizacja
                       {sortField === 'city' && (
@@ -837,10 +837,10 @@ export function PostsManagementClient() {
                       {sortField !== 'city' && <ArrowUpDown className="h-3 w-3 opacity-30" />}
                     </button>
                   </th>
-                  <th className="px-4 py-4 text-center text-sm font-semibold text-black/80">
+                  <th className="px-4 py-4 text-center text-sm font-semibold text-foreground/80">
                     <button
                       onClick={() => handleSort('status')}
-                      className="flex items-center gap-2 hover:text-black transition-colors mx-auto"
+                      className="flex items-center gap-2 hover:text-foreground transition-colors mx-auto"
                     >
                       Status
                       {sortField === 'status' && (
@@ -849,10 +849,10 @@ export function PostsManagementClient() {
                       {sortField !== 'status' && <ArrowUpDown className="h-3 w-3 opacity-30" />}
                     </button>
                   </th>
-                  <th className="px-4 py-4 text-center text-sm font-semibold text-black/80">
+                  <th className="px-4 py-4 text-center text-sm font-semibold text-foreground/80">
                     <button
                       onClick={() => handleSort('created_at')}
-                      className="flex items-center gap-2 hover:text-black transition-colors mx-auto"
+                      className="flex items-center gap-2 hover:text-foreground transition-colors mx-auto"
                     >
                       Data
                       {sortField === 'created_at' && (
@@ -861,14 +861,14 @@ export function PostsManagementClient() {
                       {sortField !== 'created_at' && <ArrowUpDown className="h-3 w-3 opacity-30" />}
                     </button>
                   </th>
-                  <th className="px-4 py-4 text-center text-sm font-semibold text-black/80">Akcje</th>
+                  <th className="px-4 py-4 text-center text-sm font-semibold text-foreground/80">Akcje</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black/5">
+              <tbody className="divide-y divide-border">
                 {currentPosts.map((post) => (
                   <tr
                     key={post.id}
-                    className={`hover:bg-black/[0.02] transition-colors ${selectedPosts.has(post.id) ? 'bg-[#C44E35]/5' : ''}`}
+                    className={`hover:bg-accent/50 transition-colors ${selectedPosts.has(post.id) ? 'bg-[#C44E35]/5' : ''}`}
                   >
                     <td className="px-4 py-4 text-center">
                       <Checkbox
@@ -878,20 +878,20 @@ export function PostsManagementClient() {
                     </td>
                     <td className="px-4 py-4 text-center">
                       <div className="max-w-md mx-auto">
-                        <p className="font-semibold text-sm text-black mb-1 line-clamp-1">{post.title}</p>
-                        <p className="text-xs text-black/50 line-clamp-1">
+                        <p className="font-semibold text-sm text-foreground mb-1 line-clamp-1">{post.title}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-1">
                           {post.category_path || 'Brak kategorii'}
                         </p>
                       </div>
                     </td>
                     <td className="px-4 py-4 text-center">
                       <div className="text-sm">
-                        <p className="font-medium text-black">{post.profiles?.full_name || 'Anonim'}</p>
-                        <p className="text-xs text-black/40">{post.profiles?.email || '-'}</p>
+                        <p className="font-medium text-foreground">{post.profiles?.full_name || 'Anonim'}</p>
+                        <p className="text-xs text-muted-foreground">{post.profiles?.email || '-'}</p>
                       </div>
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="text-sm text-black/70">{post.city}</span>
+                      <span className="text-sm text-muted-foreground">{post.city}</span>
                     </td>
                     <td className="px-4 py-4 text-center">
                       {(() => {
@@ -904,7 +904,7 @@ export function PostsManagementClient() {
                       })()}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="text-xs text-black/50">
+                      <span className="text-xs text-muted-foreground">
                         {new Date(post.created_at).toLocaleDateString('pl-PL', {
                           day: '2-digit',
                           month: '2-digit',
@@ -952,9 +952,9 @@ export function PostsManagementClient() {
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className="flex items-center justify-between p-6 border-t-2 border-black/5 bg-black/[0.01]">
-              <p className="text-sm text-black/60">
-                Strona <span className="font-semibold text-black">{currentPage}</span> z <span className="font-semibold text-black">{totalPages}</span>
+            <div className="flex items-center justify-between p-6 border-t-2 border-border bg-muted/30">
+              <p className="text-sm text-muted-foreground">
+                Strona <span className="font-semibold text-foreground">{currentPage}</span> z <span className="font-semibold text-foreground">{totalPages}</span>
                 {' '}({filteredPosts.length} ogłoszeń)
               </p>
               <div className="flex gap-2">
@@ -985,9 +985,9 @@ export function PostsManagementClient() {
       {/* Edit Modal */}
       <Dialog open={!!editingPost} onOpenChange={(open) => !open && setEditingPost(null)}>
         <DialogContent className="!max-w-[1400px] sm:!max-w-[1400px] max-h-[95vh] overflow-hidden flex flex-col ">
-          <DialogHeader className="flex-shrink-0 pb-4 border-b border-black/5">
-            <DialogTitle className="text-2xl font-bold text-black">Edytuj ogłoszenie</DialogTitle>
-            <DialogDescription className="text-black/60">
+          <DialogHeader className="flex-shrink-0 pb-4 border-b border-border">
+            <DialogTitle className="text-2xl font-bold text-foreground">Edytuj ogłoszenie</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
               {editingPost?.title}
             </DialogDescription>
           </DialogHeader>
@@ -1012,15 +1012,15 @@ export function PostsManagementClient() {
                 <button
                   type="button"
                   onClick={() => setShowCategorySelector(true)}
-                  className="w-full h-10 border border-black/10 px-3 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between text-sm"
+                  className="w-full h-10 border border-input px-3 text-left hover:bg-accent hover:border-border transition-colors flex items-center justify-between text-sm"
                 >
-                  <span className={categoryPath.length > 0 ? 'text-black truncate' : 'text-black/40'}>
+                  <span className={categoryPath.length > 0 ? 'text-foreground truncate' : 'text-muted-foreground'}>
                     {categoryPath.length > 0
                       ? categoryPath.map(c => c.name).join(' > ')
                       : 'Wybierz kategorię'
                     }
                   </span>
-                  <ChevronRight className="h-4 w-4 text-black/40 flex-shrink-0" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                 </button>
               </div>
 
@@ -1112,19 +1112,19 @@ export function PostsManagementClient() {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-6 border-t border-black/5 flex-shrink-0 mt-4">
+          <div className="flex justify-end gap-3 pt-6 border-t border-border flex-shrink-0 mt-4">
             <Button
               variant="outline"
               onClick={() => setEditingPost(null)}
               disabled={saving}
-              className="h-11 px-6 border border-black/10 hover:border-black/20"
+              className="h-11 px-6 border border-input hover:border-border"
             >
               Anuluj
             </Button>
             <Button
               onClick={handleSaveEdit}
               disabled={saving}
-              className="bg-[#C44E35] hover:bg-[#B33D2A] h-11 px-8 shadow-sm"
+              className="bg-[#C44E35] hover:bg-[#B33D2A] text-primary-foreground h-11 px-8 shadow-sm"
             >
               {saving ? (
                 <>
@@ -1169,15 +1169,15 @@ export function PostsManagementClient() {
                   setShowCategorySelector(true)
                 }, 100)
               }}
-              className="w-full border border-black/10 p-4 text-left hover:bg-black/5 hover:border-black/20 transition-colors flex items-center justify-between"
+              className="w-full border border-input p-4 text-left hover:bg-accent hover:border-border transition-colors flex items-center justify-between"
             >
-              <span className={bulkCategoryPath.length > 0 ? 'text-black' : 'text-black/40'}>
+              <span className={bulkCategoryPath.length > 0 ? 'text-foreground' : 'text-muted-foreground'}>
                 {bulkCategoryPath.length > 0
                   ? bulkCategoryPath.map(c => c.name).join(' > ')
                   : 'Wybierz kategorię'
                 }
               </span>
-              <ChevronRight className="h-5 w-5 text-black/40" />
+              <ChevronRight className="h-5 w-5 text-muted-foreground" />
             </button>
           </div>
 
