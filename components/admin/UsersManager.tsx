@@ -226,10 +226,10 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               alt={user.full_name || 'User'}
                               width={40}
                               height={40}
-                              className=""
+                              className="rounded-full"
                             />
                           ) : (
-                            <div className="w-10 h-10 bg-[#C44E35]/10 flex items-center justify-center">
+                            <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
                               <span className="text-sm font-semibold text-[#C44E35]">
                                 {user.full_name?.charAt(0) || 'U'}
                               </span>
@@ -263,7 +263,6 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               checked={user.verified}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'verified', checked)}
                               disabled={loading === user.id}
-                              className="data-[state=checked]:bg-blue-600"
                             />
                           </div>
                           <div className="flex items-center gap-2">
@@ -272,7 +271,6 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               checked={user.is_company}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'is_company', checked)}
                               disabled={loading === user.id}
-                              className="data-[state=checked]:bg-purple-600"
                             />
                           </div>
                           <div className="flex items-center gap-2">
@@ -281,19 +279,18 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               checked={user.is_ai_bot}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'is_ai_bot', checked)}
                               disabled={loading === user.id}
-                              className="data-[state=checked]:bg-green-600"
                             />
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 text-center">
                         {user.banned ? (
-                          <span className="inline-flex items-center gap-1 bg-red-50 text-red-700 px-2.5 py-1 text-xs font-semibold border border-red-200">
+                          <span className="inline-flex items-center gap-1 bg-red-50 text-red-700 px-2.5 py-1 text-xs font-semibold border border-red-200 rounded-lg">
                             <Ban className="w-3 h-3" />
                             Zbanowany
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1 text-xs font-semibold border border-green-200">
+                          <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1 text-xs font-semibold border border-green-200 rounded-lg">
                             Aktywny
                           </span>
                         )}

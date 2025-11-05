@@ -315,7 +315,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       {activeTab === 'terms' && (
         <>
       {/* AI Synonym Generator */}
-      <Card className="border border-[#C44E35]/20 rounded-3xl bg-gradient-to-br from-[#C44E35]/5 to-white">
+      <Card className="border border-[#C44E35]/20 rounded-3xl bg-card">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -716,7 +716,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       {activeTab === 'categories' && (
         <div className="space-y-6">
           {/* AI Category Synonym Generator */}
-          <Card className="border border-[#C44E35]/20 rounded-3xl bg-gradient-to-br from-[#C44E35]/5 to-white">
+          <Card className="border border-[#C44E35]/20 rounded-3xl bg-card">
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">

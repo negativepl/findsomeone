@@ -65,8 +65,8 @@ function SortableSectionComponent({
       }
       if (typeof value === 'number' || typeof value === 'string') {
         return (
-          <span key={key} className="px-2.5 py-1 bg-black/5 text-muted-foreground rounded-full">
-            <span className="font-medium text-black/80">{key}:</span> {value}
+          <span key={key} className="px-2.5 py-1 bg-muted text-muted-foreground rounded-full">
+            <span className="font-medium text-foreground">{key}:</span> {value}
           </span>
         )
       }
@@ -88,7 +88,7 @@ function SortableSectionComponent({
       className={`rounded-3xl overflow-hidden ${
         section.is_active
           ? 'bg-card shadow-sm'
-          : 'bg-black/5'
+          : 'bg-muted'
       }`}
     >
       {/* Header with drag handle and badges */}
@@ -115,7 +115,7 @@ function SortableSectionComponent({
           className={`rounded-full flex-shrink-0 ${
             section.is_active
               ? 'bg-green-100 text-green-700 border-green-200'
-              : 'bg-black/10 text-muted-foreground border-border'
+              : 'bg-muted text-muted-foreground border-border'
           }`}
         >
           {section.is_active ? '● Aktywna' : '○ Nieaktywna'}
@@ -152,7 +152,7 @@ function SortableSectionComponent({
 
           <button
             onClick={handleDelete}
-            className="p-2 rounded-lg bg-card border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+            className="p-2 rounded-lg bg-card border border-border hover:border-red-300 text-red-600 hover:bg-red-50 transition-colors"
             title="Usuń"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

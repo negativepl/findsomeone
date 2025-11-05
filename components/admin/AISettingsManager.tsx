@@ -646,8 +646,8 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
           <div className="p-6 rounded-2xl bg-[#C44E35]/5 border border-[#C44E35]/20">
             <div className="flex items-start justify-between gap-6">
               <div className="flex-1">
-                <h4 className="font-bold text-lg text-black mb-2">Generuj wszystkie opisy</h4>
-                <p className="text-sm text-black/70 mb-4">
+                <h4 className="font-bold text-lg text-foreground mb-2">Generuj wszystkie opisy</h4>
+                <p className="text-sm text-muted-foreground mb-4">
                   Automatycznie wygeneruj lub regeneruj opisy SEO dla wszystkich kategorii i podkategorii.
                   AI stworzy unikalne, zoptymalizowane pod SEO opisy (120-160 znaków).
                 </p>
@@ -656,7 +656,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                 {generationProgress && (
                   <div className="mb-4 p-4 rounded-xl bg-white border border-[#C44E35]/20">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-sm font-medium text-black">
+                      <span className="text-sm font-medium text-foreground">
                         {generationProgress.current} / {generationProgress.total}
                       </span>
                       <span className="text-xs text-muted-foreground">{generationProgress.status}</span>
@@ -673,7 +673,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 text-xs text-black/60">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>

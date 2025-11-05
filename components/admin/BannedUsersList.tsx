@@ -55,8 +55,8 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
     return (
       <Card className="border border-border rounded-3xl bg-card p-12">
         <div className="text-center">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-50 flex items-center justify-center">
-            <Check className="w-10 h-10 text-green-600" />
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+            <Check className="w-10 h-10 text-muted-foreground" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
             Brak zbanowanych użytkowników

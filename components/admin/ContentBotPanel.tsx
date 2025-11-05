@@ -429,12 +429,12 @@ export default function ContentBotPanel() {
                       <span className="text-foreground font-semibold">{category.totalPosts}</span>
                       <span className="text-muted-foreground ml-1">razem</span>
                     </div>
-                    <div className="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-full">
-                      <span className="text-purple-700 font-semibold">{category.aiPosts}</span>
+                    <div className="px-2.5 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full">
+                      <span className="text-purple-600 font-semibold">{category.aiPosts}</span>
                       <span className="text-purple-600 ml-1">AI</span>
                     </div>
-                    <div className="px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-full">
-                      <span className="text-green-700 font-semibold">{category.humanPosts}</span>
+                    <div className="px-2.5 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full">
+                      <span className="text-green-600 font-semibold">{category.humanPosts}</span>
                       <span className="text-green-600 ml-1">ludzie</span>
                     </div>
                   </div>
@@ -469,12 +469,12 @@ export default function ContentBotPanel() {
                               <span className="text-foreground font-semibold">{subcategory.totalPosts}</span>
                               <span className="text-muted-foreground ml-1">razem</span>
                             </div>
-                            <div className="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-full">
-                              <span className="text-purple-700 font-semibold">{subcategory.aiPosts}</span>
+                            <div className="px-2.5 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full">
+                              <span className="text-purple-600 font-semibold">{subcategory.aiPosts}</span>
                               <span className="text-purple-600 ml-1">AI</span>
                             </div>
-                            <div className="px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-full">
-                              <span className="text-green-700 font-semibold">{subcategory.humanPosts}</span>
+                            <div className="px-2.5 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full">
+                              <span className="text-green-600 font-semibold">{subcategory.humanPosts}</span>
                               <span className="text-green-600 ml-1">ludzie</span>
                             </div>
                           </div>
@@ -498,12 +498,12 @@ export default function ContentBotPanel() {
                                     <span className="text-foreground font-semibold">{subcat3.totalPosts}</span>
                                     <span className="text-muted-foreground ml-1">razem</span>
                                   </div>
-                                  <div className="px-2.5 py-1.5 bg-purple-50 border border-purple-200 rounded-full">
-                                    <span className="text-purple-700 font-semibold">{subcat3.aiPosts}</span>
+                                  <div className="px-2.5 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full">
+                                    <span className="text-purple-600 font-semibold">{subcat3.aiPosts}</span>
                                     <span className="text-purple-600 ml-1">AI</span>
                                   </div>
-                                  <div className="px-2.5 py-1.5 bg-green-50 border border-green-200 rounded-full">
-                                    <span className="text-green-700 font-semibold">{subcat3.humanPosts}</span>
+                                  <div className="px-2.5 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full">
+                                    <span className="text-green-600 font-semibold">{subcat3.humanPosts}</span>
                                     <span className="text-green-600 ml-1">ludzie</span>
                                   </div>
                                 </div>
