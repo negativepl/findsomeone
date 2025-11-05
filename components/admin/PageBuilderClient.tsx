@@ -146,10 +146,10 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
       <div className="space-y-6">
         {/* Header with back button */}
         <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
-          <div className="px-6 py-5 border-b border-black/10 bg-gradient-to-r from-[#C44E35]/5 to-transparent">
+          <div className="px-6 py-5 border-b border-border bg-gradient-to-r from-[#C44E35]/5 to-transparent">
             <button
               onClick={() => setEditingSection(null)}
-              className="text-black/60 hover:text-[#C44E35] flex items-center gap-2 transition-colors mb-4"
+              className="text-muted-foreground hover:text-[#C44E35] flex items-center gap-2 transition-colors mb-4"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -238,10 +238,10 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
       <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="p-6">
           <h2 className="text-2xl font-bold text-foreground mb-1">Sekcje strony głównej</h2>
-          <p className="text-sm text-black/60 mb-6">Przeciągnij sekcje aby zmienić kolejność</p>
+          <p className="text-sm text-muted-foreground mb-6">Przeciągnij sekcje aby zmienić kolejność</p>
 
         {sections.length === 0 ? (
-          <div className="text-center py-12 text-black/60">
+          <div className="text-center py-12 text-muted-foreground">
             <p className="mb-4">Nie masz jeszcze żadnych sekcji</p>
             <Button
               onClick={() => setIsAddDialogOpen(true)}
@@ -256,7 +256,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
               const metadata = SECTION_TYPES[section.type]
               const title = section.title || metadata?.label || section.type
               return (
-                <div key={section.id} className="border rounded-2xl p-6 border-black/10 bg-white">
+                <div key={section.id} className="border rounded-2xl p-6 border-border bg-card">
                   <div className="text-lg font-bold text-foreground">{title}</div>
                 </div>
               )

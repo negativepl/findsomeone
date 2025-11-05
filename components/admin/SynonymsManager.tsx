@@ -283,13 +283,13 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
   return (
     <div className="space-y-6">
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-black/10">
+      <div className="flex gap-2 border-b border-border">
         <button
           onClick={() => setActiveTab('terms')}
           className={`px-6 py-3 font-medium transition-colors relative ${
             activeTab === 'terms'
               ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Terminy wyszukiwania
@@ -302,7 +302,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
           className={`px-6 py-3 font-medium transition-colors relative ${
             activeTab === 'categories'
               ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Kategorie
@@ -326,7 +326,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
               </div>
               <div>
                 <CardTitle className="text-xl">Generator synonimów AI</CardTitle>
-                <p className="text-sm text-black/60 mt-1 mb-2">Wykorzystuje GPT-5 nano do inteligentnego generowania synonimów</p>
+                <p className="text-sm text-muted-foreground mt-1 mb-2">Wykorzystuje GPT-5 nano do inteligentnego generowania synonimów</p>
               </div>
             </div>
             <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
@@ -405,7 +405,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
 
       {/* AI Suggestions Panel */}
       {showAIPanel && aiSuggestions.length > 0 && (
-        <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-white">
+        <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-card">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Propozycje AI ({aiSuggestions.length})</CardTitle>
@@ -437,7 +437,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                   className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                     selectedSuggestions.has(suggestion.term)
                       ? 'border-green-500 bg-green-50'
-                      : 'border-black/10 hover:border-black/20'
+                      : 'border-border hover:border-border'
                   }`}
                   onClick={() => toggleSuggestion(suggestion.term)}
                 >
@@ -446,10 +446,10 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                       type="checkbox"
                       checked={selectedSuggestions.has(suggestion.term)}
                       onChange={() => toggleSuggestion(suggestion.term)}
-                      className="mt-1 w-5 h-5 rounded border border-black/20 text-green-600 focus:ring-green-500"
+                      className="mt-1 w-5 h-5 rounded border border-border text-green-600 focus:ring-green-500"
                     />
                     <div className="flex-1">
-                      <div className="font-semibold text-black mb-1">{suggestion.term}</div>
+                      <div className="font-semibold text-foreground mb-1">{suggestion.term}</div>
                       <div className="flex flex-wrap gap-2 mb-2">
                         {suggestion.synonyms && Array.isArray(suggestion.synonyms) ? (
                           suggestion.synonyms.map((syn, i) => (
@@ -458,10 +458,10 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                             </Badge>
                           ))
                         ) : (
-                          <span className="text-sm text-black/40">Brak synonimów</span>
+                          <span className="text-sm text-muted-foreground">Brak synonimów</span>
                         )}
                       </div>
-                      <p className="text-sm text-black/60 italic">{suggestion.context || 'Brak kontekstu'}</p>
+                      <p className="text-sm text-muted-foreground italic">{suggestion.context || 'Brak kontekstu'}</p>
                     </div>
                   </div>
                 </div>
@@ -472,10 +472,10 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       )}
 
       {/* Add New Synonym Manually */}
-      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+      <Card className="border-0 rounded-3xl bg-card shadow-sm overflow-hidden">
         <CardContent className="p-6">
-          <h2 className="text-2xl font-bold text-black mb-1">Dodaj synonym ręcznie</h2>
-          <p className="text-sm text-black/60 mb-6">Wprowadź termin główny i jego synonim</p>
+          <h2 className="text-2xl font-bold text-foreground mb-1">Dodaj synonym ręcznie</h2>
+          <p className="text-sm text-muted-foreground mb-6">Wprowadź termin główny i jego synonim</p>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="term">Termin główny</Label>
@@ -509,10 +509,10 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       </Card>
 
       {/* Existing Synonyms */}
-      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+      <Card className="border-0 rounded-3xl bg-card shadow-sm overflow-hidden">
         <CardContent className="p-6">
-          <h2 className="text-2xl font-bold text-black mb-1">Istniejące synonimy ({synonyms.length})</h2>
-          <p className="text-sm text-black/60 mb-6">Lista wszystkich aktywnych synonimów terminów</p>
+          <h2 className="text-2xl font-bold text-foreground mb-1">Istniejące synonimy ({synonyms.length})</h2>
+          <p className="text-sm text-muted-foreground mb-6">Lista wszystkich aktywnych synonimów terminów</p>
           <div className="space-y-3">
             {Object.entries(groupedSynonyms).map(([term, syns]) => {
               const isExpanded = expandedTerms.has(term)
@@ -520,9 +520,9 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
               const hasMore = syns.length > 3
 
               return (
-                <div key={term} className="border border-black/10 rounded-2xl p-4">
+                <div key={term} className="border border-border rounded-2xl p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-semibold text-black">{term}</h3>
+                    <h3 className="font-semibold text-foreground">{term}</h3>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={async () => {
@@ -589,7 +589,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                         )}
                         {expandingTerm === term ? 'Generowanie...' : 'Rozszerz AI'}
                       </button>
-                      <span className="text-xs text-black/40">{syns.length} {syns.length === 1 ? 'synonim' : 'synonimów'}</span>
+                      <span className="text-xs text-muted-foreground">{syns.length} {syns.length === 1 ? 'synonim' : 'synonimów'}</span>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -598,7 +598,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                         key={syn.id}
                         className="inline-flex items-center gap-2 bg-black/5 rounded-full px-4 py-2"
                       >
-                        <span className="text-sm text-black">{syn.synonym}</span>
+                        <span className="text-sm text-foreground">{syn.synonym}</span>
                         <button
                           onClick={() => handleDelete(syn.id)}
                           disabled={isLoading}
@@ -652,7 +652,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                               return newSuggestions
                             })
                           }}
-                          className="text-xs text-black/40 hover:text-black/60"
+                          className="text-xs text-muted-foreground hover:text-muted-foreground"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -703,7 +703,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             })}
 
             {synonyms.length === 0 && (
-              <p className="text-black/40 text-center py-8">
+              <p className="text-muted-foreground text-center py-8">
                 Brak synonimów. Dodaj pierwszy powyżej!
               </p>
             )}
@@ -727,7 +727,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                   </div>
                   <div>
                     <CardTitle className="text-xl">Generator synonimów kategorii AI</CardTitle>
-                    <p className="text-sm text-black/60 mt-1 mb-2">Automatycznie generuj synonimy dla wszystkich kategorii</p>
+                    <p className="text-sm text-muted-foreground mt-1 mb-2">Automatycznie generuj synonimy dla wszystkich kategorii</p>
                   </div>
                 </div>
                 <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
@@ -760,7 +760,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
 
           {/* AI Category Suggestions Panel */}
           {showCategoryAIPanel && categoryAiSuggestions.length > 0 && (
-            <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-white">
+            <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-card">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Propozycje AI dla kategorii ({categoryAiSuggestions.length})</CardTitle>
@@ -792,7 +792,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                       className={`p-4 rounded-2xl border transition-all cursor-pointer ${
                         selectedCategorySuggestions.has(suggestion.categoryId)
                           ? 'border-green-500 bg-green-50'
-                          : 'border-black/10 hover:border-black/20'
+                          : 'border-border hover:border-border'
                       }`}
                       onClick={() => toggleCategorySuggestion(suggestion.categoryId)}
                     >
@@ -801,10 +801,10 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                           type="checkbox"
                           checked={selectedCategorySuggestions.has(suggestion.categoryId)}
                           onChange={() => toggleCategorySuggestion(suggestion.categoryId)}
-                          className="mt-1 w-5 h-5 rounded border border-black/20 text-green-600 focus:ring-green-500"
+                          className="mt-1 w-5 h-5 rounded border border-border text-green-600 focus:ring-green-500"
                         />
                         <div className="flex-1">
-                          <div className="font-semibold text-black mb-1">{suggestion.categoryName}</div>
+                          <div className="font-semibold text-foreground mb-1">{suggestion.categoryName}</div>
                           <div className="flex flex-wrap gap-2 mb-2">
                             {suggestion.synonyms && Array.isArray(suggestion.synonyms) ? (
                               suggestion.synonyms.map((syn, i) => (
@@ -813,10 +813,10 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                                 </Badge>
                               ))
                             ) : (
-                              <span className="text-sm text-black/40">Brak synonimów</span>
+                              <span className="text-sm text-muted-foreground">Brak synonimów</span>
                             )}
                           </div>
-                          <p className="text-sm text-black/60 italic">{suggestion.context || 'Brak kontekstu'}</p>
+                          <p className="text-sm text-muted-foreground italic">{suggestion.context || 'Brak kontekstu'}</p>
                         </div>
                       </div>
                     </div>
@@ -826,17 +826,17 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             </Card>
           )}
 
-          <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+          <Card className="border-0 rounded-3xl bg-card shadow-sm overflow-hidden">
             <CardContent className="p-6">
-              <h2 className="text-2xl font-bold text-black mb-1">Synonimy kategorii ({initialCategories.length})</h2>
-              <p className="text-sm text-black/60 mb-6">
+              <h2 className="text-2xl font-bold text-foreground mb-1">Synonimy kategorii ({initialCategories.length})</h2>
+              <p className="text-sm text-muted-foreground mb-6">
                 Dodaj synonimy do kategorii aby użytkownicy łatwiej je znajdowali. Np. dla kategorii "Hydraulik" dodaj: "instalator", "monter"
               </p>
               <div className="space-y-3">
                 {initialCategories.map((category) => (
-                  <div key={category.id} className="border border-black/10 rounded-2xl p-4">
+                  <div key={category.id} className="border border-border rounded-2xl p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold text-black">{category.name}</h3>
+                      <h3 className="font-semibold text-foreground">{category.name}</h3>
                       <div className="flex items-center gap-2">
                         <button
                           onClick={async () => {
@@ -903,7 +903,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                           )}
                           {expandingCategory === category.id ? 'Generowanie...' : 'Rozszerz AI'}
                         </button>
-                        <span className="text-xs text-black/40">
+                        <span className="text-xs text-muted-foreground">
                           {category.category_synonyms?.length || 0} {(category.category_synonyms?.length || 0) === 1 ? 'synonim' : 'synonimów'}
                         </span>
                       </div>
@@ -915,7 +915,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                             key={syn.id}
                             className="inline-flex items-center gap-2 bg-black/5 rounded-full px-4 py-2"
                           >
-                            <span className="text-sm text-black">{syn.synonym}</span>
+                            <span className="text-sm text-foreground">{syn.synonym}</span>
                             <button
                               onClick={async () => {
                                 if (!confirm('Czy na pewno chcesz usunąć ten synonim?')) return
@@ -967,7 +967,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                                 return newSuggestions
                               })
                             }}
-                            className="text-xs text-black/40 hover:text-black/60"
+                            className="text-xs text-muted-foreground hover:text-muted-foreground"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

@@ -214,13 +214,13 @@ export function ModerationPanel({
         </Card>
       ) : posts.length === 0 ? (
         <Card className="border border-border rounded-3xl bg-card">
-          <CardContent className="py-20 text-center text-black/60">
+          <CardContent className="py-20 text-center text-muted-foreground">
             Brak ogłoszeń do wyświetlenia
           </CardContent>
         </Card>
       ) : (
         <>
-          <Card className="border-0 rounded-3xl bg-white overflow-hidden">
+          <Card className="border border-border rounded-3xl bg-card overflow-hidden">
             <div className="divide-y divide-border">
               {currentPosts.map((post) => (
                 <div key={post.id} className="p-6">
@@ -256,7 +256,7 @@ export function ModerationPanel({
                       )}
                       <button
                         onClick={() => setExpandedPost(expandedPost === post.id ? null : post.id)}
-                        className="p-2 hover:bg-black/5 rounded-xl transition-colors"
+                        className="p-2 hover:bg-muted rounded-xl transition-colors"
                       >
                         {expandedPost === post.id ? (
                           <ChevronUp className="w-5 h-5 text-muted-foreground" />
@@ -391,7 +391,7 @@ export function ModerationPanel({
                               onClick={() => handleAction(post.id, 'delete')}
                               disabled={actionLoading === post.id}
                               variant="outline"
-                              className="rounded-full border border-black/10 text-black/60 hover:bg-black/5"
+                              className="rounded-full border border-border text-muted-foreground hover:bg-muted"
                             >
                               Usuń
                             </Button>

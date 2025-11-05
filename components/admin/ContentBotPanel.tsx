@@ -349,7 +349,7 @@ export default function ContentBotPanel() {
                 fetchCategories()
               }}
               disabled={isLoadingCount || isLoadingCategories}
-              className="rounded-full hover:bg-black/5"
+              className="rounded-full hover:bg-muted"
             >
               <RefreshCw className={`h-4 w-4 ${isLoadingCount || isLoadingCategories ? 'animate-spin' : ''}`} />
             </Button>
@@ -359,7 +359,7 @@ export default function ContentBotPanel() {
           <div className="text-5xl font-bold text-[#C44E35] mb-2">
             {isLoadingCount ? '...' : aiPostsCount.toLocaleString()}
           </div>
-          <p className="text-sm text-black/60">aktywnych ogłoszeń AI</p>
+          <p className="text-sm text-muted-foreground">aktywnych ogłoszeń AI</p>
         </div>
       </div>
 
@@ -381,7 +381,7 @@ export default function ContentBotPanel() {
                 size="sm"
                 onClick={selectAll}
                 disabled={isLoadingCategories}
-                className="rounded-full text-xs border-black/20 hover:bg-black/5"
+                className="rounded-full text-xs border-border hover:bg-muted"
               >
                 Zaznacz wszystkie
               </Button>
@@ -390,7 +390,7 @@ export default function ContentBotPanel() {
                 size="sm"
                 onClick={deselectAll}
                 disabled={isLoadingCategories}
-                className="rounded-full text-xs border-black/20 hover:bg-black/5"
+                className="rounded-full text-xs border-border hover:bg-muted"
               >
                 Odznacz wszystkie
               </Button>
@@ -446,7 +446,7 @@ export default function ContentBotPanel() {
                     {category.subcategories.map((subcategory) => (
                       <div key={subcategory.id}>
                         {/* Level 2 Category */}
-                        <div className="flex items-center gap-3 p-3 pl-8 hover:bg-black/5 transition-colors">
+                        <div className="flex items-center gap-3 p-3 pl-8 hover:bg-muted transition-colors">
                           <Checkbox
                             checked={selectedCategories.has(subcategory.id)}
                             onCheckedChange={() => toggleCategory(subcategory.id)}
@@ -457,9 +457,9 @@ export default function ContentBotPanel() {
                           >
                             {subcategory.subcategories && subcategory.subcategories.length > 0 && (
                               expandedCategories.has(subcategory.id) ? (
-                                <ChevronDown className="h-4 w-4 text-black/60" />
+                                <ChevronDown className="h-4 w-4 text-muted-foreground" />
                               ) : (
-                                <ChevronRight className="h-4 w-4 text-black/60" />
+                                <ChevronRight className="h-4 w-4 text-muted-foreground" />
                               )
                             )}
                             <span className="text-sm text-foreground">{subcategory.name}</span>
@@ -486,7 +486,7 @@ export default function ContentBotPanel() {
                             {subcategory.subcategories.map((subcat3) => (
                               <div
                                 key={subcat3.id}
-                                className="flex items-center gap-3 p-3 pl-16 hover:bg-black/5 transition-colors"
+                                className="flex items-center gap-3 p-3 pl-16 hover:bg-muted transition-colors"
                               >
                                 <Checkbox
                                   checked={selectedCategories.has(subcat3.id)}
@@ -597,8 +597,8 @@ export default function ContentBotPanel() {
       <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="p-6">
           <div className="mb-6">
-            <h2 className="text-2xl font-bold text-black mb-1">Akcje</h2>
-            <p className="text-sm text-black/60">Generuj lub usuń ogłoszenia AI</p>
+            <h2 className="text-2xl font-bold text-foreground mb-1">Akcje</h2>
+            <p className="text-sm text-muted-foreground">Generuj lub usuń ogłoszenia AI</p>
           </div>
 
         <div className="flex flex-col sm:flex-row gap-3">

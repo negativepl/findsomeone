@@ -148,7 +148,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
                 <h2 className="text-xl font-bold text-foreground">
                   Szczegóły bana
                 </h2>
-                <p className="text-sm text-black/60">
+                <p className="text-sm text-muted-foreground">
                   {selectedUser.full_name}
                 </p>
               </div>
@@ -162,7 +162,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
                   Użytkownik
                 </label>
                 <p className="text-foreground mt-1">{selectedUser.full_name}</p>
-                <p className="text-sm text-black/60 mt-1">{selectedUser.email}</p>
+                <p className="text-sm text-muted-foreground mt-1">{selectedUser.email}</p>
               </div>
 
               <div>
@@ -189,7 +189,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-black/70">Zbanowany przez</label>
+                <label className="text-sm font-semibold text-muted-foreground">Zbanowany przez</label>
                 <p className="text-foreground mt-1">{selectedUser.banned_by_name}</p>
               </div>
             </div>
@@ -238,7 +238,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
                       placeholder="Np. Apelacja przyjęta, zakończenie okresu kary, błędny ban..."
                       disabled={isProcessing}
                     />
-                    <p className="text-xs text-black/50 mt-1">
+                    <p className="text-xs text-muted-foreground mt-1">
                       Ten powód zostanie zapisany w historii
                     </p>
                   </div>
@@ -269,7 +269,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
         ) : (
           <Card className="border border-border rounded-3xl bg-card p-12">
             <div className="text-center">
-              <Ban className="w-12 h-12 text-black/30 mx-auto mb-4" />
+              <Ban className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">
                 Wybierz użytkownika z listy, aby zobaczyć szczegóły
               </p>

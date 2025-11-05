@@ -191,7 +191,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
       {/* Reports List */}
       <div>
         <Card className="border-0 rounded-3xl bg-card overflow-hidden">
-          <div className="divide-y divide-black/5">
+          <div className="divide-y divide-border">
             {reports.map((report) => (
               <div
                 key={report.report_id}
@@ -336,7 +336,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
                   </button>
                 </div>
                 {showPostDescription && (
-                  <div className="bg-black/5 rounded-2xl p-4 mt-1 max-h-48 overflow-y-auto">
+                  <div className="bg-muted rounded-2xl p-4 mt-1 max-h-48 overflow-y-auto">
                     <div
                       className="prose prose-sm max-w-none text-muted-foreground"
                       dangerouslySetInnerHTML={{ __html: selectedReport.post_description }}
@@ -574,7 +574,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
         ) : (
           <Card className="border-0 rounded-3xl bg-card p-12">
             <div className="text-center">
-              <Flag className="w-12 h-12 text-black/30 mx-auto mb-4" />
+              <Flag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">
                 Wybierz zgłoszenie z listy, aby zobaczyć szczegóły
               </p>
