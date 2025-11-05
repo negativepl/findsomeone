@@ -12,7 +12,7 @@ type ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('system')
+  const [theme, setTheme] = useState<Theme>('dark')
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -23,8 +23,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (savedTheme) {
       setTheme(savedTheme)
     } else {
-      // Domyślnie ustawiamy 'system'
-      setTheme('system')
+      // Domyślnie ustawiamy 'dark'
+      setTheme('dark')
     }
   }, [])
 

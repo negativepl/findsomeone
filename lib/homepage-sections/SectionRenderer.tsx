@@ -12,6 +12,7 @@ import { CTASection } from '@/components/sections/CTASection'
 import { ImageGallerySection } from '@/components/sections/ImageGallerySection'
 import { SpacerSection } from '@/components/sections/SpacerSection'
 import { CustomContentSection } from '@/components/sections/CustomContentSection'
+import { AnimatedSection } from '@/components/AnimatedSection'
 
 interface SectionRendererProps {
   section: HomepageSection
@@ -224,5 +225,16 @@ export function SectionRenderer({ section, userFavorites, userId }: SectionRende
     }
   })()
 
-  return <WrapperComponent>{content}</WrapperComponent>
+  // Skip animation for certain section types
+  const skipAnimation = ['spacer', 'hero_banner'].includes(section.type)
+
+  if (skipAnimation) {
+    return <WrapperComponent>{content}</WrapperComponent>
+  }
+
+  return (
+    <AnimatedSection>
+      <WrapperComponent>{content}</WrapperComponent>
+    </AnimatedSection>
+  )
 }

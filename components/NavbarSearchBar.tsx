@@ -7,6 +7,19 @@ import { Search, MapPin } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
+const ROTATING_TEXTS = [
+  'pracy',
+  'iPhone 17 Pro Max',
+  'grafika',
+  'mieszkania',
+  'samochodu',
+  'laptopa',
+  'freelancera',
+  'roweru',
+  'sprzętu fotograficznego',
+  'usług remontowych'
+]
+
 interface SearchResult {
   suggestions: Array<{
     text: string
@@ -47,6 +60,9 @@ export function NavbarSearchBar() {
   const [recentSearches, setRecentSearches] = useState<string[]>([])
   const locationOpenTimeoutRef = useRef<NodeJS.Timeout>()
   const locationCloseTimeoutRef = useRef<NodeJS.Timeout>()
+
+  // Animated placeholder state
+  const [currentTextIndex, setCurrentTextIndex] = useState(0)
 
   // Location state
   const [selectedCity, setSelectedCity] = useState<string>('')
@@ -114,6 +130,15 @@ export function NavbarSearchBar() {
         // Invalid data, ignore
       }
     }
+  }, [])
+
+  // Rotate placeholder text
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTextIndex((prev) => (prev + 1) % ROTATING_TEXTS.length)
+    }, 3000) // Change every 3 seconds
+
+    return () => clearInterval(interval)
   }, [])
 
   // Debounced search
@@ -604,17 +629,43 @@ export function NavbarSearchBar() {
           className="relative flex items-center bg-muted hover:bg-accent hover:border-foreground/20 rounded-full pr-2 py-2 h-10 transition-all cursor-text border border-border focus-within:ring-2 focus-within:ring-brand focus-within:border-transparent"
           style={{ paddingLeft: '20px' }}
         >
-          <input
-            ref={searchInputRef}
-            type="text"
-            placeholder="Szukaj ogłoszeń..."
-            value={searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            onFocus={handleSearchFocus}
-            className="flex-1 outline-none text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:ring-0"
-            autoComplete="off"
-            suppressHydrationWarning
-          />
+          <div className="relative flex-1">
+            <input
+              ref={searchInputRef}
+              type="text"
+              placeholder=""
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onFocus={handleSearchFocus}
+              className="w-full outline-none text-sm text-foreground bg-transparent focus:ring-0"
+              autoComplete="off"
+              suppressHydrationWarning
+            />
+            {!searchQuery && (
+              <div className="absolute inset-0 pointer-events-none flex items-center text-sm text-muted-foreground">
+                <span className="mr-1">Szukaj</span>
+                <div className="relative h-5 flex items-center overflow-visible">
+                  {ROTATING_TEXTS.map((text, index) => (
+                    <span
+                      key={text}
+                      className="absolute left-0 top-0 transition-all duration-500 whitespace-nowrap"
+                      style={{
+                        transform: index === currentTextIndex
+                          ? 'translateY(0)'
+                          : index < currentTextIndex
+                            ? 'translateY(-100%)'
+                            : 'translateY(100%)',
+                        opacity: index === currentTextIndex ? 1 : 0,
+                        filter: index === currentTextIndex ? 'blur(0px)' : 'blur(4px)'
+                      }}
+                    >
+                      {text}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
           {searchQuery && (
             <button
               type="button"
@@ -920,9 +971,11 @@ export function NavbarSearchBar() {
                   {isDetectingLocation ? (
                     <div className="w-4 h-4 border border-brand/30 border-t-brand rounded-full animate-spin" />
                   ) : (
-                    <svg className="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <svg className="w-4 h-4 text-brand flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+                        <path d="M19.25 10c0 4.868-4.558 7.69-7.25 11.25C9.306 17.688 4.75 14.873 4.75 10 4.75 6 8 2.75 12 2.75S19.25 6 19.25 10"/>
+                        <path d="M12 13.25a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5"/>
+                      </g>
                     </svg>
                   )}
                 </div>

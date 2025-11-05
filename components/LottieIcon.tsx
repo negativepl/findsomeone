@@ -26,11 +26,12 @@ export function LottieIcon({
   isHovered = false
 }: LottieIconProps) {
   const lottieRef = useRef<any>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
   const [animationData, setAnimationData] = useState<any>(null)
-  const [hasHovered, setHasHovered] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const [mounted, setMounted] = useState(false)
   const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('light')
+  const [hasPlayedOnce, setHasPlayedOnce] = useState(false)
   const prevHoveredRef = useRef(false)
   const { theme } = useTheme()
 
@@ -58,29 +59,21 @@ export function LottieIcon({
     ? (currentTheme === 'dark' ? fallbackSvgDark : fallbackSvgLight)
     : fallbackSvg // Fallback to legacy single SVG
 
+  // Load animation immediately on mount
   useEffect(() => {
-    // Only load animation after first hover (lazy loading)
-    if (isHovered && !hasHovered && currentAnimationPath) {
-      setHasHovered(true)
+    if (mounted && currentAnimationPath && !animationData) {
       fetch(currentAnimationPath)
         .then(response => response.json())
         .then(data => {
           setAnimationData(data)
-          // Auto-play animation after loading if still hovered
-          setTimeout(() => {
-            if (lottieRef.current && isHovered) {
-              lottieRef.current.play()
-              setIsPlaying(true)
-            }
-          }, 50)
         })
         .catch(error => console.error('Error loading animation:', error))
     }
-  }, [isHovered, currentAnimationPath, hasHovered])
+  }, [mounted, currentAnimationPath, animationData])
 
-  // Reload animation when theme changes (if already hovered)
+  // Reload animation when theme changes
   useEffect(() => {
-    if (hasHovered && currentAnimationPath) {
+    if (mounted && currentAnimationPath && animationData) {
       fetch(currentAnimationPath)
         .then(response => response.json())
         .then(data => {
@@ -92,7 +85,29 @@ export function LottieIcon({
         })
         .catch(error => console.error('Error loading animation:', error))
     }
-  }, [theme, currentAnimationPath, hasHovered])
+  }, [theme, currentAnimationPath])
+
+  // Intersection Observer - play when entering viewport
+  useEffect(() => {
+    if (!containerRef.current || !animationData || hasPlayedOnce) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && lottieRef.current && !isPlaying) {
+            lottieRef.current.goToAndPlay(0)
+            setIsPlaying(true)
+            setHasPlayedOnce(true)
+          }
+        })
+      },
+      { threshold: 0.5 } // Trigger when 50% visible
+    )
+
+    observer.observe(containerRef.current)
+
+    return () => observer.disconnect()
+  }, [animationData, isPlaying, hasPlayedOnce])
 
   useEffect(() => {
     // Only play when transitioning from not-hovered to hovered
@@ -122,18 +137,18 @@ export function LottieIcon({
     // If we have both light and dark versions, render both and let CSS control visibility
     if (fallbackSvgLight && fallbackSvgDark) {
       return (
-        <div className={className}>
+        <div ref={containerRef} className={className}>
           <div className="dark:hidden">{fallbackSvgLight}</div>
           <div className="hidden dark:block">{fallbackSvgDark}</div>
         </div>
       )
     }
     // Single fallback (universal color) - show immediately, no need to wait for mounted
-    return <div className={className}>{fallbackSvg || currentFallbackSvg}</div>
+    return <div ref={containerRef} className={className}>{fallbackSvg || currentFallbackSvg}</div>
   }
 
   return (
-    <div className={className}>
+    <div ref={containerRef} className={className}>
       <Lottie
         lottieRef={lottieRef}
         animationData={animationData}
