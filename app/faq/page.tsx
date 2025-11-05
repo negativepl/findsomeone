@@ -287,7 +287,7 @@ export default async function FAQPage() {
             Skontaktuj się z nami - chętnie pomożemy!
           </p>
           <Link href="/contact">
-            <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-10 py-6 text-base font-semibold">
+            <Button className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border border-border px-10 py-6 text-base font-semibold">
               Skontaktuj się z nami
             </Button>
           </Link>

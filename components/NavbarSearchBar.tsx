@@ -6,7 +6,6 @@ import { toast } from 'sonner'
 import { Search, MapPin } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { LottieIcon } from './LottieIcon'
 
 interface SearchResult {
   suggestions: Array<{
@@ -46,8 +45,6 @@ export function NavbarSearchBar() {
   const hasFetchedTrendingRef = useRef(false)
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
-  const [isSearchButtonHovered, setIsSearchButtonHovered] = useState(false)
-  const [isLocationButtonHovered, setIsLocationButtonHovered] = useState(false)
   const locationOpenTimeoutRef = useRef<NodeJS.Timeout>()
   const locationCloseTimeoutRef = useRef<NodeJS.Timeout>()
 
@@ -451,8 +448,6 @@ export function NavbarSearchBar() {
 
   // Handle location button hover
   const handleLocationButtonMouseEnter = () => {
-    setIsLocationButtonHovered(true)
-
     // Clear any pending close timeout
     if (locationCloseTimeoutRef.current) {
       clearTimeout(locationCloseTimeoutRef.current)
@@ -470,8 +465,6 @@ export function NavbarSearchBar() {
   }
 
   const handleLocationButtonMouseLeave = () => {
-    setIsLocationButtonHovered(false)
-
     // Cancel opening if hovering stopped before timeout completed
     if (locationOpenTimeoutRef.current) {
       clearTimeout(locationOpenTimeoutRef.current)
@@ -501,7 +494,6 @@ export function NavbarSearchBar() {
     }
     locationCloseTimeoutRef.current = setTimeout(() => {
       setIsCityDropdownOpen(false)
-      setIsLocationButtonHovered(false)
     }, 300) // Delay to allow returning to button
   }
 
@@ -609,7 +601,7 @@ export function NavbarSearchBar() {
       <form onSubmit={handleSubmit} className="flex-1" suppressHydrationWarning>
         <div
           onClick={() => searchInputRef.current?.focus()}
-          className="relative flex items-center bg-muted hover:bg-accent hover:border-foreground/20 rounded-full pr-2 py-2 h-10 transition-all cursor-text border border-border"
+          className="relative flex items-center bg-muted hover:bg-accent hover:border-foreground/20 rounded-full pr-2 py-2 h-10 transition-all cursor-text border border-border focus-within:ring-2 focus-within:ring-brand focus-within:border-transparent"
           style={{ paddingLeft: '20px' }}
         >
           <input
@@ -619,7 +611,7 @@ export function NavbarSearchBar() {
             value={searchQuery}
             onChange={(e) => handleSearchChange(e.target.value)}
             onFocus={handleSearchFocus}
-            className="flex-1 outline-none text-sm text-foreground placeholder:text-muted-foreground bg-transparent"
+            className="flex-1 outline-none text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:ring-0"
             autoComplete="off"
             suppressHydrationWarning
           />
@@ -638,17 +630,12 @@ export function NavbarSearchBar() {
           )}
           <button
             type="submit"
-            onMouseEnter={() => setIsSearchButtonHovered(true)}
-            onMouseLeave={() => setIsSearchButtonHovered(false)}
             className="h-8 w-8 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 transition-colors flex-shrink-0 flex items-center justify-center"
             aria-label="Szukaj"
           >
-            <LottieIcon
-              animationPath="/animations/search.json"
-              fallbackSvg={<img src="/icons/search.svg" alt="Search" className="w-full h-full" />}
-              className="w-4 h-4"
-              isHovered={isSearchButtonHovered}
-            />
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill="currentColor" d="M16.334 4.667a8.25 8.25 0 0 1 .506 11.114l3.94 3.94.027.027a.75.75 0 0 1-1.06 1.06l-.027-.027-3.94-3.94a8.25 8.25 0 1 1 .554-12.174M5.727 5.728a6.75 6.75 0 1 0 9.546 9.546 6.75 6.75 0 0 0-9.546-9.546"/>
+            </svg>
           </button>
         </div>
       </form>
@@ -851,12 +838,12 @@ export function NavbarSearchBar() {
           className="flex items-center gap-2 bg-muted hover:bg-accent hover:border-foreground/20 rounded-full h-10 transition-all flex-shrink-0 px-4 border border-border"
           aria-expanded={isCityDropdownOpen}
         >
-          <LottieIcon
-            animationPath="/animations/location.json"
-            fallbackSvg={<img src="/icons/location.svg" alt="Location" className="w-full h-full" />}
-            className="w-4 h-4 text-brand flex-shrink-0"
-            isHovered={isLocationButtonHovered}
-          />
+          <svg className="w-4 h-4 text-brand flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
+              <path d="M19.25 10c0 4.868-4.558 7.69-7.25 11.25C9.306 17.688 4.75 14.873 4.75 10 4.75 6 8 2.75 12 2.75S19.25 6 19.25 10"/>
+              <path d="M12 13.25a3.25 3.25 0 1 0 0-6.5 3.25 3.25 0 0 0 0 6.5"/>
+            </g>
+          </svg>
           <style>{`
             .location-label-text {
               display: none;
@@ -903,7 +890,7 @@ export function NavbarSearchBar() {
             className="absolute top-full right-0 mt-2 w-80 border border-border rounded-2xl bg-card shadow-lg max-h-[400px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
           >
             <div className="p-3 border-b border-border">
-              <div className="relative flex items-center bg-muted rounded-lg px-3 py-2">
+              <div className="relative flex items-center bg-muted rounded-lg px-3 py-2 border border-border/50 focus-within:ring-2 focus-within:ring-brand focus-within:border-transparent transition-all">
                 <Search className="w-4 h-4 text-muted-foreground mr-2 flex-shrink-0" />
                 <input
                   ref={cityInputRef}
@@ -911,7 +898,7 @@ export function NavbarSearchBar() {
                   placeholder="Wpisz miasto..."
                   value={cityQuery}
                   onChange={(e) => handleCityChange(e.target.value)}
-                  className="flex-1 outline-none text-sm text-foreground placeholder:text-muted-foreground bg-transparent"
+                  className="flex-1 outline-none text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:ring-0"
                   autoComplete="off"
                 />
                 {isLoadingCities && (

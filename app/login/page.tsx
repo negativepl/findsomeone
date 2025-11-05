@@ -119,7 +119,7 @@ export default function LoginPage() {
               </Link>
             </div>
 
-            <Card className="border-0 rounded-3xl shadow-sm">
+            <Card className="rounded-3xl shadow-sm border">
               <CardHeader className="text-center pb-8">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
                   <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -184,7 +184,7 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <Card className="border-0 rounded-3xl shadow-sm">
+          <Card className="rounded-3xl shadow-sm border">
             <CardHeader className="text-center pb-8">
               <CardTitle className="text-2xl md:text-3xl font-bold">Zresetuj hasło</CardTitle>
               <CardDescription className="text-sm md:text-base mt-2">
@@ -273,7 +273,7 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <Card className="border-0 rounded-3xl shadow-sm">
+        <Card className="rounded-3xl shadow-sm border">
           <CardHeader className="pb-6">
             <CardTitle className="text-xl md:text-2xl font-bold text-center">Witaj ponownie!</CardTitle>
             <CardDescription className="text-sm md:text-base text-center">

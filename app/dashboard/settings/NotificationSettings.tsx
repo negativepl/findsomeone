@@ -55,7 +55,7 @@ export function NotificationSettings({
   }
 
   return (
-    <>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
         <div className="flex-1 pr-4">
           <div className="flex items-center gap-2 mb-1">
@@ -88,6 +88,6 @@ export function NotificationSettings({
           disabled={true}
         />
       </div>
-    </>
+    </div>
   )
 }

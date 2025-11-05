@@ -36,11 +36,7 @@ export function ChangeEmailDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant="outline"
-          size="sm"
-          className="rounded-full border border-border hover:border-brand hover:bg-brand/10 bg-card text-foreground"
-        >
+        <Button variant="ghost" size="sm" className="rounded-full text-foreground hover:bg-muted">
           Zmień
         </Button>
       </DialogTrigger>
@@ -96,7 +92,7 @@ export function ChangeEmailDialog() {
             <Button
               type="submit"
               disabled={loading}
-              className="rounded-full bg-brand hover:bg-brand/90 text-white border-0"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
             >
               {loading ? 'Zmieniam...' : 'Zmień email'}
             </Button>

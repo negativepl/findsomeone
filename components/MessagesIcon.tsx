@@ -6,7 +6,6 @@ import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
 import { useUnreadCount } from '@/lib/hooks/useMessages'
 import { useQueryClient } from '@tanstack/react-query'
-import { LottieIcon } from './LottieIcon'
 import { motion, AnimatePresence } from 'framer-motion'
 import { toast } from 'sonner'
 import Lottie from 'lottie-react'
@@ -19,7 +18,6 @@ interface MessagesIconProps {
 export function MessagesIcon({ user }: MessagesIconProps) {
   const { data: unreadCount = 0 } = useUnreadCount(user?.id)
   const queryClient = useQueryClient()
-  const [isHovered, setIsHovered] = useState(false)
   const [hasChanged, setHasChanged] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
   const prevCountRef = useRef(0)
@@ -229,17 +227,22 @@ export function MessagesIcon({ user }: MessagesIconProps) {
   return (
     <Link
       href="/dashboard/messages"
-      className="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-brand hover:bg-brand/90 transition-colors"
+      className="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-brand hover:bg-brand/90 transition-colors text-brand-foreground"
       aria-label={`Wiadomości${displayCount > 0 ? ` (${displayCount} nieprzeczytanych)` : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      <LottieIcon
-        animationPath="/animations/messages.json"
-        fallbackSvg={<img src="/icons/messages.svg" alt="Messages" className="w-full h-full" />}
-        className="h-5 w-5"
-        isHovered={isHovered}
-      />
+      <svg className="h-5 w-5" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <g clipPath="url(#messages-clip)">
+          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.25 4.75h6.5c3.31 0 6 2.69 6 6v2.5c0 3.31-2.69 6-6 6H3.25v-8.5c0-3.31 2.69-6 6-6"/>
+          <circle cx="8.5" cy="12" r="1" fill="currentColor"/>
+          <path fill="currentColor" d="M13.5 12a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/>
+          <circle cx="16.5" cy="12" r="1" fill="currentColor"/>
+        </g>
+        <defs>
+          <clipPath id="messages-clip">
+            <path fill="#fff" d="M.5 0h24v24H.5z"/>
+          </clipPath>
+        </defs>
+      </svg>
       <AnimatePresence mode="wait">
         {isMounted && displayCount > 0 && (
           <motion.span
@@ -254,7 +257,7 @@ export function MessagesIcon({ user }: MessagesIconProps) {
               duration: hasChanged ? 0.4 : 0.2,
               ease: [0.34, 1.56, 0.64, 1]
             }}
-            className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-white text-brand text-xs font-bold rounded-full border border-brand"
+            className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-background text-brand text-xs font-bold rounded-full border border-brand"
           >
             {displayCount > 99 ? '99+' : displayCount}
           </motion.span>

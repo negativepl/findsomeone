@@ -53,7 +53,7 @@ export default async function SettingsPage() {
                 Zarządzaj swoimi danymi i bezpieczeństwem konta
               </p>
             </div>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="flex items-center justify-between p-5 rounded-2xl bg-card">
                 <div className="flex-1">
                   <p className="text-base font-semibold text-foreground mb-1">Email</p>
@@ -133,20 +133,22 @@ export default async function SettingsPage() {
                 Zarządzaj swoimi danymi i bezpieczeństwem konta
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 pt-6">
-              <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
-                <div className="flex-1">
-                  <p className="text-base font-semibold text-foreground mb-1">Email</p>
-                  <p className="text-sm text-muted-foreground">{user.email}</p>
+            <CardContent className="pt-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
+                  <div className="flex-1">
+                    <p className="text-base font-semibold text-foreground mb-1">Email</p>
+                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                  </div>
+                  <ChangeEmailDialog />
                 </div>
-                <ChangeEmailDialog />
-              </div>
-              <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
-                <div className="flex-1">
-                  <p className="text-base font-semibold text-foreground mb-1">Hasło</p>
-                  <p className="text-sm text-muted-foreground">••••••••</p>
+                <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
+                  <div className="flex-1">
+                    <p className="text-base font-semibold text-foreground mb-1">Hasło</p>
+                    <p className="text-sm text-muted-foreground">••••••••</p>
+                  </div>
+                  <ChangePasswordDialog />
                 </div>
-                <ChangePasswordDialog />
               </div>
             </CardContent>
           </Card>

@@ -3,8 +3,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import ReactMarkdown from 'react-markdown'
-import Lottie from 'lottie-react'
-import { LottieIcon } from './LottieIcon'
 import { AIPostCard } from './AIPostCard'
 
 interface Post {
@@ -55,7 +53,6 @@ export function AIAssistant() {
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [isButtonHovered, setIsButtonHovered] = useState(false)
   const [showGradient, setShowGradient] = useState(false)
   const [settings, setSettings] = useState<ChatSettings | null>(null)
   const [isLoadingSettings, setIsLoadingSettings] = useState(true)
@@ -63,11 +60,6 @@ export function AIAssistant() {
   const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
-  const logoLottieRef = useRef<any>(null)
-  const logoIntervalRef = useRef<NodeJS.Timeout>()
-  const logoInitialDelayRef = useRef<NodeJS.Timeout>()
-  const [logoAnimationData, setLogoAnimationData] = useState<any>(null)
-  const [showLogoLottie, setShowLogoLottie] = useState(false)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -211,47 +203,6 @@ export function AIAssistant() {
     }, 200)
   }
 
-  // Load logo animation when chat opens
-  useEffect(() => {
-    if (isOpen && !logoAnimationData) {
-      fetch('/animations/sparkles-chat.json')
-        .then(response => response.json())
-        .then(data => {
-          setLogoAnimationData(data)
-          setTimeout(() => {
-            setShowLogoLottie(true)
-          }, 100)
-        })
-        .catch(error => console.error('Error loading logo animation:', error))
-    }
-  }, [isOpen, logoAnimationData])
-
-  // Auto-play logo animation
-  useEffect(() => {
-    if (logoLottieRef.current && logoAnimationData && showLogoLottie) {
-      const playAnimation = () => {
-        if (logoLottieRef.current) {
-          logoLottieRef.current.goToAndPlay(0, true)
-        }
-      }
-
-      // Initial play with delay (wait 800ms before first animation)
-      logoInitialDelayRef.current = setTimeout(playAnimation, 800)
-
-      // Repeat every 5 seconds
-      logoIntervalRef.current = setInterval(playAnimation, 5000)
-
-      return () => {
-        if (logoIntervalRef.current) {
-          clearInterval(logoIntervalRef.current)
-        }
-        if (logoInitialDelayRef.current) {
-          clearTimeout(logoInitialDelayRef.current)
-        }
-      }
-    }
-  }, [logoAnimationData, showLogoLottie])
-
   // Block body scroll when chat is open on mobile ONLY
   useEffect(() => {
     // Check if mobile (screen width < 768px)
@@ -296,29 +247,20 @@ export function AIAssistant() {
     >
       {/* AI Button in Navbar */}
       <button
-        onMouseEnter={() => setIsButtonHovered(true)}
-        onMouseLeave={() => setIsButtonHovered(false)}
-        className="relative inline-flex items-center justify-center h-[34px] w-[34px] md:h-10 md:w-10 rounded-full bg-brand hover:bg-brand/90 transition-colors"
+        className="relative inline-flex items-center justify-center h-[34px] w-[34px] md:h-10 md:w-10 rounded-full bg-brand hover:bg-brand/90 transition-colors text-brand-foreground"
         aria-label="Asystent AI"
         aria-expanded={isOpen}
       >
-        <LottieIcon
-          animationPath="/animations/ai-assistant.json"
-          fallbackSvg={
-            <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <g clipPath="url(#qfAgLRY-ola)">
-                <path stroke="#fff" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z"/>
-              </g>
-              <defs>
-                <clipPath id="qfAgLRY-ola">
-                  <path fill="#fff" d="M0 0h24v24H0z"/>
-                </clipPath>
-              </defs>
-            </svg>
-          }
-          className="h-4 w-4 md:h-5 md:w-5"
-          isHovered={isButtonHovered}
-        />
+        <svg className="h-4 w-4 md:h-5 md:w-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g clipPath="url(#bolt-clip)">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z"/>
+          </g>
+          <defs>
+            <clipPath id="bolt-clip">
+              <path fill="#fff" d="M0 0h24v24H0z"/>
+            </clipPath>
+          </defs>
+        </svg>
         {mounted && messages.length > 0 && (
           <span className="absolute -top-1 -right-1 w-2 h-2 bg-background rounded-full border border-brand" />
         )}
@@ -333,32 +275,17 @@ export function AIAssistant() {
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-border">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center flex-shrink-0 relative">
-                  {/* SVG - always visible until Lottie is ready */}
-                  <div
-                    className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-                      showLogoLottie ? 'opacity-0' : 'opacity-100'
-                    }`}
-                  >
-                    <img src="/icons/sparkles-chat.svg" alt="AI Chat" className="w-5 h-5" />
-                  </div>
-
-                  {/* Lottie - fades in when ready */}
-                  {logoAnimationData && (
-                    <div
-                      className={`w-5 h-5 transition-opacity duration-300 ${
-                        showLogoLottie ? 'opacity-100' : 'opacity-0'
-                      }`}
-                    >
-                      <Lottie
-                        lottieRef={logoLottieRef}
-                        animationData={logoAnimationData}
-                        loop={false}
-                        autoplay={false}
-                        style={{ width: '100%', height: '100%' }}
-                      />
-                    </div>
-                  )}
+                <div className="w-8 h-8 rounded-full bg-brand flex items-center justify-center flex-shrink-0 text-brand-foreground">
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clipPath="url(#bolt-clip-header)">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z"/>
+                    </g>
+                    <defs>
+                      <clipPath id="bolt-clip-header">
+                        <path fill="#fff" d="M0 0h24v24H0z"/>
+                      </clipPath>
+                    </defs>
+                  </svg>
                 </div>
                 <div>
                   <h3 className="font-semibold text-foreground">Nawigatorek</h3>

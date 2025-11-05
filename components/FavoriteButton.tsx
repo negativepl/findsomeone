@@ -60,8 +60,8 @@ export function FavoriteButton({
         <svg
           className={`w-6 h-6 transition-all duration-300 ease-in-out ${
             isFavorite
-              ? 'fill-red-500 text-red-500 scale-100'
-              : 'fill-none text-muted-foreground group-hover/fav:text-red-400 group-hover/fav:fill-red-50 group-hover/fav:scale-110'
+              ? 'fill-brand text-brand scale-100'
+              : 'fill-none text-muted-foreground group-hover/fav:text-brand group-hover/fav:fill-brand/20 group-hover/fav:scale-110'
           } ${isLoading ? 'opacity-50' : ''} active:scale-125`}
           stroke="currentColor"
           strokeWidth={2}

@@ -304,7 +304,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   />
                 ) : (
                   <div className="w-32 h-32 rounded-full bg-brand flex items-center justify-center">
-                    <span className="text-5xl font-semibold text-white">
+                    <span className="text-5xl font-semibold text-brand-foreground">
                       {(() => {
                         const name = formData.full_name || initialUser?.email || ''
                         const parts = name.split(' ')
@@ -332,7 +332,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   className="absolute bottom-0 right-0 w-10 h-10 bg-brand hover:bg-brand/90 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg"
                 >
                   {uploading ? (
-                    <svg className="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
+                    <svg className="animate-spin w-5 h-5 text-brand-foreground" fill="none" viewBox="0 0 24 24">
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
@@ -340,7 +340,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     <LottieIcon
                       animationPath="/animations/camera.json"
                       fallbackSvg={<img src="/icons/camera.svg" alt="Camera" className="w-full h-full" />}
-                      className="w-5 h-5 text-white"
+                      className="w-5 h-5 text-brand-foreground"
                       isHovered={isAvatarHovered}
                     />
                   )}
@@ -360,10 +360,10 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               {profile?.avatar_url && (
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="ghost"
                   onClick={handleAvatarRemove}
                   disabled={uploading}
-                  className="mt-2 text-xs rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-8 px-3"
+                  className="mt-2 text-xs rounded-full text-red-600 dark:text-red-400 hover:bg-red-500/10 hover:text-red-700 dark:hover:text-red-300 h-8 px-3"
                 >
                   Usuń avatar
                 </Button>
@@ -394,7 +394,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
             {/* View Profile Button */}
             <Link href={`/profile/${initialUser.id}`} target="_blank" className="block">
-              <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-12">
+              <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-12">
                 Zobacz swój profil
               </Button>
             </Link>
@@ -468,7 +468,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               <Button
                 type="submit"
                 disabled={saving}
-                className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold"
+                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold"
               >
                 {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
               </Button>
@@ -577,7 +577,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
             {profile?.banner_url && (
               <Button
                 type="button"
-                variant="outline"
+                variant="ghost"
                 onClick={async () => {
                   if (confirm('Czy na pewno chcesz usunąć banner?')) {
                     try {
@@ -600,7 +600,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     }
                   }
                 }}
-                className="w-full rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-11"
+                className="w-full rounded-full text-red-600 dark:text-red-400 hover:bg-red-500/10 hover:text-red-700 dark:hover:text-red-300 h-11"
               >
                 Usuń banner
               </Button>
@@ -656,7 +656,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               <Button
                 type="submit"
                 disabled={savingPrivacy}
-                className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold"
+                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold"
               >
                 {savingPrivacy ? 'Zapisywanie...' : 'Zapisz ustawienia'}
               </Button>
@@ -682,7 +682,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     />
                   ) : (
                     <div className="w-32 h-32 rounded-full bg-brand flex items-center justify-center">
-                      <span className="text-5xl font-semibold text-white">
+                      <span className="text-5xl font-semibold text-brand-foreground">
                         {(() => {
                           const name = formData.full_name || initialUser?.email || ''
                           const parts = name.split(' ')
@@ -710,7 +710,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     className="absolute bottom-0 right-0 w-10 h-10 bg-brand hover:bg-brand/90 rounded-full flex items-center justify-center cursor-pointer transition-colors shadow-lg"
                   >
                     {uploading ? (
-                      <svg className="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
+                      <svg className="animate-spin w-5 h-5 text-brand-foreground" fill="none" viewBox="0 0 24 24">
                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
@@ -718,7 +718,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       <LottieIcon
                         animationPath="/animations/camera.json"
                         fallbackSvg={<img src="/icons/camera.svg" alt="Camera" className="w-full h-full" />}
-                        className="w-5 h-5 text-white"
+                        className="w-5 h-5 text-brand-foreground"
                         isHovered={isAvatarHovered}
                       />
                     )}
@@ -738,10 +738,10 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 {profile?.avatar_url && (
                   <Button
                     type="button"
-                    variant="outline"
+                    variant="ghost"
                     onClick={handleAvatarRemove}
                     disabled={uploading}
-                    className="mt-2 text-xs rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 h-8 px-3"
+                    className="mt-2 text-xs rounded-full text-red-600 dark:text-red-400 hover:bg-red-500/10 hover:text-red-700 dark:hover:text-red-300 h-8 px-3"
                   >
                     Usuń avatar
                   </Button>
@@ -773,7 +773,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               {/* View Profile Button */}
               <Link href={`/profile/${initialUser.id}`} target="_blank">
                 <Button
-                  className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0"
+                  className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
                 >
                   Zobacz swój profil
                 </Button>
@@ -861,7 +861,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     <Button
                       type="submit"
                       disabled={saving}
-                      className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 px-8 text-sm font-semibold"
+                      className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold"
                     >
                       {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
                     </Button>
@@ -976,7 +976,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               {profile?.banner_url && (
                 <Button
                   type="button"
-                  variant="outline"
+                  variant="ghost"
                   onClick={async () => {
                     if (confirm('Czy na pewno chcesz usunąć banner?')) {
                       try {
@@ -999,7 +999,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       }
                     }
                   }}
-                  className="w-full rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50"
+                  className="w-full rounded-full text-red-600 dark:text-red-400 hover:bg-red-500/10 hover:text-red-700 dark:hover:text-red-300"
                 >
                   Usuń banner
                 </Button>
@@ -1059,7 +1059,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                     <Button
                       type="submit"
                       disabled={savingPrivacy}
-                      className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 px-8 text-sm font-semibold"
+                      className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold"
                     >
                       {savingPrivacy ? 'Zapisywanie...' : 'Zapisz ustawienia prywatności'}
                     </Button>

@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -169,31 +170,28 @@ export function ContactForm({ userEmail }: ContactFormProps) {
               </p>
             </div>
 
-            <div>
-              <label className="flex items-start gap-2.5 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="gdprConsent"
-                  checked={formData.gdprConsent}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                  className="mt-0.5 w-4 h-4 rounded border border-border text-brand focus:ring-brand focus:ring-offset-0 cursor-pointer"
-                />
-                <span className="text-xs text-muted-foreground leading-relaxed">
-                  Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}
-                  <a href="/privacy" className="text-brand hover:underline" target="_blank" rel="noopener noreferrer">
-                    Polityką Prywatności
-                  </a>
-                  . *
-                </span>
+            <div className="flex items-start gap-2.5">
+              <Checkbox
+                id="gdpr-consent-mobile"
+                checked={formData.gdprConsent}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, gdprConsent: checked as boolean }))}
+                required
+                disabled={loading}
+                className="mt-0.5"
+              />
+              <label htmlFor="gdpr-consent-mobile" className="text-xs text-muted-foreground leading-relaxed cursor-pointer">
+                Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}
+                <a href="/privacy" className="text-brand hover:underline" target="_blank" rel="noopener noreferrer">
+                  Polityką Prywatności
+                </a>
+                . *
               </label>
             </div>
 
             <button
               type="submit"
               disabled={loading || !formData.gdprConsent}
-              className="w-full px-8 py-2.5 rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              className="w-full px-8 py-2.5 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
             >
               {loading ? 'Wysyłanie...' : 'Wyślij wiadomość'}
             </button>
@@ -291,24 +289,21 @@ export function ContactForm({ userEmail }: ContactFormProps) {
               </p>
             </div>
 
-            <div>
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="gdprConsent"
-                  checked={formData.gdprConsent}
-                  onChange={handleChange}
-                  required
-                  disabled={loading}
-                  className="mt-1 w-4 h-4 rounded border border-border text-brand focus:ring-brand focus:ring-offset-0 cursor-pointer"
-                />
-                <span className="text-sm text-muted-foreground leading-relaxed">
-                  Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}
-                  <a href="/privacy" className="text-brand hover:underline" target="_blank" rel="noopener noreferrer">
-                    Polityką Prywatności
-                  </a>
-                  . *
-                </span>
+            <div className="flex items-start gap-3">
+              <Checkbox
+                id="gdpr-consent-desktop"
+                checked={formData.gdprConsent}
+                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, gdprConsent: checked as boolean }))}
+                required
+                disabled={loading}
+                className="mt-1"
+              />
+              <label htmlFor="gdpr-consent-desktop" className="text-sm text-muted-foreground leading-relaxed cursor-pointer">
+                Wyrażam zgodę na przetwarzanie moich danych osobowych w celu obsługi zapytania kontaktowego zgodnie z{' '}
+                <a href="/privacy" className="text-brand hover:underline" target="_blank" rel="noopener noreferrer">
+                  Polityką Prywatności
+                </a>
+                . *
               </label>
             </div>
 
@@ -317,7 +312,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 <button
                   type="submit"
                   disabled={loading || !formData.gdprConsent}
-                  className="w-full md:w-auto px-8 py-3 rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                  className="w-full md:w-auto px-8 py-3 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                 >
                   {loading ? 'Wysyłanie...' : 'Wyślij wiadomość'}
                 </button>

@@ -34,7 +34,7 @@ export default async function InstallPage() {
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground flex items-center justify-center mx-auto mb-6">
                   <Zap className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">Szybszy dostęp</h3>
@@ -46,7 +46,7 @@ export default async function InstallPage() {
 
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground flex items-center justify-center mx-auto mb-6">
                   <Smartphone className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">Natywne wrażenia</h3>
@@ -58,7 +58,7 @@ export default async function InstallPage() {
 
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground flex items-center justify-center mx-auto mb-6">
                   <Wifi className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">Działa offline</h3>

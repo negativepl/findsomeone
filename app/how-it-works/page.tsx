@@ -41,7 +41,7 @@ export default async function HowItWorksPage() {
             <div className="grid md:grid-cols-3 gap-6">
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-brand text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     1
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Przeglądaj ogłoszenia</h3>
@@ -53,7 +53,7 @@ export default async function HowItWorksPage() {
 
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-brand text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     2
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Sprawdź opinie</h3>
@@ -65,7 +65,7 @@ export default async function HowItWorksPage() {
 
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-brand text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     3
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Nawiąż kontakt</h3>
@@ -85,7 +85,7 @@ export default async function HowItWorksPage() {
             <div className="grid md:grid-cols-3 gap-6">
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-foreground text-background text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     1
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Utwórz konto</h3>
@@ -97,7 +97,7 @@ export default async function HowItWorksPage() {
 
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-foreground text-background text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     2
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Dodaj ogłoszenie</h3>
@@ -109,7 +109,7 @@ export default async function HowItWorksPage() {
 
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-foreground text-background text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     3
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Zdobywaj klientów</h3>
@@ -131,12 +131,12 @@ export default async function HowItWorksPage() {
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link href="/signup">
-                <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-10 py-6 text-base font-semibold">
+                <Button className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border border-border px-10 py-6 text-base font-semibold">
                   Zarejestruj się
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button variant="outline" className="rounded-full border border-border hover:border-border hover:bg-muted px-10 py-6 text-base font-semibold">
+                <Button variant="ghost" className="rounded-full px-10 py-6 text-base font-semibold">
                   Przeglądaj ogłoszenia
                 </Button>
               </Link>
