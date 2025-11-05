@@ -84,17 +84,17 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
   return (
     <div className="space-y-6">
       {/* Chat Assistant Settings */}
-      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+      <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div>
-            <h2 className="text-2xl font-bold text-black mb-1">Konfiguracja asystenta</h2>
-            <p className="text-sm text-black/60 mb-6">Ustawienia AI chatbota dla użytkowników (GPT-4o mini)</p>
+            <h2 className="text-2xl font-bold text-foreground mb-1">Konfiguracja asystenta</h2>
+            <p className="text-sm text-muted-foreground mb-6">Ustawienia AI chatbota dla użytkowników (GPT-4o mini)</p>
           </div>
           {/* Enable/Disable */}
-          <div className="flex items-center justify-between p-4 rounded-2xl bg-black/5">
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-muted">
             <div>
-              <h4 className="font-semibold text-black">Status asystenta</h4>
-              <p className="text-sm text-black/60">Włącz lub wyłącz chatbota na stronie</p>
+              <h4 className="font-semibold text-foreground">Status asystenta</h4>
+              <p className="text-sm text-muted-foreground">Włącz lub wyłącz chatbota na stronie</p>
             </div>
             <Switch
               checked={chatEnabled}
@@ -114,16 +114,16 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
               max={20}
               className="mt-2"
             />
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Ile ogłoszeń pokazywać w wynikach wyszukiwania (rekomendowane: 6)
             </p>
           </div>
 
           {/* Require city toggle */}
-          <div className="flex items-center justify-between p-4 rounded-2xl bg-black/5">
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-muted">
             <div>
-              <h4 className="font-semibold text-black">Wymagaj miasta</h4>
-              <p className="text-sm text-black/60">Czy asystent powinien pytać o miasto jeśli nie podano?</p>
+              <h4 className="font-semibold text-foreground">Wymagaj miasta</h4>
+              <p className="text-sm text-muted-foreground">Czy asystent powinien pytać o miasto jeśli nie podano?</p>
             </div>
             <Switch
               checked={chatRequireCity}
@@ -142,7 +142,7 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
               className="mt-2"
               placeholder="Cześć! Jestem tu aby pomóc&#10;&#10;Mogę pomóc Ci w nawigacji, odpowiedzieć na pytania o FindSomeone lub pomóc znaleźć odpowiednie ogłoszenia."
             />
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Pierwsza wiadomość pokazywana użytkownikom. Użyj Enter dla nowych linii.
             </p>
           </div>
@@ -158,7 +158,7 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
               className="mt-2"
               placeholder="Jedno pytanie na linię&#10;Jak dodać ogłoszenie?&#10;Jak znaleźć specjalistę?"
             />
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Jedno sugerowane pytanie na linię (3 rekomendowane)
             </p>
           </div>
@@ -174,13 +174,13 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
               className="mt-2 font-mono text-sm"
               placeholder="Jesteś pomocnym asystentem FindSomeone..."
             />
-            <p className="text-xs text-black/40 mt-1">
-              Główny prompt określający zachowanie asystenta. Możesz użyć zmiennej <code className="bg-black/5 px-1 rounded">{'{CATEGORIES}'}</code> która zostanie automatycznie zastąpiona listą kategorii z bazy danych.
+            <p className="text-xs text-muted-foreground mt-1">
+              Główny prompt określający zachowanie asystenta. Możesz użyć zmiennej <code className="bg-muted px-1 rounded">{'{CATEGORIES}'}</code> która zostanie automatycznie zastąpiona listą kategorii z bazy danych.
             </p>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-black/5">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border">
             <Button
               onClick={handleSave}
               disabled={isSaving}

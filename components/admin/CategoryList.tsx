@@ -78,45 +78,45 @@ function SortableCategory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl bg-white border border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
+      className={`group relative rounded-xl bg-card border border-border hover:border-border shadow-sm hover:shadow-md flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
       onClick={onClick}
     >
       {/* Drag Handle */}
       <div
         {...attributes}
         {...listeners}
-        className={`p-2 cursor-grab active:cursor-grabbing text-black/30 hover:text-black/50 ${isDragging ? '' : 'transition-colors'}`}
+        className={`p-2 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground ${isDragging ? '' : 'transition-colors'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <GripVertical className="w-5 h-5" />
       </div>
 
       {/* Arrow - moved to left */}
-      <ChevronRight className={`w-5 h-5 text-black/30 group-hover:text-black/50 shrink-0 ${isDragging ? '' : 'transition-colors'}`} />
+      <ChevronRight className={`w-5 h-5 text-muted-foreground group-hover:text-foreground shrink-0 ${isDragging ? '' : 'transition-colors'}`} />
 
       {/* Icon */}
-      <div className={`w-12 h-12 rounded-lg bg-black/5 group-hover:bg-black/10 flex items-center justify-center shrink-0 ${isDragging ? '' : 'transition-colors'}`}>
-        <CategoryIcon iconName={category.icon} className="w-6 h-6 text-black/70" />
+      <div className={`w-12 h-12 rounded-lg bg-muted group-hover:bg-muted flex items-center justify-center shrink-0 ${isDragging ? '' : 'transition-colors'}`}>
+        <CategoryIcon iconName={category.icon} className="w-6 h-6 text-foreground" />
       </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <h3 className={`font-bold text-base text-black group-hover:text-black/80 ${isDragging ? '' : 'transition-colors'}`}>
+          <h3 className={`font-bold text-base text-foreground group-hover:text-foreground ${isDragging ? '' : 'transition-colors'}`}>
             {category.name}
           </h3>
-          <span className="text-xs text-black/40 font-mono">
+          <span className="text-xs text-muted-foreground font-mono">
             {category.slug}
           </span>
         </div>
         <div className="flex items-center gap-3">
-          <p className="text-xs text-black/50">
+          <p className="text-xs text-muted-foreground">
             {subCount} {subCount === 1 ? 'podkategoria' : 'podkategorii'}
           </p>
           {category.description && (
             <>
-              <span className="text-black/20">•</span>
-              <p className="text-xs text-black/50 line-clamp-1">{category.description}</p>
+              <span className="text-muted-foreground">•</span>
+              <p className="text-xs text-muted-foreground line-clamp-1">{category.description}</p>
             </>
           )}
         </div>
@@ -128,7 +128,7 @@ function SortableCategory({
           variant="outline"
           size="sm"
           onClick={onDelete}
-          className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+          className="rounded-full border border-border hover:border-border hover:bg-muted text-xs px-4"
         >
           Usuń
         </Button>
@@ -177,14 +177,14 @@ function SortableSubcategory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl bg-white border border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
+      className={`group relative rounded-xl bg-card border border-border hover:border-border shadow-sm hover:shadow-md flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
       onClick={hasChildren ? onClick : undefined}
     >
       {/* Drag Handle */}
       <div
         {...attributes}
         {...listeners}
-        className={`p-2 cursor-grab active:cursor-grabbing text-black/30 hover:text-black/50 ${isDragging ? '' : 'transition-colors'}`}
+        className={`p-2 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground ${isDragging ? '' : 'transition-colors'}`}
         onClick={(e) => e.stopPropagation()}
       >
         <GripVertical className="w-5 h-5" />
@@ -192,7 +192,7 @@ function SortableSubcategory({
 
       {/* Arrow if has children - moved to left */}
       {hasChildren ? (
-        <ChevronRight className={`w-5 h-5 text-black/30 group-hover:text-black/50 shrink-0 ${isDragging ? '' : 'transition-colors'}`} />
+        <ChevronRight className={`w-5 h-5 text-muted-foreground group-hover:text-foreground shrink-0 ${isDragging ? '' : 'transition-colors'}`} />
       ) : (
         <div className="w-5 h-5 shrink-0" />
       )}
@@ -200,18 +200,18 @@ function SortableSubcategory({
       {/* Content */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
-          <h4 className={`font-semibold text-base text-black ${isDragging ? '' : 'transition-colors'}`}>{category.name}</h4>
-          <span className="text-xs text-black/40 font-mono">
+          <h4 className={`font-semibold text-base text-foreground ${isDragging ? '' : 'transition-colors'}`}>{category.name}</h4>
+          <span className="text-xs text-muted-foreground font-mono">
             {category.slug}
           </span>
           {hasChildren && (
-            <span className="text-xs text-black/40">
+            <span className="text-xs text-muted-foreground">
               • ma podkategorie
             </span>
           )}
         </div>
         {category.description && (
-          <p className="text-xs text-black/50 line-clamp-1">{category.description}</p>
+          <p className="text-xs text-muted-foreground line-clamp-1">{category.description}</p>
         )}
       </div>
 
@@ -221,7 +221,7 @@ function SortableSubcategory({
           variant="outline"
           size="sm"
           onClick={onDelete}
-          className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+          className="rounded-full border border-border hover:border-border hover:bg-muted text-xs px-4"
         >
           Usuń
         </Button>
@@ -386,12 +386,12 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
   if (categories.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-black/5 flex items-center justify-center">
-          <svg className="w-8 h-8 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+          <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
         </div>
-        <p className="text-lg text-black/60">Brak kategorii</p>
+        <p className="text-lg text-muted-foreground">Brak kategorii</p>
       </div>
     )
   }
@@ -402,18 +402,18 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
       <div className="mb-6 space-y-4">
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-black/40" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Szukaj kategorii..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 pr-10 h-12 text-base rounded-xl border border-black/10 focus:border-[#C44E35]/40 bg-white"
+            className="pl-12 pr-10 h-12 text-base rounded-xl border-border bg-card text-foreground placeholder:text-muted-foreground"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="h-5 w-5" />
             </button>
@@ -427,19 +427,19 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
               <div className="flex items-center gap-2 text-sm">
                 <button
                   onClick={() => setNavigationPath([])}
-                  className="text-black/60 hover:text-black hover:underline"
+                  className="text-muted-foreground hover:text-foreground hover:underline"
                 >
                   Kategorie główne
                 </button>
                 {navigationPath.map((cat, index) => (
                   <div key={cat.id} className="flex items-center gap-2">
-                    <ChevronRight className="w-4 h-4 text-black/30" />
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
                     {index === navigationPath.length - 1 ? (
-                      <span className="font-semibold text-black">{cat.name}</span>
+                      <span className="font-semibold text-foreground">{cat.name}</span>
                     ) : (
                       <button
                         onClick={() => setNavigationPath(navigationPath.slice(0, index + 1))}
-                        className="text-black/60 hover:text-black hover:underline"
+                        className="text-muted-foreground hover:text-foreground hover:underline"
                       >
                         {cat.name}
                       </button>
@@ -467,12 +467,12 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
       {/* Search Results - Global search across all categories */}
       {searchResults && (
         <div>
-          <p className="text-sm text-black/60 mb-4">
+          <p className="text-sm text-muted-foreground mb-4">
             Znaleziono {searchResults.length} {searchResults.length === 1 ? 'kategorię' : searchResults.length < 5 ? 'kategorie' : 'kategorii'}
           </p>
           {searchResults.length === 0 ? (
-            <div className="text-center py-12 rounded-xl border border-dashed border-black/10">
-              <p className="text-black/40">Brak kategorii pasujących do "{searchQuery}"</p>
+            <div className="text-center py-12 rounded-xl border border-dashed border-border">
+              <p className="text-muted-foreground">Brak kategorii pasujących do "{searchQuery}"</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -481,23 +481,23 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                 return (
                   <div
                     key={cat.id}
-                    className="group relative rounded-xl bg-white border border-black/5 hover:border-black/20 shadow-sm hover:shadow-md flex items-center gap-4 p-4 transition-all"
+                    className="group relative rounded-xl bg-card border border-border hover:border-border shadow-sm hover:shadow-md flex items-center gap-4 p-4 transition-all"
                   >
                     {cat.icon && (
-                      <div className="w-12 h-12 rounded-lg bg-black/5 group-hover:bg-black/10 flex items-center justify-center shrink-0 transition-colors">
-                        <CategoryIcon iconName={cat.icon} className="w-6 h-6 text-black/70" />
+                      <div className="w-12 h-12 rounded-lg bg-muted group-hover:bg-muted flex items-center justify-center shrink-0 transition-colors">
+                        <CategoryIcon iconName={cat.icon} className="w-6 h-6 text-foreground" />
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-base text-black">{cat.name}</h4>
-                        <span className="text-xs text-black/40 font-mono">{cat.slug}</span>
+                        <h4 className="font-semibold text-base text-foreground">{cat.name}</h4>
+                        <span className="text-xs text-muted-foreground font-mono">{cat.slug}</span>
                         {parentCat && (
-                          <span className="text-xs text-black/40">• w {parentCat.name}</span>
+                          <span className="text-xs text-muted-foreground">• w {parentCat.name}</span>
                         )}
                       </div>
                       {cat.description && (
-                        <p className="text-xs text-black/50 line-clamp-1">{cat.description}</p>
+                        <p className="text-xs text-muted-foreground line-clamp-1">{cat.description}</p>
                       )}
                     </div>
                     <div className="flex gap-2 shrink-0">
@@ -505,7 +505,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                         variant="outline"
                         size="sm"
                         onClick={() => setDeletingCategory(cat)}
-                        className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4"
+                        className="rounded-full border border-border hover:border-border hover:bg-muted text-xs px-4"
                       >
                         Usuń
                       </Button>
@@ -529,8 +529,8 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
       {!selectedParentCategory && !searchResults && (
         <>
           {parentCategories.length === 0 ? (
-            <div className="text-center py-12 rounded-xl border border-dashed border-black/10">
-              <p className="text-black/40">Brak kategorii</p>
+            <div className="text-center py-12 rounded-xl border border-dashed border-border">
+              <p className="text-muted-foreground">Brak kategorii</p>
             </div>
           ) : (
             <DndContext
@@ -573,7 +573,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
       {selectedParentCategory && !searchResults && (
         <div>
           {/* Header with Back Button */}
-          <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] border border-black/10">
+          <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] border border-border">
             <div className="flex items-center gap-4">
               <Button
                 onClick={() => {
@@ -584,16 +584,16 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                   }
                 }}
                 variant="outline"
-                className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-sm px-6 gap-2"
+                className="rounded-full border border-border hover:border-border hover:bg-muted text-sm px-6 gap-2"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Cofnij
               </Button>
               <div>
-                <h2 className="text-2xl font-bold text-black mb-1">
+                <h2 className="text-2xl font-bold text-foreground mb-1">
                   {selectedParentCategory.name}
                 </h2>
-                <p className="text-sm text-black/60">
+                <p className="text-sm text-muted-foreground">
                   {subcategories.length} {subcategories.length === 1 ? 'podkategoria' : 'podkategorii'}
                 </p>
               </div>
@@ -629,8 +629,8 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
           </DndContext>
 
           {subcategories.length === 0 && (
-            <div className="text-center py-12 rounded-xl border border-dashed border-black/10">
-              <p className="text-black/40">Brak podkategorii</p>
+            <div className="text-center py-12 rounded-xl border border-dashed border-border">
+              <p className="text-muted-foreground">Brak podkategorii</p>
             </div>
           )}
         </div>

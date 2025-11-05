@@ -204,16 +204,16 @@ export function ModerationPanel({
 
       {/* Posts List */}
       {loading ? (
-        <Card className="border-0 rounded-3xl bg-white">
+        <Card className="border border-border rounded-3xl bg-card">
           <CardContent className="py-20 text-center">
             <div className="flex items-center justify-center gap-3">
               <div className="w-6 h-6 border border-[#C44E35] border-t-transparent rounded-full animate-spin" />
-              <span className="text-black/60">Ładowanie...</span>
+              <span className="text-muted-foreground">Ładowanie...</span>
             </div>
           </CardContent>
         </Card>
       ) : posts.length === 0 ? (
-        <Card className="border-0 rounded-3xl bg-white">
+        <Card className="border border-border rounded-3xl bg-card">
           <CardContent className="py-20 text-center text-black/60">
             Brak ogłoszeń do wyświetlenia
           </CardContent>
@@ -221,17 +221,17 @@ export function ModerationPanel({
       ) : (
         <>
           <Card className="border-0 rounded-3xl bg-white overflow-hidden">
-            <div className="divide-y divide-black/5">
+            <div className="divide-y divide-border">
               {currentPosts.map((post) => (
                 <div key={post.id} className="p-6">
                   {/* Compact Header */}
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-black truncate">{post.title}</h3>
+                        <h3 className="text-lg font-semibold text-foreground truncate">{post.title}</h3>
                         {getStatusBadge(post.moderation_status)}
                       </div>
-                      <div className="flex items-center gap-3 text-sm text-black/60 flex-wrap">
+                      <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
                         <span>{post.profiles?.full_name || 'Użytkownik'}</span>
                         <span>•</span>
                         <span>{post.city}</span>
@@ -251,7 +251,7 @@ export function ModerationPanel({
                           <div className={`text-xl font-bold ${getScoreColor(post.moderation_score)}`}>
                             {post.moderation_score.toFixed(0)}%
                           </div>
-                          <div className="text-xs text-black/60">Score</div>
+                          <div className="text-xs text-muted-foreground">Score</div>
                         </div>
                       )}
                       <button
@@ -259,9 +259,9 @@ export function ModerationPanel({
                         className="p-2 hover:bg-black/5 rounded-xl transition-colors"
                       >
                         {expandedPost === post.id ? (
-                          <ChevronUp className="w-5 h-5 text-black/60" />
+                          <ChevronUp className="w-5 h-5 text-muted-foreground" />
                         ) : (
-                          <ChevronDown className="w-5 h-5 text-black/60" />
+                          <ChevronDown className="w-5 h-5 text-muted-foreground" />
                         )}
                       </button>
                     </div>
@@ -269,12 +269,12 @@ export function ModerationPanel({
 
                   {/* Expanded Content */}
                   {expandedPost === post.id && (
-                    <div className="mt-4 space-y-4 pt-4 border-t border-black/10">
+                    <div className="mt-4 space-y-4 pt-4 border-t border-border">
                       {/* Description */}
                       <div>
-                        <div className="text-sm font-semibold text-black mb-2">Opis:</div>
+                        <div className="text-sm font-semibold text-foreground mb-2">Opis:</div>
                         <div
-                          className="text-sm text-black/80 prose prose-sm max-w-none"
+                          className="text-sm text-foreground prose prose-sm max-w-none"
                           dangerouslySetInnerHTML={{ __html: post.description }}
                         />
                       </div>
@@ -282,7 +282,7 @@ export function ModerationPanel({
                       {/* Moderation Reason */}
                       {post.moderation_reason && (
                         <div>
-                          <div className="text-sm font-semibold text-black mb-2">Powód flagowania:</div>
+                          <div className="text-sm font-semibold text-foreground mb-2">Powód flagowania:</div>
                           <div className="text-sm text-red-600 bg-red-50 p-3 rounded-xl">
                             {post.moderation_reason}
                           </div>
@@ -292,12 +292,12 @@ export function ModerationPanel({
                       {/* Appeal Message */}
                       {post.appeal_message && (
                         <div>
-                          <div className="text-sm font-semibold text-black mb-2">Odwołanie użytkownika:</div>
+                          <div className="text-sm font-semibold text-foreground mb-2">Odwołanie użytkownika:</div>
                           <div className="text-sm text-blue-800 bg-blue-50 p-3 rounded-xl border border-blue-200">
                             {post.appeal_message}
                           </div>
                           {post.appealed_at && (
-                            <div className="text-xs text-black/40 mt-1">
+                            <div className="text-xs text-muted-foreground mt-1">
                               Wysłano: {new Date(post.appealed_at).toLocaleString('pl-PL')}
                             </div>
                           )}
@@ -307,10 +307,10 @@ export function ModerationPanel({
                       {/* Details */}
                       {post.moderation_details && (
                         <details className="text-sm">
-                          <summary className="cursor-pointer text-black/60 hover:text-black">
+                          <summary className="cursor-pointer text-muted-foreground hover:text-foreground">
                             Szczegóły techniczne
                           </summary>
-                          <pre className="mt-2 bg-black/5 p-3 rounded-xl overflow-auto text-xs">
+                          <pre className="mt-2 bg-muted p-3 rounded-xl overflow-auto text-xs">
                             {JSON.stringify(post.moderation_details, null, 2)}
                           </pre>
                         </details>
@@ -318,9 +318,9 @@ export function ModerationPanel({
 
                       {/* Actions */}
                       {selectedStatus === 'appeals' && post.appeal_status === 'pending' && (
-                        <div className="pt-4 border-t border-black/10 space-y-4">
+                        <div className="pt-4 border-t border-border space-y-4">
                           <div className="space-y-2">
-                            <Label className="text-sm text-black/60">
+                            <Label className="text-sm text-muted-foreground">
                               Odpowiedź dla użytkownika (opcjonalnie)
                             </Label>
                             <Textarea
@@ -329,7 +329,7 @@ export function ModerationPanel({
                               onChange={(e) =>
                                 setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
                               }
-                              className="rounded-2xl border border-black/10"
+                              className="rounded-2xl border-border bg-card text-foreground"
                               rows={2}
                             />
                           </div>
@@ -355,9 +355,9 @@ export function ModerationPanel({
                       )}
 
                       {selectedStatus === 'flagged' && (
-                        <div className="pt-4 border-t border-black/10 space-y-4">
+                        <div className="pt-4 border-t border-border space-y-4">
                           <div className="space-y-2">
-                            <Label className="text-sm text-black/60">
+                            <Label className="text-sm text-muted-foreground">
                               Powód odrzucenia (opcjonalnie)
                             </Label>
                             <Textarea
@@ -366,7 +366,7 @@ export function ModerationPanel({
                               onChange={(e) =>
                                 setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
                               }
-                              className="rounded-2xl border border-black/10"
+                              className="rounded-2xl border-border bg-card text-foreground"
                               rows={2}
                             />
                           </div>
@@ -412,7 +412,7 @@ export function ModerationPanel({
                 variant="outline"
                 onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                 disabled={currentPage === 1}
-                className="rounded-full border border-black/10"
+                className="rounded-full border border-border"
               >
                 <ChevronLeft className="w-4 h-4" />
               </Button>
@@ -426,7 +426,7 @@ export function ModerationPanel({
                     className={`rounded-full w-10 h-10 p-0 ${
                       currentPage === page
                         ? 'bg-[#C44E35] hover:bg-[#B33D2A] text-white'
-                        : 'border border-black/10'
+                        : 'border border-border'
                     }`}
                   >
                     {page}
@@ -438,7 +438,7 @@ export function ModerationPanel({
                 variant="outline"
                 onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                 disabled={currentPage === totalPages}
-                className="rounded-full border border-black/10"
+                className="rounded-full border border-border"
               >
                 <ChevronRight className="w-4 h-4" />
               </Button>
