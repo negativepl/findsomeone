@@ -179,23 +179,23 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="min-h-screen bg-background">
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-white border-b border-black/5 z-50 flex items-center justify-between px-4">
+      <header className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-card border-b border-border z-50 flex items-center justify-between px-4">
         <div className="flex items-center gap-3">
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-2 hover:bg-black/5 transition-colors"
+            className="p-2 hover:bg-accent transition-colors"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
           <div className="flex items-center gap-2">
             <Logo className="w-7 h-7" />
             <div className="flex flex-col -space-y-0.5">
-              <span className="text-base font-bold text-black leading-tight">FindSomeone</span>
-              <span className="text-[9px] text-black/50 leading-tight font-medium tracking-wide">PANEL ADMINISTRACYJNY</span>
+              <span className="text-base font-bold text-foreground leading-tight">FindSomeone</span>
+              <span className="text-[9px] text-muted-foreground leading-tight font-medium tracking-wide">PANEL ADMINISTRACYJNY</span>
             </div>
           </div>
         </div>
@@ -209,25 +209,25 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-40"
+          className="lg:hidden fixed inset-0 bg-black/50 dark:bg-black/70 z-40"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 w-64 bg-white border-r border-black/5 z-50 transition-transform duration-300 ${
+        className={`fixed top-0 left-0 bottom-0 w-64 bg-card border-r border-border z-50 transition-transform duration-300 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Logo/Header */}
-          <div className="h-16 border-b border-black/5 flex items-center px-6">
+          <div className="h-16 border-b border-border flex items-center px-6">
             <Link href="/admin" className="flex items-center gap-2.5 group">
               <Logo className="w-9 h-9 flex-shrink-0" />
               <div className="flex flex-col -space-y-0.5">
-                <span className="text-lg font-bold text-black leading-tight">FindSomeone</span>
-                <span className="text-[10px] text-black/50 leading-tight font-medium tracking-wide">PANEL ADMINISTRACYJNY</span>
+                <span className="text-lg font-bold text-foreground leading-tight">FindSomeone</span>
+                <span className="text-[10px] text-muted-foreground leading-tight font-medium tracking-wide">PANEL ADMINISTRACYJNY</span>
               </div>
             </Link>
           </div>
@@ -241,7 +241,7 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
                   return (
                     <div
                       key={`section-${index}`}
-                      className="px-3 pt-4 pb-2 text-xs font-bold text-black/40 uppercase tracking-wider"
+                      className="px-3 pt-4 pb-2 text-xs font-bold text-muted-foreground uppercase tracking-wider"
                     >
                       {item.section}
                     </div>
@@ -259,17 +259,17 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
                     onClick={() => setSidebarOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all ${
                       isActive
-                        ? 'bg-[#C44E35] text-white'
-                        : 'text-black/70 hover:bg-black/5 hover:text-black'
+                        ? 'bg-brand text-brand-foreground'
+                        : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                     }`}
                   >
                     <span className="text-sm font-medium flex-1">{item.label}</span>
                     {badgeCount && (
                       <span
-                        className={`text-xs font-semibold px-2 py-0.5 ${
+                        className={`text-xs font-semibold px-2 py-0.5 rounded ${
                           isActive
-                            ? 'bg-white/20 text-white'
-                            : 'bg-[#C44E35]/10 text-[#C44E35]'
+                            ? 'bg-brand-foreground/20 text-brand-foreground'
+                            : 'bg-brand/10 text-brand'
                         }`}
                       >
                         {badgeCount}
@@ -282,25 +282,25 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
           </nav>
 
           {/* User Info */}
-          <div className="border-t border-black/5 p-4">
+          <div className="border-t border-border p-4">
             <div className="flex items-center gap-3 mb-3">
               <Avatar className="w-10 h-10">
                 <AvatarImage src={profile?.avatar_url || user.user_metadata?.avatar_url} />
-                <AvatarFallback className="bg-[#C44E35] text-white">
+                <AvatarFallback className="bg-brand text-brand-foreground">
                   {profile?.full_name?.charAt(0) || user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0) || 'A'}
                 </AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-black truncate">
+                <p className="text-sm font-semibold text-foreground truncate">
                   {profile?.full_name || user.user_metadata?.full_name || 'Administrator'}
                 </p>
-                <p className="text-xs text-black/60 truncate">{user.email}</p>
+                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
               </div>
             </div>
             <Link href="/dashboard" className="block">
               <Button
                 variant="outline"
-                className="w-full border-black/10 text-black/70 hover:bg-black/5"
+                className="w-full"
                 size="sm"
               >
                 <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
