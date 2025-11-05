@@ -70,15 +70,15 @@ export default async function AdminPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Panel administracyjny</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Panel administracyjny</h1>
+        <p className="text-muted-foreground">
           Witaj ponownie {profile?.full_name}!
         </p>
       </div>
 
       {/* Statistics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="border-0  bg-white shadow-sm">
+        <Card className="border-0  bg-card shadow-sm">
           <CardContent className="py-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -87,17 +87,17 @@ export default async function AdminPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Aktywne ogłoszenia</p>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Aktywne ogłoszenia</p>
                 <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold text-black">{activePosts || 0}</div>
-                  <p className="text-xs text-black/50">z {totalPosts || 0}</p>
+                  <div className="text-3xl font-bold text-foreground">{activePosts || 0}</div>
+                  <p className="text-xs text-muted-foreground">z {totalPosts || 0}</p>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0  bg-white shadow-sm">
+        <Card className="border-0  bg-card shadow-sm">
           <CardContent className="py-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -106,17 +106,17 @@ export default async function AdminPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Użytkownicy</p>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Użytkownicy</p>
                 <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold text-black">{totalUsers || 0}</div>
-                  <p className="text-xs text-black/50">aktywnych</p>
+                  <div className="text-3xl font-bold text-foreground">{totalUsers || 0}</div>
+                  <p className="text-xs text-muted-foreground">aktywnych</p>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0  bg-white shadow-sm">
+        <Card className="border-0  bg-card shadow-sm">
           <CardContent className="py-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -125,17 +125,17 @@ export default async function AdminPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Kategorie</p>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Kategorie</p>
                 <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold text-black">{totalCategories || 0}</div>
-                  <p className="text-xs text-black/50">aktywnych</p>
+                  <div className="text-3xl font-bold text-foreground">{totalCategories || 0}</div>
+                  <p className="text-xs text-muted-foreground">aktywnych</p>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0  bg-white shadow-sm">
+        <Card className="border-0  bg-card shadow-sm">
           <CardContent className="py-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -144,10 +144,10 @@ export default async function AdminPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Wiadomości</p>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Wiadomości</p>
                 <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold text-black">{totalMessages || 0}</div>
-                  <p className="text-xs text-black/50">wysłanych</p>
+                  <div className="text-3xl font-bold text-foreground">{totalMessages || 0}</div>
+                  <p className="text-xs text-muted-foreground">wysłanych</p>
                 </div>
               </div>
             </div>
@@ -157,11 +157,11 @@ export default async function AdminPage() {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-black mb-4">Status zadań</h2>
+        <h2 className="text-xl font-bold text-foreground mb-4">Status zadań</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {moderationCount && moderationCount > 0 ? (
             <Link href="/admin/moderation">
-              <Card className="border-0  bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <Card className="border-0  bg-card hover:shadow-lg transition-all cursor-pointer shadow-sm">
                 <CardContent className="py-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14  bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -170,7 +170,7 @@ export default async function AdminPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-black/70 mb-1">Moderacja</p>
+                      <p className="text-sm font-semibold text-muted-foreground mb-1">Moderacja</p>
                       <p className="text-3xl font-bold text-[#C44E35]">{moderationCount}</p>
                     </div>
                   </div>
@@ -181,7 +181,7 @@ export default async function AdminPage() {
 
           {reportsCount && reportsCount > 0 ? (
             <Link href="/admin/reports">
-              <Card className="border-0  bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <Card className="border-0  bg-card hover:shadow-lg transition-all cursor-pointer shadow-sm">
                 <CardContent className="py-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14  bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -190,7 +190,7 @@ export default async function AdminPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-black/70 mb-1">Zgłoszenia wiadomości</p>
+                      <p className="text-sm font-semibold text-muted-foreground mb-1">Zgłoszenia wiadomości</p>
                       <p className="text-3xl font-bold text-[#C44E35]">{reportsCount}</p>
                     </div>
                   </div>
@@ -201,7 +201,7 @@ export default async function AdminPage() {
 
           {postReportsCount && postReportsCount > 0 ? (
             <Link href="/admin/post-reports">
-              <Card className="border-0  bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <Card className="border-0  bg-card hover:shadow-lg transition-all cursor-pointer shadow-sm">
                 <CardContent className="py-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14  bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -210,7 +210,7 @@ export default async function AdminPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-black/70 mb-1">Zgłoszenia ogłoszeń</p>
+                      <p className="text-sm font-semibold text-muted-foreground mb-1">Zgłoszenia ogłoszeń</p>
                       <p className="text-3xl font-bold text-[#C44E35]">{postReportsCount}</p>
                     </div>
                   </div>
@@ -221,7 +221,7 @@ export default async function AdminPage() {
 
           {bannedUsersCount && bannedUsersCount > 0 ? (
             <Link href="/admin/banned-users">
-              <Card className="border-0  bg-white hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <Card className="border-0  bg-card hover:shadow-lg transition-all cursor-pointer shadow-sm">
                 <CardContent className="py-6">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14  bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -230,7 +230,7 @@ export default async function AdminPage() {
                       </svg>
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-black/70 mb-1">Zbanowani</p>
+                      <p className="text-sm font-semibold text-muted-foreground mb-1">Zbanowani</p>
                       <p className="text-3xl font-bold text-[#C44E35]">{bannedUsersCount}</p>
                     </div>
                   </div>
@@ -240,14 +240,14 @@ export default async function AdminPage() {
           ) : null}
 
           {!moderationCount && !reportsCount && !postReportsCount && !bannedUsersCount && (
-            <Card className="sm:col-span-3 border-0  bg-white shadow-sm">
+            <Card className="sm:col-span-3 border-0  bg-card shadow-sm">
               <CardContent className="pt-6 pb-6 text-center">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-[#C44E35]/10 flex items-center justify-center">
                   <svg className="w-8 h-8 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
-                <p className="text-black/70 font-medium">Wszystko wygląda dobrze! Brak zadań wymagających uwagi.</p>
+                <p className="text-muted-foreground font-medium">Wszystko wygląda dobrze! Brak zadań wymagających uwagi.</p>
               </CardContent>
             </Card>
           )}

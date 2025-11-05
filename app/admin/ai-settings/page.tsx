@@ -18,8 +18,8 @@ export default async function AISettingsPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Ustawienia AI</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Ustawienia AI</h1>
+        <p className="text-muted-foreground">
           Zarządzaj promptami, modelami i parametrami sztucznej inteligencji
         </p>
       </div>

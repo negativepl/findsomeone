@@ -27,6 +27,13 @@ Welcome to the FindSomeone project documentation.
 - [Tests](./tests/) - Test reports and analysis
   - Chatbot analysis and testing
 
+### UX/UI Design System
+- [UX/UI Documentation](./ux-ui/) - Complete design system and component guidelines
+  - Color palette and theming
+  - Typography and spacing
+  - Component patterns
+  - Dark mode support
+
 ## Quick Links
 
 ### For Developers

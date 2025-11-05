@@ -44,13 +44,13 @@ export default async function AdminBannedUsersPage() {
     <>
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-black mb-2">Zbanowani użytkownicy</h1>
-          <p className="text-black/60">
+          <h1 className="text-3xl font-bold text-foreground mb-2">Zbanowani użytkownicy</h1>
+          <p className="text-muted-foreground">
             Zarządzaj zbanowanymi użytkownikami - przeglądaj i odblokuj dostęp
           </p>
         </div>
         <div className="text-right">
-          <p className="text-sm text-black/60">
+          <p className="text-sm text-muted-foreground">
             Łącznie zbanowanych
           </p>
           <p className="text-3xl font-bold text-red-600">

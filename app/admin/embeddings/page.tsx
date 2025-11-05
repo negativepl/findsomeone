@@ -33,15 +33,15 @@ export default async function EmbeddingsPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Wyszukiwanie semantyczne AI</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Wyszukiwanie semantyczne AI</h1>
+        <p className="text-muted-foreground">
           Generuj i zarządzaj indeksem wyszukiwania AI dla ogłoszeń
         </p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+        <Card className="border-0 rounded-3xl bg-card shadow-sm">
           <div className="p-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -50,14 +50,14 @@ export default async function EmbeddingsPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Wszystkie posty</p>
-                <div className="text-3xl font-bold text-black">{totalPosts || 0}</div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Wszystkie posty</p>
+                <div className="text-3xl font-bold text-foreground">{totalPosts || 0}</div>
               </div>
             </div>
           </div>
         </Card>
 
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+        <Card className="border-0 rounded-3xl bg-card shadow-sm">
           <div className="p-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -66,14 +66,14 @@ export default async function EmbeddingsPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Z embeddingami</p>
-                <div className="text-3xl font-bold text-black">{postsWithEmbeddings || 0}</div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Z embeddingami</p>
+                <div className="text-3xl font-bold text-foreground">{postsWithEmbeddings || 0}</div>
               </div>
             </div>
           </div>
         </Card>
 
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+        <Card className="border-0 rounded-3xl bg-card shadow-sm">
           <div className="p-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -82,14 +82,14 @@ export default async function EmbeddingsPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Bez embeddingów</p>
-                <div className="text-3xl font-bold text-black">{postsWithoutEmbeddings || 0}</div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Bez embeddingów</p>
+                <div className="text-3xl font-bold text-foreground">{postsWithoutEmbeddings || 0}</div>
               </div>
             </div>
           </div>
         </Card>
 
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+        <Card className="border-0 rounded-3xl bg-card shadow-sm">
           <div className="p-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -98,8 +98,8 @@ export default async function EmbeddingsPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Pokrycie</p>
-                <div className="text-3xl font-bold text-black">{coveragePercent}%</div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Pokrycie</p>
+                <div className="text-3xl font-bold text-foreground">{coveragePercent}%</div>
               </div>
             </div>
           </div>
