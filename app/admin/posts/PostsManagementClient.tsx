@@ -634,7 +634,7 @@ export function PostsManagementClient() {
                   value={dateFrom}
                   onChange={(e) => setDateFrom(e.target.value)}
                   placeholder="Od"
-                  className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors"
+                  className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors [color-scheme:light] dark:[color-scheme:dark]"
                 />
 
                 <Input
@@ -642,7 +642,7 @@ export function PostsManagementClient() {
                   value={dateTo}
                   onChange={(e) => setDateTo(e.target.value)}
                   placeholder="Do"
-                  className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors"
+                  className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors [color-scheme:light] dark:[color-scheme:dark]"
                 />
               </div>
 

@@ -258,7 +258,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center gap-3">
                           <div className="flex items-center gap-2">
-                            <CheckCircle2 className={`w-4 h-4 ${user.verified ? 'text-blue-600' : 'text-muted-foreground'}`} />
+                            <CheckCircle2 className={`w-4 h-4 ${user.verified ? 'text-foreground' : 'text-muted-foreground'}`} />
                             <Switch
                               checked={user.verified}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'verified', checked)}
@@ -266,7 +266,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             />
                           </div>
                           <div className="flex items-center gap-2">
-                            <Building2 className={`w-4 h-4 ${user.is_company ? 'text-purple-600' : 'text-muted-foreground'}`} />
+                            <Building2 className={`w-4 h-4 ${user.is_company ? 'text-foreground' : 'text-muted-foreground'}`} />
                             <Switch
                               checked={user.is_company}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'is_company', checked)}
@@ -274,7 +274,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             />
                           </div>
                           <div className="flex items-center gap-2">
-                            <Bot className={`w-4 h-4 ${user.is_ai_bot ? 'text-green-600' : 'text-muted-foreground'}`} />
+                            <Bot className={`w-4 h-4 ${user.is_ai_bot ? 'text-foreground' : 'text-muted-foreground'}`} />
                             <Switch
                               checked={user.is_ai_bot}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'is_ai_bot', checked)}
@@ -290,7 +290,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             Zbanowany
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 bg-green-50 text-green-700 px-2.5 py-1 text-xs font-semibold border border-green-200 rounded-lg">
+                          <span className="inline-flex items-center gap-1 bg-green-500/10 text-green-600 px-2.5 py-1 text-xs font-semibold border border-green-500/30 rounded-lg">
                             Aktywny
                           </span>
                         )}
@@ -312,10 +312,10 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               size="sm"
                               onClick={() => unbanUser(user.id)}
                               disabled={loading === user.id}
-                              className="h-9 w-9 p-0 bg-green-50/50 text-green-600 hover:bg-green-100 hover:text-green-700 border border-green-200/50 hover:border-green-300 transition-colors "
+                              className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted transition-all"
                               title="Odbanuj"
                             >
-                              <Shield className="h-4 w-4" />
+                              <Shield className="h-4 w-4 text-foreground" />
                             </Button>
                           ) : (
                             <Button
@@ -323,10 +323,10 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               size="sm"
                               onClick={() => openBanDialog(user)}
                               disabled={loading === user.id}
-                              className="h-9 w-9 p-0 bg-orange-50/50 text-orange-600 hover:bg-orange-100 hover:text-orange-700 border border-orange-200/50 hover:border-orange-300 transition-colors "
+                              className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted transition-all"
                               title="Zbanuj"
                             >
-                              <Ban className="h-4 w-4" />
+                              <Ban className="h-4 w-4 text-foreground" />
                             </Button>
                           )}
                           <Button
@@ -334,10 +334,10 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             size="sm"
                             onClick={() => deleteUser(user.id)}
                             disabled={loading === user.id}
-                            className="h-9 w-9 p-0 bg-red-50/50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200/50 hover:border-red-300 transition-colors "
+                            className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted transition-all"
                             title="Usuń"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-4 w-4 text-foreground" />
                           </Button>
                         </div>
                       </td>
