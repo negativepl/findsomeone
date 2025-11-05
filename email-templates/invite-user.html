@@ -7,6 +7,9 @@ TYTUŁ EMAILA (Subject): Zaproszenie do FindSomeone
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;700&display=swap" rel="stylesheet">
     <title>Zaproszenie do FindSomeone</title>
     <style>
         body {
@@ -26,7 +29,6 @@ TYTUŁ EMAILA (Subject): Zaproszenie do FindSomeone
             background-color: #1f1211;
             border-radius: 24px;
             padding: 48px 40px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
         .logo {
             text-align: center;
@@ -49,16 +51,11 @@ TYTUŁ EMAILA (Subject): Zaproszenie do FindSomeone
         }
         .logo-brand {
             font-size: 24px;
+            font-family: "Lora", Georgia, serif;
             font-weight: 700;
             color: #f9f0ee;
             line-height: 1;
             margin: 0;
-        }
-        .logo-tagline {
-            font-size: 11px;
-            color: rgba(249, 240, 238, 0.6);
-            line-height: 1;
-            margin-top: 4px;
         }
         h1 {
             color: #f9f0ee;
@@ -155,21 +152,15 @@ TYTUŁ EMAILA (Subject): Zaproszenie do FindSomeone
         }
     </style>
 </head>
-<body>
-    <div class="email-container">
+<body bgcolor="#100908" style="margin: 0; padding: 0; background-color: #100908;">
+    <div class="email-container" style="background-color: #100908;">
         <div class="email-content">
             <!-- Logo -->
             <div class="logo">
                 <a href="{{ .SiteURL }}" class="logo-container">
-                    <svg class="logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="32" cy="28" r="11" fill="#f9f0ee"/>
-                        <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#f9f0ee"/>
-                        <circle cx="68" cy="28" r="11" fill="#f27361"/>
-                        <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#f27361"/>
-                    </svg>
+                    <img src="{{ .SiteURL }}/logo-email.png" alt="FindSomeone" width="48" height="48" style="display: block;">
                     <div class="logo-text-wrapper">
                         <span class="logo-brand">FindSomeone</span>
-                        <span class="logo-tagline">Łączymy ludzi lokalnie</span>
                     </div>
                 </a>
             </div>
@@ -178,16 +169,16 @@ TYTUŁ EMAILA (Subject): Zaproszenie do FindSomeone
             <h1>Zostałeś zaproszony!</h1>
 
             <!-- Main content -->
-            <p>Otrzymałeś zaproszenie do dołączenia do platformy FindSomeone - miejsca, gdzie łatwo znajdziesz i zaoferujesz usługi lokalnie.</p>
+            <p>Otrzymałeś zaproszenie do dołączenia do platformy FindSomeone - lokalnego serwisu ogłoszeń.</p>
 
             <!-- Info box -->
             <div class="info-box">
                 <h2>Co możesz robić na FindSomeone?</h2>
                 <ul>
-                    <li>Szukać pomocy w Twojej okolicy</li>
-                    <li>Publikować własne ogłoszenia</li>
+                    <li>Przeglądać ogłoszenia w Twojej okolicy</li>
+                    <li>Dodawać własne ogłoszenia</li>
                     <li>Nawiązywać bezpośredni kontakt</li>
-                    <li>Pomagać innym lub prosić o pomoc</li>
+                    <li>Wymieniać się usługami lokalnie</li>
                 </ul>
             </div>
 
@@ -201,15 +192,15 @@ TYTUŁ EMAILA (Subject): Zaproszenie do FindSomeone
                 <p><strong>Link nie działa?</strong></p>
                 <p>Skopiuj i wklej poniższy adres do przeglądarki:</p>
                 <a href="{{ .SiteURL }}/auth/callback?token={{ .TokenHash }}&type=invite">{{ .SiteURL }}/auth/callback?token={{ .TokenHash }}&type=invite</a>
+                <p style="font-size: 13px; margin-top: 12px; margin-bottom: 0;">To zaproszenie jest ważne przez 24 godziny.</p>
             </div>
 
             <div class="divider"></div>
 
             <!-- Footer -->
             <div class="footer">
-                <p>To zaproszenie jest ważne przez 24 godziny.</p>
                 <p style="font-size: 13px; color: rgba(249, 240, 238, 0.5); margin: 12px 0;">To jest automatyczna wiadomość. Nie odpowiadaj na tego maila.</p>
-                <p>© 2025 FindSomeone. Wszystkie prawa zastrzeżone.</p>
+                <p style="color: rgba(249, 240, 238, 0.5);">Made by FindSomeone</p>
                 <p>
                     <a href="{{ .SiteURL }}/privacy">Polityka prywatności</a> •
                     <a href="{{ .SiteURL }}/terms">Regulamin</a>
