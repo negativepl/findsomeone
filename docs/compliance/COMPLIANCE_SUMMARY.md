@@ -1,188 +1,188 @@
-# Podsumowanie compliance RODO - system wiadomości
+# GDPR Compliance Summary - Messaging System
 
-## Co mamy (gotowe)
+## What We Have (Ready)
 
-### 1. Infrastruktura techniczna
-- Tabela `admin_message_access_logs` - przechowuje każdy dostęp admina
-- Funkcja `log_admin_message_access()` - automatycznie loguje dostęp
-- RLS (Row Level Security) - tylko nadawca i odbiorca widzą wiadomości
-- Funkcja `get_reported_messages()` - tylko dla adminów, automatycznie loguje dostęp
+### 1. Technical Infrastructure
+- `admin_message_access_logs` table - stores every admin access
+- `log_admin_message_access()` function - automatically logs access
+- RLS (Row Level Security) - only sender and receiver see messages
+- `get_reported_messages()` function - admin-only, automatically logs access
 
-### 2. System zgłaszania
-- Przycisk "Zgłoś" w czacie (`/components/ReportMessageDialog.tsx`)
-- Panel zgłoszeń dla adminów (`/app/admin/reports/page.tsx`)
-- 5 kategorii zgłoszeń: spam, molestowanie, treść niestosowna, oszustwo, inne
-- Akcje moderacyjne: odrzuć, ostrzeż, usuń wiadomość, zbanuj użytkownika
+### 2. Reporting System
+- "Report" button in chat (`/components/ReportMessageDialog.tsx`)
+- Reports panel for admins (`/app/admin/reports/page.tsx`)
+- 5 report categories: spam, harassment, inappropriate content, fraud, other
+- Moderation actions: dismiss, warn, delete message, ban user
 
-### 3. Panel audit logs
-- Strona `/admin/audit-logs` - historia dostępów adminów
-- Funkcja `get_admin_access_logs()` - pobiera logi dla panelu
-- Funkcja `get_user_audit_logs(user_id)` - użytkownik może zobaczyć kto przeglądał jego wiadomości
-- Funkcja `cleanup_old_audit_logs()` - usuwa logi starsze niż 2 lata
-- Statystyki: liczba logów, uniqualni admini, dostępy ze zgłoszeń
+### 3. Audit Logs Panel
+- `/admin/audit-logs` page - admin access history
+- `get_admin_access_logs()` function - fetches logs for panel
+- `get_user_audit_logs(user_id)` function - users can see who viewed their messages
+- `cleanup_old_audit_logs()` function - removes logs older than 2 years
+- Statistics: log count, unique admins, report-based access
 
-### 4. Zarządzanie użytkownikami
-- Banowanie użytkowników z powodem
-- Odbanowywanie użytkowników (`/app/admin/banned-users/page.tsx`)
-- Historia banów w tabeli `user_bans`
-- Blokada dostępu dla zbanowanych (middleware)
+### 4. User Management
+- User banning with reason
+- User unbanning (`/app/admin/banned-users/page.tsx`)
+- Ban history in `user_bans` table
+- Access blocking for banned users (middleware)
 
-### 5. Dokumentacja
-- `PRIVACY_AND_MODERATION_GUIDELINES.md` - procedury dla zespołu
-- `AUDIT_LOGS_SETUP.md` - instrukcja konfiguracji
-- Komentarze w SQL opisujące funkcje
-- Checklist compliance - co zrobione, co do zrobienia
+### 5. Documentation
+- `PRIVACY_AND_MODERATION_GUIDELINES.md` - procedures for team
+- `AUDIT_LOGS_SETUP.md` - configuration instructions
+- SQL function comments
+- Compliance checklist - what's done, what's TODO
 
-## Co musisz zrobić (TODO)
+## What You Need to Do (TODO)
 
-### Krytyczne (przed produkcją)
+### Critical (Before Production)
 
-1. **Uruchom SQL w Supabase**
+1. **Run SQL in Supabase**
    ```sql
-   -- W Supabase SQL Editor:
-   1. Uruchom: /supabase/add_audit_logs_function.sql
-   2. Database → Extensions → Włącz pg_cron
-   3. Zaplanuj cron job (patrz: AUDIT_LOGS_SETUP.md)
+   -- In Supabase SQL Editor:
+   1. Run: /supabase/add_audit_logs_function.sql
+   2. Database → Extensions → Enable pg_cron
+   3. Schedule cron job (see: AUDIT_LOGS_SETUP.md)
    ```
 
-2. **Zaktualizuj Politykę Prywatności**
+2. **Update Privacy Policy**
 
-   Dodaj sekcję (w `/app/privacy/page.tsx`):
+   Add section (in `/app/privacy/page.tsx`):
 
    ```markdown
-   ## Wiadomości prywatne i moderacja
+   ## Private Messages and Moderation
 
-   Twoje wiadomości prywatne są chronione i nie są rutynowo przeglądane.
-   Dostęp do wiadomości może nastąpić wyłącznie w przypadku:
+   Your private messages are protected and not routinely reviewed.
+   Access to messages may occur only in case of:
 
-   1. Zgłoszenia przez użytkownika (spam, molestowanie)
-   2. Nakazu sądowego
-   3. Podejrzenia działalności przestępczej
+   1. User report (spam, harassment)
+   2. Court order
+   3. Suspected criminal activity
 
-   Każdy dostęp administratora jest automatycznie logowany w systemie audytu.
-   Logi są przechowywane przez 2 lata i automatycznie usuwane.
+   Every administrator access is automatically logged in the audit system.
+   Logs are stored for 2 years and automatically deleted.
 
-   Masz prawo zażądać informacji o dostępach do Twoich wiadomości.
+   You have the right to request information about access to your messages.
    ```
 
-3. **Dodaj email do kontaktu RODO**
+3. **Add GDPR Contact Email**
    ```
-   privacy@[twoja-domena].pl
+   privacy@[your-domain].com
    ```
 
-   Ten email MUSI działać i być monitorowany!
+   This email MUST work and be monitored!
 
-### Ważne (w ciągu tygodnia)
+### Important (Within a Week)
 
-4. **Przetestuj system**
-   - [ ] Zgłoś testową wiadomość
-   - [ ] Przeglądnij zgłoszenie jako admin
-   - [ ] Sprawdź czy pojawił się log w `/admin/audit-logs`
-   - [ ] Wywołaj manualnie `cleanup_old_audit_logs()`
+4. **Test the System**
+   - [ ] Report test message
+   - [ ] Review report as admin
+   - [ ] Check if log appears in `/admin/audit-logs`
+   - [ ] Manually call `cleanup_old_audit_logs()`
 
-5. **Wyznacz osoby odpowiedzialne**
-   - [ ] Moderator (przeglądanie zgłoszeń)
-   - [ ] RODO Officer (odpowiedzi na żądania użytkowników)
+5. **Designate Responsible Persons**
+   - [ ] Moderator (reviewing reports)
+   - [ ] GDPR Officer (responding to user requests)
 
-### Opcjonalne (ale zalecane)
+### Optional (But Recommended)
 
-6. **Dodaj 2FA dla adminów**
-   - Supabase wspiera 2FA out of the box
+6. **Add 2FA for Admins**
+   - Supabase supports 2FA out of the box
    - Settings → Enable MFA
 
 7. **Monitoring**
-   - Ustaw alert jeśli liczba zgłoszeń > 10/dzień
-   - Regularnie sprawdzaj audit logi (co miesiąc)
+   - Set alert if report count > 10/day
+   - Regularly check audit logs (monthly)
 
-## Jak odpowiedzieć na żądanie RODO?
+## How to Respond to GDPR Requests?
 
-### Scenariusz 1: Użytkownik chce wiedzieć kto przeglądał jego wiadomości
+### Scenario 1: User wants to know who viewed their messages
 
-1. Zweryfikuj tożsamość użytkownika
-2. W Supabase SQL Editor:
+1. Verify user identity
+2. In Supabase SQL Editor:
    ```sql
    SELECT * FROM get_user_audit_logs('user-uuid');
    ```
-3. Eksportuj do CSV
-4. Wyślij na email użytkownika (w ciągu 30 dni)
+3. Export to CSV
+4. Send to user email (within 30 days)
 
-### Scenariusz 2: Użytkownik chce usunąć swoje dane
+### Scenario 2: User wants to delete their data
 
-1. Potwierdź tożsamość
-2. W Supabase:
+1. Confirm identity
+2. In Supabase:
    ```sql
-   -- Usuń audit logi
+   -- Delete audit logs
    DELETE FROM admin_message_access_logs
    WHERE message_id IN (
      SELECT id FROM messages
      WHERE sender_id = 'user-uuid' OR receiver_id = 'user-uuid'
    );
 
-   -- Usuń wiadomości
+   -- Delete messages
    DELETE FROM messages
    WHERE sender_id = 'user-uuid' OR receiver_id = 'user-uuid';
 
-   -- Usuń profil
+   -- Delete profile
    DELETE FROM profiles WHERE id = 'user-uuid';
    ```
-3. Potwierdź usunięcie (w ciągu 30 dni)
+3. Confirm deletion (within 30 days)
 
-## Monitoring compliance
+## Compliance Monitoring
 
-### Co sprawdzać regularnie?
+### What to Check Regularly?
 
-**Co miesiąc:**
-- [ ] Liczba zgłoszeń vs poprzedni miesiąc
-- [ ] Czas reakcji na zgłoszenia (powinno być < 48h)
-- [ ] Liczba audit logów
-- [ ] Czy cron job się wykonuje (`SELECT * FROM cron.job_run_details`)
+**Monthly:**
+- [ ] Report count vs previous month
+- [ ] Report response time (should be < 48h)
+- [ ] Audit log count
+- [ ] Check if cron job executes (`SELECT * FROM cron.job_run_details`)
 
-**Co kwartał:**
-- [ ] Review procedur moderacji
-- [ ] Sprawdzenie czy email privacy@ działa
-- [ ] Audit uprawnień adminów
+**Quarterly:**
+- [ ] Review moderation procedures
+- [ ] Check if privacy@ email works
+- [ ] Audit admin permissions
 
-**Co rok:**
-- [ ] Pełny audit compliance RODO
-- [ ] Update polityki prywatności jeśli zmieniły się przepisy
-- [ ] Szkolenie zespołu z procedur
+**Yearly:**
+- [ ] Full GDPR compliance audit
+- [ ] Update privacy policy if laws changed
+- [ ] Team training on procedures
 
 ## FAQ
 
-### Q: Czy mogę zobaczyć treść wiadomości w bazie danych?
-**A:** Tak, ALE:
-- Tylko jeśli masz biznesową potrzebę (zgłoszenie, nakaz sądowy)
-- ZAWSZE musisz zalogować dostęp używając `log_admin_message_access()`
-- Użytkownik ma prawo wiedzieć że to zrobiłeś
+### Q: Can I view message content in the database?
+**A:** Yes, BUT:
+- Only if you have business need (report, court order)
+- ALWAYS must log access using `log_admin_message_access()`
+- User has right to know you did this
 
-### Q: Jak długo trzymamy wiadomości?
+### Q: How long do we keep messages?
 **A:**
-- Aktywne konta: bez limitu (dopóki użytkownik chce)
-- Po usunięciu konta: 30 dni backup, potem trwałe usunięcie
-- Audit logi: 2 lata, potem automatyczne usunięcie
+- Active accounts: no limit (as long as user wants)
+- After account deletion: 30 days backup, then permanent deletion
+- Audit logs: 2 years, then automatic deletion
 
-### Q: Co jeśli dostanę nakaz sądowy?
+### Q: What if I receive a court order?
 **A:**
-1. Skontaktuj się z prawnikiem
-2. Sprawdź czy nakaz jest prawomocny
-3. Zaloguj dostęp w systemie: `log_admin_message_access()`
-4. Udostępnij tylko to co wymaga nakaz
-5. Zachowaj dokumentację
+1. Contact lawyer
+2. Verify order is valid
+3. Log access in system: `log_admin_message_access()`
+4. Provide only what order requires
+5. Keep documentation
 
-### Q: Czy muszę informować użytkownika że przeglądałem jego wiadomości?
-**A:** NIE musisz aktywnie informować, ALE:
-- Użytkownik ma prawo zapytać (RODO)
-- Wtedy musisz udostępnić audit logi
-- Dlatego ZAWSZE loguj dostęp z prawdziwym powodem!
+### Q: Must I inform user I viewed their messages?
+**A:** NO need to actively inform, BUT:
+- User has right to ask (GDPR)
+- Then you must provide audit logs
+- Therefore ALWAYS log access with real reason!
 
-## Kontakt w razie wątpliwości
+## Contact for Questions
 
-- **Techniczne:** Sprawdź `AUDIT_LOGS_SETUP.md`
-- **Prawne/RODO:** Skonsultuj z prawnikiem specjalizującym się w RODO
-- **Procedury:** Sprawdź `PRIVACY_AND_MODERATION_GUIDELINES.md`
+- **Technical:** Check `AUDIT_LOGS_SETUP.md`
+- **Legal/GDPR:** Consult with GDPR specialist lawyer
+- **Procedures:** Check `PRIVACY_AND_MODERATION_GUIDELINES.md`
 
 ---
 
-**Status:** System gotowy do produkcji (po wykonaniu TODO)
-**Data:** 2025-10-10
-**Compliance:** RODO/GDPR ready
+**Status:** System ready for production (after completing TODO)
+**Date:** November 5, 2025
+**Compliance:** GDPR ready

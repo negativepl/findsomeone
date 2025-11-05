@@ -28,8 +28,8 @@ This software is available under a dual-license model:
 If you're interested in using this software commercially, please contact:
 
 **Marcin Baszewski**
-- GitHub: [@marcinbaszewski](https://github.com/marcinbaszewski)
-- Email: Available via GitHub profile
+- GitHub: [@negativepl](https://github.com/negativepl)
+- Contact: https://github.com/negativepl
 
 ### What's included in a commercial license?
 

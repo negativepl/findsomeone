@@ -1,64 +1,62 @@
-# Funkcje AI - dokumentacja
+# AI Features Documentation
 
-## Generator synonimów AI (GPT-5 nano)
+## AI Synonym Generator
 
-System automatycznego generowania synonimów dla wyszukiwarki wykorzystując GPT-5 nano od OpenAI.
+Automatic synonym generation system for the search engine using OpenAI GPT.
 
-### Funkcjonalności
+### Features
 
-1. **Auto-generowanie synonimów** - AI analizuje terminy i generuje kontekstowe synonymy
-2. **3 tryby pracy:**
-   - **Trendy (7 dni)** - analizuje najpopularniejsze wyszukiwania z ostatnich 7 dni
-   - **Popularne (30 dni)** - analizuje najpopularniejsze wyszukiwania z ostatnich 30 dni
-   - **Własny termin** - pozwala wprowadzić dowolny termin do analizy
+1. **Auto-generate synonyms** - AI analyzes terms and generates contextual synonyms
+2. **3 operating modes:**
+   - **Trending (7 days)** - Analyzes most popular searches from the last 7 days
+   - **Popular (30 days)** - Analyzes most popular searches from the last 30 days
+   - **Custom term** - Allows entering any term for analysis
 
-3. **Review & Approve System** - AI proponuje, admin wybiera co zatwierdzić
-4. **Batch Processing** - możliwość zatwierdzenia wielu synonimów jednocześnie
-5. **Inteligentny kontekst** - AI rozumie polski język i lokalne nazewnictwo
+3. **Review & Approve System** - AI proposes, admin chooses what to approve
+4. **Batch Processing** - Ability to approve multiple synonyms at once
+5. **Intelligent context** - AI understands language nuances and local terminology
 
-### Jak używać?
+### How to Use
 
-1. **Przejdź do panelu admina:** `/admin/synonyms`
-2. **Wybierz tryb generowania:**
-   - Trendy - najlepszy dla aktualnych potrzeb
-   - Popularne - szerszy zakres terminów
-   - Własny termin - dla specyficznych przypadków
-3. **Kliknij "Wygeneruj Synonymy AI"**
-4. **Przejrzyj propozycje AI:**
-   - Każda propozycja zawiera:
-     - Termin główny
-     - Lista synonimów (3-6 sztuk)
-     - Kontekst i wyjaśnienie
-5. **Zaznacz wybrane propozycje** (lub "Zaznacz wszystkie")
-6. **Kliknij "Zastosuj wybrane"**
+1. **Go to admin panel:** `/admin/synonyms`
+2. **Select generation mode:**
+   - Trending - Best for current needs
+   - Popular - Broader range of terms
+   - Custom term - For specific cases
+3. **Click "Generate AI Synonyms"**
+4. **Review AI suggestions:**
+   - Each suggestion contains:
+     - Main term
+     - List of synonyms (3-6 items)
+     - Context and explanation
+5. **Select desired suggestions** (or "Select all")
+6. **Click "Apply selected"**
 
-### Konfiguracja
+### Configuration
 
-#### Wymagania:
-- Klucz API OpenAI (GPT-5 nano)
+#### Requirements:
+- OpenAI API key
 
 #### Setup:
-1. Dodaj do `.env.local`:
+1. Add to `.env.local`:
 ```bash
 OPENAI_API_KEY=sk-proj-...
 ```
 
-2. Pobierz klucz z: https://platform.openai.com/api-keys
+2. Get your key from: https://platform.openai.com/api-keys
 
-### Koszty
+### Costs
 
-GPT-5 nano to najtańszy model GPT-5:
-- **Input:** $0.05 / 1M tokens
-- **Output:** $0.40 / 1M tokens
+OpenAI pricing varies by model. Typical costs for synonym generation:
+- 10 terms: ~$0.01 - $0.02
+- 100 terms: ~$0.10 - $0.15
 
-Przykładowe koszty:
-- 10 terminów: ~$0.01 - $0.02
-- 100 terminów: ~$0.10 - $0.15
+Actual costs depend on the model used and can be configured in the admin panel.
 
-### Endpointy API
+### API Endpoints
 
 #### POST `/api/admin/synonyms/generate`
-Generuje synonymy AI dla wybranych terminów.
+Generates AI synonyms for selected terms.
 
 **Request:**
 ```json
@@ -73,26 +71,26 @@ Generuje synonymy AI dla wybranych terminów.
 {
   "suggestions": [
     {
-      "term": "hydraulik",
-      "synonyms": ["instalator", "monter instalacji", "fachowiec od instalacji"],
-      "context": "Osoba zajmująca się instalacjami wodno-kanalizacyjnymi i grzewczymi"
+      "term": "plumber",
+      "synonyms": ["installer", "pipe fitter", "plumbing specialist"],
+      "context": "Person who works with water, drainage, and heating installations"
     }
   ],
   "tokensUsed": 450,
-  "model": "gpt-5-nano"
+  "model": "gpt-4o-mini"
 }
 ```
 
 #### PUT `/api/admin/synonyms/generate`
-Zatwierdza i zapisuje wybrane synonymy do bazy.
+Approves and saves selected synonyms to the database.
 
 **Request:**
 ```json
 {
   "suggestions": [
     {
-      "term": "hydraulik",
-      "synonyms": ["instalator", "monter"],
+      "term": "plumber",
+      "synonyms": ["installer", "pipe fitter"],
       "context": "..."
     }
   ]
@@ -108,46 +106,63 @@ Zatwierdza i zapisuje wybrane synonymy do bazy.
 }
 ```
 
-### Komponenty UI
+### UI Components
 
-**Generator AI Panel** (`/components/admin/SynonymsManager.tsx`):
-- Przełączniki trybów (Trendy/Popularne/Własny)
-- Przycisk generowania z loading state
-- Panel z propozycjami AI
-- Checkboxy do wyboru synonimów
-- Batch actions (zaznacz wszystkie, zastosuj wybrane)
+**AI Generator Panel** (`/components/admin/SynonymsManager.tsx`):
+- Mode switches (Trending/Popular/Custom)
+- Generate button with loading state
+- AI suggestions panel
+- Checkboxes for synonym selection
+- Batch actions (select all, apply selected)
 
-### Przyszłe funkcje AI
+### Future AI Features
 
-Planowane rozszerzenia:
-1. **Query Expansion** - automatyczne rozszerzanie zapytań
-2. **Semantic Search** - wyszukiwanie semantyczne
-3. **Query Rewriting** - poprawianie błędów i optymalizacja fraz
-4. **Category Prediction** - automatyczne dopasowanie kategorii
-5. **Intent Recognition** - rozpoznawanie intencji użytkownika
+Planned extensions:
+1. **Query Expansion** - Automatic query expansion
+2. **Semantic Search** - Enhanced semantic search capabilities
+3. **Query Rewriting** - Error correction and phrase optimization
+4. **Category Prediction** - Automatic category matching
+5. **Intent Recognition** - User intent detection
 
-### Rozwiązywanie problemów
+### Troubleshooting
 
-**Problem:** Błąd "Failed to generate synonyms"
-- **Rozwiązanie:** Sprawdź czy `OPENAI_API_KEY` jest poprawnie ustawiony w `.env.local`
+**Problem:** Error "Failed to generate synonyms"
+- **Solution:** Check if `OPENAI_API_KEY` is correctly set in `.env.local`
 
-**Problem:** Brak propozycji
-- **Rozwiązanie:** Wszystkie terminy już mają synonymy lub brak trending searches w bazie
+**Problem:** No suggestions returned
+- **Solution:** All terms already have synonyms or no trending searches in database
 
-**Problem:** Błąd parsowania JSON
-- **Rozwiązanie:** Model czasem zwraca nieprawidłowy format - odśwież i spróbuj ponownie
+**Problem:** JSON parsing error
+- **Solution:** Model occasionally returns invalid format - refresh and try again
 
-### Notatki techniczne
+### Technical Notes
 
-- Model: `gpt-5-nano`
-- Temperature: `0.7` (balans kreatywności i precyzji)
+- Model: Configurable in admin panel (default: GPT-4o mini)
+- Temperature: `0.7` (balance of creativity and precision)
 - Response format: `json_object` (structured output)
-- Context window: 272K tokens input, 128K output
-- Timeout: 30s (można zwiększyć dla większych batch'y)
+- Timeout: 30s (can be increased for larger batches)
 
-### Bezpieczeństwo
+### Security
 
-- Endpoint wymaga uprawnień **admin**
-- Weryfikacja użytkownika przez Supabase Auth
-- Rate limiting zalecany dla produkcji
-- API key tylko w server-side components (nie w przeglądarce)
+- Endpoint requires **admin** privileges
+- User verification through Supabase Auth
+- Rate limiting recommended for production
+- API key only in server-side components (not in browser)
+
+## AI Content Moderation
+
+Automatic content moderation using Hugging Face API for detecting spam and inappropriate content.
+
+See [Content Moderation Guide](../compliance/PRIVACY_AND_MODERATION_GUIDELINES.md) for details.
+
+## Semantic Search
+
+Vector-based search using OpenAI embeddings and pgvector.
+
+See [Semantic Search Setup](./SEMANTIC_SEARCH_SETUP.md) for implementation details.
+
+## AI Navigator Chatbot
+
+Intelligent assistant helping users find listings through natural conversation.
+
+Configuration available in admin panel at `/admin/chat-assistant`.

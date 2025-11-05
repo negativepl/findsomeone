@@ -1,23 +1,23 @@
 # Rate Limiting
 
-## Przegląd
+## Overview
 
-System wyszukiwania ma zaimplementowany **rate limiting** chroniący przed nadużyciami i zapewniający stabilność API.
+The search system has implemented **rate limiting** to protect against abuse and ensure API stability.
 
-## Limity
+## Limits
 
-### Automatyczne limity per IP:
+### Automatic Limits per IP:
 
-| Endpoint | Limit | Okno czasowe | Uwagi |
+| Endpoint | Limit | Time Window | Notes |
 |----------|-------|--------------|-------|
-| `/api/search` | 10 req | 10 sekund | Główne wyszukiwanie |
-| `/api/search/semantic` | 5 req | 10 sekund | AI semantic search (kosztowne) |
-| `/api/search/rewrite` | 5 req | 10 sekund | AI query correction (kosztowne) |
-| `/api/search/suggestions` | 20 req | 10 sekund | Autocomplete (więcej tolerancji) |
+| `/api/search` | 10 req | 10 seconds | Main search |
+| `/api/search/semantic` | 5 req | 10 seconds | AI semantic search (expensive) |
+| `/api/search/rewrite` | 5 req | 10 seconds | AI query correction (expensive) |
+| `/api/search/suggestions` | 20 req | 10 seconds | Autocomplete (more tolerance) |
 
 ## Response Headers
 
-Każda odpowiedź zawiera nagłówki rate limit:
+Each response contains rate limit headers:
 
 ```http
 X-RateLimit-Limit: 10
@@ -25,9 +25,9 @@ X-RateLimit-Remaining: 7
 X-RateLimit-Reset: 1704067200000
 ```
 
-## Przekroczenie limitu
+## Exceeding the Limit
 
-Gdy limit zostanie przekroczony:
+When limit is exceeded:
 
 **HTTP Status:** `429 Too Many Requests`
 
@@ -35,7 +35,7 @@ Gdy limit zostanie przekroczony:
 ```json
 {
   "error": "Too many requests",
-  "message": "Przekroczono limit wyszukiwań. Spróbuj ponownie za chwilę.",
+  "message": "Search limit exceeded. Please try again in a moment.",
   "retryAfter": 8
 }
 ```
@@ -48,43 +48,43 @@ X-RateLimit-Remaining: 0
 X-RateLimit-Reset: 1704067200000
 ```
 
-## Konfiguracja
+## Configuration
 
-### Development (domyślnie)
+### Development (Default)
 
-W środowisku deweloperskim system używa **in-memory rate limiting**:
-- Prosty, bez dodatkowych zależności
-- Resetuje się przy restarcie serwera
-- Wystarczający do testowania
+In development environment, system uses **in-memory rate limiting**:
+- Simple, no additional dependencies
+- Resets on server restart
+- Sufficient for testing
 
-### Production (zalecane)
+### Production (Recommended)
 
-Dla produkcji skonfiguruj **Upstash Redis**:
+For production, configure **Upstash Redis**:
 
-1. Załóż konto na [Upstash Console](https://console.upstash.com/)
-2. Stwórz nową bazę Redis (darmowy tier wystarczy)
-3. Dodaj do `.env.local`:
+1. Create account at [Upstash Console](https://console.upstash.com/)
+2. Create new Redis database (free tier is sufficient)
+3. Add to `.env.local`:
 
 ```env
 UPSTASH_REDIS_REST_URL=https://your-endpoint.upstash.io
 UPSTASH_REDIS_REST_TOKEN=your-token-here
 ```
 
-**Zalety Upstash:**
-- ✅ Persystentny storage (przetrwa restarty)
-- ✅ Shared state (działa z multiple instances)
-- ✅ Analytics (monitoring użycia)
-- ✅ Darmowy tier: 10,000 req/dzień
+**Upstash Benefits:**
+- Persistent storage (survives restarts)
+- Shared state (works with multiple instances)
+- Analytics (usage monitoring)
+- Free tier: 10,000 req/day
 
-## Customizacja limitów
+## Custom Limits
 
-Edytuj `lib/rate-limit.ts`:
+Edit `lib/rate-limit.ts`:
 
 ```typescript
 export const RATE_LIMITS = {
   search: {
-    limit: 10,  // ← zmień limit
-    window: 10, // ← zmień okno (sekundy)
+    limit: 10,  // ← change limit
+    window: 10, // ← change window (seconds)
   },
   semantic: {
     limit: 5,
@@ -96,19 +96,19 @@ export const RATE_LIMITS = {
 
 ## Best Practices
 
-### Dla użytkowników API:
+### For API Users:
 
-1. **Respektuj `Retry-After` header** - czekaj wskazany czas
-2. **Monitoruj `X-RateLimit-Remaining`** - nie czekaj na 429
-3. **Implementuj exponential backoff** dla retries
+1. **Respect `Retry-After` header** - wait indicated time
+2. **Monitor `X-RateLimit-Remaining`** - don't wait for 429
+3. **Implement exponential backoff** for retries
 
-### Dla administratorów:
+### For Administrators:
 
-1. **Monitoruj abuse patterns** w Upstash dashboard
-2. **Dostosuj limity** na podstawie load testing
-3. **Rozważ per-user limits** dla zalogowanych użytkowników (TODO)
+1. **Monitor abuse patterns** in Upstash dashboard
+2. **Adjust limits** based on load testing
+3. **Consider per-user limits** for authenticated users (TODO)
 
-## Przykład obsługi w kliencie
+## Client Example
 
 ```typescript
 async function searchWithRateLimit(query: string) {
@@ -135,52 +135,52 @@ async function searchWithRateLimit(query: string) {
 }
 ```
 
-## Metryki
+## Metrics
 
-### Koszt Upstash (darmowy tier):
-- 10,000 requests/dzień
+### Upstash Cost (Free Tier):
+- 10,000 requests/day
 - 256MB storage
-- Wystarczy dla ~1000 użytkowników dziennie
+- Sufficient for ~1000 daily users
 
-### Koszt paid tier ($0.20/100k requests):
-- 100,000 users/dzień = **$2.00/miesiąc**
-- Bardzo tanie!
+### Paid Tier Cost ($0.20/100k requests):
+- 100,000 users/day = **$2.00/month**
+- Very affordable!
 
 ## Troubleshooting
 
-### Problem: Rate limit działa zbyt agresywnie
+### Problem: Rate limit too aggressive
 
-**Rozwiązanie:** Zwiększ `limit` lub `window` w `RATE_LIMITS`
+**Solution:** Increase `limit` or `window` in `RATE_LIMITS`
 
-### Problem: Multiple users za tym samym IP (corporate)
+### Problem: Multiple users behind same IP (corporate)
 
-**Rozwiązanie:** Implementuj per-user rate limiting dla zalogowanych:
+**Solution:** Implement per-user rate limiting for authenticated users:
 
 ```typescript
 // lib/rate-limit.ts
 const identifier = user?.id || `ip:${clientIp}`
 ```
 
-### Problem: Rate limiting nie działa w development
+### Problem: Rate limiting not working in development
 
-**Powód:** In-memory store resetuje się przy hot reload
+**Reason:** In-memory store resets on hot reload
 
-**Rozwiązanie:** Skonfiguruj Upstash Redis nawet dla dev
+**Solution:** Configure Upstash Redis even for dev
 
-## Przyszłe ulepszenia (TODO)
+## Future Improvements (TODO)
 
-- [ ] Per-user rate limiting (wyższe limity dla zalogowanych)
-- [ ] Premium tier bez limitów (subscription)
-- [ ] Rate limiting dashboard w admin panel
-- [ ] Automatic ban dla abuse (np. >100 req/min)
-- [ ] Whitelist dla trusted IPs (partnery API)
+- [ ] Per-user rate limiting (higher limits for authenticated users)
+- [ ] Premium tier without limits (subscription)
+- [ ] Rate limiting dashboard in admin panel
+- [ ] Automatic ban for abuse (e.g., >100 req/min)
+- [ ] Whitelist for trusted IPs (API partners)
 
 ## Security Note
 
-Rate limiting to **pierwsza linia obrony** przed:
+Rate limiting is **first line of defense** against:
 - DDoS attacks
 - API abuse
 - Credential stuffing
 - Cost overrun (OpenAI API)
 
-Zawsze trzymaj enabled w produkcji! 🔒
+Always keep enabled in production!

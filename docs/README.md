@@ -1,63 +1,66 @@
-# Dokumentacja FindSomeone
+# FindSomeone Documentation
 
-Witaj w dokumentacji projektu FindSomeone - polskiej platformy ogłoszeń lokalnych.
+Welcome to the FindSomeone project documentation.
 
-## Struktura dokumentacji
+## Documentation Structure
 
-### Meta
-- [`ORGANIZATION_SUMMARY.md`](./ORGANIZATION_SUMMARY.md) - Jak zorganizowano projekt (pełne podsumowanie)
+### Architecture
+- [Project Structure](./architecture/PROJECT_STRUCTURE.md) - Detailed project structure and code organization
 
-### Architektura
-- [`PROJECT_STRUCTURE.md`](../PROJECT_STRUCTURE.md) - Szczegółowa struktura projektu i organizacja kodu
-
-### Testy i analizy
-- [`tests/TEST_CHATBOT_ANALYSIS.md`](./tests/TEST_CHATBOT_ANALYSIS.md) - Kompleksowa analiza AI chatbota Nawigatorka
-
-### AI i wyszukiwanie
-- [`ai/`](./ai/) - Dokumentacja funkcji AI i wyszukiwania semantycznego
+### AI & Search
+- [AI Features](./ai/) - AI features and semantic search documentation
   - Semantic Search (pgvector + OpenAI embeddings)
-  - AI Navigator - chatbot Nawigatorek
-  - Hugging Face - moderacja treści
+  - AI Navigator - chatbot assistant
+  - Content moderation with Hugging Face
+  - Content bot for automated listing generation
 
-### Zgodność prawna
-- [`compliance/`](./compliance/) - Zgodność prawna i moderacja treści
+### Compliance & Legal
+- [Compliance](./compliance/) - Legal compliance and content moderation guidelines
 
-### Konfiguracja
-- [`setup/`](./setup/) - Przewodniki konfiguracji
+### Setup & Configuration
+- [Setup Guides](./setup/) - Configuration and implementation guides
+  - Rate limiting setup
+  - Search optimization
+  - Implementation guides
 
-## Quick links
+### Tests & Analysis
+- [Tests](./tests/) - Test reports and analysis
+  - Chatbot analysis and testing
 
-### Dla deweloperów
-- [README.md](../README.md) - Główny README projektu
-- [Struktura projektu](../PROJECT_STRUCTURE.md) - Pełna struktura katalogów i tabel
-- [LICENSE](../LICENSE) - Licencja projektu (MIT z klauzulą niekomercyjną)
+## Quick Links
 
-### Najnowsze testy
-- [Analiza chatbota Nawigatorka](./tests/TEST_CHATBOT_ANALYSIS.md) - Zacznij tutaj
+### For Developers
+- [Main README](../README.md) - Project overview and getting started
+- [Project Structure](../PROJECT_STRUCTURE.md) - Complete directory structure and database schema
+- [LICENSE](../LICENSE) - Non-Commercial MIT License
 
-## Konwencje
+### Getting Started
+1. Read the [Main README](../README.md) for project overview
+2. Review the [Project Structure](../PROJECT_STRUCTURE.md) for architecture
+3. Check the [Setup Guides](./setup/) for configuration
 
-### Nazewnictwo plików
-- `PROJECT_*` - Dokumentacja architektury i struktury
-- `TEST_*` - Raporty testów i analizy
-- `*_ANALYSIS` - Szczegółowe analizy funkcjonalności
+## File Naming Conventions
 
-### Status dokumentów
-- Aktualny - Najnowsza wersja dokumentu
-- Archiwalny - Zachowany jako referencja historyczna
+- `PROJECT_*` - Architecture and structure documentation
+- `TEST_*` - Test reports and analysis
+- `*_GUIDE` - Step-by-step implementation guides
+- `*_SETUP` - Configuration and setup documentation
 
-## Technologie
+## Technology Stack
 
-Projekt wykorzystuje:
-- **Next.js 16** - App Router, Server Components
+The project uses:
+- **Next.js 16** - App Router, Server Components, Server Actions
 - **Supabase** - PostgreSQL, Auth, Realtime, Storage
 - **OpenAI** - GPT (chatbot), text-embedding-3-small (semantic search)
-- **Hugging Face** - Moderacja treści
-- **pgvector** - Wyszukiwanie wektorowe
-- **Lordicon** - Animowane ikony
-- **Framer Motion** - Animacje UI
+- **Hugging Face** - Content moderation
+- **pgvector** - Vector similarity search
+- **Framer Motion** - UI animations
+- **shadcn/ui** - UI components
 
-## Ostatnia aktualizacja
+## Contributing
 
-**Data:** 2025-11-01
-**Zmiany:** Aktualizacja do Next.js 16, reorganizacja struktury, przepisanie dokumentacji
+For contribution guidelines, see the [main README](../README.md).
+
+---
+
+**Last Updated:** November 5, 2025
