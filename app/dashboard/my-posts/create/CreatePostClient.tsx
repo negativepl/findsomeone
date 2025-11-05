@@ -13,7 +13,6 @@ import { ImageUpload } from '@/components/ImageUpload'
 import { MapPin, Loader2, Tag, FileText, ImageIcon, DollarSign } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
-import { StepLottieIcon } from '@/components/StepLottieIcon'
 import { Switch } from '@/components/ui/switch'
 
 interface Category {
@@ -81,19 +80,6 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
       if (user) setUserId(user.id)
     })
   }, [supabase])
-
-  // Get animation paths for current step
-  const getStepAnimationPaths = (step: number) => {
-    const paths = {
-      1: { animation: '/animations/verified.json', svg: '/animations/verified.svg' },
-      2: { animation: '/animations/edit-icon.json', svg: '/animations/edit-icon.svg' },
-      3: { animation: '/animations/camera.json', svg: '/animations/camera.svg' },
-      4: { animation: '/animations/location.json', svg: '/animations/location.svg' },
-      5: { animation: '/animations/coins.json', svg: '/animations/coins.svg' },
-      6: { animation: '/animations/heart.json', svg: '/animations/heart.svg' },
-    }
-    return paths[step as keyof typeof paths] || paths[1]
-  }
 
   // Close city dropdown when clicking outside
   useEffect(() => {
@@ -541,20 +527,14 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
       {/* Header - zaokrąglony */}
       <header className="bg-card border-b border-border sticky top-1 z-40 shadow-sm rounded-b-3xl">
         <div className="flex items-center justify-between h-16 px-4">
-          {/* Title on the left with Lottie icon */}
-          <div
-            className={`flex items-center gap-2 transition-all duration-200 ${
+          {/* Title on the left */}
+          <h1
+            className={`text-xl font-bold text-foreground transition-all duration-200 ${
               isTransitioning ? 'opacity-0 blur-sm scale-95' : 'opacity-100 blur-0 scale-100'
             }`}
           >
-            <StepLottieIcon
-              step={currentStep}
-              animationPath={getStepAnimationPaths(currentStep).animation}
-              svgPath={getStepAnimationPaths(currentStep).svg}
-              className="w-8 h-8 flex-shrink-0"
-            />
-            <h1 className="text-xl font-bold text-foreground">{getStepTitle(currentStep)}</h1>
-          </div>
+            {getStepTitle(currentStep)}
+          </h1>
           {/* Step counter on the right */}
           <p
             className={`text-lg text-muted-foreground font-semibold transition-all duration-200 ${
