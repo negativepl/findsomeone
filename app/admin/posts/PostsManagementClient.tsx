@@ -502,10 +502,10 @@ export function PostsManagementClient() {
 
   const getStatusBadge = (status: string) => {
     const badges = {
-      active: { bg: 'bg-green-50', text: 'text-green-700', border: 'border-green-200', label: 'Aktywne' },
-      pending: { bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', label: 'Oczekujące' },
-      expired: { bg: 'bg-gray-50', text: 'text-gray-700', border: 'border-gray-200', label: 'Wygasłe' },
-      archived: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', label: 'Zarchiwizowane' },
+      active: { bg: 'bg-green-500/10', text: 'text-green-600', border: 'border-green-500/30', label: 'Aktywne' },
+      pending: { bg: 'bg-yellow-500/10', text: 'text-yellow-600', border: 'border-yellow-500/30', label: 'Oczekujące' },
+      expired: { bg: 'bg-gray-500/10', text: 'text-gray-600', border: 'border-gray-500/30', label: 'Wygasłe' },
+      archived: { bg: 'bg-blue-500/10', text: 'text-blue-600', border: 'border-blue-500/30', label: 'Zarchiwizowane' },
     }
     return badges[status as keyof typeof badges] || badges.expired
   }
@@ -897,14 +897,15 @@ export function PostsManagementClient() {
                       {(() => {
                         const badge = getStatusBadge(post.status)
                         return (
-                          <span className={`inline-flex items-center gap-1 ${badge.bg} ${badge.text} px-2.5 py-1 text-xs font-semibold border ${badge.border}`}>
+                          <span className={`inline-flex items-center gap-1 ${badge.bg} ${badge.text} px-2.5 py-1 text-xs font-semibold border ${badge.border} rounded-lg`}>
                             {badge.label}
                           </span>
                         )
                       })()}
                     </td>
                     <td className="px-4 py-4 text-center">
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-muted-foreground flex items-center justify-center gap-1.5">
+                        <Calendar className="h-3.5 w-3.5" />
                         {new Date(post.created_at).toLocaleDateString('pl-PL', {
                           day: '2-digit',
                           month: '2-digit',
@@ -918,29 +919,29 @@ export function PostsManagementClient() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-9 w-9 p-0 bg-blue-50/50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 border border-blue-200/50 hover:border-blue-300 transition-colors "
+                            className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all"
                             title="Zobacz ogłoszenie"
                           >
-                            <ExternalLink className="h-4 w-4" />
+                            <ExternalLink className="h-4 w-4 text-foreground" />
                           </Button>
                         </Link>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => openEditModal(post)}
-                          className="h-9 w-9 p-0 bg-orange-50/50 text-orange-600 hover:bg-orange-100 hover:text-orange-700 border border-orange-200/50 hover:border-orange-300 transition-colors "
+                          className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all"
                           title="Edytuj"
                         >
-                          <Edit2 className="h-4 w-4" />
+                          <Edit2 className="h-4 w-4 text-foreground" />
                         </Button>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleDelete(post.id)}
-                          className="h-9 w-9 p-0 bg-red-50/50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200/50 hover:border-red-300 transition-colors "
+                          className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all"
                           title="Usuń"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Trash2 className="h-4 w-4 text-foreground" />
                         </Button>
                       </div>
                     </td>
