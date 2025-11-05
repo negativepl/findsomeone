@@ -1,31 +1,31 @@
-# Search Optimization - Dokumentacja Zmian
+# Search Optimization - Documentation
 
-## 📅 Data: 22 Października 2025
+**Date:** November 5, 2025
 
-## 🎯 Cel Optymalizacji
-Poprawa wydajności, jakości wyników i user experience wyszukiwarki w projekcie FindSomeone.
+## Goal of Optimization
+Improve performance, result quality, and user experience of the FindSomeone search engine.
 
 ---
 
-## 📊 Wyniki Before/After
+## Results Before/After
 
-| Metryka | Przed | Po | Poprawa |
+| Metric | Before | After | Improvement |
 |---------|-------|----|---------|
-| **Zapytania SQL na autocomplete** | 6 | 1 | **83% mniej** |
-| **Czas odpowiedzi (cache miss)** | ~300-500ms | ~200-300ms | **~40% szybciej** |
-| **Czas odpowiedzi (cache hit)** | N/A | ~10-20ms | **95% szybciej** |
-| **Jakość fraz autocomplete** | 6/10 | 8/10 | **+33%** |
-| **Loading UX** | Brak | Skeleton + spinner | ✅ |
-| **No results handling** | Brak | Full state | ✅ |
+| **SQL queries per autocomplete** | 6 | 1 | **83% fewer** |
+| **Response time (cache miss)** | ~300-500ms | ~200-300ms | **~40% faster** |
+| **Response time (cache hit)** | N/A | ~10-20ms | **95% faster** |
+| **Autocomplete phrase quality** | 6/10 | 8/10 | **+33%** |
+| **Loading UX** | None | Skeleton + spinner | Implemented |
+| **No results handling** | None | Full state | Implemented |
 
 ---
 
-## ✅ Zaimplementowane Optymalizacje
+## Implemented Optimizations
 
-### 1. **Brakująca Funkcja `search_categories_unaccent`** ⚠️ KRYTYCZNE
+### 1. **Missing `search_categories_unaccent` Function** - CRITICAL
 
-**Problem**: Funkcja była wywoływana w API ale nie istniała w repozytorium
-**Rozwiązanie**: Utworzono migrację `20250121000013_add_search_categories_unaccent.sql`
+**Problem**: Function was called in API but didn't exist in repository
+**Solution**: Created migration `20250121000013_add_search_categories_unaccent.sql`
 
 ```sql
 create or replace function search_categories_unaccent(
@@ -35,19 +35,19 @@ create or replace function search_categories_unaccent(
 ```
 
 **Features**:
-- Normalizacja polskich znaków (`prad` → `prąd`)
-- Priorytetyzacja dokładnych dopasowań
-- Sortowanie po relevan cji
+- Polish character normalization (`prad` → `prąd`)
+- Exact match prioritization
+- Relevance-based sorting
 
-**Impact**: Kategorię teraz działają poprawnie w autocomplete
+**Impact**: Categories now work correctly in autocomplete
 
 ---
 
-### 2. **Unified Autocomplete Query** 🚀 PERFORMANCE
+### 2. **Unified Autocomplete Query** - PERFORMANCE
 
-**Problem**: 6 osobnych zapytań SQL na jedno autocomplete
+**Problem**: 6 separate SQL queries for one autocomplete
 ```typescript
-// PRZED:
+// BEFORE:
 await supabase.rpc('get_autocomplete_suggestions')
 await supabase.rpc('search_categories_unaccent')
 await supabase.from('search_queries').select()
@@ -56,9 +56,9 @@ await supabase.rpc('get_trending_searches')
 await supabase.rpc('get_smart_suggestions')
 ```
 
-**Rozwiązanie**: Pojedyncza funkcja `get_unified_autocomplete`
+**Solution**: Single `get_unified_autocomplete` function
 ```typescript
-// PO:
+// AFTER:
 await supabase.rpc('get_unified_autocomplete', {
   search_query: query,
   user_id: userId,
@@ -66,59 +66,59 @@ await supabase.rpc('get_unified_autocomplete', {
 })
 ```
 
-**Migracja**: `20250121000014_optimize_autocomplete_unified.sql`
+**Migration**: `20250121000014_optimize_autocomplete_unified.sql`
 
 **Impact**:
-- **83% mniej round-tripów do bazy**
-- ~100-200ms oszczędności na każdym wyszukiwaniu
-- Lepsze wykorzystanie connection pooling
+- **83% fewer round-trips to database**
+- ~100-200ms savings per search
+- Better connection pooling utilization
 
 ---
 
-### 3. **Inteligentna Ekstrakcja Fraz (N-gramy)** 🧠
+### 3. **Intelligent Phrase Extraction (N-grams)**
 
-**Problem**: Stara implementacja używała prostego `substring(title from position() - 10)`
-- Generowało losowe kawałki tytułów
-- Brak sensownych fraz
-- Przykład: "prac w bielsku-bia" zamiast "praca w bielsku-białej"
+**Problem**: Old implementation used simple `substring(title from position() - 10)`
+- Generated random title fragments
+- No meaningful phrases
+- Example: "work in bielsko-whi" instead of "work in bielsko-biala"
 
-**Rozwiązanie**: Ekstrakcja n-gramów (2-3 słowa)
+**Solution**: N-gram extraction (2-3 words)
 ```sql
--- Bigrams (2 słowa)
+-- Bigrams (2 words)
 w1.word || ' ' || w2.word
 
--- Trigrams (3 słowa)
+-- Trigrams (3 words)
 w1.word || ' ' || w2.word || ' ' || w3.word
 ```
 
 **Features**:
-- Filtrowanie słów < 3 znaki
-- Wykluczanie czystych liczb
-- Walidacja znaków (tylko polskie + cyfry)
-- Inteligentne priorytetyzowanie (trigrams > bigrams > categories)
+- Filter words < 3 characters
+- Exclude pure numbers
+- Character validation (only Polish + digits)
+- Intelligent prioritization (trigrams > bigrams > categories)
 
 **Impact**:
-- **+33% jakość sugestii**
-- Mniej "śmieci" w wynikach
-- Lepsze dopasowanie do intencji użytkownika
+- **+33% suggestion quality**
+- Less "junk" in results
+- Better match to user intent
 
 ---
 
-### 4. **Redis Cache Layer** ⚡
+### 4. **Redis Cache Layer**
 
-**Problem**: Każde zapytanie generowało pełne skanowanie bazy
-**Rozwiązanie**: Redis cache z Upstash (już dostępny w projekcie)
+**Problem**: Every query generated full database scan
+**Solution**: Redis cache with Upstash (already available in project)
 
-**Nowy plik**: `lib/search-cache.ts`
+**New file**: `lib/search-cache.ts`
 
 **Features**:
-- TTL 5 minut dla autocomplete
-- TTL 10 minut dla trending/popular
+- 5 minute TTL for autocomplete
+- 10 minute TTL for trending/popular
 - Separate cache keys per query
-- Graceful degradation (jeśli Redis unavailable, app działa dalej)
-- Fire-and-forget cache writes (nie blokuje response)
+- Graceful degradation (if Redis unavailable, app continues)
+- Fire-and-forget cache writes (doesn't block response)
 
-**Kod**: `app/api/search/route.ts`
+**Code**: `app/api/search/route.ts`
 ```typescript
 // Check cache first
 const cached = await getCachedAutocomplete(query)
@@ -132,25 +132,25 @@ setCachedAutocomplete(query, data)
 ```
 
 **Impact**:
-- **95% szybciej dla powtarzających się zapytań**
-- Redukcja load na Supabase
-- Lepsza skalowalność
+- **95% faster for repeated queries**
+- Reduced load on Supabase
+- Better scalability
 
 ---
 
-### 5. **Automatyczny Cleanup Starych Queries** 🗑️
+### 5. **Automatic Old Queries Cleanup**
 
-**Problem**: Tabela `search_queries` rosła w nieskończoność (privacy/GDPR concern)
-**Rozwiązanie**: Funkcja cleanup z 90-dniowym retention
+**Problem**: `search_queries` table grew infinitely (privacy/GDPR concern)
+**Solution**: Cleanup function with 90-day retention
 
-**Migracja**: `20250121000015_add_search_cleanup_cron.sql`
+**Migration**: `20250121000015_add_search_cleanup_cron.sql`
 
 ```sql
 create or replace function cleanup_old_searches()
 returns table(deleted_count bigint)
 ```
 
-**Setup Cron** (jeśli masz Supabase Pro + pg_cron):
+**Setup Cron** (if you have Supabase Pro + pg_cron):
 ```sql
 SELECT cron.schedule(
   'cleanup-old-search-queries',
@@ -159,36 +159,36 @@ SELECT cron.schedule(
 );
 ```
 
-**Alternatywa (bez pg_cron)**:
-- Utwórz Edge Function
-- Scheduluj via GitHub Actions lub Vercel Cron
+**Alternative (without pg_cron)**:
+- Create Edge Function
+- Schedule via GitHub Actions or Vercel Cron
 
 **Monitoring View**: `search_queries_stats`
 ```sql
 SELECT * FROM search_queries_stats;
--- Pokazuje: total queries, table size, queries > 90 days, etc.
+-- Shows: total queries, table size, queries > 90 days, etc.
 ```
 
 **Impact**:
 - GDPR compliance (90-day retention)
-- Kontrola rozmiaru tabeli
-- Lepsza performance search analytics queries
+- Table size control
+- Better performance for search analytics queries
 
 ---
 
-### 6. **UX Improvements - Loading & No Results** 💫
+### 6. **UX Improvements - Loading & No Results**
 
 **Problem**:
-- Brak loading indicator → użytkownik nie wie czy coś się dzieje
-- Brak no results state → puste dropdown wygląda jak bug
+- No loading indicator → user doesn't know if something is happening
+- No no-results state → empty dropdown looks like bug
 
-**Rozwiązanie**: Pełny loading i empty states
+**Solution**: Complete loading and empty states
 
 **Loading State** (`LiveSearchBar.tsx`):
 ```tsx
 {isLoading && searchQuery && (
   <div className="animate-pulse">
-    <div className="animate-spin">🔄 Spinner</div>
+    <div className="animate-spin">Spinner</div>
     {/* 3 skeleton cards */}
   </div>
 )}
@@ -198,91 +198,91 @@ SELECT * FROM search_queries_stats;
 ```tsx
 {!isLoading && searchQuery && noResults && (
   <div className="text-center">
-    😕 Brak wyników
+    No results found
     <ul>
-      <li>Użyć innych słów kluczowych</li>
-      <li>Sprawdzić pisownię</li>
-      <li>Użyć bardziej ogólnych fraz</li>
+      <li>Use different keywords</li>
+      <li>Check spelling</li>
+      <li>Use more general phrases</li>
     </ul>
   </div>
 )}
 ```
 
 **Impact**:
-- Lepsza perceived performance
-- Mniej zgłoszeń "nie działa"
-- Profesjonalny wygląd
+- Better perceived performance
+- Fewer "doesn't work" reports
+- Professional appearance
 
 ---
 
-## 📁 Nowe Pliki
+## New Files
 
-| Plik | Typ | Opis |
+| File | Type | Description |
 |------|-----|------|
-| `supabase/migrations/20250121000013_add_search_categories_unaccent.sql` | Migration | Brakująca funkcja kategorii |
-| `supabase/migrations/20250121000014_optimize_autocomplete_unified.sql` | Migration | Unified autocomplete + n-gramy |
+| `supabase/migrations/20250121000013_add_search_categories_unaccent.sql` | Migration | Missing categories function |
+| `supabase/migrations/20250121000014_optimize_autocomplete_unified.sql` | Migration | Unified autocomplete + n-grams |
 | `supabase/migrations/20250121000015_add_search_cleanup_cron.sql` | Migration | Cleanup job + monitoring view |
 | `lib/search-cache.ts` | Library | Redis cache layer |
-| `SEARCH_OPTIMIZATION.md` | Docs | Ta dokumentacja |
+| `SEARCH_OPTIMIZATION.md` | Docs | This documentation |
 
 ---
 
-## 📝 Zmodyfikowane Pliki
+## Modified Files
 
-| Plik | Zmiany |
+| File | Changes |
 |------|--------|
-| `app/api/search/route.ts` | + Cache layer, + unified function, - 5 zapytań SQL |
-| `components/LiveSearchBar.tsx` | + Loading state, + No results state, + Lepszy UX |
+| `app/api/search/route.ts` | + Cache layer, + unified function, - 5 SQL queries |
+| `components/LiveSearchBar.tsx` | + Loading state, + No results state, + Better UX |
 
 ---
 
-## 🔄 Stare Migracje (DO USUNIĘCIA)
+## Old Migrations (TO DELETE)
 
-Te migracje były eksperymentami i są nadpisane przez nowsze wersje:
+These migrations were experiments and are superseded by newer versions:
 
 ```
-❌ 20250121000001_improve_autocomplete_phrases.sql
-❌ 20250121000002_simple_autocomplete_fix.sql
-❌ 20250121000003_fix_search_function.sql
-❌ 20250121000004_fix_autocomplete_final.sql
-❌ 20250121000005_strict_search_no_bullshit.sql
-❌ 20250121000006_autocomplete_real_phrases.sql
-❌ 20250121000007_autocomplete_with_category_paths.sql
-❌ 20250121000008_proper_autocomplete_like_google.sql
-❌ 20250121000009_fix_autocomplete_sorting_and_stemming.sql
-❌ 20250121000010_autocomplete_query_in_category.sql
-❌ 20250121000011_autocomplete_simple_that_works.sql
-❌ 20250121000012_autocomplete_guaranteed_results.sql (częściowo nadpisana)
+20250121000001_improve_autocomplete_phrases.sql
+20250121000002_simple_autocomplete_fix.sql
+20250121000003_fix_search_function.sql
+20250121000004_fix_autocomplete_final.sql
+20250121000005_strict_search_no_bullshit.sql
+20250121000006_autocomplete_real_phrases.sql
+20250121000007_autocomplete_with_category_paths.sql
+20250121000008_proper_autocomplete_like_google.sql
+20250121000009_fix_autocomplete_sorting_and_stemming.sql
+20250121000010_autocomplete_query_in_category.sql
+20250121000011_autocomplete_simple_that_works.sql
+20250121000012_autocomplete_guaranteed_results.sql (partially superseded)
 
-✅ KEEP: 20250121000013 (search_categories_unaccent)
-✅ KEEP: 20250121000014 (optimized unified autocomplete)
-✅ KEEP: 20250121000015 (cleanup cron)
+KEEP: 20250121000013 (search_categories_unaccent)
+KEEP: 20250121000014 (optimized unified autocomplete)
+KEEP: 20250121000015 (cleanup cron)
 ```
 
-**Rekomendacja**:
-1. Nie usuwaj starych migracji jeśli już są deployed w production (Supabase tracking)
-2. Jeśli chcesz posprzątać, stwórz nowy projekt i zastosuj tylko finalne 3 migracje
-3. Lub zostaw je jako archiwum (nie szkodzą, tylko zajmują miejsce w repo)
+**Recommendation**:
+1. Don't delete old migrations if already deployed to production (Supabase tracking)
+2. If you want to clean up, create new project and apply only final 3 migrations
+3. Or leave them as archive (no harm, just takes space in repo)
 
 ---
 
-## 🚀 Deployment
+## Deployment
 
-### Krok 1: Apply Migrations
+### Step 1: Apply Migrations
 ```bash
-# Jeśli używasz Supabase CLI
+# If using Supabase CLI
 supabase migration up
 
-# Lub manual via Supabase Dashboard → SQL Editor:
+# Or manual via Supabase Dashboard → SQL Editor:
 # 1. Run 20250121000013_add_search_categories_unaccent.sql
 # 2. Run 20250121000014_optimize_autocomplete_unified.sql
 # 3. Run 20250121000015_add_search_cleanup_cron.sql
 ```
 
-### Krok 2: Deploy App
+### Step 2: Deploy App
 ```bash
-# Upewnij się że masz UPSTASH_REDIS_REST_URL i TOKEN w .env
-# (Już powinieneś mieć, bo używasz rate-limit)
+# Make sure you have UPSTASH_REDIS_REST_URL and TOKEN in .env
+# (You should already have them, used for rate-limit)
 
 # Deploy
 git add .
@@ -290,22 +290,22 @@ git commit -m "Optimize search: unified queries, cache, better UX"
 git push
 ```
 
-### Krok 3: Setup Cleanup Cron (Optional)
+### Step 3: Setup Cleanup Cron (Optional)
 ```sql
--- Jeśli masz Supabase Pro + pg_cron:
+-- If you have Supabase Pro + pg_cron:
 SELECT cron.schedule(
   'cleanup-old-search-queries',
   '0 2 * * *',
   'SELECT cleanup_old_searches()'
 );
 
--- Lub ręcznie raz na miesiąc:
+-- Or manually once per month:
 SELECT cleanup_old_searches();
 ```
 
-### Krok 4: Monitor
+### Step 4: Monitor
 ```sql
--- Check cache stats (jeśli masz Redis)
+-- Check cache stats (if you have Redis)
 SELECT * FROM search_queries_stats;
 
 -- Manual cleanup test
@@ -314,107 +314,107 @@ SELECT cleanup_old_searches();
 
 ---
 
-## 📈 Monitoring & Metrics
+## Monitoring & Metrics
 
 ### Cache Hit Rate
-Sprawdź logi Next.js:
+Check Next.js logs:
 ```
-[Cache HIT] Returning cached results for: hydraulik
-[Cache MISS] Fetching from database for: nowe-zapytanie
+[Cache HIT] Returning cached results for: plumber
+[Cache MISS] Fetching from database for: new-query
 ```
 
-Dobry hit rate: **>60%** dla popularnych zapytań
+Good hit rate: **>60%** for popular queries
 
 ### Database Load
-W Supabase Dashboard → Performance:
-- **Query count** powinien spaść ~80%
-- **Average response time** powinien spaść ~40%
+In Supabase Dashboard → Performance:
+- **Query count** should drop ~80%
+- **Average response time** should drop ~40%
 
 ### Search Queries Table Size
 ```sql
 SELECT * FROM search_queries_stats;
--- queries_older_than_90_days powinno być 0 jeśli cleanup działa
+-- queries_older_than_90_days should be 0 if cleanup works
 ```
 
 ---
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
-### "Funkcja get_unified_autocomplete nie istnieje"
-**Rozwiązanie**: Zastosuj migrację `20250121000014_optimize_autocomplete_unified.sql`
+### "Function get_unified_autocomplete does not exist"
+**Solution**: Apply migration `20250121000014_optimize_autocomplete_unified.sql`
 
-### "Cache nie działa, zawsze MISS"
-**Sprawdź**:
+### "Cache not working, always MISS"
+**Check**:
 ```bash
 # .env.local
 UPSTASH_REDIS_REST_URL=https://...
 UPSTASH_REDIS_REST_TOKEN=...
 ```
 
-**Fallback**: Jeśli Redis nie skonfigurowany, app działa normalnie (bez cache)
+**Fallback**: If Redis not configured, app works normally (without cache)
 
-### "Autocomplete zwraca dziwne frazy"
+### "Autocomplete returns weird phrases"
 **Debug**:
-1. Sprawdź logi: `Autocomplete results for: XXX → Y suggestions`
-2. Zweryfikuj że migracja 00014 jest applied
-3. Sprawdź dane w `posts` table (może są złe dane źródłowe)
+1. Check logs: `Autocomplete results for: XXX → Y suggestions`
+2. Verify migration 00014 is applied
+3. Check data in `posts` table (may have bad source data)
 
-### "Cleanup nie usuwa starych queries"
+### "Cleanup doesn't delete old queries"
 **Check**:
 ```sql
 SELECT cleanup_old_searches();
--- Powinno zwrócić liczbę usuniętych wierszy
+-- Should return number of deleted rows
 
--- Jeśli 0, sprawdź:
+-- If 0, check:
 SELECT count(*) FROM search_queries WHERE created_at < now() - interval '90 days';
 ```
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
-### Quick Wins (1-2h każde):
-1. ✅ **Spell-checking** - dodaj trigram search z suggestions
-2. ✅ **Search history w UI** - zamiast tylko localStorage
-3. ✅ **Cache invalidation hooks** - invaliduj cache gdy dodany nowy post
+### Quick Wins (1-2h each):
+1. **Spell-checking** - add trigram search with suggestions
+2. **Search history in UI** - instead of just localStorage
+3. **Cache invalidation hooks** - invalidate cache when new post added
 
-### Medium (1-2 dni):
-1. 🔄 **A/B testing** - testuj różne rankingi fraz
-2. 🔄 **Analytics dashboard** - wizualizacja search metrics
-3. 🔄 **Personalized cache** - różne cache per user type
+### Medium (1-2 days):
+1. **A/B testing** - test different phrase rankings
+2. **Analytics dashboard** - visualize search metrics
+3. **Personalized cache** - different cache per user type
 
-### Big (1-2 tygodnie):
-1. 💡 **Elasticsearch/Meilisearch** - pełna search engine replacement
-2. 💡 **ML query correction** - zamiast prostego spell-check
-3. 💡 **Real-time suggestions** - WebSocket dla instant results
-
----
-
-## 📞 Kontakt
-
-Jeśli masz pytania o optymalizację:
-- Check kod w `lib/search-cache.ts` (dobrze udokumentowany)
-- Check migracje w `supabase/migrations/20250121000013-15`
-- Otwórz issue z tagiem `[search]`
+### Big (1-2 weeks):
+1. **Elasticsearch/Meilisearch** - full search engine replacement
+2. **ML query correction** - instead of simple spell-check
+3. **Real-time suggestions** - WebSocket for instant results
 
 ---
 
-## 📜 Summary
+## Contact
 
-**Przed**: Wolna wyszukiwarka z 6 SQL queries, bez cache, bez loading states
-**Po**: Szybka wyszukiwarka z 1 SQL query, Redis cache, profesjonalny UX
+If you have questions about optimization:
+- Check code in `lib/search-cache.ts` (well documented)
+- Check migrations in `supabase/migrations/20250121000013-15`
+- Open issue with tag `[search]`
 
-**Kluczowe metryki**:
-- ⚡ **-83% zapytań SQL**
-- ⚡ **-40% czas odpowiedzi** (cache miss)
-- ⚡ **-95% czas odpowiedzi** (cache hit)
-- 🎯 **+33% jakość wyników**
-- ✨ **Profesjonalny UX** (loading, no results)
+---
 
-**Tech debt cleared**:
-- ✅ Brakująca funkcja dodana
-- ✅ 12 chaotycznych migracji zastąpionych 3 czystymi
-- ✅ GDPR compliance (90-day retention)
-- ✅ Monitoring (search_queries_stats view)
+## Summary
 
-🎉 **Search is now production-ready and scalable!**
+**Before**: Slow search with 6 SQL queries, no cache, no loading states
+**After**: Fast search with 1 SQL query, Redis cache, professional UX
+
+**Key Metrics**:
+- **-83% SQL queries**
+- **-40% response time** (cache miss)
+- **-95% response time** (cache hit)
+- **+33% result quality**
+- **Professional UX** (loading, no results)
+
+**Tech Debt Cleared**:
+- Missing function added
+- 12 chaotic migrations replaced with 3 clean ones
+- GDPR compliance (90-day retention)
+- Monitoring (search_queries_stats view)
+
+Search is now production-ready and scalable!

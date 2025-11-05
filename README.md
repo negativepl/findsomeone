@@ -1,174 +1,223 @@
 # FindSomeone
 
-<div align="center">
+A modern local classifieds and services platform built with Next.js 16, TypeScript, and Supabase.
 
-![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=next.js&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-![Supabase](https://img.shields.io/badge/Supabase-Database-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+**Live Demo:** [findsomeone.app](https://findsomeone.app)
 
-**Nowoczesna platforma lokalnych ogłoszeń i usług**
+## Overview
 
-[Live Demo](https://findsomeone.app) • [Dokumentacja](./docs/README.md) • [Struktura](./PROJECT_STRUCTURE.md)
+FindSomeone is a web application for publishing and browsing local classified ads. The platform supports various listing types including vehicle sales, property rentals, job postings, equipment rentals, service offerings, and more. The project features advanced functionality including AI-powered moderation, semantic search, an intelligent chatbot assistant, and a modern, responsive UI.
 
-</div>
+## Key Features
 
----
+### AI-Powered Search & Assistant
+- **Semantic Search**: Vector-based search using OpenAI embeddings and pgvector
+- **Chatbot Navigator**: Intelligent assistant helping users find listings through natural conversation
+- **Hybrid Search**: Combined semantic (60%) and full-text (40%) search for optimal results
+- **Smart Suggestions**: Context-aware search recommendations
 
-## O projekcie
+### Real-time Communication
+- Private messaging with Supabase Realtime
+- Online/offline presence indicators
+- Message reporting system
+- Unread message counter
 
-FindSomeone to aplikacja webowa umożliwiająca publikowanie i przeglądanie lokalnych ogłoszeń. Platforma pozwala na wystawianie różnorodnych ogłoszeń - sprzedaż aut, wynajem mieszkań, poszukiwanie pracy, wynajem urządzeń, oferowanie usług i wiele więcej. Projekt wyróżnia się zaawansowanymi funkcjami takimi jak: półauomatycznym sprawdzaniem ogłoszeń przed publikacją, inteligentnym botem Nawigatorkiem, botem Wypełniaczkiem i przepięknym UX / UI.
+### Content Management
+- AI-assisted listing creation and categorization
+- Automatic content moderation using Hugging Face
+- Image upload and compression
+- Rich text editor with TipTap
+- Category-based organization with hierarchical structure
 
-**Wersja live:** [findsomeone.app](https://findsomeone.app)
+### User Features
+- User authentication (Email, OAuth)
+- User profiles with ratings and reviews
+- Favorite listings
+- Listing statistics (views, phone clicks)
+- Extended listing duration options
 
-## Kluczowe funkcje
+### Administration
+- Moderation queue for pending listings
+- Category management with AI-generated descriptions
+- User management and ban system
+- Comprehensive audit logs
+- AI synonym generator for search optimization
+- Embedding management
 
-**Chatbot - Nawigatorek**
-- Inteligentny chatbot, który pomaga znaleźć idealne ogłoszenie poprzez naturalną rozmowę
-- Zadawaj pytania w języku polskim, a AI zrozumie Twoje potrzeby i znajdzie najlepsze dopasowania
-- Kontekstowa rozmowa - bot pamięta całą historię konwersacji
-- Integracja z wyszukiwaniem semantycznym dla precyzyjnych wyników
-- Dostępny tylko dla zalogowanych użytkowników
+### Modern UX/UI
+- Responsive mobile-first design
+- Smooth animations with Framer Motion
+- Dark/light theme support
+- Mobile dock navigation with gestures
+- PWA support for installable app experience
+- Accessibility features
 
-**Komunikacja**
-- Wiadomości w czasie rzeczywistym (Supabase Realtime)
-- Wskaźniki obecności (online/offline)
-- System zgłoszeń niewłaściwych treści
-- Licznik nieprzeczytanych wiadomości
+## Technology Stack
 
-**Administracja**
-- Panel moderacji ogłoszeń
-- Zarządzanie kategoriami
-- System banów użytkowników
-- Logi audytowe wszystkich akcji admina
-- Generator synonimów AI dla wyszukiwarki
-
-**UX/UI**
-- Responsywny design (mobile-first)
-- Animacje Framer Motion
-- Dock mobilny z gestami
-- Dostępność (a11y)
-
-## Stos technologiczny
-
-**Frontend:**
-- Next.js 16 (App Router)
-- TypeScript
-- Tailwind CSS
-- shadcn/ui
+### Frontend
+- Next.js 16 (App Router, Server Components, Server Actions)
+- TypeScript 5
+- Tailwind CSS 4
+- shadcn/ui components
+- Radix UI primitives
 - Framer Motion
-- Lordicon
+- React Hook Form + Zod
 
-**Backend:**
-- Supabase (PostgreSQL, Auth, Realtime, Storage)
-- OpenAI (embeddings, GPT)
-- Hugging Face
-- pgvector
+### Backend
+- Supabase (PostgreSQL, Authentication, Realtime, Storage)
+- OpenAI (GPT-4o mini, text-embedding-3-small)
+- Hugging Face (content moderation)
+- pgvector (vector similarity search)
 - Row Level Security (RLS)
 
-**Dodatkowe:**
-- Resend
-- Zod
-- React Hook Form
+### Additional Services
+- Resend (email delivery)
+- Upstash (rate limiting)
+- Vercel (hosting and deployment)
 
-## Instalacja lokalna
+## Getting Started
 
-### Wymagania
-- Node.js 20.9.0+
-- Konto Supabase (darmowy tier)
-- OpenAI API key (opcjonalnie, dla AI)
+### Prerequisites
+- Node.js 20.9.0 or higher
+- Supabase account (free tier available)
+- OpenAI API key (optional, for AI features)
 
-### Quick Start
+### Installation
 
 ```bash
-# 1. Sklonuj repozytorium
+# Clone the repository
 git clone https://github.com/negativepl/findsomeone.git
 cd findsomeone
 
-# 2. Zainstaluj zależności
+# Install dependencies
 npm install
 
-# 3. Utwórz plik .env.local
+# Configure environment variables
 cp .env.example .env.local
-# Edytuj .env.local i dodaj swoje klucze
+# Edit .env.local with your credentials
 
-# 4. Uruchom serwer deweloperski
+# Run development server
 npm run dev
 ```
 
-### Zmienne środowiskowe
+Visit `http://localhost:3000` to see the application.
+
+### Environment Variables
 
 ```env
-# Supabase (wymagane)
+# Supabase (required)
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
-# OpenAI (opcjonalne, dla AI)
+# OpenAI (optional, for AI features)
 OPENAI_API_KEY=sk-your-key
 
-# Resend (opcjonalne, dla emaili)
+# Resend (optional, for emails)
 RESEND_API_KEY=re-your-key
 ```
 
-### Baza danych
+### Database Setup
 
-1. Utwórz projekt w [Supabase](https://supabase.com)
-2. Wykonaj migracje z `supabase/migrations/`
-3. Skonfiguruj dostawców uwierzytelniania w Dashboard
+1. Create a new project at [Supabase](https://supabase.com)
+2. Run migrations from `supabase/migrations/` in order
+3. Configure authentication providers in the Supabase Dashboard
+4. Enable pgvector extension in your database
 
-## Główne tabele
+## Project Structure
 
-- **profiles** - Profile użytkowników
-- **posts** - Ogłoszenia (z embeddingami wektorowymi)
-- **categories** - Kategorie usług
-- **messages** - Wiadomości prywatne
-- **reviews** - Oceny i opinie
-- **favorites** - Ulubione ogłoszenia
-- **admin_audit_logs** - Logi akcji adminów
+```
+findsomeone/
+├── app/                    # Next.js App Router pages and API routes
+├── components/             # React components
+├── contexts/               # React Context providers
+├── lib/                    # Utilities, actions, and Supabase clients
+├── supabase/              # Database migrations and configuration
+├── public/                # Static assets
+├── docs/                  # Documentation
+└── scripts/               # Utility scripts
+```
 
-Wszystkie tabele chronione Row Level Security (RLS).
+See [PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md) for detailed documentation.
+
+## Database Schema
+
+### Main Tables
+- `profiles` - User profiles extending Supabase Auth
+- `posts` - Classified listings with vector embeddings
+- `categories` - Hierarchical category structure
+- `messages` - Real-time private messages
+- `favorites` - User favorites
+- `reviews` - User ratings and reviews
+- `admin_audit_logs` - Administrative action tracking
+
+All tables are protected with Row Level Security (RLS) policies.
+
+## Development
+
+### Available Scripts
+
+```bash
+npm run dev          # Start development server with Turbopack
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+```
+
+### Key Features Implementation
+
+**Semantic Search**: Implemented using pgvector and OpenAI embeddings. See `lib/actions/search.ts` and database functions in migrations.
+
+**Real-time Messaging**: Uses Supabase Realtime subscriptions. See `app/dashboard/messages/` for implementation.
+
+**AI Chatbot**: Powered by OpenAI GPT with streaming responses. See `app/api/ai-chat/` for API routes.
+
+**Content Moderation**: Automatic moderation using Hugging Face API. See `app/api/moderate/` for implementation.
 
 ## Deployment
 
-Projekt gotowy do wdrożenia na **Vercel**:
+The project is optimized for deployment on Vercel:
 
-1. Push do GitHub
-2. Import projektu w Vercel
-3. Dodaj zmienne środowiskowe
-4. Deploy!
+1. Push your code to GitHub
+2. Import the project in Vercel
+3. Configure environment variables
+4. Deploy
 
-## Statystyki
+The application will automatically deploy on every push to the main branch.
 
-- **Linie kodu:** ~15,000+
-- **Komponenty:** 45+
-- **Strony:** 25+
-- **Tabele w bazie:** 12
-- **Technologie:** 15+
+## Documentation
 
-## Współpraca
+- [Project Structure](./PROJECT_STRUCTURE.md) - Detailed project organization
+- [AI Features](./docs/ai/) - AI and semantic search documentation
+- [Setup Guides](./docs/setup/) - Configuration and implementation guides
+- [Compliance](./docs/compliance/) - Privacy and content moderation guidelines
 
-Projekt jest otwarty na:
+## Contributing
 
-- **Zgłoszenia błędów** - [Otwórz Issue](https://github.com/negativepl/findsomeone/issues)
-- **Sugestie funkcji** - Podziel się w Discussions
-- **Pytania** - Zapytaj w Issues lub Discussions
+Contributions are welcome! Please feel free to:
+- Report bugs by [opening an issue](https://github.com/negativepl/findsomeone/issues)
+- Suggest features through discussions
+- Ask questions in issues or discussions
 
-## Autor
+## License
+
+This project is licensed under a custom Non-Commercial MIT License. See [LICENSE](./LICENSE) for details.
+
+For commercial use, please contact the author for licensing options.
+
+## Author
 
 **Marcin Baszewski**
 - GitHub: [@negativepl](https://github.com/negativepl)
-- Projekt: Portfolio - Nowoczesna platforma lokalnych usług
+- Project: Portfolio - Modern local services platform
 
-## Podziękowania
+## Acknowledgments
 
-- [Supabase](https://supabase.com) - Backend as a Service
-- [Vercel](https://vercel.com) - Hosting
-- [OpenAI](https://openai.com) - AI
-- [shadcn/ui](https://ui.shadcn.com) - Komponenty UI
-- [Next.js](https://nextjs.org) - Framework React
+- [Supabase](https://supabase.com) - Backend infrastructure
+- [Vercel](https://vercel.com) - Hosting and deployment
+- [OpenAI](https://openai.com) - AI capabilities
+- [shadcn/ui](https://ui.shadcn.com) - UI components
+- [Next.js](https://nextjs.org) - React framework
 
 ---
 
-**Jeśli projekt Ci się podoba, zostaw gwiazdkę!**
-
-**Pytania?** Otwórz issue lub dyskusję na GitHub.
+**Questions?** Open an issue or discussion on GitHub.

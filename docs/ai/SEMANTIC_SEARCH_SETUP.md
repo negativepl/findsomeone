@@ -1,77 +1,77 @@
-# Semantic search i smart suggestions - instrukcja konfiguracji
+# Semantic Search and Smart Suggestions - Configuration Guide
 
-## Co zostało zaimplementowane:
+## What Has Been Implemented:
 
 ### 1. Database (PostgreSQL + pgvector)
-- Kolumna `embedding` w tabeli `posts` (vector 1536 dims)
-- Indeks HNSW dla ultra-szybkiego wyszukiwania
-- Funkcje SQL dla semantic search i hybrid search
-- Tabela `user_search_preferences` dla personalizacji
-- Rozszerzona tabela `search_queries` z embeddingami
+- `embedding` column in `posts` table (vector 1536 dims)
+- HNSW index for ultra-fast search
+- SQL functions for semantic search and hybrid search
+- `user_search_preferences` table for personalization
+- Extended `search_queries` table with embeddings
 
-### 2. Endpointy API
-- `/api/search/semantic` - Wyszukiwanie semantyczne z embeddingami
-- `/api/search/suggestions` - Smart suggestions oparte na AI
-- Zaktualizowany `/api/search` - Dodane smart suggestions dla zalogowanych
+### 2. API Endpoints
+- `/api/search/semantic` - Semantic search with embeddings
+- `/api/search/suggestions` - Smart AI-based suggestions
+- Updated `/api/search` - Added smart suggestions for authenticated users
 
-### 3. Komponenty UI
-- `LiveSearchBar` - Pokazuje smart AI suggestions dla zalogowanych
-- `EmbeddingsManager` - Panel admina do generowania embeddingów
-- `/admin/embeddings` - Strona zarządzania embeddingami
+### 3. UI Components
+- `LiveSearchBar` - Shows smart AI suggestions for authenticated users
+- `EmbeddingsManager` - Admin panel for generating embeddings
+- `/admin/embeddings` - Embeddings management page
 
-### 4. Funkcje pomocnicze
-- `/lib/embeddings.ts` - Funkcje do generowania i zarządzania embeddingami
-- Batch processing dla efektywności
+### 4. Helper Functions
+- `/lib/embeddings.ts` - Functions for generating and managing embeddings
+- Batch processing for efficiency
 - Cost estimation
 
 ---
 
-## Setup (krok po kroku):
+## Setup (Step by Step):
 
-### Krok 1: Uruchom migracje bazy danych
+### Step 1: Run Database Migrations
 
-Musisz wykonać migracje SQL w Supabase:
+You need to execute SQL migrations in Supabase:
 
-1. Otwórz Supabase Dashboard: https://supabase.com/dashboard
-2. Wybierz swój projekt
-3. Idź do **SQL Editor**
-4. Uruchom te pliki w kolejności:
+1. Open Supabase Dashboard: https://supabase.com/dashboard
+2. Select your project
+3. Go to **SQL Editor**
+4. Run these files in order:
 
 ```sql
--- 1. Najpierw: Dodaj pgvector extension i embeddings
--- Plik: supabase/migrations/20250111120000_add_embeddings.sql
--- Skopiuj całą zawartość i uruchom w SQL Editor
+-- 1. First: Add pgvector extension and embeddings
+-- File: supabase/migrations/20250111120000_add_embeddings.sql
+-- Copy entire contents and run in SQL Editor
 
--- 2. Potem: Dodaj user search history i preferences
--- Plik: supabase/migrations/20250111120001_user_search_history.sql
--- Skopiuj całą zawartość i uruchom w SQL Editor
+-- 2. Then: Add user search history and preferences
+-- File: supabase/migrations/20250111120001_user_search_history.sql
+-- Copy entire contents and run in SQL Editor
 ```
 
-**Albo przez CLI:**
+**Or via CLI:**
 ```bash
 supabase db push
 ```
 
-### Krok 2: Weryfikuj że OpenAI API key jest ustawiony
+### Step 2: Verify OpenAI API Key is Set
 
 ```bash
-# Sprawdź .env.local
+# Check .env.local
 cat .env.local | grep OPENAI_API_KEY
 ```
 
-Powinno być:
+Should contain:
 ```
-OPENAI_API_KEY=sk-proj-twój-klucz...
+OPENAI_API_KEY=sk-proj-your-key...
 ```
 
-### Krok 3: Wygeneruj embeddingi dla istniejących postów
+### Step 3: Generate Embeddings for Existing Posts
 
-1. Przejdź do panelu admina: `http://localhost:3000/admin/embeddings`
-2. Kliknij **"Wygeneruj Embeddingi dla Postów"**
-3. Poczekaj aż proces się zakończy (dla 100 postów: ~30-60 sekund)
-4. System przetworzy tylko posty bez embeddingów (max 100 na raz)
+1. Go to admin panel: `http://localhost:3000/admin/embeddings`
+2. Click **"Generate Post Embeddings"**
+3. Wait for process to complete (for 100 posts: ~30-60 seconds)
+4. System will process only posts without embeddings (max 100 at a time)
 
-**Lub przez API:**
+**Or via API:**
 ```bash
 curl -X POST http://localhost:3000/api/search/semantic \
   -H "Content-Type: application/json" \
@@ -79,78 +79,78 @@ curl -X POST http://localhost:3000/api/search/semantic \
   -d '{}'
 ```
 
-### Krok 4: Testuj!
+### Step 4: Test!
 
 #### Test 1: Semantic Search
 ```bash
-# Wyszukaj "instalator wody"
-# Powinno znaleźć też posty z "hydraulik", "monter", itp.
-curl "http://localhost:3000/api/search/semantic?q=instalator%20wody&mode=hybrid"
+# Search for "water installer"
+# Should also find posts with "plumber", "fitter", etc.
+curl "http://localhost:3000/api/search/semantic?q=water%20installer&mode=hybrid"
 ```
 
-#### Test 2: Smart Suggestions (wymaga zalogowania)
+#### Test 2: Smart Suggestions (requires authentication)
 ```bash
 curl "http://localhost:3000/api/search/suggestions" \
   -H "Cookie: your-session-cookie"
 ```
 
 #### Test 3: LiveSearchBar
-1. Zaloguj się
-2. Otwórz dashboard
-3. Kliknij na search bar (NIE wpisuj nic)
-4. Powinieneś zobaczyć sekcję **"Dla Ciebie (AI)"** z personalizowanymi sugestiami
+1. Log in
+2. Open dashboard
+3. Click on search bar (DON'T type anything)
+4. You should see **"For You (AI)"** section with personalized suggestions
 
 ---
 
-## Jak to działa?
+## How Does It Work?
 
-### Semantic search (wyszukiwanie semantyczne)
+### Semantic Search
 
-1. **Użytkownik wpisuje:** "instalator wody"
-2. **System generuje embedding** dla zapytania (wektor 1536 liczb)
-3. **PostgreSQL porównuje** embedding zapytania z embeddingami postów
-4. **Ranking hybrydowy:**
-   - 60% - Podobieństwo semantyczne (cosine similarity)
+1. **User enters:** "water installer"
+2. **System generates embedding** for query (vector of 1536 numbers)
+3. **PostgreSQL compares** query embedding with post embeddings
+4. **Hybrid ranking:**
+   - 60% - Semantic similarity (cosine similarity)
    - 40% - Full-text search (trigrams + synonyms)
-5. **Wyniki:** Posty z "hydraulik", "monter instalacji", "fachowiec" też się pojawią!
+5. **Results:** Posts with "plumber", "installation fitter", "specialist" also appear!
 
-### Smart suggestions (inteligentne sugestie)
+### Smart Suggestions
 
-System analizuje:
-1. **Behavioral (Behawioralne):**
-   - Historia wyszukiwań użytkownika (ostatnie 90 dni)
-   - Najczęściej klikane kategorie
-   - Ulubione miasta
+System analyzes:
+1. **Behavioral:**
+   - User search history (last 90 days)
+   - Most clicked categories
+   - Favorite cities
 
-2. **Semantic (Semantyczne):**
-   - Tworzy "profil preferencji" użytkownika (średnia embeddingów)
-   - Znajduje posty podobne do profilu (similarity > 0.75)
-   - Zwraca jako sugestie
+2. **Semantic:**
+   - Creates user "preference profile" (average of embeddings)
+   - Finds posts similar to profile (similarity > 0.75)
+   - Returns as suggestions
 
-3. **Trending (Trendujące):**
-   - Popularne wyszukiwania w ulubionych kategoriach użytkownika
-   - Z ostatnich 7 dni
+3. **Trending:**
+   - Popular searches in user's favorite categories
+   - From last 7 days
 
-### Przykład:
+### Example:
 
-**Użytkownik często szuka:**
-- "hydraulik Warszawa"
-- "instalator WC"
-- "naprawa rur"
+**User often searches for:**
+- "plumber Warsaw"
+- "WC installer"
+- "pipe repair"
 
-**System AI proponuje:**
-- "montaż grzejników" (semantycznie podobne)
-- "serwis centralnego ogrzewania" (ta sama kategoria)
-- "hydraulik Kraków" (inne miasto, ta sama usługa)
+**AI system suggests:**
+- "radiator installation" (semantically similar)
+- "central heating service" (same category)
+- "plumber Krakow" (different city, same service)
 
 ---
 
-## Monitoring i analytics
+## Monitoring and Analytics
 
-### Sprawdź pokrycie embeddingów:
+### Check Embedding Coverage:
 
 ```sql
--- Ile postów ma embeddingi?
+-- How many posts have embeddings?
 SELECT
   COUNT(*) FILTER (WHERE embedding IS NOT NULL) as with_embeddings,
   COUNT(*) FILTER (WHERE embedding IS NULL) as without_embeddings,
@@ -160,10 +160,10 @@ FROM posts
 WHERE status = 'active';
 ```
 
-### Testuj semantic search:
+### Test Semantic Search:
 
 ```sql
--- Znajdź posty semantycznie podobne do "hydraulik"
+-- Find posts semantically similar to "plumber"
 SELECT
   title,
   (1 - (embedding <=> '[0.1,0.2,...]'::vector)) as similarity
@@ -173,10 +173,10 @@ ORDER BY embedding <=> '[0.1,0.2,...]'::vector
 LIMIT 10;
 ```
 
-### Sprawdź user preferences:
+### Check User Preferences:
 
 ```sql
--- Zobacz preferencje użytkowników
+-- View user preferences
 SELECT
   user_id,
   preferred_categories,
@@ -190,42 +190,42 @@ LIMIT 10;
 
 ---
 
-## Koszty
+## Costs
 
 ### OpenAI Embeddings (text-embedding-3-small)
-- **Cena:** $0.02 / 1M tokenów
-- **Przykładowe koszty:**
-  - 100 postów: ~$0.01-0.02
-  - 1000 postów: ~$0.10-0.15
-  - 10000 postów: ~$1.00-1.50
+- **Price:** $0.02 / 1M tokens
+- **Example costs:**
+  - 100 posts: ~$0.01-0.02
+  - 1000 posts: ~$0.10-0.15
+  - 10000 posts: ~$1.00-1.50
 
-### Szacunkowe zużycie:
-- Średni post: ~100-200 tokenów
-- 1 search query: ~10-20 tokenów
-- **Miesięcznie (1000 postów + 10k searches):**
-  - Posty: $0.15
+### Estimated Usage:
+- Average post: ~100-200 tokens
+- 1 search query: ~10-20 tokens
+- **Monthly (1000 posts + 10k searches):**
+  - Posts: $0.15
   - Queries: $0.20
-  - **TOTAL: ~$0.35/miesiąc**
+  - **TOTAL: ~$0.35/month**
 
 ---
 
-## Konfiguracja (opcjonalna)
+## Configuration (Optional)
 
-### 1. Threshold dla semantic search
+### 1. Threshold for Semantic Search
 
-W `/app/api/search/semantic/route.ts`:
+In `/app/api/search/semantic/route.ts`:
 ```typescript
 const threshold = parseFloat(searchParams.get('threshold') || '0.7')
-// 0.7 = default (70% podobieństwa)
-// Niżej = więcej wyników (mniej precyzyjne)
-// Wyżej = mniej wyników (bardziej precyzyjne)
+// 0.7 = default (70% similarity)
+// Lower = more results (less precise)
+// Higher = fewer results (more precise)
 ```
 
-### 2. Wagi w hybrid search
+### 2. Weights in Hybrid Search
 
-W `supabase/migrations/20250111120000_add_embeddings.sql`:
+In `supabase/migrations/20250111120000_add_embeddings.sql`:
 ```sql
--- Linia ~110: Zmień wagi
+-- Line ~110: Change weights
 (
   case when p.embedding is not null
     then (1 - (p.embedding <=> query_embedding)) * 0.6  -- 60% semantic
@@ -235,76 +235,76 @@ W `supabase/migrations/20250111120000_add_embeddings.sql`:
 )
 ```
 
-### 3. Limit smart suggestions
+### 3. Smart Suggestions Limit
 
-W `/app/api/search/suggestions/route.ts`:
+In `/app/api/search/suggestions/route.ts`:
 ```typescript
 const limit = parseInt(searchParams.get('limit') || '10')
 ```
 
 ---
 
-## Rozwiązywanie problemów
+## Troubleshooting
 
 ### **"extension vector does not exist"**
-**Problem:** pgvector nie jest zainstalowany
-**Rozwiązanie:**
+**Problem:** pgvector is not installed
+**Solution:**
 ```sql
 CREATE EXTENSION IF NOT EXISTS vector;
 ```
 
 ### **"Failed to generate embedding"**
-**Problem:** OpenAI API key niepoprawny
-**Rozwiązanie:**
-1. Sprawdź `.env.local`
-2. Zweryfikuj key na https://platform.openai.com/api-keys
+**Problem:** Invalid OpenAI API key
+**Solution:**
+1. Check `.env.local`
+2. Verify key at https://platform.openai.com/api-keys
 3. Restart dev server: `npm run dev`
 
 ### **"No smart suggestions"**
-**Problem:** Użytkownik nie ma historii wyszukiwań
-**Rozwiązanie:**
-- To normalne dla nowych użytkowników
-- Wykonaj kilka wyszukiwań, potem sprawdź ponownie
-- System potrzebuje min. 2-3 wyszukiwań dla personalizacji
+**Problem:** User has no search history
+**Solution:**
+- This is normal for new users
+- Perform a few searches, then check again
+- System needs at least 2-3 searches for personalization
 
 ### **"Embeddings generation slow"**
-**Problem:** Dużo postów do przetworzenia
-**Rozwiązanie:**
-- System przetwarza max 100 postów na raz
-- Dla większych ilości: uruchom kilka razy
-- Lub zwiększ batch size w kodzie (linia ~172 w route.ts)
+**Problem:** Many posts to process
+**Solution:**
+- System processes max 100 posts at a time
+- For larger amounts: run multiple times
+- Or increase batch size in code (line ~172 in route.ts)
 
 ---
 
-## Przyszłe rozszerzenia
+## Future Extensions
 
-Możliwe ulepszenia:
+Possible improvements:
 
 1. **Auto-embedding trigger**
-   - Automatyczne generowanie embeddings przy tworzeniu posta
-   - Webhook lub database trigger
+   - Automatic embedding generation when creating post
+   - Webhook or database trigger
 
 2. **Cached embeddings**
-   - Cache embeddingów dla częstych zapytań
-   - Redis lub Supabase Edge Functions
+   - Cache embeddings for frequent queries
+   - Redis or Supabase Edge Functions
 
 3. **Multi-language embeddings**
-   - Obsługa wielu języków
-   - Różne modele dla różnych języków
+   - Support for multiple languages
+   - Different models for different languages
 
 4. **A/B Testing**
-   - Porównanie semantic vs full-text
-   - Metryki: CTR, conversion, satisfaction
+   - Compare semantic vs full-text
+   - Metrics: CTR, conversion, satisfaction
 
-5. **Query expansion z GPT**
-   - Rozszerzanie zapytań przez GPT
-   - "hydraulik" → "hydraulik instalator monter instalacji wodno-kanalizacyjnych"
+5. **Query expansion with GPT**
+   - Expanding queries via GPT
+   - "plumber" → "plumber installer fitter water-sewage installation specialist"
 
 ---
 
-## Pliki dodane/zmienione
+## Files Added/Modified
 
-### Nowe pliki:
+### New Files:
 ```
 /supabase/migrations/20250111120000_add_embeddings.sql
 /supabase/migrations/20250111120001_user_search_history.sql
@@ -313,41 +313,41 @@ Możliwe ulepszenia:
 /app/api/search/suggestions/route.ts
 /components/admin/EmbeddingsManager.tsx
 /app/admin/embeddings/page.tsx
-/SEMANTIC_SEARCH_SETUP.md (ten plik)
+/SEMANTIC_SEARCH_SETUP.md (this file)
 ```
 
-### Zmodyfikowane pliki:
+### Modified Files:
 ```
-/app/api/search/route.ts (dodane smart suggestions)
-/components/LiveSearchBar.tsx (dodana sekcja AI suggestions)
-/app/admin/page.tsx (dodany link do embeddings)
+/app/api/search/route.ts (added smart suggestions)
+/components/LiveSearchBar.tsx (added AI suggestions section)
+/app/admin/page.tsx (added embeddings link)
 ```
 
 ---
 
 ## Checklist
 
-Przed uruchomieniem na produkcji:
+Before production launch:
 
-- [ ] Migracje bazy wykonane
-- [ ] pgvector extension włączony
-- [ ] OpenAI API key ustawiony
-- [ ] Embeddingi wygenerowane dla wszystkich postów
-- [ ] Semantic search przetestowany (min. 10 zapytań)
-- [ ] Smart suggestions przetestowane dla zalogowanych
-- [ ] Monitoring embeddingów skonfigurowany
-- [ ] Rate limiting dla API (opcjonalne, ale zalecane)
-- [ ] Backup bazy przed migracją (WAŻNE!)
+- [ ] Database migrations executed
+- [ ] pgvector extension enabled
+- [ ] OpenAI API key configured
+- [ ] Embeddings generated for all posts
+- [ ] Semantic search tested (min. 10 queries)
+- [ ] Smart suggestions tested for authenticated users
+- [ ] Embedding monitoring configured
+- [ ] Rate limiting for API (optional but recommended)
+- [ ] Database backup before migration (IMPORTANT!)
 
 ---
 
-## Gotowe!
+## Ready!
 
-System jest teraz w pełni funkcjonalny! Użytkownicy będą mieli:
+System is now fully functional! Users will have:
 
-- **Semantyczne wyszukiwanie** - znajduje podobne znaczenia
-- **Smart suggestions** - personalizowane na podstawie AI
-- **Ultra-szybkie** - dzięki HNSW index
-- **Precyzyjne** - hybrid ranking (semantic + full-text)
+- **Semantic search** - finds similar meanings
+- **Smart suggestions** - personalized using AI
+- **Ultra-fast** - thanks to HNSW index
+- **Precise** - hybrid ranking (semantic + full-text)
 
-**Pytania?** Sprawdź `/admin/embeddings` w panelu admina!
+**Questions?** Check `/admin/embeddings` in admin panel!
