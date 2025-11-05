@@ -20,8 +20,8 @@ export function ClickHintAnimation() {
   // Load animation based on theme
   useEffect(() => {
     const animationPath = currentTheme === 'dark'
-      ? '/lottie/click-dark.json'
-      : '/lottie/click-light.json'
+      ? '/animations/click-dark.json'
+      : '/animations/click-light.json'
 
     fetch(animationPath)
       .then(response => response.json())

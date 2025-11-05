@@ -20,8 +20,8 @@ export function TapHintAnimation() {
   // Load animation based on theme
   useEffect(() => {
     const animationPath = currentTheme === 'dark'
-      ? '/lottie/tap-dark.json'
-      : '/lottie/tap-light.json'
+      ? '/animations/tap-dark.json'
+      : '/animations/tap-light.json'
 
     fetch(animationPath)
       .then(response => response.json())

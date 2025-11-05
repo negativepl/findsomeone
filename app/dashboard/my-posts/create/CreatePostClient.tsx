@@ -85,12 +85,12 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
   // Get animation paths for current step
   const getStepAnimationPaths = (step: number) => {
     const paths = {
-      1: { animation: '/lottie/step1-document.json', svg: '/lottie/step1-document.svg' },
-      2: { animation: '/lottie/step2-edit.json', svg: '/lottie/step2-edit.svg' },
-      3: { animation: '/lottie/step3-camera.json', svg: '/lottie/step3-camera.svg' },
-      4: { animation: '/lottie/step4-location.json', svg: '/lottie/step4-location.svg' },
-      5: { animation: '/lottie/step5-money.json', svg: '/lottie/step5-money.svg' },
-      6: { animation: '/lottie/step6-success.json', svg: '/lottie/step6-success.svg' },
+      1: { animation: '/animations/verified.json', svg: '/animations/verified.svg' },
+      2: { animation: '/animations/edit-icon.json', svg: '/animations/edit-icon.svg' },
+      3: { animation: '/animations/camera.json', svg: '/animations/camera.svg' },
+      4: { animation: '/animations/location.json', svg: '/animations/location.svg' },
+      5: { animation: '/animations/coins.json', svg: '/animations/coins.svg' },
+      6: { animation: '/animations/heart.json', svg: '/animations/heart.svg' },
     }
     return paths[step as keyof typeof paths] || paths[1]
   }
