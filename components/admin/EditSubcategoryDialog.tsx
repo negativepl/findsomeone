@@ -125,7 +125,7 @@ export function EditSubcategoryDialog({ category, onClose, onUpdated }: EditSubc
                 required
                 className="rounded-xl"
               />
-              <p className="text-xs text-black/60">
+              <p className="text-xs text-muted-foreground">
                 Slug jest generowany automatycznie, ale możesz go edytować
               </p>
             </div>
@@ -143,12 +143,12 @@ export function EditSubcategoryDialog({ category, onClose, onUpdated }: EditSubc
             </div>
           </div>
 
-          <DialogFooter className="mt-0 pt-6 px-6 pb-6 border-t-2 border-black/5 rounded-b-3xl">
+          <DialogFooter className="mt-0 pt-6 px-6 pb-6 border-t-2 border-border rounded-b-3xl">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="w-full sm:w-auto rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5"
+              className="w-full sm:w-auto rounded-full border border-border hover:border-border hover:bg-muted"
               disabled={loading}
             >
               Anuluj

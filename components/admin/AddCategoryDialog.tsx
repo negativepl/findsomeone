@@ -220,7 +220,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                     required
                     className="rounded-xl"
                   />
-                  <p className="text-xs text-black/60">
+                  <p className="text-xs text-muted-foreground">
                     Slug jest generowany automatycznie, ale możesz go edytować
                   </p>
                 </div>
@@ -245,7 +245,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-black/60">
+                    <p className="text-xs text-muted-foreground">
                       Zostaw puste dla kategorii głównej lub wybierz kategorię nadrzędną
                     </p>
                   </div>
@@ -260,7 +260,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                       size="sm"
                       onClick={handleGenerateDescription}
                       disabled={generatingDescription || !formData.name.trim()}
-                      className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 text-xs px-4 gap-2"
+                      className="rounded-full border border-border hover:border-border hover:bg-muted text-xs px-4 gap-2"
                     >
                       <Zap className="w-3 h-3" />
                       {generatingDescription ? 'Generuję...' : 'Wygeneruj opis'}
@@ -290,13 +290,13 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
           </div>
 
           <div className="px-6 pb-6">
-            <div className="mt-8 pt-6 border-t-2 border-black/5">
+            <div className="mt-8 pt-6 border-t-2 border-border">
               <DialogFooter className="gap-2 sm:gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="w-full sm:w-auto rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5"
+                  className="w-full sm:w-auto rounded-full border border-border hover:border-border hover:bg-muted"
                   disabled={loading}
                 >
                   Anuluj

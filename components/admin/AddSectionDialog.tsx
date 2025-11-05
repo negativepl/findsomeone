@@ -34,19 +34,19 @@ export function AddSectionDialog({ categories, onAdd, onClose }: AddSectionDialo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-3xl max-w-5xl w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col">
+      <div className="bg-card rounded-3xl max-w-5xl w-full max-h-[85vh] overflow-hidden shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="px-8 py-6 border-b border-black/10 bg-gradient-to-r from-[#C44E35]/5 to-transparent flex-shrink-0">
+        <div className="px-8 py-6 border-b border-border bg-gradient-to-r from-[#C44E35]/5 to-transparent flex-shrink-0">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-black mb-1">Dodaj nową sekcję</h2>
-              <p className="text-sm text-black/60">
+              <h2 className="text-2xl font-bold text-foreground mb-1">Dodaj nową sekcję</h2>
+              <p className="text-sm text-muted-foreground">
                 Wybierz typ sekcji, którą chcesz dodać do strony głównej
               </p>
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-black/5 text-black/60 hover:text-black transition-colors"
+              className="p-2 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -64,7 +64,7 @@ export function AddSectionDialog({ categories, onAdd, onClose }: AddSectionDialo
               <button
                 key={sectionType.type}
                 onClick={() => handleSelect(sectionType.type)}
-                className="border border-black/10 rounded-2xl p-5 text-left hover:border-[#C44E35]/50 hover:bg-[#C44E35]/5 hover:shadow-md transition-all group"
+                className="border border-border rounded-2xl p-5 text-left hover:border-[#C44E35]/50 hover:bg-[#C44E35]/5 hover:shadow-md transition-all group"
               >
                 <div className="flex items-start gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#C44E35]/10 to-[#C44E35]/5 flex items-center justify-center group-hover:from-[#C44E35]/20 group-hover:to-[#C44E35]/10 transition-all flex-shrink-0">
@@ -73,10 +73,10 @@ export function AddSectionDialog({ categories, onAdd, onClose }: AddSectionDialo
                     </div>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-bold text-black mb-1 group-hover:text-[#C44E35] transition-colors">
+                    <h3 className="text-base font-bold text-foreground mb-1 group-hover:text-[#C44E35] transition-colors">
                       {sectionType.label}
                     </h3>
-                    <p className="text-sm text-black/60 mb-3 line-clamp-2">
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
                       {sectionType.description}
                     </p>
                     {sectionType.configSchema.length > 0 && (
@@ -84,13 +84,13 @@ export function AddSectionDialog({ categories, onAdd, onClose }: AddSectionDialo
                         {sectionType.configSchema.slice(0, 3).map((field) => (
                           <span
                             key={field.name}
-                            className="px-2 py-0.5 bg-black/5 text-black/60 rounded-full text-xs"
+                            className="px-2 py-0.5 bg-black/5 text-muted-foreground rounded-full text-xs"
                           >
                             {field.label}
                           </span>
                         ))}
                         {sectionType.configSchema.length > 3 && (
-                          <span className="px-2 py-0.5 bg-black/5 text-black/60 rounded-full text-xs">
+                          <span className="px-2 py-0.5 bg-black/5 text-muted-foreground rounded-full text-xs">
                             +{sectionType.configSchema.length - 3}
                           </span>
                         )}
@@ -104,11 +104,11 @@ export function AddSectionDialog({ categories, onAdd, onClose }: AddSectionDialo
         </div>
 
         {/* Footer */}
-        <div className="px-8 py-4 border-t border-black/10 bg-black/[0.02] flex justify-end flex-shrink-0">
+        <div className="px-8 py-4 border-t border-border bg-muted/50 flex justify-end flex-shrink-0">
           <Button
             onClick={onClose}
             variant="outline"
-            className="rounded-full border-black/20 hover:bg-black/5"
+            className="rounded-full border-border hover:bg-muted"
           >
             Anuluj
           </Button>

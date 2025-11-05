@@ -65,7 +65,7 @@ function SortableSectionComponent({
       }
       if (typeof value === 'number' || typeof value === 'string') {
         return (
-          <span key={key} className="px-2.5 py-1 bg-black/5 text-black/60 rounded-full">
+          <span key={key} className="px-2.5 py-1 bg-black/5 text-muted-foreground rounded-full">
             <span className="font-medium text-black/80">{key}:</span> {value}
           </span>
         )
@@ -87,17 +87,17 @@ function SortableSectionComponent({
       style={style}
       className={`rounded-3xl overflow-hidden ${
         section.is_active
-          ? 'bg-white shadow-sm'
+          ? 'bg-card shadow-sm'
           : 'bg-black/5'
       }`}
     >
       {/* Header with drag handle and badges */}
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-black/10 bg-black/[0.02]">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-border bg-muted/50">
         {/* Drag handle */}
         <button
           {...attributes}
           {...listeners}
-          className="cursor-grab active:cursor-grabbing text-black/40 hover:text-black transition-colors flex-shrink-0"
+          className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors flex-shrink-0"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
@@ -115,7 +115,7 @@ function SortableSectionComponent({
           className={`rounded-full flex-shrink-0 ${
             section.is_active
               ? 'bg-green-100 text-green-700 border-green-200'
-              : 'bg-black/10 text-black/60 border-black/20'
+              : 'bg-black/10 text-muted-foreground border-border'
           }`}
         >
           {section.is_active ? '● Aktywna' : '○ Nieaktywna'}
@@ -125,7 +125,7 @@ function SortableSectionComponent({
         <div className="ml-auto flex items-center gap-2">
           <button
             onClick={handleToggleActive}
-            className="p-2 rounded-lg bg-white border border-black/10 hover:bg-black/5 transition-colors"
+            className="p-2 rounded-lg bg-card border border-border hover:bg-muted transition-colors"
             title={section.is_active ? 'Dezaktywuj' : 'Aktywuj'}
           >
             {section.is_active ? (
@@ -142,7 +142,7 @@ function SortableSectionComponent({
 
           <button
             onClick={handleEdit}
-            className="p-2 rounded-lg bg-white border border-black/10 hover:bg-black/5 transition-colors"
+            className="p-2 rounded-lg bg-card border border-border hover:bg-muted transition-colors"
             title="Edytuj"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,7 +152,7 @@ function SortableSectionComponent({
 
           <button
             onClick={handleDelete}
-            className="p-2 rounded-lg bg-white border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+            className="p-2 rounded-lg bg-card border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
             title="Usuń"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,9 +164,9 @@ function SortableSectionComponent({
 
       {/* Content */}
       <div className="px-6 py-4">
-        <h3 className="text-lg font-bold text-black mb-2">{title}</h3>
+        <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
         {subtitle && (
-          <p className="text-sm text-black/60 mb-4">{subtitle}</p>
+          <p className="text-sm text-muted-foreground mb-4">{subtitle}</p>
         )}
 
         {/* Config preview */}

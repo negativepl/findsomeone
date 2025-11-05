@@ -55,8 +55,8 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
           {/* Basic settings */}
           <div className="space-y-4">
             <div className="mb-6">
-              <h3 className="text-xl font-bold text-black">Podstawowe ustawienia</h3>
-              <p className="text-sm text-black/60">Tytuł i podtytuł sekcji</p>
+              <h3 className="text-xl font-bold text-foreground">Podstawowe ustawienia</h3>
+              <p className="text-sm text-muted-foreground">Tytuł i podtytuł sekcji</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -90,10 +90,10 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
 
           {/* Section-specific configuration */}
           {metadata && metadata.configSchema.length > 0 && (
-            <div className="space-y-6 pt-6 border-t-2 border-black/10">
+            <div className="space-y-6 pt-6 border-t-2 border-border">
               <div className="mb-6">
-                <h3 className="text-xl font-bold text-black">Konfiguracja sekcji</h3>
-                <p className="text-sm text-black/60">Opcje specyficzne dla tego typu sekcji</p>
+                <h3 className="text-xl font-bold text-foreground">Konfiguracja sekcji</h3>
+                <p className="text-sm text-muted-foreground">Opcje specyficzne dla tego typu sekcji</p>
               </div>
 
               {metadata.configSchema.map((field) => (
@@ -102,7 +102,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                     <div>
                       <Label htmlFor={field.name} className="mb-2 block">{field.label}</Label>
                       {field.description && (
-                        <p className="text-xs text-black/60 mb-2">{field.description}</p>
+                        <p className="text-xs text-muted-foreground mb-2">{field.description}</p>
                       )}
                       <Input
                         id={field.name}
@@ -139,12 +139,12 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                     }
 
                     return (
-                      <div className="rounded-2xl border border-black/10 p-6">
+                      <div className="rounded-2xl border border-border p-6">
                         <div className="flex items-center justify-between mb-4">
                           <div>
                             <Label htmlFor={field.name} className="text-base font-semibold">{field.label}</Label>
                             {field.description && (
-                              <p className="text-xs text-black/60 mt-1">{field.description}</p>
+                              <p className="text-xs text-muted-foreground mt-1">{field.description}</p>
                             )}
                           </div>
                           <div className="flex items-center gap-2">
@@ -163,7 +163,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                           step={1}
                           className="w-full"
                         />
-                        <div className="flex justify-between text-xs text-black/40 mt-2">
+                        <div className="flex justify-between text-xs text-muted-foreground mt-2">
                           <span>{minValue}</span>
                           <span>{maxValue}</span>
                         </div>
@@ -172,11 +172,11 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                   })()}
 
                   {field.type === 'boolean' && (
-                    <div className="flex items-center justify-between rounded-2xl border border-black/10 p-4">
+                    <div className="flex items-center justify-between rounded-2xl border border-border p-4">
                       <div>
                         <Label htmlFor={field.name}>{field.label}</Label>
                         {field.description && (
-                          <p className="text-xs text-black/60 mt-1">{field.description}</p>
+                          <p className="text-xs text-muted-foreground mt-1">{field.description}</p>
                         )}
                       </div>
                       <Switch
@@ -191,7 +191,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                     <div>
                       <Label htmlFor={field.name} className="mb-2 block font-semibold">{field.label}</Label>
                       {field.description && (
-                        <p className="text-xs text-black/60 mb-3">{field.description}</p>
+                        <p className="text-xs text-muted-foreground mb-3">{field.description}</p>
                       )}
 
                       {/* Special handling for layout field - use icon buttons */}
@@ -220,10 +220,10 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                                 className={`flex flex-row items-center gap-2 px-4 py-3 rounded-xl border transition-all ${
                                   isSelected
                                     ? 'border-[#C44E35] bg-[#C44E35]/5'
-                                    : 'border-black/10 hover:border-black/20 hover:bg-black/5'
+                                    : 'border-border hover:border-border hover:bg-muted'
                                 }`}
                               >
-                                <div className={isSelected ? 'text-[#C44E35]' : 'text-black/60'}>
+                                <div className={isSelected ? 'text-[#C44E35]' : 'text-muted-foreground'}>
                                   {getIcon()}
                                 </div>
                                 <span className={`text-sm font-medium whitespace-nowrap ${isSelected ? 'text-[#C44E35]' : 'text-black'}`}>
@@ -257,13 +257,13 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                     <div>
                       <Label htmlFor={field.name} className="mb-2 block">{field.label}</Label>
                       {field.description && (
-                        <p className="text-xs text-black/60 mb-2">{field.description}</p>
+                        <p className="text-xs text-muted-foreground mb-2">{field.description}</p>
                       )}
-                      <div className="border border-black/10 rounded-2xl p-4 max-h-48 overflow-y-auto">
+                      <div className="border border-border rounded-2xl p-4 max-h-48 overflow-y-auto">
                         {categories.map((category) => (
                           <label
                             key={category.id}
-                            className="flex items-center gap-2 py-2 cursor-pointer hover:bg-black/5 rounded px-2"
+                            className="flex items-center gap-2 py-2 cursor-pointer hover:bg-muted rounded px-2"
                           >
                             <input
                               type="checkbox"
@@ -298,7 +298,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                       <div>
                         <Label htmlFor={field.name} className="mb-2 block">{field.label}</Label>
                         {field.description && (
-                          <p className="text-xs text-black/60 mb-2">{field.description}</p>
+                          <p className="text-xs text-muted-foreground mb-2">{field.description}</p>
                         )}
                         <Textarea
                           id={field.name}
@@ -331,15 +331,15 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                   })()}
 
                   {field.type === 'color' && (
-                    <div className="rounded-2xl border border-black/10 p-4">
+                    <div className="rounded-2xl border border-border p-4">
                       <Label htmlFor={field.name} className="mb-2 block font-semibold">{field.label}</Label>
                       {field.description && (
-                        <p className="text-xs text-black/60 mb-3">{field.description}</p>
+                        <p className="text-xs text-muted-foreground mb-3">{field.description}</p>
                       )}
                       <div className="flex items-center gap-2">
                         <label
                           htmlFor={field.name}
-                          className="w-12 h-12 rounded-lg cursor-pointer border border-black/10 overflow-hidden block relative shrink-0"
+                          className="w-12 h-12 rounded-lg cursor-pointer border border-border overflow-hidden block relative shrink-0"
                           style={{
                             backgroundColor: editedSection.config[field.name] || field.default || '#FFFFFF'
                           }}
@@ -367,21 +367,21 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
           )}
 
           {/* Global styling and visibility options */}
-          <div className="space-y-6 pt-6 border-t-2 border-black/10">
+          <div className="space-y-6 pt-6 border-t-2 border-border">
             <div className="mb-6">
-              <h3 className="text-xl font-bold text-black">Stylowanie i widoczność</h3>
-              <p className="text-sm text-black/60">Kolory, responsywność i widoczność sekcji</p>
+              <h3 className="text-xl font-bold text-foreground">Stylowanie i widoczność</h3>
+              <p className="text-sm text-muted-foreground">Kolory, responsywność i widoczność sekcji</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Background Color */}
-              <div className="rounded-2xl border border-black/10 p-4">
+              <div className="rounded-2xl border border-border p-4">
                 <Label htmlFor="background_color" className="mb-2 block font-semibold">Kolor tła</Label>
-                <p className="text-xs text-black/60 mb-3">Nadpisuje domyślny kolor sekcji</p>
+                <p className="text-xs text-muted-foreground mb-3">Nadpisuje domyślny kolor sekcji</p>
                 <div className="flex items-center gap-2">
                   <label
                     htmlFor="background_color"
-                    className="w-12 h-12 rounded-lg cursor-pointer border border-black/10 overflow-hidden block relative shrink-0"
+                    className="w-12 h-12 rounded-lg cursor-pointer border border-border overflow-hidden block relative shrink-0"
                     style={{
                       backgroundColor: editedSection.background_color || '#FAF8F3'
                     }}
@@ -410,7 +410,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                       onClick={() =>
                         setEditedSection({ ...editedSection, background_color: null })
                       }
-                      className="text-xs text-black/60 hover:text-black underline"
+                      className="text-xs text-muted-foreground hover:text-foreground underline"
                     >
                       Wyczyść
                     </button>
@@ -419,13 +419,13 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
               </div>
 
               {/* Text Color */}
-              <div className="rounded-2xl border border-black/10 p-4">
+              <div className="rounded-2xl border border-border p-4">
                 <Label htmlFor="text_color" className="mb-2 block font-semibold">Kolor tekstu</Label>
-                <p className="text-xs text-black/60 mb-3">Nadpisuje domyślny kolor tekstu</p>
+                <p className="text-xs text-muted-foreground mb-3">Nadpisuje domyślny kolor tekstu</p>
                 <div className="flex items-center gap-2">
                   <label
                     htmlFor="text_color"
-                    className="w-12 h-12 rounded-lg cursor-pointer border border-black/10 overflow-hidden block relative shrink-0"
+                    className="w-12 h-12 rounded-lg cursor-pointer border border-border overflow-hidden block relative shrink-0"
                     style={{
                       backgroundColor: editedSection.text_color || '#000000'
                     }}
@@ -454,7 +454,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                       onClick={() =>
                         setEditedSection({ ...editedSection, text_color: null })
                       }
-                      className="text-xs text-black/60 hover:text-black underline"
+                      className="text-xs text-muted-foreground hover:text-foreground underline"
                     >
                       Wyczyść
                     </button>
@@ -465,10 +465,10 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
 
             {/* Visibility Controls */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center justify-between rounded-2xl border border-black/10 p-5">
+              <div className="flex items-center justify-between rounded-2xl border border-border p-5">
                 <div>
                   <Label htmlFor="visible_on_mobile" className="mb-1 block font-semibold">Widoczna na mobile</Label>
-                  <p className="text-xs text-black/60">Pokaż sekcję na urządzeniach mobilnych</p>
+                  <p className="text-xs text-muted-foreground">Pokaż sekcję na urządzeniach mobilnych</p>
                 </div>
                 <Switch
                   id="visible_on_mobile"
@@ -479,10 +479,10 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                 />
               </div>
 
-              <div className="flex items-center justify-between rounded-2xl border border-black/10 p-5">
+              <div className="flex items-center justify-between rounded-2xl border border-border p-5">
                 <div>
                   <Label htmlFor="visible_on_desktop" className="mb-1 block font-semibold">Widoczna na desktop</Label>
-                  <p className="text-xs text-black/60">Pokaż sekcję na komputerach</p>
+                  <p className="text-xs text-muted-foreground">Pokaż sekcję na komputerach</p>
                 </div>
                 <Switch
                   id="visible_on_desktop"
@@ -496,15 +496,15 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
           </div>
 
         {/* Actions */}
-        <div className="mt-8 flex justify-between items-center gap-3 pt-6 border-t-2 border-black/10">
-          <p className="text-sm text-black/60">
+        <div className="mt-8 flex justify-between items-center gap-3 pt-6 border-t-2 border-border">
+          <p className="text-sm text-muted-foreground">
             Pamiętaj, aby zapisać zmiany przed opuszczeniem strony
           </p>
           <div className="flex gap-3">
             <Button
               onClick={onClose}
               variant="outline"
-              className="rounded-full border-black/20 hover:bg-black/5"
+              className="rounded-full border-border hover:bg-muted"
             >
               Anuluj
             </Button>
@@ -523,15 +523,15 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
   // Modal mode (legacy - for AddSectionDialog if needed)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
+      <div className="bg-card rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-3xl font-bold text-black mb-1">Edytuj sekcję</h2>
-            <p className="text-sm text-black/60">{metadata?.label || section.type}</p>
+            <h2 className="text-3xl font-bold text-foreground mb-1">Edytuj sekcję</h2>
+            <p className="text-sm text-muted-foreground">{metadata?.label || section.type}</p>
           </div>
           <button
             onClick={onClose}
-            className="text-black/60 hover:text-black transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

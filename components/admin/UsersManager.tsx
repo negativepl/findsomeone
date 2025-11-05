@@ -258,7 +258,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                       <td className="px-6 py-4">
                         <div className="flex items-center justify-center gap-3">
                           <div className="flex items-center gap-2">
-                            <CheckCircle2 className={`w-4 h-4 ${user.verified ? 'text-blue-600' : 'text-black/20'}`} />
+                            <CheckCircle2 className={`w-4 h-4 ${user.verified ? 'text-blue-600' : 'text-muted-foreground'}`} />
                             <Switch
                               checked={user.verified}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'verified', checked)}
@@ -267,7 +267,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             />
                           </div>
                           <div className="flex items-center gap-2">
-                            <Building2 className={`w-4 h-4 ${user.is_company ? 'text-purple-600' : 'text-black/20'}`} />
+                            <Building2 className={`w-4 h-4 ${user.is_company ? 'text-purple-600' : 'text-muted-foreground'}`} />
                             <Switch
                               checked={user.is_company}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'is_company', checked)}
@@ -276,7 +276,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             />
                           </div>
                           <div className="flex items-center gap-2">
-                            <Bot className={`w-4 h-4 ${user.is_ai_bot ? 'text-green-600' : 'text-black/20'}`} />
+                            <Bot className={`w-4 h-4 ${user.is_ai_bot ? 'text-green-600' : 'text-muted-foreground'}`} />
                             <Switch
                               checked={user.is_ai_bot}
                               onCheckedChange={(checked) => updateUserFlag(user.id, 'is_ai_bot', checked)}
