@@ -28,15 +28,15 @@ export default async function AdminAuditLogsPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Audit Logs (RODO)</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Audit Logs (RODO)</h1>
+        <p className="text-muted-foreground">
           Historia dostępów administratorów do wiadomości użytkowników
         </p>
       </div>
 
       {/* Statistics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+        <Card className="border border-border rounded-3xl bg-card shadow-sm">
           <CardContent className="py-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -45,14 +45,14 @@ export default async function AdminAuditLogsPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Łącznie logów</p>
-                <div className="text-3xl font-bold text-black">{totalLogs}</div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Łącznie logów</p>
+                <div className="text-3xl font-bold text-foreground">{totalLogs}</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+        <Card className="border border-border rounded-3xl bg-card shadow-sm">
           <CardContent className="py-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -61,14 +61,14 @@ export default async function AdminAuditLogsPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Unikalnych adminów</p>
-                <div className="text-3xl font-bold text-black">{uniqueAdmins}</div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Unikalnych adminów</p>
+                <div className="text-3xl font-bold text-foreground">{uniqueAdmins}</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0 rounded-3xl bg-white shadow-sm">
+        <Card className="border border-border rounded-3xl bg-card shadow-sm">
           <CardContent className="py-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
@@ -77,8 +77,8 @@ export default async function AdminAuditLogsPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-black/60 mb-1">Ze zgłoszeń</p>
-                <div className="text-3xl font-bold text-black">{logsWithReports}</div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Ze zgłoszeń</p>
+                <div className="text-3xl font-bold text-foreground">{logsWithReports}</div>
               </div>
             </div>
           </CardContent>
@@ -86,20 +86,20 @@ export default async function AdminAuditLogsPage() {
       </div>
 
       {/* RODO Information */}
-      <Card className="mb-6 border-0 rounded-3xl bg-white shadow-sm">
+      <Card className="mb-6 border border-border rounded-3xl bg-card shadow-sm">
         <CardContent className="p-8">
-          <h3 className="font-bold text-black mb-6 text-lg">Wymogi RODO</h3>
+          <h3 className="font-bold text-foreground mb-6 text-lg">Wymogi RODO</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-black/5 rounded-2xl p-5 text-sm text-black/80 leading-relaxed">
+            <div className="bg-muted rounded-2xl p-5 text-sm text-foreground leading-relaxed">
               Logi są przechowywane przez 2 lata zgodnie z wymogami RODO
             </div>
-            <div className="bg-black/5 rounded-2xl p-5 text-sm text-black/80 leading-relaxed">
+            <div className="bg-muted rounded-2xl p-5 text-sm text-foreground leading-relaxed">
               Każdy dostęp administratora do wiadomości jest automatycznie rejestrowany
             </div>
-            <div className="bg-black/5 rounded-2xl p-5 text-sm text-black/80 leading-relaxed">
+            <div className="bg-muted rounded-2xl p-5 text-sm text-foreground leading-relaxed">
               Użytkownicy mają prawo zażądać informacji o dostępach do swoich danych
             </div>
-            <div className="bg-black/5 rounded-2xl p-5 text-sm text-black/80 leading-relaxed">
+            <div className="bg-muted rounded-2xl p-5 text-sm text-foreground leading-relaxed">
               Nieautoryzowany dostęp może skutkować karami do 20 mln EUR lub 4% obrotu
             </div>
           </div>

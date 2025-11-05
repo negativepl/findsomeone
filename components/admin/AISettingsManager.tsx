@@ -360,13 +360,13 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
   return (
     <div className="space-y-6">
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-black/10">
+      <div className="flex gap-2 border-b border-border">
         <button
           onClick={() => setActiveTab('search')}
           className={`px-6 py-3 font-medium transition-colors relative ${
             activeTab === 'search'
               ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Terminy wyszukiwania
@@ -379,7 +379,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
           className={`px-6 py-3 font-medium transition-colors relative ${
             activeTab === 'categories'
               ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Synonimy kategorii
@@ -392,7 +392,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
           className={`px-6 py-3 font-medium transition-colors relative ${
             activeTab === 'seo'
               ? 'text-[#C44E35]'
-              : 'text-black/60 hover:text-black'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Opisy SEO
@@ -405,12 +405,12 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'search' && (
         <>
       {/* Synonym Generation Settings */}
-      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+      <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-black mb-1">Generowanie synonimów</h2>
-              <p className="text-sm text-black/60">Konfiguracja promptu i modelu AI dla terminów wyszukiwania</p>
+              <h2 className="text-2xl font-bold text-foreground mb-1">Generowanie synonimów</h2>
+              <p className="text-sm text-muted-foreground">Konfiguracja promptu i modelu AI dla terminów wyszukiwania</p>
             </div>
             <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
               {synonymModel}
@@ -429,7 +429,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                 <SelectItem value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Wybierz model - GPT-5 nano jest wystarczający dla synonimów
             </p>
           </div>
@@ -472,7 +472,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               rows={3}
               className="mt-2 font-mono text-sm"
             />
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Instrukcja systemowa dla AI - określa zachowanie modelu
             </p>
           </div>
@@ -487,13 +487,13 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               rows={20}
               className="mt-2 font-mono text-sm"
             />
-            <p className="text-xs text-black/40 mt-1">
-              Użyj <code className="bg-black/5 px-1 rounded">{'{terms}'}</code> jako placeholder dla terminów
+            <p className="text-xs text-muted-foreground mt-1">
+              Użyj <code className="bg-muted px-1 rounded">{'{terms}'}</code> jako placeholder dla terminów
             </p>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-black/5">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border">
             <Button
               onClick={handleReset}
               disabled={isLoading}
@@ -518,12 +518,12 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'categories' && (
         <>
       {/* Category Synonym Generation Settings */}
-      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+      <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-black mb-1">Synonimy kategorii</h2>
-              <p className="text-sm text-black/60">Konfiguracja promptu i modelu AI dla kategorii usług</p>
+              <h2 className="text-2xl font-bold text-foreground mb-1">Synonimy kategorii</h2>
+              <p className="text-sm text-muted-foreground">Konfiguracja promptu i modelu AI dla kategorii usług</p>
             </div>
             <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
               {categorySynonymModel}
@@ -542,7 +542,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                 <SelectItem value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Wybierz model - GPT-5 nano jest wystarczający dla synonimów kategorii
             </p>
           </div>
@@ -585,7 +585,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               rows={3}
               className="mt-2 font-mono text-sm"
             />
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Instrukcja systemowa dla AI - określa zachowanie modelu przy generowaniu synonimów kategorii
             </p>
           </div>
@@ -600,13 +600,13 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               rows={20}
               className="mt-2 font-mono text-sm"
             />
-            <p className="text-xs text-black/40 mt-1">
-              Użyj <code className="bg-black/5 px-1 rounded">{'{categories}'}</code> jako placeholder dla listy kategorii
+            <p className="text-xs text-muted-foreground mt-1">
+              Użyj <code className="bg-muted px-1 rounded">{'{categories}'}</code> jako placeholder dla listy kategorii
             </p>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-black/5">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border">
             <Button
               onClick={handleReset}
               disabled={isLoading}
@@ -631,12 +631,12 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'seo' && (
         <>
       {/* SEO Description Generation Settings */}
-      <Card className="border-0 rounded-3xl bg-white shadow-sm overflow-hidden">
+      <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-black mb-1">Generowanie opisów SEO</h2>
-              <p className="text-sm text-black/60">Automatyczne tworzenie opisów dla kategorii i podkategorii</p>
+              <h2 className="text-2xl font-bold text-foreground mb-1">Generowanie opisów SEO</h2>
+              <p className="text-sm text-muted-foreground">Automatyczne tworzenie opisów dla kategorii i podkategorii</p>
             </div>
             <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
               {seoModel}
@@ -659,15 +659,15 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                       <span className="text-sm font-medium text-black">
                         {generationProgress.current} / {generationProgress.total}
                       </span>
-                      <span className="text-xs text-black/60">{generationProgress.status}</span>
+                      <span className="text-xs text-muted-foreground">{generationProgress.status}</span>
                     </div>
-                    <div className="w-full bg-black/5 rounded-full h-2.5 mb-2">
+                    <div className="w-full bg-muted rounded-full h-2.5 mb-2">
                       <div
                         className="bg-[#C44E35] h-2.5 rounded-full transition-all duration-300"
                         style={{ width: `${(generationProgress.current / generationProgress.total) * 100}%` }}
                       ></div>
                     </div>
-                    <p className="text-xs text-black/60 truncate">
+                    <p className="text-xs text-muted-foreground truncate">
                       <span className="font-medium">{generationProgress.categoryName}</span>
                     </p>
                   </div>
@@ -718,7 +718,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                 <SelectItem value={MODELS.GPT_5}>GPT-5 (najlepszy, najdroższy)</SelectItem>
               </SelectContent>
             </Select>
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               GPT-5 Nano jest wystarczający dla krótkich opisów SEO
             </p>
           </div>
@@ -736,7 +736,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                 max={200}
                 className="mt-2"
               />
-              <p className="text-xs text-black/40 mt-1">Rekomendowane: 120</p>
+              <p className="text-xs text-muted-foreground mt-1">Rekomendowane: 120</p>
             </div>
             <div>
               <Label htmlFor="seoMaxLength">Maksymalna długość (znaków)</Label>
@@ -749,7 +749,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                 max={300}
                 className="mt-2"
               />
-              <p className="text-xs text-black/40 mt-1">Rekomendowane: 160 (limit Google)</p>
+              <p className="text-xs text-muted-foreground mt-1">Rekomendowane: 160 (limit Google)</p>
             </div>
           </div>
 
@@ -763,7 +763,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               rows={3}
               className="mt-2 font-mono text-sm"
             />
-            <p className="text-xs text-black/40 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Instrukcja systemowa dla AI
             </p>
           </div>
@@ -778,13 +778,13 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               rows={20}
               className="mt-2 font-mono text-sm"
             />
-            <p className="text-xs text-black/40 mt-1">
-              Użyj <code className="bg-black/5 px-1 rounded">{'{categoryName}'}</code> i <code className="bg-black/5 px-1 rounded">{'{categoryType}'}</code> jako placeholders
+            <p className="text-xs text-muted-foreground mt-1">
+              Użyj <code className="bg-muted px-1 rounded">{'{categoryName}'}</code> i <code className="bg-black/5 px-1 rounded">{'{categoryType}'}</code> jako placeholders
             </p>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-black/5">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border">
             <Button
               onClick={handleReset}
               disabled={isLoading}

@@ -161,11 +161,11 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
   return (
     <div className="space-y-6">
       {/* Search */}
-      <Card className="border border-black/5 shadow-sm">
+      <Card className="border border-border bg-card shadow-sm">
         <CardContent className="p-4">
           <div className="relative">
             <svg
-              className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-black/40"
+              className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -177,12 +177,12 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
               placeholder="Szukaj użytkownika po nazwie, email lub ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-10 h-12 text-base border border-black/10 focus:border-[#C44E35]/40 bg-white"
+              className="pl-12 pr-10 h-12 text-base rounded-xl border-border bg-card text-foreground placeholder:text-muted-foreground"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-black/40 hover:text-black transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -194,30 +194,30 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       </Card>
 
       {/* Users Table */}
-      <Card className="border border-black/5 shadow-sm">
+      <Card className="border border-border bg-card shadow-sm">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-black/[0.02] border-b-2 border-black/5">
+              <thead className="bg-muted/50 border-b-2 border-border">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-black/80">Użytkownik</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-black/80">Email</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-black/80">Odznaki</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-black/80">Status</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-black/80">Data</th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold text-black/80">Akcje</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Użytkownik</th>
+                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">Email</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">Odznaki</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">Status</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">Data</th>
+                  <th className="px-6 py-4 text-center text-sm font-semibold text-foreground">Akcje</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-black/5">
+              <tbody className="divide-y divide-border">
                 {filteredUsers.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
-                      <p className="text-black/60">Nie znaleziono użytkowników</p>
+                      <p className="text-muted-foreground">Nie znaleziono użytkowników</p>
                     </td>
                   </tr>
                 ) : (
                   filteredUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-black/[0.02] transition-colors">
+                    <tr key={user.id} className="hover:bg-muted/50 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           {user.avatar_url ? (
@@ -236,12 +236,12 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             </div>
                           )}
                           <div className="min-w-0">
-                            <p className="font-medium text-black truncate">
+                            <p className="font-medium text-foreground truncate">
                               {user.full_name || 'Bez nazwy'}
                             </p>
                             <button
                               onClick={() => copyToClipboard(user.id)}
-                              className="text-xs text-black/40 hover:text-[#C44E35] transition-colors flex items-center gap-1"
+                              className="text-xs text-muted-foreground hover:text-[#C44E35] transition-colors flex items-center gap-1"
                               title="Kliknij aby skopiować ID"
                             >
                               <Copy className="w-3 h-3" />
@@ -251,7 +251,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                         </div>
                       </td>
                       <td className="px-6 py-4">
-                        <p className="text-sm text-black/70 truncate max-w-xs">
+                        <p className="text-sm text-muted-foreground truncate max-w-xs">
                           {user.email || 'Brak email'}
                         </p>
                       </td>
@@ -299,7 +299,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                         )}
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <p className="text-xs text-black/50">
+                        <p className="text-xs text-muted-foreground">
                           {new Date(user.created_at).toLocaleDateString('pl-PL', {
                             day: '2-digit',
                             month: '2-digit',
@@ -373,7 +373,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                 onChange={(e) => setBanReason(e.target.value)}
                 className="min-h-[100px] "
               />
-              <p className="text-xs text-black/60">
+              <p className="text-xs text-muted-foreground">
                 Ten powód zostanie zapisany i będzie widoczny w logach
               </p>
             </div>

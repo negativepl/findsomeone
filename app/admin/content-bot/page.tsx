@@ -10,8 +10,8 @@ export default function ContentBotPage() {
   return (
     <>
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-black mb-2">Wypełniaczek</h1>
-        <p className="text-black/60">
+        <h1 className="text-3xl font-bold text-foreground mb-2">Wypełniaczek</h1>
+        <p className="text-muted-foreground">
           Automatyczne generowanie przykładowych ogłoszeń przy użyciu AI
         </p>
       </div>

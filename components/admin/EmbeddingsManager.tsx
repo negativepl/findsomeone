@@ -44,12 +44,12 @@ export function EmbeddingsManager() {
   }
 
   return (
-    <Card className="p-6 border border-black/10 rounded-3xl">
+    <Card className="p-6 border border-border bg-card rounded-3xl">
       <div className="mb-6">
-        <h3 className="text-2xl font-bold text-black mb-2">
+        <h3 className="text-2xl font-bold text-foreground mb-2">
           Semantic Search (AI Embeddings)
         </h3>
-        <p className="text-black/60">
+        <p className="text-muted-foreground">
           Generuj wektory embeddings dla postów używając OpenAI. To umożliwia wyszukiwanie semantyczne
           - znajdowanie podobnych znaczeń, nie tylko dokładnych słów.
         </p>
@@ -58,21 +58,21 @@ export function EmbeddingsManager() {
       {/* Info Cards */}
       <div className="grid md:grid-cols-3 gap-4 mb-6">
         <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
-          <h4 className="font-semibold text-sm mb-2 text-black/70">Model</h4>
-          <p className="text-lg font-bold text-black">text-embedding-3-small</p>
-          <p className="text-xs text-black/60 mt-1">1536 wymiarów, $0.02/1M tokenów</p>
+          <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Model</h4>
+          <p className="text-lg font-bold text-foreground">text-embedding-3-small</p>
+          <p className="text-xs text-muted-foreground mt-1">1536 wymiarów, $0.02/1M tokenów</p>
         </Card>
 
         <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
-          <h4 className="font-semibold text-sm mb-2 text-black/70">Funkcje</h4>
-          <p className="text-lg font-bold text-black">Semantyczne wyszukiwanie</p>
-          <p className="text-xs text-black/60 mt-1">Znajduje podobne znaczenia</p>
+          <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Funkcje</h4>
+          <p className="text-lg font-bold text-foreground">Semantyczne wyszukiwanie</p>
+          <p className="text-xs text-muted-foreground mt-1">Znajduje podobne znaczenia</p>
         </Card>
 
         <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
-          <h4 className="font-semibold text-sm mb-2 text-black/70">Koszt</h4>
-          <p className="text-lg font-bold text-black">~$0.01-0.05</p>
-          <p className="text-xs text-black/60 mt-1">za 100 postów</p>
+          <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Koszt</h4>
+          <p className="text-lg font-bold text-foreground">~$0.01-0.05</p>
+          <p className="text-xs text-muted-foreground mt-1">za 100 postów</p>
         </Card>
       </div>
 
@@ -108,16 +108,16 @@ export function EmbeddingsManager() {
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
-              <span className="text-black/60">Przetworzonych:</span>
+              <span className="text-muted-foreground">Przetworzonych:</span>
               <span className="font-semibold text-green-700">{result.processed} / {result.total}</span>
             </div>
             {result.failed > 0 && (
               <div className="flex justify-between">
-                <span className="text-black/60">Błędów:</span>
+                <span className="text-muted-foreground">Błędów:</span>
                 <span className="font-semibold text-red-600">{result.failed}</span>
               </div>
             )}
-            <p className="text-xs text-black/60 mt-3 pt-3 border-t border-green-200">
+            <p className="text-xs text-muted-foreground mt-3 pt-3 border-t border-green-200">
               Embeddingi zostały wygenerowane i zapisane. Wyszukiwarka semantyczna jest teraz aktywna!
             </p>
           </div>
