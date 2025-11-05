@@ -170,13 +170,12 @@ export function ScrollIndicator({ containerId }: ScrollIndicatorProps) {
 
         {/* Active indicator - slides smoothly inside track */}
         <div
-          className="absolute top-0 h-full rounded-full pointer-events-none"
+          className="absolute top-0 h-full rounded-full pointer-events-none bg-brand"
           style={{
             left: `${scrollProgress}%`,
             width: `${indicatorWidth}px`,
-            background: '#C44E35',
             transform: 'translateX(-50%)',
-            boxShadow: isDragging ? '0 0 0 4px rgba(196, 78, 53, 0.2)' : 'none',
+            boxShadow: isDragging ? '0 0 0 4px hsl(var(--brand) / 0.2)' : 'none',
             transition: 'box-shadow 200ms ease-out'
           }}
         />

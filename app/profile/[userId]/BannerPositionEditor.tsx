@@ -109,10 +109,10 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
                   onMouseUp={() => setIsDragging(false)}
                   onTouchStart={() => setIsDragging(true)}
                   onTouchEnd={() => setIsDragging(false)}
-                  className="w-full h-2 bg-black/10 rounded-full appearance-none cursor-pointer slider"
+                  className="w-full h-2 bg-black/10 rounded-full appearance-none cursor-pointer slider position-slider"
                   style={{
-                    background: `linear-gradient(to right, #C44E35 0%, #C44E35 ${position}%, #e5e5e5 ${position}%, #e5e5e5 100%)`
-                  }}
+                    '--slider-position': `${position}%`
+                  } as React.CSSProperties}
                 />
               </div>
 
@@ -150,10 +150,10 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
                   onMouseUp={() => setIsDragging(false)}
                   onTouchStart={() => setIsDragging(true)}
                   onTouchEnd={() => setIsDragging(false)}
-                  className="w-full h-2 bg-black/10 rounded-full appearance-none cursor-pointer slider"
+                  className="w-full h-2 bg-black/10 rounded-full appearance-none cursor-pointer slider scale-slider"
                   style={{
-                    background: `linear-gradient(to right, #C44E35 0%, #C44E35 ${scale - 100}%, #e5e5e5 ${scale - 100}%, #e5e5e5 100%)`
-                  }}
+                    '--slider-position': `${scale - 100}%`
+                  } as React.CSSProperties}
                 />
               </div>
 
@@ -191,7 +191,7 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white text-sm font-semibold py-2 transition-colors disabled:opacity-50"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-white text-sm font-semibold py-2 transition-colors disabled:opacity-50"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz'}
             </button>
@@ -200,12 +200,20 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
       </div>
 
       <style jsx>{`
+        .position-slider {
+          background: linear-gradient(to right, hsl(var(--brand)) 0%, hsl(var(--brand)) var(--slider-position), #e5e5e5 var(--slider-position), #e5e5e5 100%);
+        }
+
+        .scale-slider {
+          background: linear-gradient(to right, hsl(var(--brand)) 0%, hsl(var(--brand)) var(--slider-position), #e5e5e5 var(--slider-position), #e5e5e5 100%);
+        }
+
         .slider::-webkit-slider-thumb {
           appearance: none;
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #C44E35;
+          background: hsl(var(--brand));
           cursor: pointer;
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
@@ -214,7 +222,7 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
           width: 20px;
           height: 20px;
           border-radius: 50%;
-          background: #C44E35;
+          background: hsl(var(--brand));
           cursor: pointer;
           border: none;
           box-shadow: 0 2px 4px rgba(0,0,0,0.2);

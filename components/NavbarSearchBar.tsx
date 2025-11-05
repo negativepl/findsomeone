@@ -670,7 +670,7 @@ export function NavbarSearchBar() {
                     <button
                       type="button"
                       onClick={clearRecentSearches}
-                      className="text-xs text-[#C44E35] hover:text-[#B33D2A] font-medium transition-colors"
+                      className="text-xs text-brand hover:text-brand/90 font-medium transition-colors"
                     >
                       Wyczyść
                     </button>
@@ -714,7 +714,7 @@ export function NavbarSearchBar() {
                       router.push(`/posts?search=${encodeURIComponent(results.queryCorrection!.corrected)}`)
                     }}
                     data-navigate="true"
-                    className="text-sm font-semibold text-[#C44E35] hover:text-[#B33D2A] hover:underline transition-colors"
+                    className="text-sm font-semibold text-brand hover:text-brand/90 hover:underline transition-colors"
                   >
                     {results.queryCorrection.corrected}
                   </button>
@@ -753,14 +753,14 @@ export function NavbarSearchBar() {
                         onClick={() => handleSuggestionClick(item.text)}
                         data-navigate="true"
                         className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center gap-3 group ${
-                          isSelected ? 'bg-[#C44E35]/10' : 'hover:bg-[#C44E35]/5'
+                          isSelected ? 'bg-brand/10' : 'hover:bg-brand/5'
                         }`}
                       >
-                        <div className="w-8 h-8 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C44E35]/20 transition-colors">
+                        <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand/20 transition-colors">
                           {getSuggestionIcon('trending')}
                         </div>
                         <span className="text-sm text-foreground font-medium flex-1 truncate">{item.text}</span>
-                        <Badge className="rounded-full bg-[#C44E35] text-white text-xs px-2.5 py-0.5 border-0">
+                        <Badge className="rounded-full bg-brand text-white text-xs px-2.5 py-0.5 border-0">
                           #{index + 1}
                         </Badge>
                       </button>
@@ -814,7 +814,7 @@ export function NavbarSearchBar() {
                           {formatSuggestion(suggestion.text, suggestion.type)}
                         </span>
                         {suggestion.type === 'trending' && (
-                          <Badge className="rounded-full bg-[#C44E35] text-white text-xs px-2.5 py-0.5 border-0 flex-shrink-0">
+                          <Badge className="rounded-full bg-brand text-white text-xs px-2.5 py-0.5 border-0 flex-shrink-0">
                             Trend
                           </Badge>
                         )}
@@ -833,7 +833,7 @@ export function NavbarSearchBar() {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="w-full text-center py-2.5 text-sm font-semibold text-[#C44E35] hover:bg-[#C44E35]/5 rounded-lg transition-all"
+                className="w-full text-center py-2.5 text-sm font-semibold text-brand hover:bg-brand/5 rounded-lg transition-all"
               >
                 Zobacz wszystkie wyniki
               </button>
@@ -854,7 +854,7 @@ export function NavbarSearchBar() {
           <LottieIcon
             animationPath="/animations/location.json"
             fallbackSvg={<img src="/icons/location.svg" alt="Location" className="w-full h-full" />}
-            className="w-4 h-4 text-[#C44E35] flex-shrink-0"
+            className="w-4 h-4 text-brand flex-shrink-0"
             isHovered={isLocationButtonHovered}
           />
           <style>{`
@@ -927,19 +927,19 @@ export function NavbarSearchBar() {
                 onClick={detectLocation}
                 disabled={isDetectingLocation}
                 data-navigate="true"
-                className="w-full mb-2 px-3 py-3 rounded-lg bg-[#C44E35]/10 hover:bg-[#C44E35]/20 transition-all flex items-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full mb-2 px-3 py-3 rounded-lg bg-brand/10 hover:bg-brand/20 transition-all flex items-center gap-3 group disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <div className="w-8 h-8 rounded-lg bg-[#C44E35]/20 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-lg bg-brand/20 flex items-center justify-center flex-shrink-0">
                   {isDetectingLocation ? (
-                    <div className="w-4 h-4 border border-[#C44E35]/30 border-t-[#C44E35] rounded-full animate-spin" />
+                    <div className="w-4 h-4 border border-brand/30 border-t-brand rounded-full animate-spin" />
                   ) : (
-                    <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   )}
                 </div>
-                <span className="text-sm font-semibold text-[#C44E35] flex-1 text-left">
+                <span className="text-sm font-semibold text-brand flex-1 text-left">
                   {isDetectingLocation ? 'Wykrywanie...' : 'Wykryj moją lokalizację'}
                 </span>
               </button>
@@ -954,13 +954,13 @@ export function NavbarSearchBar() {
                       data-navigate="true"
                       className={`w-full text-left px-3 py-2.5 rounded-lg transition-all flex items-center justify-between group ${
                         selectedCity === city.name
-                          ? 'bg-[#C44E35]/10 text-[#C44E35]'
+                          ? 'bg-brand/10 text-brand'
                           : 'hover:bg-muted text-foreground'
                       }`}
                     >
                       <div className="flex items-center gap-2">
                         <MapPin className={`w-4 h-4 flex-shrink-0 ${
-                          selectedCity === city.name ? 'text-[#C44E35]' : 'text-muted-foreground'
+                          selectedCity === city.name ? 'text-brand' : 'text-muted-foreground'
                         }`} />
                         <div>
                           <p className="text-sm font-medium">{city.name}</p>

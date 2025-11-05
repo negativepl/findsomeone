@@ -145,7 +145,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                     {profile.rating > 0 ? (
                       <>
                         <div className="flex items-center gap-1 text-xl md:text-2xl">
-                          <span className="text-[#C44E35]">★</span>
+                          <span className="text-brand">★</span>
                           <span className="font-bold text-foreground">{profile.rating.toFixed(1)}</span>
                         </div>
                         <span className="text-sm md:text-base text-muted-foreground">
@@ -169,13 +169,13 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                         user.id === userId ? (
                           <Button
                             disabled
-                            className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border h-10 py-0 px-4 text-sm leading-normal min-h-0 opacity-50 cursor-not-allowed"
+                            className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border border-border h-10 py-0 px-4 text-sm leading-normal min-h-0 opacity-50 cursor-not-allowed"
                           >
                             Wyślij wiadomość
                           </Button>
                         ) : (
                           <Link href={`/dashboard/messages/${userId}`} className="w-full sm:w-auto">
-                            <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border h-10 py-0 px-4 text-sm leading-normal min-h-0">
+                            <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border border-border h-10 py-0 px-4 text-sm leading-normal min-h-0">
                               Wyślij wiadomość
                             </Button>
                           </Link>
@@ -235,7 +235,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                           </div>
                         </div>
                         <div className="flex items-center gap-1">
-                          <span className="text-[#C44E35]">★</span>
+                          <span className="text-brand">★</span>
                           <span className="font-semibold text-foreground">{review.rating}</span>
                         </div>
                       </div>

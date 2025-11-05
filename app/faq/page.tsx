@@ -202,7 +202,7 @@ export default async function FAQPage() {
                 <p className="text-muted-foreground leading-relaxed">
                   Twoje dane są chronione zgodnie z RODO. Nie udostępniamy danych osobowych osobom trzecim.
                   Szczegóły znajdziesz w naszej{' '}
-                  <Link href="/privacy" className="text-[#C44E35] hover:underline">
+                  <Link href="/privacy" className="text-brand hover:underline">
                     Polityce prywatności
                   </Link>
                   .
@@ -258,7 +258,7 @@ export default async function FAQPage() {
                 <p className="text-muted-foreground leading-relaxed">
                   Tak! FindSomeone to aplikacja PWA (Progressive Web App), którą możesz zainstalować na swoim telefonie lub komputerze.
                   Przejdź do{' '}
-                  <Link href="/install" className="text-[#C44E35] hover:underline">
+                  <Link href="/install" className="text-brand hover:underline">
                     instrukcji instalacji
                   </Link>
                   {' '}aby dowiedzieć się więcej.
@@ -287,7 +287,7 @@ export default async function FAQPage() {
             Skontaktuj się z nami - chętnie pomożemy!
           </p>
           <Link href="/contact">
-            <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border px-10 py-6 text-base font-semibold">
+            <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-10 py-6 text-base font-semibold">
               Skontaktuj się z nami
             </Button>
           </Link>

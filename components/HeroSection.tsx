@@ -18,7 +18,7 @@ export function HeroSection({ user }: HeroSectionProps) {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 120% 60% at 50% 0%, rgba(196, 78, 53, 0.15) 0%, rgba(196, 78, 53, 0.08) 30%, transparent 70%)',
+          background: 'radial-gradient(ellipse 120% 60% at 50% 0%, hsl(var(--brand) / 0.15) 0%, hsl(var(--brand) / 0.08) 30%, transparent 70%)',
         }}
       />
       
@@ -41,7 +41,7 @@ export function HeroSection({ user }: HeroSectionProps) {
                 <span className="relative inline-block">
                   {word}
                   <svg
-                    className="absolute left-0 -bottom-2 w-full"
+                    className="absolute left-0 -bottom-2 w-full [&_path]:stroke-brand"
                     viewBox="0 0 300 12"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -50,13 +50,11 @@ export function HeroSection({ user }: HeroSectionProps) {
                   >
                     <path
                       d="M2 6C50 4 100 2 150 5C200 8 250 4 298 6"
-                      stroke="#C44E35"
                       strokeWidth="3"
                       strokeLinecap="round"
                     />
                     <path
                       d="M2 9C50 7 100 5 150 8C200 11 250 7 298 9"
-                      stroke="#C44E35"
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       opacity="0.6"
@@ -85,7 +83,7 @@ export function HeroSection({ user }: HeroSectionProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.5 }}
-            className="text-2xl md:text-3xl text-[#C44E35] font-[family-name:var(--font-dancing-script)]"
+            className="text-2xl md:text-3xl text-brand font-[family-name:var(--font-dancing-script)]"
           >
             FindSomeone łączy ludzi i ogłoszenia w Twoim mieście.
           </motion.p>

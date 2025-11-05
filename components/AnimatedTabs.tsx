@@ -35,7 +35,7 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', sho
     <div className={`relative flex gap-1 md:gap-2 border-b-2 border-border ${className}`}>
       {/* Animated indicator bar */}
       <div
-        className="absolute bottom-0 h-0.5 bg-[#C44E35] transition-all duration-300 ease-out"
+        className="absolute bottom-0 h-0.5 bg-brand transition-all duration-300 ease-out"
         style={{
           left: `${indicatorStyle.left}px`,
           width: `${indicatorStyle.width}px`,
@@ -51,7 +51,7 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', sho
           data-no-loader={!showLoader ? "true" : undefined}
           className={`flex items-center gap-1.5 md:gap-3 px-3 md:px-6 py-3 md:py-4 font-semibold transition-colors duration-200 relative text-sm md:text-base whitespace-nowrap ${
             activeTab === tab.id
-              ? 'text-[#B33D2A]'
+              ? 'text-brand/90'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
@@ -61,7 +61,7 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', sho
             <span
               className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold transition-all duration-200 ${
                 activeTab === tab.id
-                  ? 'bg-[#C44E35] text-white'
+                  ? 'bg-brand text-white'
                   : 'bg-muted text-muted-foreground'
               }`}
             >

@@ -69,8 +69,8 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
       <Card className="border border-border rounded-3xl bg-card shadow-sm">
         <CardContent className="p-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-              <svg className="w-5 h-5 text-[#C44E35] animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0">
+              <svg className="w-5 h-5 text-brand animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </div>
@@ -92,8 +92,8 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
     <Card className="border border-border rounded-3xl bg-card shadow-sm">
       <CardContent className="p-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-            <svg className="w-5 h-5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0">
+            <svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>

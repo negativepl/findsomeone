@@ -86,7 +86,7 @@ export default async function BannedPage({
           <div className="space-y-3">
             <a
               href="/contact"
-              className="block px-6 py-3 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold transition-colors"
+              className="block px-6 py-3 rounded-full bg-brand hover:bg-brand/90 text-white font-semibold transition-colors"
             >
               Skontaktuj się z nami
             </a>
@@ -105,8 +105,8 @@ export default async function BannedPage({
         {/* Additional info */}
         <div className="mt-6 text-center">
           <p className="text-sm text-black/60">
-            Przeczytaj nasz <a href="/terms" className="text-[#C44E35] hover:underline">regulamin</a> i{' '}
-            <a href="/privacy" className="text-[#C44E35] hover:underline">politykę prywatności</a>
+            Przeczytaj nasz <a href="/terms" className="text-brand hover:underline">regulamin</a> i{' '}
+            <a href="/privacy" className="text-brand hover:underline">politykę prywatności</a>
           </p>
         </div>
       </div>

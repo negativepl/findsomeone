@@ -19,7 +19,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-[#C44E35]" />
+        <Loader2 className="w-8 h-8 animate-spin text-brand" />
       </div>
     )
   }
@@ -151,7 +151,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
               Kliknij serduszko na ogłoszeniu, aby dodać je do ulubionych
             </p>
             <Link href="/posts">
-              <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
+              <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 px-8">
                 Przeglądaj ogłoszenia
               </Button>
             </Link>

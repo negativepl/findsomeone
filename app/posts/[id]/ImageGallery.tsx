@@ -119,7 +119,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
                 onClick={() => setCurrentIndex(index)}
                 className={`relative flex-shrink-0 w-12 h-12 rounded-md overflow-hidden transition-all ${
                   index === currentIndex
-                    ? 'ring-2 ring-[#C44E35] ring-offset-1'
+                    ? 'ring-2 ring-brand ring-offset-1'
                     : 'opacity-60 hover:opacity-100'
                 }`}
               >

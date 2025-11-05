@@ -177,7 +177,7 @@ export default async function MessagesPage() {
                               className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover"
                             />
                           ) : (
-                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-[#C44E35] flex items-center justify-center">
+                            <div className="w-12 h-12 md:w-14 md:h-14 rounded-full bg-brand flex items-center justify-center">
                               <span className="text-lg md:text-xl font-semibold text-white">
                                 {conversation.other_user.full_name?.charAt(0) || 'U'}
                               </span>
@@ -202,7 +202,7 @@ export default async function MessagesPage() {
                           </div>
 
                           {conversation.post && (
-                            <div className="text-xs md:text-sm text-[#C44E35] mb-1 flex items-center gap-1 truncate">
+                            <div className="text-xs md:text-sm text-brand mb-1 flex items-center gap-1 truncate">
                               <svg className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                               </svg>
@@ -219,7 +219,7 @@ export default async function MessagesPage() {
 
                           {conversation.unread_count > 0 && (
                             <div className="inline-flex items-center gap-2 mt-2">
-                              <div className="bg-[#C44E35] text-white text-xs px-3 py-1 rounded-full font-semibold">
+                              <div className="bg-brand text-white text-xs px-3 py-1 rounded-full font-semibold">
                                 {conversation.unread_count} {conversation.unread_count === 1 ? 'nowa' : 'nowych'}
                               </div>
                             </div>
@@ -253,7 +253,7 @@ export default async function MessagesPage() {
                   Nie masz jeszcze żadnych rozmów. Skontaktuj się z kimś przez ogłoszenie!
                 </p>
                 <Link href="/posts" className="block">
-                  <button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border px-8 py-3 font-semibold transition-colors">
+                  <button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-8 py-3 font-semibold transition-colors">
                     Przeglądaj ogłoszenia
                   </button>
                 </Link>

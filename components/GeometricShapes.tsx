@@ -29,10 +29,15 @@ export function GeometricShapes({
 
   useEffect(() => {
     const shapeCount = density === 'low' ? 3 : density === 'medium' ? 5 : 8
+
+    // Get CSS variable colors from computed styles
+    const root = document.documentElement
+    const brandColor = getComputedStyle(root).getPropertyValue('--brand').trim()
+
     const colors = {
-      light: ['rgba(196, 78, 53, 0.05)', 'rgba(196, 78, 53, 0.08)', 'rgba(196, 78, 53, 0.03)'],
-      dark: ['rgba(196, 78, 53, 0.15)', 'rgba(196, 78, 53, 0.20)', 'rgba(255, 255, 255, 0.05)'],
-      accent: ['rgba(196, 78, 53, 0.25)', 'rgba(160, 56, 40, 0.20)', 'rgba(255, 255, 255, 0.08)']
+      light: [`oklch(from ${brandColor} l c h / 0.05)`, `oklch(from ${brandColor} l c h / 0.08)`, `oklch(from ${brandColor} l c h / 0.03)`],
+      dark: [`oklch(from ${brandColor} l c h / 0.15)`, `oklch(from ${brandColor} l c h / 0.20)`, 'rgba(255, 255, 255, 0.05)'],
+      accent: [`oklch(from ${brandColor} l c h / 0.25)`, `oklch(from ${brandColor} l c h / 0.20)`, 'rgba(255, 255, 255, 0.08)']
     }
 
     const newShapes: Shape[] = Array.from({ length: shapeCount }, (_, i) => ({

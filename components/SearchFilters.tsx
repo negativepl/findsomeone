@@ -266,7 +266,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           {/* Back button */}
           <button
             onClick={() => setMobileViewingSubcategory(null)}
-            className="flex items-center gap-2 text-foreground hover:text-[#C44E35] transition-colors mb-4"
+            className="flex items-center gap-2 text-foreground hover:text-brand transition-colors mb-4"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -296,7 +296,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                   data-navigate="true"
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
                     isSelected
-                      ? 'bg-[#C44E35] text-white'
+                      ? 'bg-brand text-white'
                       : 'bg-card text-foreground border border-border hover:bg-muted'
                   }`}
                 >
@@ -321,7 +321,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
           {/* Back button */}
           <button
             onClick={() => setMobileViewingCategory(null)}
-            className="flex items-center gap-2 text-foreground hover:text-[#C44E35] transition-colors mb-4"
+            className="flex items-center gap-2 text-foreground hover:text-brand transition-colors mb-4"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -361,7 +361,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                   {...(!hasSubSubcategories && { 'data-navigate': 'true' })}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
                     isSelected
-                      ? 'bg-[#C44E35] text-white'
+                      ? 'bg-brand text-white'
                       : 'bg-card text-foreground border border-border hover:bg-muted'
                   }`}
                 >
@@ -402,7 +402,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                 {...(!hasSubcategories && { 'data-navigate': 'true' })}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
                   isMainSelected
-                    ? 'bg-[#C44E35] text-white'
+                    ? 'bg-brand text-white'
                     : 'bg-card text-foreground border border-border hover:bg-muted'
                 }`}
               >
@@ -436,7 +436,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
       <div className="lg:hidden fixed bottom-24 left-4 z-40">
         <Button
           onClick={() => setIsMobileMenuOpen(true)}
-          className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-lg w-14 h-14 p-0"
+          className="rounded-full bg-brand hover:bg-brand/90 text-white shadow-lg w-14 h-14 p-0"
           aria-label="Otwórz filtry"
         >
           <Filter className="w-6 h-6" />
@@ -474,7 +474,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
             <button
               onClick={clearFilters}
               data-navigate="true"
-              className="text-sm text-[#B33D2A] hover:text-[#A02C1F] font-medium"
+              className="text-sm text-brand/90 hover:text-brand/80 font-medium"
             >
               Wyczyść wszystkie filtry
             </button>

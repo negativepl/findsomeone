@@ -41,7 +41,7 @@ export default async function HowItWorksPage() {
             <div className="grid md:grid-cols-3 gap-6">
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     1
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Przeglądaj ogłoszenia</h3>
@@ -53,7 +53,7 @@ export default async function HowItWorksPage() {
 
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     2
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Sprawdź opinie</h3>
@@ -65,7 +65,7 @@ export default async function HowItWorksPage() {
 
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
-                  <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
+                  <div className="w-16 h-16 rounded-full bg-brand text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6">
                     3
                   </div>
                   <h3 className="text-xl font-bold text-foreground mb-3">Nawiąż kontakt</h3>
@@ -131,7 +131,7 @@ export default async function HowItWorksPage() {
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <Link href="/signup">
-                <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border px-10 py-6 text-base font-semibold">
+                <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-10 py-6 text-base font-semibold">
                   Zarejestruj się
                 </Button>
               </Link>

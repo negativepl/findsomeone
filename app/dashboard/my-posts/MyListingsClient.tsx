@@ -503,7 +503,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             {post.status === 'active' && post.expires_at && (() => {
                               const expiryInfo = getExpiryText(post.expires_at)
                               return expiryInfo.text && (
-                                <div className={`flex items-center gap-1 ${expiryInfo.urgent ? 'text-[#C44E35] font-semibold' : ''}`}>
+                                <div className={`flex items-center gap-1 ${expiryInfo.urgent ? 'text-brand font-semibold' : ''}`}>
                                   <CalendarClock className="w-3 h-3" />
                                   <span>{expiryInfo.text}</span>
                                 </div>
@@ -544,7 +544,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 <TooltipTrigger asChild>
                                   <button
                                     onClick={(e) => handleExtendPost(post.id, e)}
-                                    className="h-8 w-8 rounded-lg bg-card border border-[#C44E35]/30 text-[#C44E35] hover:bg-[#C44E35]/10 flex items-center justify-center transition-all relative z-20"
+                                    className="h-8 w-8 rounded-lg bg-card border border-brand/30 text-brand hover:bg-brand/10 flex items-center justify-center transition-all relative z-20"
                                     disabled={isPending}
                                   >
                                     <RefreshCw className="w-3 h-3" />
@@ -1388,7 +1388,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               </p>
               {activeTab === 'all' && (
                 <Link href="/dashboard/my-posts/new">
-                  <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
+                  <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 px-8">
                     Dodaj ogłoszenie
                   </Button>
                 </Link>
@@ -1434,7 +1434,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDelete}
-                className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+                className="rounded-full bg-brand hover:bg-brand/90 text-white border-0"
                 disabled={isPending}
               >
                 {isPending ? 'Usuwanie...' : 'Usuń'}

@@ -93,7 +93,7 @@ export function DeleteAccountDialog() {
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full border border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10"
+              className="rounded-full border border-border hover:border-brand hover:bg-brand/10"
             >
               Anuluj
             </Button>

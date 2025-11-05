@@ -108,7 +108,7 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
         {/* Search Icon */}
         <button
           onClick={() => setIsSearchOpen(true)}
-          className="inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
+          className="inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-brand hover:bg-brand/90 transition-colors"
         >
           <span className="sr-only">Wyszukaj</span>
           <img src="/icons/search.svg" alt="" className="h-4 w-4" />
@@ -120,12 +120,12 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
             {/* Favorites Icon */}
             <Link
               href="/dashboard/favorites"
-              className="relative inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
+              className="relative inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-brand hover:bg-brand/90 transition-colors"
             >
               <span className="sr-only">Ulubione{favoritesCount > 0 ? ` (${favoritesCount})` : ''}</span>
               <img src="/icons/heart.svg" alt="" className="h-4 w-4" />
               {favoritesCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-white text-[#C44E35] text-[10px] font-bold rounded-full border border-[#C44E35]">
+                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-background text-brand text-[10px] font-bold rounded-full border border-brand">
                   {favoritesCount > 99 ? '99+' : favoritesCount}
                 </span>
               )}
@@ -134,12 +134,12 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
             {/* Messages Icon */}
             <Link
               href="/dashboard/messages"
-              className="relative inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
+              className="relative inline-flex items-center justify-center h-[34px] w-[34px] rounded-full bg-brand hover:bg-brand/90 transition-colors"
             >
               <span className="sr-only">Wiadomości{unreadCount > 0 ? ` (${unreadCount} nieprzeczytanych)` : ''}</span>
               <img src="/icons/messages.svg" alt="" className="h-4 w-4" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-white text-[#C44E35] text-[10px] font-bold rounded-full border border-[#C44E35]">
+                <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-background text-brand text-[10px] font-bold rounded-full border border-brand">
                   {unreadCount > 99 ? '99+' : unreadCount}
                 </span>
               )}

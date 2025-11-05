@@ -142,11 +142,11 @@ export function SendMessageModal({
 
   // Default trigger based on variant
   const defaultTrigger = variant === 'mobile-dock' ? (
-    <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold gap-0">
+    <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold gap-0">
       Wiadomość
     </Button>
   ) : (
-    <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 py-6 text-lg">
+    <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 py-6 text-lg">
       Wyślij wiadomość
     </Button>
   )
@@ -186,7 +186,7 @@ export function SendMessageModal({
                 onChange={(e) => setMessage(e.target.value)}
                 required
                 rows={6}
-                className="rounded-2xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-[#C44E35] resize-none"
+                className="rounded-2xl border border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-brand resize-none"
                 disabled={loading}
               />
               <div className="flex justify-between items-center text-sm">
@@ -220,7 +220,7 @@ export function SendMessageModal({
                 </Button>
                 <Button
                   type="submit"
-                  className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+                  className="rounded-full bg-brand hover:bg-brand/90 text-white border-0"
                   disabled={loading || !isValid}
                 >
                   {loading ? 'Wysyłanie...' : 'Wyślij wiadomość'}

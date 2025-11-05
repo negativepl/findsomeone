@@ -155,7 +155,7 @@ export function EditSubcategoryDialog({ category, onClose, onUpdated }: EditSubc
             </Button>
             <Button
               type="submit"
-              className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold"
+              className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 font-semibold"
               disabled={loading}
             >
               {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}

@@ -308,11 +308,11 @@ export default async function PrivacyPage() {
                 <ul className="space-y-3 text-muted-foreground mb-4">
                   <li className="flex items-start gap-2">
                     <strong className="min-w-[180px]">Ogólne zapytania:</strong>
-                    <span>poprzez <a href="/contact" className="text-[#C44E35] hover:underline">formularz kontaktowy</a> na stronie</span>
+                    <span>poprzez <a href="/contact" className="text-brand hover:underline">formularz kontaktowy</a> na stronie</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <strong className="min-w-[180px]">Sprawy RODO:</strong>
-                    <span>poprzez <a href="/contact" className="text-[#C44E35] hover:underline">formularz kontaktowy</a> (wybierz kategorię "Kontakt ogólny")</span>
+                    <span>poprzez <a href="/contact" className="text-brand hover:underline">formularz kontaktowy</a> (wybierz kategorię "Kontakt ogólny")</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <strong className="min-w-[180px]">Zgłoszenia moderacji:</strong>

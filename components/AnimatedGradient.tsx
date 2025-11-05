@@ -42,8 +42,8 @@ export function AnimatedGradient({ children, delay = 0 }: AnimatedGradientProps)
       ref={ref}
       className={`inline-block font-semibold transition-all duration-1000 ease-out ${
         isVisible
-          ? 'bg-gradient-to-r from-[#1A1A1A] to-[#C44E35] bg-clip-text text-transparent'
-          : 'text-black/70'
+          ? 'bg-gradient-to-r from-foreground to-brand bg-clip-text text-transparent'
+          : 'text-foreground/70'
       }`}
       style={{
         backgroundSize: isVisible ? '100% 100%' : '0% 100%',

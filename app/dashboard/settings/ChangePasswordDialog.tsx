@@ -39,7 +39,7 @@ export function ChangePasswordDialog() {
         <Button
           variant="outline"
           size="sm"
-          className="rounded-full border border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10 bg-card text-foreground"
+          className="rounded-full border border-border hover:border-brand hover:bg-brand/10 bg-card text-foreground"
         >
           Zmień
         </Button>
@@ -103,14 +103,14 @@ export function ChangePasswordDialog() {
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full border border-border hover:border-[#C44E35] hover:bg-[#C44E35]/10"
+              className="rounded-full border border-border hover:border-brand hover:bg-brand/10"
             >
               Anuluj
             </Button>
             <Button
               type="submit"
               disabled={loading}
-              className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+              className="rounded-full bg-brand hover:bg-brand/90 text-white border-0"
             >
               {loading ? 'Zmieniam...' : 'Zmień hasło'}
             </Button>

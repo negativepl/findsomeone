@@ -18,7 +18,7 @@ export function CTASection({ section }: CTASectionProps) {
   const textAlignment = config.text_alignment || 'center'
 
   // Button colors
-  const buttonColor = config.button_color || '#C44E35'
+  const buttonColor = config.button_color || 'hsl(var(--brand))'
   const buttonTextColor = config.button_text_color || '#FFFFFF'
   const buttonColorSecondary = config.button_color_secondary || '#000000'
   const buttonTextColorSecondary = config.button_text_color_secondary || '#FFFFFF'

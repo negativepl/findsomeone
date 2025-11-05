@@ -58,7 +58,7 @@ function SortableSectionComponent({
 
       if (typeof value === 'boolean') {
         return value ? (
-          <span key={key} className="px-2.5 py-1 bg-[#C44E35]/10 text-[#C44E35] rounded-full font-medium">
+          <span key={key} className="px-2.5 py-1 bg-brand/10 text-brand rounded-full font-medium">
             {key}
           </span>
         ) : null
@@ -105,7 +105,7 @@ function SortableSectionComponent({
         </button>
 
         {/* Section type badge */}
-        <Badge variant="outline" className="rounded-full flex-shrink-0 border-[#C44E35]/30 text-[#C44E35] bg-[#C44E35]/5">
+        <Badge variant="outline" className="rounded-full flex-shrink-0 border-brand/30 text-brand bg-brand/5">
           {metadata?.label || section.type}
         </Badge>
 

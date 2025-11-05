@@ -274,7 +274,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     </h4>
                     {post.profiles?.rating > 0 && post.profiles?.total_reviews > 0 && (
                       <div className="flex items-center gap-1 text-black/60">
-                        <span className="text-[#C44E35]">★</span>
+                        <span className="text-brand">★</span>
                         <span className="font-semibold">{post.profiles.rating.toFixed(1)}</span>
                         <span className="text-sm">({post.profiles.total_reviews} opinii)</span>
                       </div>
@@ -352,7 +352,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       <p className="text-sm text-black/60">To Twoje ogłoszenie</p>
                     </div>
                     <Link href={`/dashboard/my-posts/${post.id}/edit`}>
-                      <Button className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 py-6 text-lg">
+                      <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 py-6 text-lg">
                         Edytuj ogłoszenie
                       </Button>
                     </Link>

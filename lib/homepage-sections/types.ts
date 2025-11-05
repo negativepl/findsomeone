@@ -505,7 +505,7 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
       border_radius: 0,
       button_text: 'Dowiedz się więcej',
       button_link: '/posts',
-      button_color: '#C44E35',
+      button_color: 'hsl(var(--brand))',
       button_text_color: '#FFFFFF',
       button_color_secondary: '#FFFFFF',
       button_text_color_secondary: '#000000',
@@ -647,7 +647,7 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
         name: 'button_color',
         label: 'Kolor tła przycisku głównego',
         type: 'color',
-        default: '#C44E35',
+        default: 'hsl(var(--brand))',
         description: 'Kolor tła przycisku głównego'
       },
       {
@@ -1073,7 +1073,7 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
       button_text: 'Rozpocznij teraz',
       button_link: '/dashboard/my-posts/new',
       text_alignment: 'center',
-      button_color: '#C44E35',
+      button_color: 'hsl(var(--brand))',
       button_text_color: '#FFFFFF',
       button_color_secondary: '#000000',
       button_text_color_secondary: '#FFFFFF'
@@ -1136,7 +1136,7 @@ export const SECTION_TYPES: Record<SectionType, SectionTypeMetadata> = {
         name: 'button_color',
         label: 'Kolor przycisku głównego',
         type: 'color',
-        default: '#C44E35',
+        default: 'hsl(var(--brand))',
         description: 'Kolor tła przycisku głównego'
       },
       {

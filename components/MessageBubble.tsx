@@ -61,7 +61,7 @@ export function MessageBubble({
               className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
-            <div className="w-10 h-10 rounded-full bg-[#C44E35] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-brand flex items-center justify-center">
               <span className="text-sm font-semibold text-white">
                 {senderName?.charAt(0) || 'U'}
               </span>
@@ -75,7 +75,7 @@ export function MessageBubble({
         <div
           className={`rounded-2xl px-4 py-3 ${
             isOwn
-              ? 'bg-[#C44E35] text-white rounded-tr-sm'
+              ? 'bg-brand text-white rounded-tr-sm'
               : 'bg-card text-foreground border border-border rounded-tl-sm'
           }`}
         >

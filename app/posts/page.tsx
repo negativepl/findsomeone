@@ -402,14 +402,14 @@ export default async function PostsPage({
                   </p>
                   {searchQuery || cityQuery || categoryQuery ? (
                     <Link href="/posts">
-                      <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border px-8">
+                      <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-8">
                         Wyczyść filtry
                       </Button>
                     </Link>
                   ) : (
                     user && (
                       <Link href="/dashboard/my-posts/new">
-                        <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border border-border px-8">
+                        <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-8">
                           Dodaj ogłoszenie
                         </Button>
                       </Link>

@@ -47,8 +47,8 @@ export function AnimatedUnderline({ children, delay = 0, lightMode = false }: An
       <span
         className={`absolute bottom-0 left-0 h-[3px] ${
           lightMode
-            ? 'bg-gradient-to-r from-white to-[#FFD700]'
-            : 'bg-gradient-to-r from-[#C44E35] to-[#F4A261]'
+            ? 'bg-gradient-to-r from-white to-accent'
+            : 'bg-gradient-to-r from-brand to-accent'
         } transition-all duration-1000 ease-out ${
           isVisible ? 'w-full' : 'w-0'
         }`}

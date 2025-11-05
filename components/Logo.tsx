@@ -18,10 +18,10 @@ export function Logo({ className = "w-8 h-8" }: { className?: string }) {
       />
 
       {/* Prawa sylwetka - ciemniejszy pomarańczowy */}
-      <circle cx="68" cy="28" r="11" fill="#C44E35" />
+      <circle cx="68" cy="28" r="11" className="fill-brand" />
       <path
         d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z"
-        fill="#C44E35"
+        className="fill-brand"
       />
     </svg>
   )

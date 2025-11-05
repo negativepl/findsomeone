@@ -129,7 +129,7 @@ export function MobileSearchBar({ isOpen, onClose }: MobileSearchBarProps) {
             {/* Search button */}
             <button
               type="submit"
-              className="w-full rounded-2xl bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-6 py-3 font-medium transition-colors text-base"
+              className="w-full rounded-2xl bg-brand hover:bg-brand/90 text-white border-0 px-6 py-3 font-medium transition-colors text-base"
             >
               Szukaj
             </button>

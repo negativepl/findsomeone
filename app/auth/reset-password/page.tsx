@@ -119,8 +119,8 @@ function ResetPasswordForm() {
             <svg className="w-20 h-20" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
               <circle cx="32" cy="28" r="11" fill="#1A1A1A" />
               <path d="M32 42 C24 42, 18 47, 18 60 L18 78 C18 80, 19 82, 21 82 L43 82 C45 82, 46 80, 46 78 L46 60 C46 47, 40 42, 32 42 Z" fill="#1A1A1A" />
-              <circle cx="68" cy="28" r="11" fill="#C44E35" />
-              <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" fill="#C44E35" />
+              <circle cx="68" cy="28" r="11" className="fill-brand" />
+              <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" className="fill-brand" />
             </svg>
             <h1 className="text-3xl font-bold text-black">FindSomeone</h1>
           </Link>
@@ -176,7 +176,7 @@ function ResetPasswordForm() {
 
               <Button
                 type="submit"
-                className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-12 text-base font-semibold"
+                className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-12 text-base font-semibold"
                 disabled={loading}
               >
                 {loading ? 'Zmienianie hasła...' : 'Zmień hasło'}

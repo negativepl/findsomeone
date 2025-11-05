@@ -533,7 +533,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
       {/* Progress bar - całkiem na górze */}
       <div className="h-1 bg-muted sticky top-0 z-50">
         <div
-          className="h-full bg-[#C44E35] transition-all duration-300 ease-out"
+          className="h-full bg-brand transition-all duration-300 ease-out"
           style={{ width: `${(currentStep / totalSteps) * 100}%` }}
         />
       </div>
@@ -598,7 +598,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
                 maxLength={80}
-                className="rounded-2xl border border-border h-12 focus:border-[#C44E35] text-base bg-card"
+                className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card"
               />
             </div>
 
@@ -688,7 +688,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               type="button"
               onClick={detectLocation}
               disabled={isDetectingLocation}
-              className="w-full rounded-full bg-card border border-border hover:border-[#C44E35] hover:bg-[#C44E35]/5 text-foreground h-12 text-sm font-semibold transition-colors"
+              className="w-full rounded-full bg-card border border-border hover:border-brand hover:bg-brand/5 text-foreground h-12 text-sm font-semibold transition-colors"
             >
               {isDetectingLocation ? (
                 <>
@@ -725,7 +725,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                       fetchCities('')
                     }
                   }}
-                  className="rounded-2xl border border-border h-12 focus:border-[#C44E35] text-base bg-card pr-10"
+                  className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card pr-10"
                 />
                 {isLoadingCities && (
                   <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-foreground/40" />
@@ -790,7 +790,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 placeholder="np. Śródmieście"
                 value={formData.district}
                 onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                className="rounded-2xl border border-border h-12 focus:border-[#C44E35] text-base bg-card"
+                className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card"
               />
             </div>
           </div>
@@ -809,7 +809,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 onClick={() => setFormData({ ...formData, priceType: 'fixed' })}
                 className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                   formData.priceType === 'fixed'
-                    ? 'border-[#C44E35] bg-[#C44E35]/5'
+                    ? 'border-brand bg-brand/5'
                     : 'border-border bg-card hover:border-black/20'
                 }`}
               >
@@ -825,7 +825,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 onClick={() => setFormData({ ...formData, priceType: 'hourly' })}
                 className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                   formData.priceType === 'hourly'
-                    ? 'border-[#C44E35] bg-[#C44E35]/5'
+                    ? 'border-brand bg-brand/5'
                     : 'border-border bg-card hover:border-black/20'
                 }`}
               >
@@ -841,7 +841,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 onClick={() => setFormData({ ...formData, priceType: 'free' })}
                 className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                   formData.priceType === 'free'
-                    ? 'border-[#C44E35] bg-[#C44E35]/5'
+                    ? 'border-brand bg-brand/5'
                     : 'border-border bg-card hover:border-black/20'
                 }`}
               >
@@ -872,7 +872,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                         setFormData({ ...formData, price: value })
                       }
                     }}
-                    className="rounded-2xl border border-border h-12 focus:border-[#C44E35] text-base bg-card pr-12"
+                    className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card pr-12"
                   />
                   <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base text-muted-foreground font-medium">
                     PLN
@@ -973,11 +973,11 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 <DollarSign className="w-5 h-5 text-muted-foreground" />
                 <h3 className="font-semibold text-foreground">Cena</h3>
               </div>
-              <p className="text-xl font-bold text-[#C44E35]">{getPriceDisplay()}</p>
+              <p className="text-xl font-bold text-brand">{getPriceDisplay()}</p>
             </div>
 
             {/* Info */}
-            <div className="bg-[#C44E35]/5 border border-[#C44E35]/20 rounded-2xl p-4">
+            <div className="bg-brand/5 border border-brand/20 rounded-2xl p-4">
               <p className="text-sm text-foreground/70 text-center">
                 Sprawdź dokładnie wszystkie informacje przed opublikowaniem ogłoszenia
               </p>
@@ -1009,7 +1009,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             <button
               onClick={nextStep}
               disabled={!isStepValid(currentStep)}
-              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-white h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Dalej
             </button>
@@ -1017,7 +1017,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-white h-11 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Publikowanie...' : 'Opublikuj'}
             </button>
@@ -1043,8 +1043,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           <div className="bg-card rounded-3xl p-8 max-w-md w-full">
             {moderationInProgress ? (
               <div className="text-center">
-                <div className="w-20 h-20 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-10 h-10 text-[#C44E35] animate-spin" fill="none" viewBox="0 0 24 24">
+                <div className="w-20 h-20 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-brand animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
@@ -1073,7 +1073,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     </p>
                     <Button
                       onClick={() => router.push('/dashboard/my-posts')}
-                      className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11"
+                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-white h-11"
                     >
                       Zobacz moje ogłoszenia
                     </Button>
@@ -1105,7 +1105,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     )}
                     <Button
                       onClick={() => router.push('/dashboard/my-posts')}
-                      className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11"
+                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-white h-11"
                     >
                       Rozumiem
                     </Button>
@@ -1137,7 +1137,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     )}
                     <Button
                       onClick={() => setShowModerationModal(false)}
-                      className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11"
+                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-white h-11"
                     >
                       Popraw ogłoszenie
                     </Button>
@@ -1159,7 +1159,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     </p>
                     <Button
                       onClick={() => setShowModerationModal(false)}
-                      className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white h-11"
+                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-white h-11"
                     >
                       Spróbuj ponownie
                     </Button>

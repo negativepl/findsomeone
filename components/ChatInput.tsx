@@ -98,7 +98,7 @@ export function ChatInput({
               disabled={disabled}
               rows={1}
               maxLength={MAX_MESSAGE_LENGTH}
-              className="w-full resize-none rounded-2xl border border-border bg-background px-4 pr-20 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[#C44E35]/20 focus:border-[#C44E35] disabled:bg-muted disabled:cursor-not-allowed max-h-32 overflow-y-auto flex items-center"
+              className="w-full resize-none rounded-2xl border border-border bg-background px-4 pr-20 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand disabled:bg-muted disabled:cursor-not-allowed max-h-32 overflow-y-auto flex items-center"
               style={{
                 minHeight: '44px',
                 maxHeight: '128px',
@@ -123,7 +123,7 @@ export function ChatInput({
           <button
             type="submit"
             disabled={disabled || !isValid}
-            className="flex-shrink-0 w-11 h-11 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white disabled:bg-muted disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+            className="flex-shrink-0 w-11 h-11 rounded-full bg-brand hover:bg-brand/90 text-white disabled:bg-muted disabled:cursor-not-allowed transition-colors flex items-center justify-center"
             aria-label="Wyślij wiadomość"
           >
             <svg

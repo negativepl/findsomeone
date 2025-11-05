@@ -155,7 +155,7 @@ export function AboutPageClient() {
             onClick={() => goToSlide(index)}
             className={`w-2 h-2 md:w-3 md:h-3 rounded-full transition-all duration-500 ${
               currentSlide === index
-                ? 'bg-[#C44E35] scale-125'
+                ? 'bg-brand scale-125'
                 : isDarkSlide
                 ? 'bg-white/30 hover:bg-white/50'
                 : 'bg-black/20 hover:bg-black/40'
@@ -211,15 +211,15 @@ export function AboutPageClient() {
         {/* Slide 1 - Hero */}
         <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] pt-16 pb-24 md:pt-0 md:pb-0">
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-20 left-20 w-64 h-64 bg-[#C44E35]/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#F97316]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-20 left-20 w-64 h-64 bg-brand/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-20 right-20 w-96 h-96 bg-[hsl(var(--brand))]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
           </div>
 
           <div className="relative z-10 text-center px-4 md:px-6 max-w-6xl mx-auto animate-fade-in">
             <div className="mb-6 md:mb-8 inline-flex items-center justify-center">
-              <div className="px-4 md:px-6 py-2 md:py-3 bg-[#C44E35]/10 rounded-full flex items-center gap-2 md:gap-3">
+              <div className="px-4 md:px-6 py-2 md:py-3 bg-brand/10 rounded-full flex items-center gap-2 md:gap-3">
                 <Logo className="w-6 h-6 md:w-8 md:h-8" />
-                <span className="text-[#C44E35] font-semibold text-base md:text-lg">FindSomeone</span>
+                <span className="text-brand font-semibold text-base md:text-lg">FindSomeone</span>
               </div>
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold mb-6 md:mb-8 text-black leading-none tracking-tight animate-slide-up">
@@ -232,7 +232,7 @@ export function AboutPageClient() {
                 <div className="w-full max-w-2xl">
                   <motion.div
                     key={lineAnimationKey}
-                    className="h-0.5 md:h-1 w-full bg-gradient-to-r from-transparent via-[#C44E35] to-transparent rounded-full"
+                    className="h-0.5 md:h-1 w-full bg-gradient-to-r from-transparent via-brand to-transparent rounded-full"
                     initial={{ scaleY: 1, y: 0, opacity: 1 }}
                     animate={{
                       scaleY: [1, 1.5, 0.9, 1.1, 1],
@@ -269,7 +269,7 @@ export function AboutPageClient() {
             </div>
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center animate-slide-up" style={{ animationDelay: '0.4s' }}>
               <a href="/signup">
-                <button className="px-8 md:px-10 py-4 md:py-5 rounded-full bg-[#C44E35] text-white font-semibold text-base md:text-lg min-w-[180px] md:min-w-[200px]">
+                <button className="px-8 md:px-10 py-4 md:py-5 rounded-full bg-brand text-white font-semibold text-base md:text-lg min-w-[180px] md:min-w-[200px]">
                   Dołącz teraz
                 </button>
               </a>
@@ -300,10 +300,10 @@ export function AboutPageClient() {
               <h2 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-8 md:mb-12 text-white leading-tight">
                 <span className="relative inline-block pb-2">
                   Przystępność
-                  <span className={`absolute bottom-0 left-0 h-0.5 md:h-1 bg-gradient-to-r from-white via-[#F97316] to-[#C44E35] transition-all duration-1000 ${showMissionUnderline ? 'w-full opacity-100' : 'w-0 opacity-0'}`}></span>
+                  <span className={`absolute bottom-0 left-0 h-0.5 md:h-1 bg-gradient-to-r from-white via-accent to-brand transition-all duration-1000 ${showMissionUnderline ? 'w-full opacity-100' : 'w-0 opacity-0'}`}></span>
                 </span>
                 <br />i{' '}
-                <span className="bg-gradient-to-r from-white via-[#F97316] to-[#C44E35] bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-white via-accent to-brand bg-clip-text text-transparent">
                   perfekcyjny UX
                 </span>
               </h2>
@@ -318,8 +318,8 @@ export function AboutPageClient() {
         {/* Slide 3 - Story */}
         <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] pt-20 pb-28 md:py-0" style={{ transform: 'translateY(200vh)' }}>
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-20 left-20 w-64 h-64 bg-[#C44E35]/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#F97316]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-20 left-20 w-64 h-64 bg-brand/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-20 right-20 w-96 h-96 bg-[hsl(var(--brand))]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
           </div>
 
           <div className={`relative z-10 max-w-6xl mx-auto px-4 md:px-6 section-slide-right ${animatedSlides.has(2) ? 'active' : ''}`}>
@@ -335,7 +335,7 @@ export function AboutPageClient() {
                   <p>
                     Wielu utalentowanych ludzi gubi się w natłoku ogłoszeń i platform, które nie są zaprojektowane z myślą o społecznościach.
                   </p>
-                  <p className="text-[#C44E35] font-semibold">
+                  <p className="text-brand font-semibold">
                     Postanowiliśmy to zmienić.
                   </p>
                 </div>
@@ -378,52 +378,52 @@ export function AboutPageClient() {
           <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-10">
             {/* Grid lines */}
             <div className="absolute inset-0" style={{
-              backgroundImage: 'linear-gradient(#C44E35 1px, transparent 1px), linear-gradient(90deg, #C44E35 1px, transparent 1px)',
+              backgroundImage: 'linear-gradient(hsl(var(--brand)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--brand)) 1px, transparent 1px)',
               backgroundSize: '50px 50px',
               opacity: 0.1
             }}></div>
 
             {/* Circles - slide in from sides */}
-            <div className={`absolute top-20 left-20 w-32 h-32 rounded-full border-4 border-[#C44E35] transition-all duration-700 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : '-translate-x-[200px] -rotate-180 opacity-0'}`}></div>
-            <div className={`absolute top-40 right-32 w-24 h-24 rounded-full border-4 border-[#F97316] transition-all duration-700 delay-200 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : 'translate-x-[200px] rotate-180 opacity-0'}`}></div>
-            <div className={`absolute bottom-32 left-40 w-40 h-40 rounded-full border-4 border-[#C44E35] transition-all duration-700 delay-100 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : '-translate-x-[200px] -rotate-180 opacity-0'}`}></div>
-            <div className={`absolute bottom-20 right-20 w-28 h-28 rounded-full border-4 border-[#F97316] transition-all duration-700 delay-300 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : 'translate-x-[200px] rotate-180 opacity-0'}`}></div>
+            <div className={`absolute top-20 left-20 w-32 h-32 rounded-full border-4 border-brand transition-all duration-700 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : '-translate-x-[200px] -rotate-180 opacity-0'}`}></div>
+            <div className={`absolute top-40 right-32 w-24 h-24 rounded-full border-4 border-[hsl(var(--brand))] transition-all duration-700 delay-200 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : 'translate-x-[200px] rotate-180 opacity-0'}`}></div>
+            <div className={`absolute bottom-32 left-40 w-40 h-40 rounded-full border-4 border-brand transition-all duration-700 delay-100 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : '-translate-x-[200px] -rotate-180 opacity-0'}`}></div>
+            <div className={`absolute bottom-20 right-20 w-28 h-28 rounded-full border-4 border-[hsl(var(--brand))] transition-all duration-700 delay-300 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : 'translate-x-[200px] rotate-180 opacity-0'}`}></div>
 
             {/* Squares - slide in from top/bottom */}
-            <div className={`absolute top-1/3 left-1/2 w-24 h-24 border-4 border-[#C44E35] rotate-12 transition-all duration-700 delay-400 ${showTeamShapes ? 'translate-y-0 opacity-100' : '-translate-y-[200px] opacity-0'}`}></div>
-            <div className={`absolute bottom-1/3 right-1/4 w-32 h-32 border-4 border-[#F97316] rotate-45 transition-all duration-700 delay-500 ${showTeamShapes ? 'translate-y-0 opacity-100' : 'translate-y-[200px] opacity-0'}`}></div>
+            <div className={`absolute top-1/3 left-1/2 w-24 h-24 border-4 border-brand rotate-12 transition-all duration-700 delay-400 ${showTeamShapes ? 'translate-y-0 opacity-100' : '-translate-y-[200px] opacity-0'}`}></div>
+            <div className={`absolute bottom-1/3 right-1/4 w-32 h-32 border-4 border-[hsl(var(--brand))] rotate-45 transition-all duration-700 delay-500 ${showTeamShapes ? 'translate-y-0 opacity-100' : 'translate-y-[200px] opacity-0'}`}></div>
 
             {/* Triangles - slide in from sides */}
             <svg className={`absolute top-1/2 left-1/4 w-28 h-28 transition-all duration-700 delay-100 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : '-translate-x-[200px] -rotate-180 opacity-0'}`} viewBox="0 0 100 100">
-              <polygon points="50,10 90,90 10,90" fill="none" stroke="#C44E35" strokeWidth="4" />
+              <polygon points="50,10 90,90 10,90" fill="none" className="stroke-brand" strokeWidth="4" />
             </svg>
             <svg className={`absolute bottom-1/4 right-1/3 w-20 h-20 transition-all duration-700 delay-300 ${showTeamShapes ? 'translate-x-0 rotate-0 opacity-100' : 'translate-x-[200px] rotate-180 opacity-0'}`} viewBox="0 0 100 100">
-              <polygon points="50,10 90,90 10,90" fill="none" stroke="#F97316" strokeWidth="4" />
+              <polygon points="50,10 90,90 10,90" fill="none" stroke="hsl(var(--brand))" strokeWidth="4" />
             </svg>
 
             {/* Nested shapes - square in circle */}
-            <div className={`absolute top-1/4 left-[35%] w-36 h-36 rounded-full border-3 border-[#F97316] flex items-center justify-center transition-all duration-700 delay-400 ${showTeamShapes ? 'translate-y-0 translate-x-0 opacity-100' : '-translate-y-[250px] -translate-x-[100px] opacity-0'}`}>
-              <div className="w-20 h-20 border-3 border-[#C44E35] rotate-45"></div>
+            <div className={`absolute top-1/4 left-[35%] w-36 h-36 rounded-full border-3 border-[hsl(var(--brand))] flex items-center justify-center transition-all duration-700 delay-400 ${showTeamShapes ? 'translate-y-0 translate-x-0 opacity-100' : '-translate-y-[250px] -translate-x-[100px] opacity-0'}`}>
+              <div className="w-20 h-20 border-3 border-brand rotate-45"></div>
             </div>
 
             {/* Circle in square */}
-            <div className={`absolute top-[35%] left-1/4 w-32 h-32 border-3 border-[#C44E35] rotate-12 flex items-center justify-center transition-all duration-700 delay-600 ${showTeamShapes ? 'translate-y-0 translate-x-0 opacity-100' : 'translate-y-[250px] -translate-x-[100px] opacity-0'}`}>
-              <div className="w-20 h-20 rounded-full border-3 border-[#F97316]"></div>
+            <div className={`absolute top-[35%] left-1/4 w-32 h-32 border-3 border-brand rotate-12 flex items-center justify-center transition-all duration-700 delay-600 ${showTeamShapes ? 'translate-y-0 translate-x-0 opacity-100' : 'translate-y-[250px] -translate-x-[100px] opacity-0'}`}>
+              <div className="w-20 h-20 rounded-full border-3 border-[hsl(var(--brand))]"></div>
             </div>
 
             {/* Lines */}
             <svg className="absolute inset-0 w-full h-full">
-              <line x1="10%" y1="20%" x2="30%" y2="40%" stroke="#C44E35" strokeWidth="3" strokeDasharray="10,5" />
-              <line x1="70%" y1="30%" x2="90%" y2="50%" stroke="#F97316" strokeWidth="3" strokeDasharray="10,5" />
-              <line x1="20%" y1="70%" x2="40%" y2="90%" stroke="#C44E35" strokeWidth="3" strokeDasharray="10,5" />
-              <line x1="60%" y1="80%" x2="85%" y2="95%" stroke="#F97316" strokeWidth="3" strokeDasharray="10,5" />
+              <line x1="10%" y1="20%" x2="30%" y2="40%" className="stroke-brand" strokeWidth="3" strokeDasharray="10,5" />
+              <line x1="70%" y1="30%" x2="90%" y2="50%" stroke="hsl(var(--brand))" strokeWidth="3" strokeDasharray="10,5" />
+              <line x1="20%" y1="70%" x2="40%" y2="90%" className="stroke-brand" strokeWidth="3" strokeDasharray="10,5" />
+              <line x1="60%" y1="80%" x2="85%" y2="95%" stroke="hsl(var(--brand))" strokeWidth="3" strokeDasharray="10,5" />
             </svg>
 
             {/* Small dots */}
-            <div className="absolute top-1/4 left-1/4 w-3 h-3 rounded-full bg-[#C44E35]"></div>
-            <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-[#F97316]"></div>
-            <div className="absolute bottom-1/4 left-1/3 w-3 h-3 rounded-full bg-[#C44E35]"></div>
-            <div className="absolute bottom-1/3 right-1/3 w-3 h-3 rounded-full bg-[#F97316]"></div>
+            <div className="absolute top-1/4 left-1/4 w-3 h-3 rounded-full bg-brand"></div>
+            <div className="absolute top-1/3 right-1/4 w-3 h-3 rounded-full bg-[hsl(var(--brand))]"></div>
+            <div className="absolute bottom-1/4 left-1/3 w-3 h-3 rounded-full bg-brand"></div>
+            <div className="absolute bottom-1/3 right-1/3 w-3 h-3 rounded-full bg-[hsl(var(--brand))]"></div>
           </div>
 
           <div className={`relative z-10 max-w-5xl mx-auto px-4 md:px-6 section-fade-up ${animatedSlides.has(3) ? 'active' : ''}`}>
@@ -434,12 +434,12 @@ export function AboutPageClient() {
             <Card className="border-0 rounded-2xl md:rounded-3xl bg-white shadow-2xl overflow-hidden">
               <CardContent className="p-6 md:p-12 lg:p-16">
                 <div className="flex flex-col md:flex-row gap-6 md:gap-12 items-center">
-                  <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-[#C44E35] to-[#A03828] flex items-center justify-center flex-shrink-0 shadow-xl">
+                  <div className="w-32 h-32 md:w-48 md:h-48 rounded-full bg-gradient-to-br from-brand to-[#A03828] flex items-center justify-center flex-shrink-0 shadow-xl">
                     <span className="text-5xl md:text-7xl font-bold text-white">M</span>
                   </div>
                   <div className="text-center md:text-left flex-1">
                     <h3 className="text-2xl md:text-4xl lg:text-5xl font-bold text-black mb-2 md:mb-3">Marcin Baszewski</h3>
-                    <p className="text-lg md:text-2xl text-[#C44E35] mb-4 md:mb-6 font-semibold">Założyciel & Developer</p>
+                    <p className="text-lg md:text-2xl text-brand mb-4 md:mb-6 font-semibold">Założyciel & Developer</p>
                     <p className="text-base md:text-xl text-black/70 leading-relaxed mb-3 md:mb-4">
                       29 lat. Tworzę aplikacje z pasją do doskonałego UX i dbałością o każdy detal.
                     </p>
@@ -456,8 +456,8 @@ export function AboutPageClient() {
         {/* Slide 5 - Features & CTA */}
         <section className="absolute inset-0 w-full h-screen flex items-center justify-center bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] pt-20 pb-28 md:py-0" style={{ transform: 'translateY(400vh)' }}>
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-20 left-20 w-96 h-96 bg-[#C44E35]/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#F97316]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-20 left-20 w-96 h-96 bg-brand/10 rounded-full blur-3xl animate-pulse" />
+            <div className="absolute bottom-20 right-20 w-96 h-96 bg-[hsl(var(--brand))]/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
           </div>
 
           <div className={`relative z-10 max-w-6xl mx-auto px-4 md:px-6 text-center section-scale-in ${animatedSlides.has(4) ? 'active' : ''}`}>
@@ -471,8 +471,8 @@ export function AboutPageClient() {
             <div className="grid md:grid-cols-2 gap-4 md:gap-8 mb-8 md:mb-12 max-w-4xl mx-auto">
               <Card className="border-0 rounded-xl md:rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all">
                 <CardContent className="p-6 md:p-8 text-center">
-                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-lg md:rounded-xl bg-[#C44E35]/10 flex items-center justify-center mb-3 md:mb-4 mx-auto">
-                    <svg className="w-6 h-6 md:w-8 md:h-8 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-lg md:rounded-xl bg-brand/10 flex items-center justify-center mb-3 md:mb-4 mx-auto">
+                    <svg className="w-6 h-6 md:w-8 md:h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                   </div>
@@ -483,8 +483,8 @@ export function AboutPageClient() {
 
               <Card className="border-0 rounded-xl md:rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all">
                 <CardContent className="p-6 md:p-8 text-center">
-                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-lg md:rounded-xl bg-[#C44E35]/10 flex items-center justify-center mb-3 md:mb-4 mx-auto">
-                    <svg className="w-6 h-6 md:w-8 md:h-8 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-lg md:rounded-xl bg-brand/10 flex items-center justify-center mb-3 md:mb-4 mx-auto">
+                    <svg className="w-6 h-6 md:w-8 md:h-8 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                     </svg>
                   </div>
@@ -496,12 +496,12 @@ export function AboutPageClient() {
 
             <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
               <a href="/signup">
-                <button className="px-8 md:px-12 py-4 md:py-6 rounded-full bg-[#C44E35] text-white font-semibold text-base md:text-xl min-w-[200px] md:min-w-[240px]">
+                <button className="px-8 md:px-12 py-4 md:py-6 rounded-full bg-brand text-white font-semibold text-base md:text-xl min-w-[200px] md:min-w-[240px]">
                   Utwórz konto
                 </button>
               </a>
               <a href="/posts">
-                <button className="px-8 md:px-12 py-4 md:py-6 rounded-full bg-white border border-[#C44E35] text-[#C44E35] font-semibold text-base md:text-xl min-w-[200px] md:min-w-[240px] hover:bg-[#C44E35]/10 transition-colors">
+                <button className="px-8 md:px-12 py-4 md:py-6 rounded-full bg-white border border-brand text-brand font-semibold text-base md:text-xl min-w-[200px] md:min-w-[240px] hover:bg-brand/10 transition-colors">
                   Przeglądaj ogłoszenia
                 </button>
               </a>

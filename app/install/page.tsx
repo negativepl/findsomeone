@@ -34,7 +34,7 @@ export default async function InstallPage() {
           <div className="grid md:grid-cols-3 gap-6">
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center mx-auto mb-6">
                   <Zap className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">Szybszy dostęp</h3>
@@ -46,7 +46,7 @@ export default async function InstallPage() {
 
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center mx-auto mb-6">
                   <Smartphone className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">Natywne wrażenia</h3>
@@ -58,7 +58,7 @@ export default async function InstallPage() {
 
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full bg-[#C44E35] text-white flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center mx-auto mb-6">
                   <Wifi className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-foreground mb-3">Działa offline</h3>
@@ -84,23 +84,23 @@ export default async function InstallPage() {
               </h3>
               <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">1.</span>
+                  <span className="font-bold text-brand min-w-[24px]">1.</span>
                   <span>Otwórz stronę FindSomeone.pl w przeglądarce Safari</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">2.</span>
+                  <span className="font-bold text-brand min-w-[24px]">2.</span>
                   <span>Kliknij przycisk &quot;Udostępnij&quot; (ikona kwadratu ze strzałką w górę) na dole ekranu</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">3.</span>
+                  <span className="font-bold text-brand min-w-[24px]">3.</span>
                   <span>Przewiń w dół i wybierz opcję &quot;Dodaj do ekranu początkowego&quot;</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">4.</span>
+                  <span className="font-bold text-brand min-w-[24px]">4.</span>
                   <span>Możesz zmienić nazwę aplikacji, a następnie kliknij &quot;Dodaj&quot;</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">5.</span>
+                  <span className="font-bold text-brand min-w-[24px]">5.</span>
                   <span>Gotowe! Ikona FindSomeone pojawi się na ekranie głównym</span>
                 </li>
               </ol>
@@ -115,23 +115,23 @@ export default async function InstallPage() {
               </h3>
               <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">1.</span>
+                  <span className="font-bold text-brand min-w-[24px]">1.</span>
                   <span>Otwórz stronę FindSomeone.pl w przeglądarce Chrome</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">2.</span>
+                  <span className="font-bold text-brand min-w-[24px]">2.</span>
                   <span>Kliknij ikonę menu (trzy kropki) w prawym górnym rogu</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">3.</span>
+                  <span className="font-bold text-brand min-w-[24px]">3.</span>
                   <span>Wybierz &quot;Dodaj do ekranu głównego&quot; lub &quot;Zainstaluj aplikację&quot;</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">4.</span>
+                  <span className="font-bold text-brand min-w-[24px]">4.</span>
                   <span>Potwierdź instalację klikając &quot;Zainstaluj&quot;</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">5.</span>
+                  <span className="font-bold text-brand min-w-[24px]">5.</span>
                   <span>Aplikacja pojawi się na ekranie głównym i w szufladzie aplikacji</span>
                 </li>
               </ol>
@@ -153,19 +153,19 @@ export default async function InstallPage() {
               </h3>
               <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">1.</span>
+                  <span className="font-bold text-brand min-w-[24px]">1.</span>
                   <span>Otwórz stronę FindSomeone.pl w przeglądarce Chrome</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">2.</span>
+                  <span className="font-bold text-brand min-w-[24px]">2.</span>
                   <span>Kliknij ikonę instalacji (ikona komputera/plus) w prawej części paska adresu</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">3.</span>
+                  <span className="font-bold text-brand min-w-[24px]">3.</span>
                   <span>Kliknij przycisk &quot;Zainstaluj&quot; w wyświetlonym okienku</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">4.</span>
+                  <span className="font-bold text-brand min-w-[24px]">4.</span>
                   <span>Aplikacja otworzy się w osobnym oknie i pojawi się w menu Start</span>
                 </li>
               </ol>
@@ -180,23 +180,23 @@ export default async function InstallPage() {
               </h3>
               <ol className="space-y-3 text-muted-foreground">
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">1.</span>
+                  <span className="font-bold text-brand min-w-[24px]">1.</span>
                   <span>Otwórz stronę FindSomeone.pl w przeglądarce Edge</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">2.</span>
+                  <span className="font-bold text-brand min-w-[24px]">2.</span>
                   <span>Kliknij ikonę menu (trzy kropki) w prawym górnym rogu</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">3.</span>
+                  <span className="font-bold text-brand min-w-[24px]">3.</span>
                   <span>Wybierz &quot;Aplikacje&quot; → &quot;Zainstaluj tę witrynę jako aplikację&quot;</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">4.</span>
+                  <span className="font-bold text-brand min-w-[24px]">4.</span>
                   <span>Potwierdź instalację klikając &quot;Zainstaluj&quot;</span>
                 </li>
                 <li className="flex gap-3">
-                  <span className="font-bold text-[#C44E35] min-w-[24px]">5.</span>
+                  <span className="font-bold text-brand min-w-[24px]">5.</span>
                   <span>Aplikacja otworzy się w osobnym oknie i będzie dostępna z paska zadań</span>
                 </li>
               </ol>

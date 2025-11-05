@@ -23,7 +23,7 @@ export function HeroBannerSection({ section }: HeroBannerSectionProps) {
   const borderRadius = config.border_radius !== undefined ? config.border_radius : 0
   const buttonText = config.button_text
   const buttonLink = config.button_link
-  const buttonColor = config.button_color || '#C44E35'
+  const buttonColor = config.button_color || 'hsl(var(--brand))'
   const buttonTextColor = config.button_text_color || '#FFFFFF'
   const buttonTextSecondary = config.button_text_secondary
   const buttonLinkSecondary = config.button_link_secondary

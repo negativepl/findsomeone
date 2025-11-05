@@ -13,7 +13,7 @@ interface RatingDisplayProps {
 export function RatingDisplay({ userId, rating, reviewCount = 0, className = '', clickable = true }: RatingDisplayProps) {
   const content = rating > 0 ? (
     <>
-      <span className="text-[#C44E35]">★</span>
+      <span className="text-brand">★</span>
       <span className="font-semibold">{rating.toFixed(1)}</span>
       <span>({reviewCount} {reviewCount === 1 ? 'opinia' : 'opinii'})</span>
     </>

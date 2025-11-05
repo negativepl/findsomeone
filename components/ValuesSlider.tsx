@@ -17,7 +17,7 @@ export function ValuesSlider() {
         const dot = document.getElementById(`dot-${i}`)
         if (dot) {
           if (i === currentIndex + 1) {
-            dot.style.backgroundColor = '#F97316'
+            dot.style.backgroundColor = 'hsl(var(--brand))'
           } else {
             dot.style.backgroundColor = 'rgba(255, 255, 255, 0.2)'
           }

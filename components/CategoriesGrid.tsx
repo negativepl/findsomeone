@@ -45,10 +45,10 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
           className="text-left"
         >
           <Card className={`border-0 rounded-3xl bg-[#FAF8F3] hover:bg-[#F5F1E8] transition-all cursor-pointer shadow-sm aspect-square ${
-            expandedCategory === cat.id ? 'ring-2 ring-[#C44E35]' : ''
+            expandedCategory === cat.id ? 'ring-2 ring-brand' : ''
           }`}>
             <CardContent className="text-center flex flex-col items-center justify-center h-full py-6 px-4">
-              <div className="mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center text-[#C44E35]" style={{ width: '64px', height: '64px' }}>
+              <div className="mx-auto rounded-2xl bg-brand/10 flex items-center justify-center text-brand" style={{ width: '64px', height: '64px' }}>
                 <CategoryIcon iconName={cat.icon} className="w-7 h-7" />
               </div>
               <div className="h-4"></div>
@@ -85,7 +85,7 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setExpandedCategory(null)}
-                    className="text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                    className="text-brand hover:text-brand/90 transition-colors"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -121,7 +121,7 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
               </div>
               <Link
                 href={`/posts?category=${encodeURIComponent(expandedInThisRow.name.toLowerCase())}`}
-                className="mt-4 inline-block text-sm font-medium text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                className="mt-4 inline-block text-sm font-medium text-brand hover:text-brand/90 transition-colors"
               >
                 Zobacz wszystkie w kategorii →
               </Link>
@@ -146,7 +146,7 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
             >
               <Card className="border-0 rounded-3xl bg-[#FAF8F3] hover:bg-[#F5F1E8] transition-all cursor-pointer h-full flex flex-col shadow-sm">
                 <CardContent className="text-center flex flex-col items-center justify-center flex-1 py-8 px-5">
-                  <div className="mx-auto rounded-2xl bg-[#C44E35]/10 flex items-center justify-center text-[#C44E35]" style={{ width: '80px', height: '80px' }}>
+                  <div className="mx-auto rounded-2xl bg-brand/10 flex items-center justify-center text-brand" style={{ width: '80px', height: '80px' }}>
                     <CategoryIcon iconName={cat.icon} className="w-8 h-8" />
                   </div>
                   <div className="h-5"></div>

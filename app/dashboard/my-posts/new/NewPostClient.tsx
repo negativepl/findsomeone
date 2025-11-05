@@ -668,7 +668,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 </button>
                 <button
                   onClick={loadDraft}
-                  className="rounded-md bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-10 px-4 text-sm font-semibold transition-colors"
+                  className="rounded-md bg-brand hover:bg-brand/90 text-white border-0 h-10 px-4 text-sm font-semibold transition-colors"
                 >
                   Kontynuuj tworzenie
                 </button>
@@ -697,7 +697,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="title" className="text-base font-semibold text-foreground">
-                    Tytuł ogłoszenia <span className="text-[#C44E35]">*</span>
+                    Tytuł ogłoszenia <span className="text-brand">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -736,14 +736,14 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Category Selector */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-[#C44E35]">*</span></Label>
+                  <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-brand">*</span></Label>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
                     onClick={handleSuggestCategory}
                     disabled={suggestingCategory || (!formData.title && !formData.description)}
-                    className="rounded-full border border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-full border border-brand/20 hover:border-brand hover:bg-brand/5 hover:text-brand h-8 px-3 text-xs font-semibold text-brand disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {suggestingCategory ? (
                       <>
@@ -769,16 +769,16 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   onClick={() => setShowCategorySelector(true)}
                   className={`w-full rounded-2xl border transition-all p-4 text-left group ${
                     categoryPath.length > 0
-                      ? 'border-[#C44E35]/30 bg-[#C44E35]/5 hover:border-[#C44E35]/50'
+                      ? 'border-brand/30 bg-brand/5 hover:border-brand/50'
                       : 'border-border hover:border-border hover:bg-muted'
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors ${
-                      categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-black/5 group-hover:bg-black/10'
+                      categoryPath.length > 0 ? 'bg-brand/10' : 'bg-black/5 group-hover:bg-black/10'
                     }`}>
                       <svg className={`w-6 h-6 transition-colors ${
-                        categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground group-hover:text-foreground'
+                        categoryPath.length > 0 ? 'text-brand' : 'text-muted-foreground group-hover:text-foreground'
                       }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                       </svg>
@@ -795,7 +795,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       </div>
                     </div>
                     <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
-                      categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground group-hover:text-foreground'
+                      categoryPath.length > 0 ? 'text-brand' : 'text-muted-foreground group-hover:text-foreground'
                     }`} />
                   </div>
                 </button>
@@ -805,7 +805,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Label className="text-base font-semibold text-foreground">
-                    Opis <span className="text-[#C44E35]">*</span>
+                    Opis <span className="text-brand">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -840,7 +840,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <Label className="text-base font-semibold text-foreground">
-                    Zdjęcia <span className="text-[#C44E35]">*</span>
+                    Zdjęcia <span className="text-brand">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -875,7 +875,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <Label className="text-base font-semibold text-foreground">
-                    Lokalizacja <span className="text-[#C44E35]">*</span>
+                    Lokalizacja <span className="text-brand">*</span>
                   </Label>
                   <Button
                     type="button"
@@ -883,7 +883,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     size="sm"
                     onClick={handleDetectLocation}
                     disabled={detectingLocation}
-                    className="rounded-full border border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-full border border-brand/20 hover:border-brand hover:bg-brand/5 hover:text-brand h-8 px-3 text-xs font-semibold text-brand disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     <MapPin className="w-3.5 h-3.5 mr-1.5" />
                     {detectingLocation ? 'Wykrywam...' : 'Wykryj lokalizację'}
@@ -892,7 +892,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-3">
                     <Label className="text-sm text-muted-foreground">
-                      Miasto <span className="text-[#C44E35]">*</span>
+                      Miasto <span className="text-brand">*</span>
                     </Label>
                     <Popover open={openCityCombobox} onOpenChange={setOpenCityCombobox}>
                       <PopoverTrigger asChild>
@@ -959,7 +959,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {/* Price */}
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="space-y-3 w-full md:w-48">
-                  <Label className="text-base font-semibold text-foreground">Typ ceny <span className="text-[#C44E35]">*</span></Label>
+                  <Label className="text-base font-semibold text-foreground">Typ ceny <span className="text-brand">*</span></Label>
                   <Select
                     value={formData.priceType}
                     onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
@@ -979,7 +979,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 </div>
                 <div className="space-y-3 flex-1">
                   <Label htmlFor="price" className="text-base font-semibold text-foreground">
-                    Cena (zł) {formData.priceType !== 'free' && <span className="text-[#C44E35]">*</span>}
+                    Cena (zł) {formData.priceType !== 'free' && <span className="text-brand">*</span>}
                   </Label>
                   <div className="flex items-center gap-3">
                     <Input
@@ -1029,7 +1029,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 px-8 text-sm font-semibold"
+                  className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 px-8 text-sm font-semibold"
                 >
                   {loading ? 'Dodawanie...' : 'Opublikuj ogłoszenie'}
                 </Button>
@@ -1055,7 +1055,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 bg-card">
                   <div className="space-y-2">
                     <Label htmlFor="title-mobile" className="text-base font-semibold text-foreground">
-                      Tytuł ogłoszenia <span className="text-[#C44E35]">*</span>
+                      Tytuł ogłoszenia <span className="text-brand">*</span>
                     </Label>
                     <div className="relative">
                       <Input
@@ -1080,22 +1080,22 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-[#C44E35]">*</span></Label>
+                    <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-brand">*</span></Label>
                     <button
                       type="button"
                       onClick={() => setShowCategorySelector(true)}
                       className={`w-full rounded-2xl border transition-all p-4 text-left active:scale-98 ${
                         categoryPath.length > 0
-                          ? 'border-[#C44E35]/30 bg-[#C44E35]/5'
+                          ? 'border-brand/30 bg-brand/5'
                           : 'border-border bg-card'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center transition-colors ${
-                          categoryPath.length > 0 ? 'bg-[#C44E35]/10' : 'bg-black/5'
+                          categoryPath.length > 0 ? 'bg-brand/10' : 'bg-black/5'
                         }`}>
                           <svg className={`w-6 h-6 transition-colors ${
-                            categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground'
+                            categoryPath.length > 0 ? 'text-brand' : 'text-muted-foreground'
                           }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                           </svg>
@@ -1112,7 +1112,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                           </div>
                         </div>
                         <ChevronRight className={`w-5 h-5 flex-shrink-0 transition-colors ${
-                          categoryPath.length > 0 ? 'text-[#C44E35]' : 'text-muted-foreground'
+                          categoryPath.length > 0 ? 'text-brand' : 'text-muted-foreground'
                         }`} />
                       </div>
                     </button>
@@ -1141,7 +1141,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <div className="animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto bg-card flex flex-col">
                   <div className="space-y-2 mb-4">
                     <Label className="text-base font-semibold text-foreground">
-                      Zdjęcia <span className="text-[#C44E35]">*</span>
+                      Zdjęcia <span className="text-brand">*</span>
                     </Label>
                     <p className="text-sm text-muted-foreground">
                       Ogłoszenia ze zdjęciami otrzymują 5x więcej odpowiedzi. Pierwsze zdjęcie będzie miniaturką.
@@ -1165,7 +1165,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="flex items-center justify-between mb-2">
                     <Label className="text-base font-semibold text-foreground">
-                      Lokalizacja <span className="text-[#C44E35]">*</span>
+                      Lokalizacja <span className="text-brand">*</span>
                     </Label>
                     <Button
                       type="button"
@@ -1173,7 +1173,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       size="sm"
                       onClick={handleDetectLocation}
                       disabled={detectingLocation}
-                      className="rounded-full border border-[#C44E35]/20 hover:border-[#C44E35] hover:bg-[#C44E35]/5 hover:text-[#C44E35] h-8 px-3 text-xs font-semibold text-[#C44E35] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="rounded-full border border-brand/20 hover:border-brand hover:bg-brand/5 hover:text-brand h-8 px-3 text-xs font-semibold text-brand disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <MapPin className="w-3.5 h-3.5 mr-1.5" />
                       {detectingLocation ? 'Wykrywam...' : 'Wykryj'}
@@ -1182,7 +1182,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
                   <div className="space-y-2">
                     <Label className="text-sm text-muted-foreground">
-                      Miasto <span className="text-[#C44E35]">*</span>
+                      Miasto <span className="text-brand">*</span>
                     </Label>
                     <Popover open={openCityCombobox} onOpenChange={setOpenCityCombobox}>
                       <PopoverTrigger asChild>
@@ -1251,7 +1251,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               {currentStep === 5 && (
                 <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 overflow-y-auto">
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-foreground">Typ ceny <span className="text-[#C44E35]">*</span></Label>
+                    <Label className="text-base font-semibold text-foreground">Typ ceny <span className="text-brand">*</span></Label>
                     <Select
                       value={formData.priceType}
                       onValueChange={(value: 'hourly' | 'fixed' | 'free') =>
@@ -1274,7 +1274,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <>
                       <div className="space-y-2">
                         <Label htmlFor="price-mobile" className="text-base font-semibold text-foreground">
-                          Cena (zł) <span className="text-[#C44E35]">*</span>
+                          Cena (zł) <span className="text-brand">*</span>
                         </Label>
                         <div className="flex items-center gap-3">
                           <Input
@@ -1325,7 +1325,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <button
                           type="button"
                           onClick={() => setCurrentStep(1)}
-                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors flex-shrink-0"
+                          className="text-xs font-semibold text-brand hover:text-brand/90 transition-colors flex-shrink-0"
                         >
                           Edytuj
                         </button>
@@ -1342,7 +1342,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <button
                           type="button"
                           onClick={() => setCurrentStep(2)}
-                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                          className="text-xs font-semibold text-brand hover:text-brand/90 transition-colors"
                         >
                           Edytuj
                         </button>
@@ -1360,7 +1360,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <button
                           type="button"
                           onClick={() => setCurrentStep(3)}
-                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                          className="text-xs font-semibold text-brand hover:text-brand/90 transition-colors"
                         >
                           {images.length > 0 ? 'Edytuj' : 'Dodaj'}
                         </button>
@@ -1384,7 +1384,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <button
                           type="button"
                           onClick={() => setCurrentStep(4)}
-                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                          className="text-xs font-semibold text-brand hover:text-brand/90 transition-colors"
                         >
                           Edytuj
                         </button>
@@ -1407,7 +1407,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                         <button
                           type="button"
                           onClick={() => setCurrentStep(5)}
-                          className="text-xs font-semibold text-[#C44E35] hover:text-[#B33D2A] transition-colors"
+                          className="text-xs font-semibold text-brand hover:text-brand/90 transition-colors"
                         >
                           Edytuj
                         </button>
@@ -1474,7 +1474,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         {/* Progress bar */}
         <div className="h-1 bg-muted">
           <div
-            className="h-full bg-[#C44E35] transition-all duration-300 ease-out"
+            className="h-full bg-brand transition-all duration-300 ease-out"
             style={{ width: `${(currentStep / totalSteps) * 100}%` }}
           />
         </div>
@@ -1512,7 +1512,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 type="button"
                 onClick={nextStep}
                 disabled={!isStepValid(currentStep)}
-                className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Dalej
               </Button>
@@ -1523,7 +1523,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold"
+                className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold"
               >
                 {loading ? 'Dodawanie...' : 'Opublikuj'}
               </Button>
@@ -1538,8 +1538,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
           <div className="bg-card rounded-3xl p-8 max-w-md w-full">
             {moderationInProgress ? (
               <div className="text-center">
-                <div className="w-20 h-20 bg-[#C44E35]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-10 h-10 text-[#C44E35] animate-spin" fill="none" viewBox="0 0 24 24">
+                <div className="w-20 h-20 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-10 h-10 text-brand animate-spin" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>

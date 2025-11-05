@@ -107,7 +107,7 @@ export function TestimonialsSection({ section }: TestimonialsSectionProps) {
               {testimonials.map((testimonial: any, index: number) => (
                 <div
                   key={index}
-                  className="bg-card border border-border rounded-2xl p-6 hover:border-[#C44E35]/30 transition-all w-[350px] flex-shrink-0"
+                  className="bg-card border border-border rounded-2xl p-6 hover:border-brand/30 transition-all w-[350px] flex-shrink-0"
                 >
                   {showRatings && testimonial.rating && (
                     <div className="flex gap-1 mb-4">
@@ -116,7 +116,7 @@ export function TestimonialsSection({ section }: TestimonialsSectionProps) {
                           key={i}
                           className={`w-5 h-5 ${
                             i < testimonial.rating
-                              ? 'fill-[#C44E35] text-[#C44E35]'
+                              ? 'fill-brand text-brand'
                               : 'text-foreground/20'
                           }`}
                         />
@@ -167,7 +167,7 @@ export function TestimonialsSection({ section }: TestimonialsSectionProps) {
                         key={i}
                         className={`w-5 h-5 ${
                           i < testimonial.rating
-                            ? 'fill-[#C44E35] text-[#C44E35]'
+                            ? 'fill-brand text-brand'
                             : 'text-foreground/20'
                         }`}
                       />

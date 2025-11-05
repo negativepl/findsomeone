@@ -197,7 +197,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
                 key={report.report_id}
                 className={`p-6 transition-colors cursor-pointer ${
                   selectedReport?.report_id === report.report_id
-                    ? 'bg-[#C44E35]/10 border-l-4 border-l-[#C44E35]'
+                    ? 'bg-brand/10 border-l-4 border-l-brand'
                     : 'hover:bg-[#F5F1E8]'
                 }`}
                 onClick={() => setSelectedReport(report)}
@@ -320,7 +320,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
                   <label className="text-sm font-semibold text-muted-foreground">Opis ogłoszenia</label>
                   <button
                     onClick={() => setShowPostDescription(!showPostDescription)}
-                    className="text-xs text-[#C44E35] hover:text-[#B33D2A] flex items-center gap-1"
+                    className="text-xs text-brand hover:text-brand/90 flex items-center gap-1"
                   >
                     {showPostDescription ? (
                       <>
@@ -375,7 +375,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
                 <Link
                   href={`/posts/${selectedReport.post_id}`}
                   target="_blank"
-                  className="inline-flex items-center gap-2 text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium"
+                  className="inline-flex items-center gap-2 text-sm text-brand hover:text-brand/90 font-medium"
                 >
                   Zobacz ogłoszenie
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -391,7 +391,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
               <textarea
                 value={actionNotes}
                 onChange={(e) => setActionNotes(e.target.value)}
-                className="w-full px-4 py-3 rounded-2xl border border-border focus:outline-none focus:ring-2 focus:ring-[#C44E35] resize-none"
+                className="w-full px-4 py-3 rounded-2xl border border-border focus:outline-none focus:ring-2 focus:ring-brand resize-none"
                 rows={3}
                 placeholder="Dodaj notatki do zgłoszenia..."
                 disabled={isProcessing}
@@ -538,7 +538,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
                     <textarea
                       value={banReason}
                       onChange={(e) => setBanReason(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl border border-border focus:outline-none focus:ring-2 focus:ring-[#C44E35] resize-none"
+                      className="w-full px-4 py-3 rounded-2xl border border-border focus:outline-none focus:ring-2 focus:ring-brand resize-none"
                       rows={3}
                       placeholder="Np. Wielokrotne naruszanie regulaminu, spam, oszustwo..."
                       disabled={isProcessing}

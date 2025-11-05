@@ -10,7 +10,7 @@ export default function NotFound() {
       <div className="max-w-2xl w-full text-center">
         {/* 404 Animation */}
         <div className="mb-8 relative">
-          <div className="text-[180px] md:text-[240px] font-black text-[#C44E35]/10 dark:text-[#C44E35]/20 leading-none select-none">
+          <div className="text-[180px] md:text-[240px] font-black text-brand/10 dark:text-brand/20 leading-none select-none">
             404
           </div>
           <div className="absolute inset-0 flex items-center justify-center">

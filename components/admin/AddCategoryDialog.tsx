@@ -173,7 +173,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8">
+        <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 px-8">
           Dodaj kategorię
         </Button>
       </DialogTrigger>
@@ -303,7 +303,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full sm:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold"
+                  className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 font-semibold"
                   disabled={loading}
                 >
                   {loading ? 'Dodawanie...' : isSubcategory ? 'Dodaj podkategorię' : 'Dodaj kategorię'}

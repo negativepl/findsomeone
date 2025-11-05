@@ -329,7 +329,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
     switch (type) {
       case 'category':
         return (
-          <svg className="w-4 h-4 text-[#C44E35] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-4 h-4 text-brand flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
           </svg>
         )
@@ -408,7 +408,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             setSearchQuery(results.queryCorrection!.corrected)
                             handleSearchChange(results.queryCorrection!.corrected)
                           }}
-                          className="text-base font-semibold text-black hover:text-[#C44E35] transition-colors"
+                          className="text-base font-semibold text-black hover:text-brand transition-colors"
                         >
                           {results.queryCorrection.corrected}
                         </button>
@@ -421,7 +421,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                 {results.smart && results.smart.length > 0 && !searchQuery && (
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3 px-2">
-                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-[#C44E35] to-[#B33D2A] flex items-center justify-center">
+                      <div className="w-6 h-6 rounded-full bg-gradient-to-br from-brand to-brand/90 flex items-center justify-center">
                         <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                         </svg>
@@ -446,10 +446,10 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             router.push(`/posts?${params}`)
                           }}
                           data-navigate="true"
-                          className="w-full text-left px-3 py-3 hover:bg-gradient-to-r hover:from-[#C44E35]/5 hover:to-[#B33D2A]/5 rounded-xl transition-all flex items-center gap-3 group border border-transparent hover:border-[#C44E35]/10"
+                          className="w-full text-left px-3 py-3 hover:bg-gradient-to-r hover:from-brand/5 hover:to-brand/90/5 rounded-xl transition-all flex items-center gap-3 group border border-transparent hover:border-brand/10"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#C44E35]/10 to-[#B33D2A]/10 flex items-center justify-center flex-shrink-0 group-hover:from-[#C44E35]/20 group-hover:to-[#B33D2A]/20 transition-all">
-                            <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand/10 to-brand/90/10 flex items-center justify-center flex-shrink-0 group-hover:from-brand/20 group-hover:to-brand/90/20 transition-all">
+                            <svg className="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                             </svg>
                           </div>
@@ -460,7 +460,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             )}
                           </div>
                           {item.score && item.score > 75 && (
-                            <Badge className="rounded-full bg-gradient-to-r from-[#C44E35] to-[#B33D2A] text-white text-xs px-2.5 py-0.5 border-0 shadow-sm">
+                            <Badge className="rounded-full bg-gradient-to-r from-brand to-brand/90 text-white text-xs px-2.5 py-0.5 border-0 shadow-sm">
                               Top
                             </Badge>
                           )}
@@ -523,8 +523,8 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                 {results.trending.length > 0 && !searchQuery && (
                   <div className="mb-6">
                     <div className="flex items-center gap-2 mb-3 px-2">
-                      <div className="w-6 h-6 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
-                        <svg className="w-3.5 h-3.5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-6 h-6 rounded-full bg-brand/10 flex items-center justify-center">
+                        <svg className="w-3.5 h-3.5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                         </svg>
                       </div>
@@ -548,17 +548,17 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             router.push(`/posts?${params}`)
                           }}
                           data-navigate="true"
-                          className="w-full text-left px-3 py-3 hover:bg-[#C44E35]/5 rounded-xl transition-all flex items-center gap-3 group"
+                          className="w-full text-left px-3 py-3 hover:bg-brand/5 rounded-xl transition-all flex items-center gap-3 group"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0 group-hover:bg-[#C44E35]/20 transition-colors">
-                            <svg className="w-4 h-4 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div className="w-8 h-8 rounded-lg bg-brand/10 flex items-center justify-center flex-shrink-0 group-hover:bg-brand/20 transition-colors">
+                            <svg className="w-4 h-4 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                             </svg>
                           </div>
                           <div className="flex-1 min-w-0">
                             <span className="text-sm text-black font-semibold">{item.text}</span>
                           </div>
-                          <div className="flex items-center gap-1 text-[#C44E35] text-xs font-medium px-2 py-1 rounded-full bg-[#C44E35]/10">
+                          <div className="flex items-center gap-1 text-brand text-xs font-medium px-2 py-1 rounded-full bg-brand/10">
                             <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24">
                               <path d="M12.5 2C6.71 2 2 6.71 2 12.5S6.71 23 12.5 23 23 18.29 23 12.5 18.29 2 12.5 2zm0 2c4.69 0 8.5 3.81 8.5 8.5s-3.81 8.5-8.5 8.5S4 17.19 4 12.5 7.81 4 12.5 4zM11 7v6.414l4.293 4.293 1.414-1.414L13 12.586V7h-2z"/>
                             </svg>
@@ -699,13 +699,13 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                           data-navigate="true"
                           className={`w-full text-left px-3 py-3 rounded-xl transition-all flex items-center gap-3 group ${
                             suggestion.type === 'category'
-                              ? 'hover:bg-[#C44E35]/5 border border-[#C44E35]/10'
+                              ? 'hover:bg-brand/5 border border-brand/10'
                               : 'hover:bg-black/5'
                           }`}
                         >
                           <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors ${
                             suggestion.type === 'category'
-                              ? 'bg-[#C44E35]/10 group-hover:bg-[#C44E35]/20'
+                              ? 'bg-brand/10 group-hover:bg-brand/20'
                               : 'bg-black/5 group-hover:bg-black/10'
                           }`}>
                             {getSuggestionIcon(suggestion.type)}
@@ -717,12 +717,12 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             }
                           </span>
                           {suggestion.type === 'trending' && (
-                            <Badge className="rounded-full bg-[#C44E35] text-white text-xs px-2.5 py-0.5 border-0">
+                            <Badge className="rounded-full bg-brand text-white text-xs px-2.5 py-0.5 border-0">
                               Trend
                             </Badge>
                           )}
                           {suggestion.type === 'category' && (
-                            <Badge className="rounded-full bg-[#C44E35]/10 text-[#C44E35] text-xs px-2.5 py-0.5 border-0">
+                            <Badge className="rounded-full bg-brand/10 text-brand text-xs px-2.5 py-0.5 border-0">
                               Kategoria
                             </Badge>
                           )}
@@ -746,7 +746,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                         saveRecentSearch(searchQuery)
                         setIsOpen(false)
                       }}
-                      className="flex items-center justify-center gap-2 w-full text-center py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-[#C44E35] to-[#B33D2A] hover:from-[#B33D2A] hover:to-[#A32E1F] rounded-xl transition-all shadow-sm hover:shadow-md"
+                      className="flex items-center justify-center gap-2 w-full text-center py-3.5 text-sm font-semibold text-white bg-gradient-to-r from-brand to-brand/90 hover:from-brand/90 hover:to-brand/80 rounded-xl transition-all shadow-sm hover:shadow-md"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -799,13 +799,13 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                   {userLocation.loading ? (
                     <div className="w-4 h-4 border border-black/20 border-t-black/60 rounded-full animate-spin flex-shrink-0" />
                   ) : (
-                    <svg className="w-4 h-4 text-[#C44E35] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4 text-brand flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                   )}
                   <div className="flex-1 min-w-0">
-                    <span className="text-sm font-medium text-[#C44E35]">
+                    <span className="text-sm font-medium text-brand">
                       {userLocation.loading ? 'Pobieranie lokalizacji...' : 'Użyj mojej lokalizacji'}
                     </span>
                     {userLocation.city && !userLocation.loading && (
@@ -837,7 +837,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
               </div>
             )}
           </div>
-          <button type="submit" className="w-full md:w-auto rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 px-8 py-3 md:py-2 font-medium transition-colors">
+          <button type="submit" className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 px-8 py-3 md:py-2 font-medium transition-colors">
             Szukaj
           </button>
         </div>

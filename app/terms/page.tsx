@@ -304,7 +304,7 @@ export default async function TermsPage() {
               <section>
                 <h2 className="text-2xl font-bold text-foreground mb-4">12. Ochrona danych osobowych</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  12.1. Zasady przetwarzania danych osobowych określa <a href="/privacy" className="text-[#C44E35] hover:underline">Polityka Prywatności</a>,
+                  12.1. Zasady przetwarzania danych osobowych określa <a href="/privacy" className="text-brand hover:underline">Polityka Prywatności</a>,
                   stanowiąca integralną część niniejszego Regulaminu.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
@@ -364,11 +364,11 @@ export default async function TermsPage() {
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   15.2. Informacje o pozasądowych sposobach rozwiązywania sporów dostępne są na stronie internetowej
-                  Urzędu Ochrony Konkurencji i Konsumentów: <a href="https://www.uokik.gov.pl" target="_blank" rel="noopener noreferrer" className="text-[#C44E35] hover:underline">www.uokik.gov.pl</a>
+                  Urzędu Ochrony Konkurencji i Konsumentów: <a href="https://www.uokik.gov.pl" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">www.uokik.gov.pl</a>
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   15.3. Konsument może skorzystać również z platformy ODR dostępnej pod adresem:
-                  <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-[#C44E35] hover:underline ml-1">ec.europa.eu/consumers/odr</a>
+                  <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline ml-1">ec.europa.eu/consumers/odr</a>
                 </p>
               </section>
 
@@ -425,7 +425,7 @@ export default async function TermsPage() {
                 <ul className="space-y-3 text-muted-foreground mb-4">
                   <li className="flex items-start gap-2">
                     <strong className="min-w-[180px]">Formularz kontaktowy:</strong>
-                    <a href="/contact" className="text-[#C44E35] hover:underline">findsomeone.app/contact</a>
+                    <a href="/contact" className="text-brand hover:underline">findsomeone.app/contact</a>
                   </li>
                   <li className="flex items-start gap-2">
                     <strong className="min-w-[180px]">Administrator:</strong>

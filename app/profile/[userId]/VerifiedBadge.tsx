@@ -52,7 +52,7 @@ export function VerifiedBadge() {
           {/* Close button */}
           <Button
             onClick={() => setIsOpen(false)}
-            className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold mt-4"
+            className="w-full rounded-full bg-brand hover:bg-brand/90 text-white font-semibold mt-4"
           >
             Rozumiem
           </Button>

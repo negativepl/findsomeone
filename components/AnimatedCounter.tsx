@@ -73,7 +73,7 @@ export function AnimatedCounter({ end, duration = 2000, suffix = '', decimals = 
     : Math.round(count).toString()
 
   return (
-    <div ref={counterRef} className="text-4xl font-bold text-[#C44E35] mb-2">
+    <div ref={counterRef} className="text-4xl font-bold text-brand mb-2">
       {displayValue}{suffix}
     </div>
   )

@@ -157,16 +157,16 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
         <div className="flex items-center gap-2 text-sm text-muted-foreground overflow-x-auto py-4 border-b border-border">
           <button
             onClick={() => handleBreadcrumbClick(-1)}
-            className="hover:text-[#C44E35] transition-colors whitespace-nowrap font-medium"
+            className="hover:text-brand transition-colors whitespace-nowrap font-medium"
           >
             Wszystkie kategorie
           </button>
           {breadcrumbs.map((crumb, index) => (
             <div key={crumb.id} className="flex items-center gap-2">
-              <ChevronRight className="w-4 h-4 text-[#C44E35]" />
+              <ChevronRight className="w-4 h-4 text-brand" />
               <button
                 onClick={() => handleBreadcrumbClick(index)}
-                className="hover:text-[#C44E35] transition-colors whitespace-nowrap font-medium"
+                className="hover:text-brand transition-colors whitespace-nowrap font-medium"
               >
                 {crumb.name}
               </button>

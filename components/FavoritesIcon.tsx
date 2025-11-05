@@ -42,7 +42,7 @@ export function FavoritesIcon({ user }: FavoritesIconProps) {
   return (
     <Link
       href="/dashboard/favorites"
-      className="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] transition-colors"
+      className="relative inline-flex items-center justify-center h-10 w-10 rounded-full bg-brand hover:bg-brand/90 transition-colors"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -67,7 +67,7 @@ export function FavoritesIcon({ user }: FavoritesIconProps) {
               duration: hasChanged ? 0.4 : 0.2,
               ease: [0.34, 1.56, 0.64, 1]
             }}
-            className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-white text-[#C44E35] text-xs font-bold rounded-full border border-[#C44E35]"
+            className="absolute -top-1 -right-1 flex items-center justify-center min-w-[20px] h-5 px-1.5 bg-white text-brand text-xs font-bold rounded-full border border-brand"
           >
             {displayCount > 99 ? '99+' : displayCount}
           </motion.span>

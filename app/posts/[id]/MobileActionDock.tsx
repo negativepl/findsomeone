@@ -100,7 +100,7 @@ export function MobileActionDock({
           <div className="flex-1">
             <Button
               onClick={() => window.location.href = `/dashboard/my-posts/${postId}/edit`}
-              className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 h-11 text-sm font-semibold gap-0"
+              className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold gap-0"
             >
               Edytuj ogłoszenie
             </Button>

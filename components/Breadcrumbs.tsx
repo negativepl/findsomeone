@@ -23,7 +23,7 @@ export function Breadcrumbs({ items }: BreadcrumbsProps) {
             {item.href && !isLast ? (
               <Link
                 href={item.href}
-                className="hover:text-[#C44E35] transition-colors whitespace-nowrap"
+                className="hover:text-brand transition-colors whitespace-nowrap"
               >
                 {item.label}
               </Link>

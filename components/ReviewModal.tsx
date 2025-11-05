@@ -112,7 +112,7 @@ export function ReviewModal({
                   <Star
                     className={`w-10 h-10 ${
                       star <= (hoveredRating || rating)
-                        ? 'fill-[#C44E35] text-[#C44E35]'
+                        ? 'fill-brand text-brand'
                         : 'text-black/20'
                     }`}
                   />
@@ -172,7 +172,7 @@ export function ReviewModal({
             </Button>
             <Button
               type="submit"
-              className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-white border-0"
               disabled={loading || rating === 0}
             >
               {loading ? 'Wysyłanie...' : 'Wyślij opinię'}

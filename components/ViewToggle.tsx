@@ -13,7 +13,7 @@ export function ViewToggle({ view, onViewChange }: ViewToggleProps) {
     <div className="relative flex items-center gap-1 bg-card rounded-xl border border-border p-1">
       {/* Animated background indicator */}
       <motion.div
-        className="absolute bg-[#C44E35] rounded-lg"
+        className="absolute bg-brand rounded-lg"
         initial={false}
         animate={{
           x: view === 'grid' ? 0 : 32, // Width of button (28px) + gap (4px)

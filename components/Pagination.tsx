@@ -100,7 +100,7 @@ export function Pagination({ currentPage, totalPages, totalItems }: PaginationPr
                 variant={currentPage === page ? 'default' : 'outline'}
                 className={`rounded-full w-10 h-10 p-0 ${
                   currentPage === page
-                    ? 'bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0'
+                    ? 'bg-brand hover:bg-brand/90 text-white border-0'
                     : 'border-black/10 hover:border-black/30 hover:bg-black/5'
                 }`}
               >

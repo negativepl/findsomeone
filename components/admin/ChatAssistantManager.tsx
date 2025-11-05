@@ -184,7 +184,7 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A]"
+              className="rounded-full bg-brand hover:bg-brand/90"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>

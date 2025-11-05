@@ -70,7 +70,7 @@ export function AnimatedTestimonials({
               onClick={() => setActive(index)}
               className={cn(
                 'w-2 h-2 rounded-full transition-all duration-300',
-                active === index ? 'bg-[#C44E35] w-6' : 'bg-black/30'
+                active === index ? 'bg-brand w-6' : 'bg-black/30'
               )}
               aria-label={`Go to slide ${index + 1}`}
             />

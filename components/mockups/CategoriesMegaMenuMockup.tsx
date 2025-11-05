@@ -100,7 +100,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
             <Button variant="ghost" className="h-10 rounded-full hover:bg-black/5 text-sm px-6">
               Zaloguj się
             </Button>
-            <Button className="h-10 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 text-sm px-6">
+            <Button className="h-10 rounded-full bg-brand hover:bg-brand/90 text-white border-0 text-sm px-6">
               Zarejestruj się
             </Button>
           </div>
@@ -132,8 +132,8 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                           >
                             <div className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${
                               hoveredCategory === cat.id
-                                ? 'bg-[#C44E35] text-white'
-                                : 'bg-[#C44E35]/10 text-[#C44E35] group-hover:bg-[#C44E35]/20'
+                                ? 'bg-brand text-white'
+                                : 'bg-brand/10 text-brand group-hover:bg-brand/20'
                             }`}>
                               <CategoryIcon iconName={cat.icon} className="w-6 h-6" />
                             </div>
@@ -151,7 +151,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                           return hoveredCat ? (
                             <>
                               <div className="flex items-center gap-3 mb-4">
-                                <div className="w-10 h-10 rounded-xl bg-[#C44E35] text-white flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-xl bg-brand text-white flex items-center justify-center">
                                   <CategoryIcon iconName={hoveredCat.icon} className="w-5 h-5" />
                                 </div>
                                 <h4 className="text-lg font-bold text-black">{hoveredCat.name}</h4>
@@ -171,7 +171,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                                   ))}
                                   <Link
                                     href={`/posts?category=${encodeURIComponent(hoveredCat.name.toLowerCase())}`}
-                                    className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#C44E35] hover:bg-[#C44E35]/5 transition-all mt-3"
+                                    className="block px-4 py-2.5 rounded-xl text-sm font-bold text-brand hover:bg-brand/5 transition-all mt-3"
                                     onClick={() => setIsOpen(false)}
                                   >
                                     Zobacz wszystkie →
@@ -227,7 +227,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                       onClick={() => setHoveredCategory(isExpanded ? null : cat.id)}
                       className="w-full flex items-center gap-3 p-4 hover:bg-[#FAF8F3] transition-all"
                     >
-                      <div className="w-12 h-12 rounded-xl bg-[#C44E35]/10 text-[#C44E35] flex items-center justify-center flex-shrink-0">
+                      <div className="w-12 h-12 rounded-xl bg-brand/10 text-brand flex items-center justify-center flex-shrink-0">
                         <CategoryIcon iconName={cat.icon} className="w-6 h-6" />
                       </div>
                       <span className="font-semibold text-black flex-1 text-left">{cat.name}</span>
@@ -256,7 +256,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                         ))}
                         <Link
                           href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
-                          className="block px-4 py-2.5 rounded-xl text-sm font-bold text-[#C44E35] hover:bg-white transition-all"
+                          className="block px-4 py-2.5 rounded-xl text-sm font-bold text-brand hover:bg-white transition-all"
                           onClick={() => setIsOpen(false)}
                         >
                           Zobacz wszystkie →

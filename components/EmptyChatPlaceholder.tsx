@@ -12,9 +12,9 @@ export function EmptyChatPlaceholder({ userName, onQuickMessageSelect }: EmptyCh
 
   return (
     <div className="flex flex-col items-center justify-center h-full py-20 px-4">
-      <div className="w-20 h-20 rounded-full bg-[#C44E35]/10 flex items-center justify-center mb-6">
+      <div className="w-20 h-20 rounded-full bg-brand/10 flex items-center justify-center mb-6">
         <svg
-          className="w-10 h-10 text-[#C44E35]"
+          className="w-10 h-10 text-brand"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -43,7 +43,7 @@ export function EmptyChatPlaceholder({ userName, onQuickMessageSelect }: EmptyCh
           <button
             key={index}
             onClick={() => onQuickMessageSelect?.(message)}
-            className="bg-white border border-black/10 rounded-2xl p-4 hover:border-[#C44E35]/30 hover:bg-[#C44E35]/5 transition-all cursor-pointer text-left"
+            className="bg-white border border-black/10 rounded-2xl p-4 hover:border-brand/30 hover:bg-brand/5 transition-all cursor-pointer text-left"
           >
             <p className="text-sm text-black/70">{message}</p>
           </button>
