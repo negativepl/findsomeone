@@ -639,6 +639,7 @@ export function NavbarSearchBar() {
               onFocus={handleSearchFocus}
               className="w-full outline-none text-sm text-foreground bg-transparent focus:ring-0"
               autoComplete="off"
+              aria-label="Wyszukiwanie"
               suppressHydrationWarning
             />
             {!searchQuery && (
@@ -951,6 +952,7 @@ export function NavbarSearchBar() {
                   onChange={(e) => handleCityChange(e.target.value)}
                   className="flex-1 outline-none text-sm text-foreground placeholder:text-muted-foreground bg-transparent focus:ring-0"
                   autoComplete="off"
+                  aria-label="Wyszukiwanie miasta"
                 />
                 {isLoadingCities && (
                   <div className="w-4 h-4 border border-muted-foreground/20 border-t-muted-foreground/60 rounded-full animate-spin ml-2" />
