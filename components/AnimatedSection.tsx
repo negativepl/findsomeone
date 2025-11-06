@@ -1,7 +1,10 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { motion } from 'motion/react'
+import dynamic from 'next/dynamic'
+
+// Lazy load motion dla lepszej wydajności - motion.div ładowany tylko gdy komponent jest używany
+const MotionDiv = dynamic(() => import('motion/react').then(mod => mod.motion.div), { ssr: true })
 
 interface AnimatedSectionProps {
   children: React.ReactNode
@@ -34,7 +37,7 @@ export function AnimatedSection({ children, delay = 0, className }: AnimatedSect
   }, [])
 
   return (
-    <motion.div
+    <MotionDiv
       ref={ref}
       initial={{ opacity: 0, y: 20 }}
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -46,6 +49,6 @@ export function AnimatedSection({ children, delay = 0, className }: AnimatedSect
       className={className}
     >
       {children}
-    </motion.div>
+    </MotionDiv>
   )
 }

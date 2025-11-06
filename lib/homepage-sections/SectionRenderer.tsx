@@ -1,18 +1,50 @@
+import dynamic from 'next/dynamic'
 import { HomepageSection } from './types'
-import { PostsSection } from '@/components/sections/PostsSection'
-import { PopularCategoriesSection } from '@/components/sections/PopularCategoriesSection'
-import { HeroBannerSection } from '@/components/sections/HeroBannerSection'
-import { CityBasedPosts } from '@/components/CityBasedPosts'
-import { RecentlyViewedPosts } from '@/components/RecentlyViewedPosts'
-import { TestimonialsSection } from '@/components/sections/TestimonialsSection'
-import { FAQSection } from '@/components/sections/FAQSection'
-import { StatsSection } from '@/components/sections/StatsSection'
-import { FeaturesSection } from '@/components/sections/FeaturesSection'
-import { CTASection } from '@/components/sections/CTASection'
-import { ImageGallerySection } from '@/components/sections/ImageGallerySection'
-import { SpacerSection } from '@/components/sections/SpacerSection'
-import { CustomContentSection } from '@/components/sections/CustomContentSection'
-import { AnimatedSection } from '@/components/AnimatedSection'
+
+// Dynamic imports dla lepszej wydajności - komponenty ładowane tylko gdy są potrzebne
+const PostsSection = dynamic(() => import('@/components/sections/PostsSection').then(mod => ({ default: mod.PostsSection })), {
+  loading: () => <div className="container mx-auto px-6 py-8 animate-pulse"><div className="h-64 bg-muted rounded-lg"></div></div>
+})
+
+const PopularCategoriesSection = dynamic(() => import('@/components/sections/PopularCategoriesSection').then(mod => ({ default: mod.PopularCategoriesSection })), {
+  loading: () => <div className="container mx-auto px-6 py-8 animate-pulse"><div className="h-48 bg-muted rounded-lg"></div></div>
+})
+
+const HeroBannerSection = dynamic(() => import('@/components/sections/HeroBannerSection').then(mod => ({ default: mod.HeroBannerSection })))
+
+const CityBasedPosts = dynamic(() => import('@/components/CityBasedPosts').then(mod => ({ default: mod.CityBasedPosts })), {
+  loading: () => <div className="container mx-auto px-6 py-8 animate-pulse"><div className="h-64 bg-muted rounded-lg"></div></div>
+})
+
+const RecentlyViewedPosts = dynamic(() => import('@/components/RecentlyViewedPosts').then(mod => ({ default: mod.RecentlyViewedPosts })))
+
+const TestimonialsSection = dynamic(() => import('@/components/sections/TestimonialsSection').then(mod => ({ default: mod.TestimonialsSection })), {
+  loading: () => <div className="container mx-auto px-6 py-8 animate-pulse"><div className="h-48 bg-muted rounded-lg"></div></div>
+})
+
+const FAQSection = dynamic(() => import('@/components/sections/FAQSection').then(mod => ({ default: mod.FAQSection })), {
+  loading: () => <div className="container mx-auto px-6 py-8 animate-pulse"><div className="h-48 bg-muted rounded-lg"></div></div>
+})
+
+const StatsSection = dynamic(() => import('@/components/sections/StatsSection').then(mod => ({ default: mod.StatsSection })))
+
+const FeaturesSection = dynamic(() => import('@/components/sections/FeaturesSection').then(mod => ({ default: mod.FeaturesSection })), {
+  loading: () => <div className="container mx-auto px-6 py-8 animate-pulse"><div className="h-48 bg-muted rounded-lg"></div></div>
+})
+
+const CTASection = dynamic(() => import('@/components/sections/CTASection').then(mod => ({ default: mod.CTASection })))
+
+const ImageGallerySection = dynamic(() => import('@/components/sections/ImageGallerySection').then(mod => ({ default: mod.ImageGallerySection })), {
+  loading: () => <div className="container mx-auto px-6 py-8 animate-pulse"><div className="h-64 bg-muted rounded-lg"></div></div>
+})
+
+const SpacerSection = dynamic(() => import('@/components/sections/SpacerSection').then(mod => ({ default: mod.SpacerSection })))
+
+const CustomContentSection = dynamic(() => import('@/components/sections/CustomContentSection').then(mod => ({ default: mod.CustomContentSection })), {
+  loading: () => <div className="container mx-auto px-6 py-8 animate-pulse"><div className="h-48 bg-muted rounded-lg"></div></div>
+})
+
+const AnimatedSection = dynamic(() => import('@/components/AnimatedSection').then(mod => ({ default: mod.AnimatedSection })))
 
 interface SectionRendererProps {
   section: HomepageSection

@@ -115,7 +115,7 @@ export default function LoginPage() {
                   <circle cx="68" cy="28" r="11" className="fill-brand" />
                   <path d="M68 42 C60 42, 54 47, 54 60 L54 78 C54 80, 55 82, 57 82 L79 82 C81 82, 82 80, 82 78 L82 60 C82 47, 76 42, 68 42 Z" className="fill-brand" />
                 </svg>
-                <h1 className="text-2xl font-bold text-foreground font-[family-name:var(--font-lora)]">FindSomeone</h1>
+                <h1 className="text-2xl font-bold text-foreground">FindSomeone</h1>
               </Link>
             </div>
 

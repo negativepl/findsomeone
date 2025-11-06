@@ -32,7 +32,7 @@ export function LogoWithText({ className = "" }: { className?: string }) {
     <div className={`flex items-center gap-2 ${className}`}>
       <Logo className="w-9 h-9 flex-shrink-0" />
       <div className="hidden xl:flex flex-col">
-        <span className="text-xl font-bold text-foreground leading-none font-[family-name:var(--font-lora)]">FindSomeone</span>
+        <span className="text-xl font-bold text-foreground leading-none">FindSomeone</span>
       </div>
     </div>
   )

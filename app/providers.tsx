@@ -8,8 +8,13 @@ import { PresenceManager } from '@/components/PresenceManager'
 import { createClient } from '@/lib/supabase/client'
 import { ThemeProvider } from '@/contexts/ThemeContext'
 
-export function Providers({ children }: { children: React.ReactNode }) {
-  const [userId, setUserId] = useState<string | undefined>(undefined)
+interface ProvidersProps {
+  children: React.ReactNode
+  userId?: string
+}
+
+export function Providers({ children, userId: initialUserId }: ProvidersProps) {
+  const [userId, setUserId] = useState<string | undefined>(initialUserId)
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -25,16 +30,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       })
   )
 
-  // Get current user for presence tracking
+  // Subscribe to auth changes only - initial user comes from server
   useEffect(() => {
     const supabase = createClient()
-
-    const getUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser()
-      setUserId(user?.id)
-    }
-
-    getUser()
 
     // Subscribe to auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -60,7 +58,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
             className: 'sonner-toast',
           }}
         />
-        <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+        {/* React Query Devtools - tylko w development */}
+        {process.env.NODE_ENV === 'development' && (
+          <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
+        )}
       </QueryClientProvider>
     </ThemeProvider>
   )

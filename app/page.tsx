@@ -1,12 +1,21 @@
 import Script from 'next/script'
+import dynamic from 'next/dynamic'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { SectionRenderer } from '@/lib/homepage-sections/SectionRenderer'
 import { createClient } from '@/lib/supabase/server'
 import { HeroSection } from '@/components/HeroSection'
-import { FeaturesSection } from '@/components/FeaturesSection'
-import { CTASection } from '@/components/CTASection'
-import { AnimatedSection } from '@/components/AnimatedSection'
+
+// Lazy load komponentów below-the-fold dla szybszego pierwszego renderowania
+const FeaturesSection = dynamic(() => import('@/components/FeaturesSection').then(mod => ({ default: mod.FeaturesSection })), {
+  loading: () => null
+})
+
+const CTASection = dynamic(() => import('@/components/CTASection').then(mod => ({ default: mod.CTASection })), {
+  loading: () => null
+})
+
+const AnimatedSection = dynamic(() => import('@/components/AnimatedSection').then(mod => ({ default: mod.AnimatedSection })))
 
 // Revalidate cache co 1 godzinę (3600 sekund) dla lepszej wydajności
 // Next.js automatycznie wyłącza caching w development mode

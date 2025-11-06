@@ -1,9 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import { Card, CardContent } from '@/components/ui/card'
 import { X } from 'lucide-react'
+
+// Lazy load framer-motion komponentów
+const MotionDiv = dynamic(() => import('framer-motion').then(mod => mod.motion.div), { ssr: true })
+const AnimatePresence = dynamic(() => import('framer-motion').then(mod => mod.AnimatePresence), { ssr: true })
 
 interface FeatureCardProps {
   title: string
@@ -25,7 +29,7 @@ export function FeatureCard({
 
   return (
     <>
-      <motion.div
+      <MotionDiv
         {...(!isMobile && { layoutId: `feature-${title}` })}
         onClick={() => setIsOpen(true)}
         className="cursor-pointer h-full"
@@ -40,13 +44,13 @@ export function FeatureCard({
             </p>
           </CardContent>
         </Card>
-      </motion.div>
+      </MotionDiv>
 
       <AnimatePresence>
         {isOpen && (
           <>
             {/* Backdrop */}
-            <motion.div
+            <MotionDiv
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -56,7 +60,7 @@ export function FeatureCard({
 
             {/* Expanded Card */}
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-              <motion.div
+              <MotionDiv
                 {...(!isMobile && { layoutId: `feature-${title}` })}
                 initial={isMobile ? { opacity: 0, scale: 0.95 } : undefined}
                 animate={isMobile ? { opacity: 1, scale: 1 } : undefined}
@@ -82,7 +86,7 @@ export function FeatureCard({
                     </p>
 
                     {expandedContent && (
-                      <motion.div
+                      <MotionDiv
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
@@ -91,11 +95,11 @@ export function FeatureCard({
                         <p className="text-foreground leading-relaxed">
                           {expandedContent}
                         </p>
-                      </motion.div>
+                      </MotionDiv>
                     )}
                   </CardContent>
                 </Card>
-              </motion.div>
+              </MotionDiv>
             </div>
           </>
         )}

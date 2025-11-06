@@ -1,9 +1,16 @@
 'use client'
 
 import Link from 'next/link'
-import { motion } from 'motion/react'
+import dynamic from 'next/dynamic'
 import { Button } from '@/components/ui/button'
 import type { User } from '@supabase/supabase-js'
+
+// Lazy load motion dla lepszej wydajności
+const motion = {
+  span: dynamic(() => import('motion/react').then(mod => mod.motion.span), { ssr: true }),
+  p: dynamic(() => import('motion/react').then(mod => mod.motion.p), { ssr: true }),
+  div: dynamic(() => import('motion/react').then(mod => mod.motion.div), { ssr: true })
+}
 
 interface HeroSectionProps {
   user: User | null

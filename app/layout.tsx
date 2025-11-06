@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Dancing_Script, Lora } from "next/font/google";
+import { Geist, Dancing_Script } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { ConditionalAnalytics } from "@/components/ConditionalAnalytics";
@@ -10,24 +10,17 @@ import CookieConsent from "@/components/CookieConsent";
 import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
 
+// Optymalizacja: tylko 2 czcionki zamiast 4 dla lepszej wydajności
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin", "latin-ext"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin", "latin-ext"],
+  display: "swap", // Zapobiega blokowaniu renderowania
 });
 
 const dancingScript = Dancing_Script({
   variable: "--font-dancing-script",
   subsets: ["latin", "latin-ext"],
-});
-
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin", "latin-ext"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -97,6 +90,10 @@ export default async function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#2E2E2E" media="(prefers-color-scheme: dark)" />
+        {/* Preconnect dla zewnętrznych zasobów - lepsza wydajność */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -122,12 +119,12 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${dancingScript.variable} ${lora.variable} antialiased`}
+        className={`${geistSans.variable} ${dancingScript.variable} antialiased`}
       >
         <Suspense fallback={null}>
           <TopLoader />
         </Suspense>
-        <Providers>
+        <Providers userId={user?.id}>
           {children}
           <MobileDockWrapper user={user} />
           <InstallPrompt />
