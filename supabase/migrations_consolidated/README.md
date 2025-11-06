@@ -1,13 +1,13 @@
 # Consolidated Migrations Summary
 
-This directory contains 4 consolidated migration files that replace the 99 original migration files from `/migrations_archive/`.
+This directory contains 4 consolidated migration files that replace the 100 original migration files from `/migrations/`.
 
 ## Overview
 
-- **Original**: 99 files, 7,621 lines of SQL
+- **Original**: 100 files, 7,621 lines of SQL
 - **Consolidated**: 4 files, 2,051 lines of SQL
 - **Reduction**: 73% reduction in lines, 96% reduction in file count
-- **Date**: November 5, 2025
+- **Last Updated**: November 6, 2025
 
 ## File Structure
 
@@ -285,11 +285,11 @@ psql your_database -c "SELECT COUNT(*) FROM cities;"  # Should be 49
 
 ## Comparison: Old vs New
 
-| Metric | Old (Archive) | New (Consolidated) | Improvement |
-|--------|---------------|-------------------|-------------|
-| Files | 99 | 4 | 96% reduction |
+| Metric | Old (migrations/) | New (Consolidated) | Improvement |
+|--------|------------------|-------------------|-------------|
+| Files | 100 | 4 | 96% reduction |
 | Total Lines | 7,621 | 2,051 | 73% reduction |
-| Avg Lines/File | 77 | 513 | Better organization |
+| Avg Lines/File | 76 | 513 | Better organization |
 | Tables Created | 17 | 17 | ✓ Same |
 | Categories | 182 | 182 | ✓ Same |
 | Cities | 49 | 49 | ✓ Same |
@@ -298,8 +298,14 @@ psql your_database -c "SELECT COUNT(*) FROM cities;"  # Should be 49
 
 ## Changelog
 
+**2025-11-06** - Maintenance update
+- Removed duplicate `migrations_archive/` directory (was exact copy of migrations/)
+- Fixed migration date prefixes (2025-10 → 2025-02)
+- Added timestamps to migrations without date prefixes
+- Updated documentation to reflect current structure
+
 **2025-11-05** - Initial consolidation
-- Analyzed 99 migration files from migrations_archive
+- Analyzed 100 migration files from migrations/
 - Created 4 consolidated migration files
 - Organized by feature area (core, AI, admin, reference data)
 - Added comprehensive documentation and comments

@@ -26,14 +26,16 @@ supabase db push --db-url $DATABASE_URL --migrations-dir supabase/migrations_con
 
 ```
 supabase/
-├── migrations/                    # Original 99 migration files (for existing databases)
-├── migrations_archive/            # Backup of original migrations
-├── migrations_consolidated/       # NEW: 4 consolidated files (for new installations)
+├── migrations/                    # 100 migration files (for existing databases, incremental updates)
+├── migrations_consolidated/       # 4 consolidated files (for new installations)
 │   ├── 01_core_schema.sql        # Core tables and structure
 │   ├── 02_ai_features.sql        # AI & semantic search
 │   ├── 03_admin_features.sql     # Admin & moderation
 │   ├── 04_reference_data.sql     # Cities & categories data
 │   └── README.md                 # Detailed documentation
+├── archive/                       # Old SQL files (deprecated, not used)
+├── functions/                     # SQL functions (full text search, analytics, synonyms)
+├── policies/                      # Additional RLS policies
 └── MIGRATIONS_README.md           # This file
 ```
 
@@ -52,17 +54,24 @@ supabase/
 
 ## What Was Consolidated?
 
-The consolidation process analyzed all 99 original migration files and extracted the final database state:
+The consolidation process analyzed all original migration files and extracted the final database state:
 
 | Metric | Before | After |
 |--------|--------|-------|
-| Files | 99 files | 4 files |
+| Files | 100 files | 4 files |
 | Lines | 7,621 lines | 2,051 lines |
 | Tables | 17 tables | 17 tables ✓ |
 | Functions | 30+ functions | 30+ functions ✓ |
 | Setup time | ~5 minutes | ~30 seconds |
 
 **Everything is preserved** - just organized better!
+
+## Recent Changes (November 6, 2025)
+
+✅ **Removed duplicate `migrations_archive/`** - Was an exact copy of `migrations/`
+✅ **Fixed migration timestamps** - Corrected dates from 2025-10 to 2025-02
+✅ **Added timestamps** - All migrations now have proper date prefixes
+✅ **Updated documentation** - Current structure and best practices
 
 ## Migration Contents
 
@@ -160,6 +169,6 @@ See detailed documentation in `migrations_consolidated/README.md` or open an iss
 
 ---
 
-**Last Updated:** November 5, 2025
+**Last Updated:** November 6, 2025
 **Database Version:** 1.0.0
 **Compatible with:** PostgreSQL 15+, pgvector 0.5.0+
