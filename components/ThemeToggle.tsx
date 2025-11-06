@@ -53,7 +53,7 @@ export function ThemeToggle() {
       </button>
 
       {isOpen && (
-        <div className="absolute bottom-full right-0 mb-2 bg-card border border-border rounded-xl shadow-lg min-w-[160px] p-2 space-y-1">
+        <div className="absolute bottom-full left-0 md:right-0 md:left-auto mb-2 bg-card border border-border rounded-xl shadow-lg min-w-[160px] p-2 space-y-1">
           <button
             onClick={() => {
               setTheme('light')

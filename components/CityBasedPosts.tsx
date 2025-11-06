@@ -62,27 +62,54 @@ export function CityBasedPosts({ userFavorites }: CityBasedPostsProps) {
       setPosts(cityPosts || [])
     }
 
-    async function detectCityByIP() {
+    async function detectCityByGeolocation() {
       try {
-        // DISABLED: IP-based geolocation removed due to CORS and rate limiting issues
-        // Users will select their city manually via the location selector
-        // const response = await fetch('https://ipapi.co/json/')
-        // const data = await response.json()
-        // const detectedCity = data.city || null
-        // if (detectedCity) {
-        //   setCity(detectedCity)
-        //   await fetchPostsByCity(detectedCity)
-        // }
+        if (!navigator.geolocation) {
+          setLoading(false)
+          return
+        }
+
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const userLat = position.coords.latitude
+            const userLon = position.coords.longitude
+
+            // Use reverse geocoding to get city name
+            try {
+              const response = await fetch(
+                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${userLat}&lon=${userLon}&accept-language=pl`
+              )
+              const data = await response.json()
+              const detectedCity = data.address?.city || data.address?.town || data.address?.village || null
+
+              if (detectedCity) {
+                setCity(detectedCity)
+                await fetchPostsByCity(detectedCity)
+              }
+            } catch (error) {
+              console.error('Reverse geocoding failed:', error)
+            } finally {
+              setLoading(false)
+            }
+          },
+          () => {
+            // User denied geolocation or error occurred
+            setLoading(false)
+          },
+          {
+            enableHighAccuracy: false,
+            timeout: 10000,
+            maximumAge: 300000 // Cache for 5 minutes
+          }
+        )
       } catch (error) {
-        // IP geolocation failed - silently continue
-      } finally {
+        console.error('Geolocation error:', error)
         setLoading(false)
       }
     }
 
-    // Use IP-based detection only (no permission prompt)
-    // GPS-based geolocation should only be triggered by user action
-    detectCityByIP()
+    // Use geolocation to detect user's city
+    detectCityByGeolocation()
   }, [])
 
   if (loading || !city || posts.length === 0) {

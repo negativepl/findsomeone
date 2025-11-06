@@ -56,8 +56,13 @@ export function Providers({ children }: { children: React.ReactNode }) {
           richColors
           closeButton
           duration={4000}
+          gap={12}
+          offset={16}
           toastOptions={{
             className: 'sonner-toast',
+            style: {
+              borderRadius: '1.5rem', // rounded-3xl jak karty w projekcie
+            },
           }}
         />
         <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />

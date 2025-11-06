@@ -27,11 +27,11 @@ export function Logo({ className = "w-8 h-8" }: { className?: string }) {
   )
 }
 
-export function LogoWithText({ className = "" }: { className?: string }) {
+export function LogoWithText({ className = "", showTextOnMobile = false }: { className?: string, showTextOnMobile?: boolean }) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       <Logo className="w-9 h-9 flex-shrink-0" />
-      <div className="hidden xl:flex flex-col">
+      <div className={`${showTextOnMobile ? 'flex' : 'hidden xl:flex'} flex-col`}>
         <span className="text-xl font-bold text-foreground leading-none font-[family-name:var(--font-lora)]">FindSomeone</span>
       </div>
     </div>

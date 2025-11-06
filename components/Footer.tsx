@@ -18,8 +18,8 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-4 md:gap-8 mb-8">
           {/* Logo i opis */}
           <div className="md:col-span-1">
-            <Link href="/">
-              <LogoWithText />
+            <Link href="/" className="flex items-center gap-2">
+              <LogoWithText showTextOnMobile={true} />
             </Link>
 
             {/* Kontakt */}

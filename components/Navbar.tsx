@@ -113,7 +113,9 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
                 {showAddButton && (
                   <Link href="/dashboard/my-posts/new">
                     <Button className="bg-brand hover:bg-brand/90 text-brand-foreground font-semibold rounded-full h-10 px-3 lg:px-6 transition-all border-0">
-                      <img src="/icons/plus.svg" alt="" className="w-5 h-5 lg:hidden" />
+                      <svg className="w-5 h-5 lg:hidden" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill="currentColor" d="M12 2.5a.75.75 0 0 1 .75.75v8h8a.75.75 0 0 1 0 1.5h-8v8a.75.75 0 0 1-1.5 0v-8h-8a.75.75 0 0 1 0-1.5h8v-8A.75.75 0 0 1 12 2.5"/>
+                      </svg>
                       <span className="hidden lg:inline">Dodaj ogłoszenie</span>
                     </Button>
                   </Link>

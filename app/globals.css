@@ -388,4 +388,94 @@ html {
   filter: none !important;
 }
 
+/* =============================================
+   Sonner Toast Styles - dostosowane do projektu
+   ============================================= */
+
+/* Base toast styles */
+[data-sonner-toast] {
+  background: var(--card) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--card-foreground) !important;
+  border-radius: 1.5rem !important; /* rounded-3xl = 24px */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  padding: 1rem !important;
+  font-size: 0.875rem !important;
+}
+
+/* Toast description */
+[data-sonner-toast] [data-description] {
+  color: var(--muted-foreground) !important;
+}
+
+/* Toast close button */
+[data-sonner-toast] [data-close-button] {
+  background: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-sonner-toast] [data-close-button]:hover {
+  background: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+}
+
+/* Success toast */
+[data-sonner-toast][data-type="success"] [data-icon] {
+  color: var(--brand) !important;
+}
+
+/* Error toast */
+[data-sonner-toast][data-type="error"] [data-icon] {
+  color: var(--destructive) !important;
+}
+
+/* Warning toast */
+[data-sonner-toast][data-type="warning"] [data-icon] {
+  color: oklch(0.70 0.16 60) !important;
+}
+
+/* Info toast */
+[data-sonner-toast][data-type="info"] [data-icon] {
+  color: oklch(0.65 0.18 45) !important;
+}
+
+/* Loading toast */
+[data-sonner-toast][data-type="loading"] [data-icon] {
+  color: var(--muted-foreground) !important;
+}
+
+/* Toast buttons */
+[data-sonner-toast] button[data-button] {
+  background: var(--brand) !important;
+  color: var(--brand-foreground) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.5rem 1rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-sonner-toast] button[data-button]:hover {
+  background: var(--brand) !important;
+  opacity: 0.9 !important;
+}
+
+/* Cancel button */
+[data-sonner-toast] button[data-cancel] {
+  background: var(--muted) !important;
+  color: var(--muted-foreground) !important;
+}
+
+[data-sonner-toast] button[data-cancel]:hover {
+  background: var(--accent) !important;
+  color: var(--accent-foreground) !important;
+}
+
+/* Dark mode specific adjustments */
+.dark [data-sonner-toast] {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
 

@@ -21,7 +21,6 @@ interface RecentlyViewedPostsProps {
 
 export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPostsProps) {
   const [posts, setPosts] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchRecentlyViewedPosts = async () => {
@@ -30,7 +29,6 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
       const recentlyViewed = JSON.parse(localStorage.getItem(recentlyViewedKey) || '[]')
 
       if (recentlyViewed.length === 0) {
-        setLoading(false)
         return
       }
 
@@ -63,15 +61,13 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
 
         setPosts(sortedPosts)
       }
-
-      setLoading(false)
     }
 
     fetchRecentlyViewedPosts()
   }, [])
 
-  // Don't show anything if there are no posts and not loading
-  if (!loading && posts.length === 0) {
+  // Don't show anything if there are no posts
+  if (posts.length === 0) {
     return null
   }
 
@@ -91,42 +87,13 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
 
           <div id="recently-viewed-scroll-mobile" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory w-full">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
-              {loading ? (
-                <>
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div key={i} className="flex-shrink-0 snap-center" style={{ width: '320px' }}>
-                      <Card className="border-0 rounded-3xl bg-card h-full flex flex-col animate-pulse">
-                        <div className="w-full h-48 bg-muted rounded-t-3xl" />
-                        <CardHeader className="pb-4 pt-6">
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="h-6 w-20 bg-muted rounded-full" />
-                            <div className="h-6 w-24 bg-muted rounded-full" />
-                          </div>
-                          <div className="h-6 w-3/4 bg-muted rounded" />
-                        </CardHeader>
-                        <CardContent className="pb-6 mt-auto space-y-3">
-                          <div className="h-4 w-1/2 bg-muted rounded" />
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-full bg-muted" />
-                              <div className="h-4 w-24 bg-muted rounded" />
-                            </div>
-                            <div className="h-6 w-20 bg-muted rounded" />
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  ))}
-                </>
-              ) : (
-                posts.map((post: any) => (
-                  <PostCard
-                    key={post.id}
-                    post={post}
-                    isFavorite={userFavorites.includes(post.id)}
-                  />
-                ))
-              )}
+              {posts.map((post: any) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  isFavorite={userFavorites.includes(post.id)}
+                />
+              ))}
             </div>
           </div>
           {posts.length > 1 && (
@@ -152,42 +119,13 @@ export function RecentlyViewedPosts({ userFavorites, userId }: RecentlyViewedPos
 
           <div id="recently-viewed-scroll-desktop" className="overflow-x-auto overflow-y-visible scrollbar-hide snap-x snap-mandatory w-full">
             <div className="horizontal-scroll-padding-mobile flex gap-4 pb-2">
-              {loading ? (
-                <>
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <div key={i} className="flex-shrink-0 snap-center" style={{ width: '320px' }}>
-                      <Card className="border-0 rounded-3xl bg-card h-full flex flex-col animate-pulse">
-                        <div className="w-full h-48 bg-muted rounded-t-3xl" />
-                        <CardHeader className="pb-4 pt-6">
-                          <div className="flex items-start justify-between mb-3">
-                            <div className="h-6 w-20 bg-muted rounded-full" />
-                            <div className="h-6 w-24 bg-muted rounded-full" />
-                          </div>
-                          <div className="h-6 w-3/4 bg-muted rounded" />
-                        </CardHeader>
-                        <CardContent className="pb-6 mt-auto space-y-3">
-                          <div className="h-4 w-1/2 bg-muted rounded" />
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2">
-                              <div className="w-8 h-8 rounded-full bg-muted" />
-                              <div className="h-4 w-24 bg-muted rounded" />
-                            </div>
-                            <div className="h-6 w-20 bg-muted rounded" />
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  ))}
-                </>
-              ) : (
-                posts.map((post: any) => (
-                  <PostCard
-                    key={post.id}
-                    post={post}
-                    isFavorite={userFavorites.includes(post.id)}
-                  />
-                ))
-              )}
+              {posts.map((post: any) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  isFavorite={userFavorites.includes(post.id)}
+                />
+              ))}
             </div>
           </div>
           {posts.length > 1 && (
