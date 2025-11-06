@@ -16,46 +16,114 @@ export function DistanceCard({ postCity, postDistrict }: DistanceCardProps) {
   useEffect(() => {
     const calculateDistance = async () => {
       try {
-        // Get user's current location
+        // Check if geolocation is supported
         if (!navigator.geolocation) {
+          console.warn('Geolocation not supported by browser')
           setError(true)
           setLoading(false)
           return
         }
 
+        // Opcje geolokalizacji - optymalizowane dla niezawodności
+        const geoOptions: PositionOptions = {
+          enableHighAccuracy: false, // false = szybsze, używa WiFi/IP zamiast GPS
+          timeout: 10000, // 10s timeout - zapobiega nieskończonemu czekaniu
+          maximumAge: 300000 // 5 minut - używa cached pozycji jeśli dostępna
+        }
+
         navigator.geolocation.getCurrentPosition(
           async (position) => {
-            const userLat = position.coords.latitude
-            const userLon = position.coords.longitude
+            try {
+              const userLat = position.coords.latitude
+              const userLon = position.coords.longitude
 
-            // Call API to calculate distance
-            const response = await fetch('/api/distance', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                userLat,
-                userLon,
-                postCity,
-                postDistrict,
-              }),
+              // Cache pozycji w localStorage dla przyszłych odwiedzin
+              localStorage.setItem('lastKnownPosition', JSON.stringify({
+                lat: userLat,
+                lon: userLon,
+                timestamp: Date.now()
+              }))
+
+              // Call API to calculate distance
+              const response = await fetch('/api/distance', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  userLat,
+                  userLon,
+                  postCity,
+                  postDistrict,
+                }),
+              })
+
+              if (response.ok) {
+                const data = await response.json()
+                setDistance(data.distance)
+              } else {
+                console.error('Distance API error:', await response.text())
+                setError(true)
+              }
+              setLoading(false)
+            } catch (err) {
+              console.error('Error processing position:', err)
+              setError(true)
+              setLoading(false)
+            }
+          },
+          (err) => {
+            // Detailed error logging
+            console.warn('Geolocation error:', {
+              code: err.code,
+              message: err.message,
+              // Code meanings:
+              // 1 = PERMISSION_DENIED
+              // 2 = POSITION_UNAVAILABLE (kCLErrorLocationUnknown)
+              // 3 = TIMEOUT
             })
 
-            if (response.ok) {
-              const data = await response.json()
-              setDistance(data.distance)
-            } else {
-              setError(true)
+            // Spróbuj użyć cached pozycji jako fallback
+            const cachedPosition = localStorage.getItem('lastKnownPosition')
+            if (cachedPosition) {
+              try {
+                const { lat, lon, timestamp } = JSON.parse(cachedPosition)
+                // Użyj cached pozycji jeśli jest młodsza niż 24h
+                if (Date.now() - timestamp < 24 * 60 * 60 * 1000) {
+                  console.log('Using cached position as fallback')
+                  fetch('/api/distance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      userLat: lat,
+                      userLon: lon,
+                      postCity,
+                      postDistrict,
+                    }),
+                  })
+                    .then(res => res.json())
+                    .then(data => {
+                      setDistance(data.distance)
+                      setLoading(false)
+                    })
+                    .catch(() => {
+                      setError(true)
+                      setLoading(false)
+                    })
+                  return
+                }
+              } catch {
+                // Invalid cached data
+              }
             }
-            setLoading(false)
-          },
-          () => {
+
             setError(true)
             setLoading(false)
-          }
+          },
+          geoOptions
         )
       } catch (err) {
+        console.error('Unexpected error in calculateDistance:', err)
         setError(true)
         setLoading(false)
       }
