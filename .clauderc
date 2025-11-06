@@ -1,6 +1,6 @@
 # FindSomeone - Mapa pamięci projektu dla Claude
 
-## 📋 Przegląd projektu
+## Przegląd projektu
 
 **Nazwa:** FindSomeone
 **Typ:** Platforma ogłoszeń lokalnych i usług
@@ -14,7 +14,7 @@ FindSomeone to nowoczesna platforma webowa do publikowania i przeglądania ogło
 
 ---
 
-## 🛠️ Stos technologiczny
+## Stos technologiczny
 
 ### Frontend
 - **Next.js 16.0.1** - App Router, Server Components, Server Actions, Turbopack
@@ -51,7 +51,7 @@ FindSomeone to nowoczesna platforma webowa do publikowania i przeglądania ogło
 
 ---
 
-## 📁 Struktura projektu
+## Struktura projektu
 
 ### Główne katalogi:
 
@@ -189,7 +189,7 @@ findsomeone/
 
 ---
 
-## 🗄️ Schemat bazy danych (Supabase PostgreSQL)
+## Schemat bazy danych (Supabase PostgreSQL)
 
 ### Główne tabele:
 
@@ -414,7 +414,7 @@ Preferencje użytkowników
 
 ---
 
-## 🔧 Funkcje PostgreSQL
+## Funkcje PostgreSQL
 
 ### Wyszukiwanie
 - **`search_posts_hybrid()`** - Hybrydowe wyszukiwanie (semantyczne + full-text)
@@ -431,7 +431,7 @@ Preferencje użytkowników
 
 ---
 
-## 🤖 Funkcje AI
+## Funkcje AI
 
 ### 1. Semantyczne Wyszukiwanie (pgvector)
 **Lokalizacja:** `lib/actions/search.ts`, migracje bazy danych
@@ -494,7 +494,7 @@ SELECT * FROM search_posts_hybrid(
 
 ---
 
-## 🔌 API routes
+## API routes
 
 ### Publiczne
 - `GET /api/posts` - Lista ogłoszeń (z filtrowaniem, paginacją)
@@ -519,7 +519,7 @@ SELECT * FROM search_posts_hybrid(
 
 ---
 
-## 🔐 Bezpieczeństwo
+## Bezpieczeństwo
 
 ### Row Level Security (RLS)
 Wszystkie tabele chronione politykami RLS:
@@ -545,7 +545,7 @@ Wszystkie tabele chronione politykami RLS:
 
 ---
 
-## 📊 Kluczowe komponenty
+## Kluczowe komponenty
 
 ### Nawigacja
 - **`Navbar.tsx`** - Główny navbar z logo, search, user menu
@@ -581,7 +581,7 @@ Wszystkie tabele chronione politykami RLS:
 
 ---
 
-## 🎨 Styling i UI
+## Styling i UI
 
 ### Design System
 - **Tailwind CSS 4** - Utility-first CSS framework
@@ -611,7 +611,7 @@ Paleta zdefiniowana w globals.css poprzez CSS variables:
 
 ---
 
-## 🌐 Routing i nawigacja
+## Routing i nawigacja
 
 ### App Router (Next.js 16)
 - **Route groups:** `(auth)` dla stron logowania/rejestracji
@@ -654,7 +654,7 @@ Paleta zdefiniowana w globals.css poprzez CSS variables:
 
 ---
 
-## 💬 System wiadomości (Realtime)
+## System wiadomości (Realtime)
 
 ### Technologia
 - **Supabase Realtime** - WebSocket subscriptions
@@ -687,7 +687,7 @@ supabase
 
 ---
 
-## 🔍 Wyszukiwanie
+## Wyszukiwanie
 
 ### Typy wyszukiwania:
 
@@ -721,7 +721,7 @@ supabase
 
 ---
 
-## 📧 Emaile
+## Emaile
 
 ### Technologia
 - **Resend** - Email delivery API
@@ -741,7 +741,7 @@ supabase
 
 ---
 
-## 🚀 Deployment i DevOps
+## Deployment i DevOps
 
 ### Hosting
 - **Vercel** - Hosting Next.js app
@@ -777,7 +777,7 @@ npm run lint           # ESLint
 
 ---
 
-## 📦 Kluczowe zależności
+## Kluczowe zależności
 
 ### UI & Styling
 - `tailwindcss` - CSS framework
@@ -830,7 +830,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🎯 Konwencje kodowania
+## Konwencje kodowania
 
 ### TypeScript
 - **Strict mode** włączony
@@ -871,7 +871,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🧪 Testowanie
+## Testowanie
 
 ### Skrypty testowe
 **Lokalizacja:** `scripts/tests/`
@@ -890,7 +890,7 @@ npm run lint           # ESLint
 
 ---
 
-## 📚 Dokumentacja
+## Dokumentacja
 
 ### Lokalizacja
 **Główny folder:** `docs/`
@@ -909,7 +909,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🐛 Znane problemy i workaroundy
+## Znane problemy i workaroundy
 
 ### Problem: Turbopack cache
 **Symptom:** Stare zmiany widoczne po hot reload
@@ -925,7 +925,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🔄 Workflow rozwoju
+## Workflow rozwoju
 
 ### Dodawanie nowej funkcji:
 1. **Planowanie:** Zdefiniuj wymagania i API
@@ -953,7 +953,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🎓 Najlepsze praktyki
+## Najlepsze praktyki
 
 ### Security
 - Zawsze używaj RLS policies
@@ -988,7 +988,7 @@ npm run lint           # ESLint
 
 ---
 
-## 📞 Kontakt i support
+## Kontakt i support
 
 ### Autor
 **Marcin Baszewski**
@@ -1005,7 +1005,7 @@ Non-Commercial MIT - Zobacz LICENSE file
 
 ---
 
-## 🔮 Roadmap (przyszłe funkcje)
+## Roadmap (przyszłe funkcje)
 
 ### Planowane:
 - [ ] Powiadomienia push (PWA)
@@ -1026,7 +1026,7 @@ Non-Commercial MIT - Zobacz LICENSE file
 
 ---
 
-## 📌 Quick reference
+## Quick reference
 
 ### Ważne komendy:
 ```bash
