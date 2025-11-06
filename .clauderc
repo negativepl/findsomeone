@@ -1,6 +1,6 @@
-# FindSomeone - Mapa Pamięci Projektu dla Claude
+# FindSomeone - Mapa pamięci projektu dla Claude
 
-## 📋 PRZEGLĄD PROJEKTU
+## 📋 Przegląd projektu
 
 **Nazwa:** FindSomeone
 **Typ:** Platforma ogłoszeń lokalnych i usług
@@ -14,7 +14,7 @@ FindSomeone to nowoczesna platforma webowa do publikowania i przeglądania ogło
 
 ---
 
-## 🛠️ STOS TECHNOLOGICZNY
+## 🛠️ Stos technologiczny
 
 ### Frontend
 - **Next.js 16.0.1** - App Router, Server Components, Server Actions, Turbopack
@@ -36,7 +36,7 @@ FindSomeone to nowoczesna platforma webowa do publikowania i przeglądania ogło
 - **Hugging Face** - Moderacja treści (wykrywanie spamu i treści obraźliwych)
 - Semantyczne wyszukiwanie z pgvector
 
-### Dodatkowe Usługi
+### Dodatkowe usługi
 - **Vercel** - Hosting, deployment, analytics, speed insights
 - **Resend** - Wysyłka emaili
 - **Upstash Redis** - Rate limiting
@@ -51,7 +51,7 @@ FindSomeone to nowoczesna platforma webowa do publikowania i przeglądania ogło
 
 ---
 
-## 📁 STRUKTURA PROJEKTU
+## 📁 Struktura projektu
 
 ### Główne katalogi:
 
@@ -189,7 +189,7 @@ findsomeone/
 
 ---
 
-## 🗄️ SCHEMAT BAZY DANYCH (Supabase PostgreSQL)
+## 🗄️ Schemat bazy danych (Supabase PostgreSQL)
 
 ### Główne tabele:
 
@@ -414,7 +414,7 @@ Preferencje użytkowników
 
 ---
 
-## 🔧 FUNKCJE POSTGRESQL
+## 🔧 Funkcje PostgreSQL
 
 ### Wyszukiwanie
 - **`search_posts_hybrid()`** - Hybrydowe wyszukiwanie (semantyczne + full-text)
@@ -431,7 +431,7 @@ Preferencje użytkowników
 
 ---
 
-## 🤖 FUNKCJE AI
+## 🤖 Funkcje AI
 
 ### 1. Semantyczne Wyszukiwanie (pgvector)
 **Lokalizacja:** `lib/actions/search.ts`, migracje bazy danych
@@ -494,7 +494,7 @@ SELECT * FROM search_posts_hybrid(
 
 ---
 
-## 🔌 API ROUTES
+## 🔌 API routes
 
 ### Publiczne
 - `GET /api/posts` - Lista ogłoszeń (z filtrowaniem, paginacją)
@@ -519,7 +519,7 @@ SELECT * FROM search_posts_hybrid(
 
 ---
 
-## 🔐 BEZPIECZEŃSTWO
+## 🔐 Bezpieczeństwo
 
 ### Row Level Security (RLS)
 Wszystkie tabele chronione politykami RLS:
@@ -545,7 +545,7 @@ Wszystkie tabele chronione politykami RLS:
 
 ---
 
-## 📊 KLUCZOWE KOMPONENTY
+## 📊 Kluczowe komponenty
 
 ### Nawigacja
 - **`Navbar.tsx`** - Główny navbar z logo, search, user menu
@@ -581,7 +581,7 @@ Wszystkie tabele chronione politykami RLS:
 
 ---
 
-## 🎨 STYLING & UI
+## 🎨 Styling i UI
 
 ### Design System
 - **Tailwind CSS 4** - Utility-first CSS framework
@@ -611,7 +611,7 @@ Paleta zdefiniowana w globals.css poprzez CSS variables:
 
 ---
 
-## 🌐 ROUTING & NAWIGACJA
+## 🌐 Routing i nawigacja
 
 ### App Router (Next.js 16)
 - **Route groups:** `(auth)` dla stron logowania/rejestracji
@@ -654,7 +654,7 @@ Paleta zdefiniowana w globals.css poprzez CSS variables:
 
 ---
 
-## 💬 SYSTEM WIADOMOŚCI (Realtime)
+## 💬 System wiadomości (Realtime)
 
 ### Technologia
 - **Supabase Realtime** - WebSocket subscriptions
@@ -687,7 +687,7 @@ supabase
 
 ---
 
-## 🔍 WYSZUKIWANIE
+## 🔍 Wyszukiwanie
 
 ### Typy wyszukiwania:
 
@@ -721,7 +721,7 @@ supabase
 
 ---
 
-## 📧 EMAILE
+## 📧 Emaile
 
 ### Technologia
 - **Resend** - Email delivery API
@@ -741,7 +741,7 @@ supabase
 
 ---
 
-## 🚀 DEPLOYMENT & DEVOPS
+## 🚀 Deployment i DevOps
 
 ### Hosting
 - **Vercel** - Hosting Next.js app
@@ -777,7 +777,7 @@ npm run lint           # ESLint
 
 ---
 
-## 📦 KLUCZOWE ZALEŻNOŚCI
+## 📦 Kluczowe zależności
 
 ### UI & Styling
 - `tailwindcss` - CSS framework
@@ -830,7 +830,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🎯 KONWENCJE KODOWANIA
+## 🎯 Konwencje kodowania
 
 ### TypeScript
 - **Strict mode** włączony
@@ -871,7 +871,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🧪 TESTOWANIE
+## 🧪 Testowanie
 
 ### Skrypty testowe
 **Lokalizacja:** `scripts/tests/`
@@ -890,7 +890,7 @@ npm run lint           # ESLint
 
 ---
 
-## 📚 DOKUMENTACJA
+## 📚 Dokumentacja
 
 ### Lokalizacja
 **Główny folder:** `docs/`
@@ -909,7 +909,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🐛 ZNANE PROBLEMY & WORKAROUNDS
+## 🐛 Znane problemy i workaroundy
 
 ### Problem: Turbopack cache
 **Symptom:** Stare zmiany widoczne po hot reload
@@ -925,7 +925,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🔄 WORKFLOW ROZWOJU
+## 🔄 Workflow rozwoju
 
 ### Dodawanie nowej funkcji:
 1. **Planowanie:** Zdefiniuj wymagania i API
@@ -953,7 +953,7 @@ npm run lint           # ESLint
 
 ---
 
-## 🎓 NAJLEPSZE PRAKTYKI
+## 🎓 Najlepsze praktyki
 
 ### Security
 - Zawsze używaj RLS policies
@@ -988,7 +988,7 @@ npm run lint           # ESLint
 
 ---
 
-## 📞 KONTAKT & SUPPORT
+## 📞 Kontakt i support
 
 ### Autor
 **Marcin Baszewski**
@@ -1005,7 +1005,7 @@ Non-Commercial MIT - Zobacz LICENSE file
 
 ---
 
-## 🔮 ROADMAP (Przyszłe funkcje)
+## 🔮 Roadmap (przyszłe funkcje)
 
 ### Planowane:
 - [ ] Powiadomienia push (PWA)
@@ -1026,7 +1026,7 @@ Non-Commercial MIT - Zobacz LICENSE file
 
 ---
 
-## 📌 QUICK REFERENCE
+## 📌 Quick reference
 
 ### Ważne komendy:
 ```bash
