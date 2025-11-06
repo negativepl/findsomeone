@@ -478,4 +478,22 @@ html {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* =============================================
+   Beta Banner & Navbar Coordination
+   ============================================= */
+
+/* Smooth transition for navbar rounding */
+header {
+  transition: border-radius 0.3s ease-in-out !important;
+}
+
+/* Remove navbar rounding when beta banner is visible */
+body.beta-banner-visible header {
+  border-radius: 0 !important;
+}
+
+body.beta-banner-visible header::before {
+  display: none !important;
+}
+
 

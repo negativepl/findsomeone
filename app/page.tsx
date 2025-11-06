@@ -1,5 +1,6 @@
 import Script from 'next/script'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
+import { BetaBanner } from '@/components/BetaBanner'
 import { Footer } from '@/components/Footer'
 import { SectionRenderer } from '@/lib/homepage-sections/SectionRenderer'
 import { createClient } from '@/lib/supabase/server'
@@ -92,6 +93,7 @@ export default async function Home() {
 
       <div className="min-h-screen bg-background">
         <NavbarWithHide user={user} />
+        <BetaBanner />
 
           <main>
             <HeroSection user={user} />
