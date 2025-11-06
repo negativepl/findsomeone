@@ -6,9 +6,10 @@ import { motion } from 'motion/react'
 interface AnimatedSectionProps {
   children: React.ReactNode
   delay?: number
+  className?: string
 }
 
-export function AnimatedSection({ children, delay = 0 }: AnimatedSectionProps) {
+export function AnimatedSection({ children, delay = 0, className }: AnimatedSectionProps) {
   const [isVisible, setIsVisible] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -39,9 +40,10 @@ export function AnimatedSection({ children, delay = 0 }: AnimatedSectionProps) {
       animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
       transition={{
         duration: 0.5,
-        delay: delay,
+        delay: delay / 1000,
         ease: "easeOut",
       }}
+      className={className}
     >
       {children}
     </motion.div>

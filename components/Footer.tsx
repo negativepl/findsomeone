@@ -144,7 +144,11 @@ export function Footer() {
 
         {/* Copyright & Social */}
         <div className="border-t border-border py-6 pb-24 md:pb-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-muted-foreground">Made by FindSomeone</p>
+          <p className="text-sm text-muted-foreground">
+            Zaprojektowane przez <a href="mailto:mbaszewski@findsomeone.app" className="hover:text-foreground transition-colors">Marcina Baszewskiego</a>
+          </p>
+
+          <p className="text-sm text-muted-foreground">© FindSomeone</p>
 
           <div className="flex items-center gap-4">
             {/* Dark Mode Toggle */}
