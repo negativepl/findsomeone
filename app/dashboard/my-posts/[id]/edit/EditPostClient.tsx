@@ -477,18 +477,13 @@ export function EditPostClient({ post }: EditPostClientProps) {
         <p className="text-lg text-muted-foreground mb-4">
           Zaktualizuj informacje w swoim ogłoszeniu
         </p>
-        <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-4 flex items-start gap-3">
-          <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <div className="flex-1">
-            <p className="text-sm font-semibold text-yellow-900 dark:text-yellow-200 mb-1">
-              Ponowna weryfikacja wymagana
-            </p>
-            <p className="text-sm text-yellow-800 dark:text-yellow-300">
-              Po zapisaniu zmian, Twoje ogłoszenie zostanie ponownie zweryfikowane przez system moderacji. Ogłoszenie będzie widoczne publicznie dopiero po zatwierdzeniu.
-            </p>
-          </div>
+        <div className="bg-muted/50 border border-border rounded-2xl p-4">
+          <p className="text-sm font-semibold text-foreground mb-1">
+            Ponowna weryfikacja wymagana
+          </p>
+          <p className="text-sm text-muted-foreground">
+            Po zapisaniu zmian, Twoje ogłoszenie zostanie ponownie zweryfikowane przez system moderacji. Ogłoszenie będzie widoczne publicznie dopiero po zatwierdzeniu.
+          </p>
         </div>
       </div>
 
@@ -766,8 +761,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 <Link href="/dashboard/my-posts">
                   <Button
                     type="button"
-                    variant="outline"
-                    className="w-full md:w-auto rounded-full border border-border hover:border-border/70 hover:bg-muted h-11 px-6 text-sm"
+                    className="w-full md:w-auto rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>
@@ -775,7 +769,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 px-8 text-sm font-semibold"
+                  className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold"
                 >
                   {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
                 </Button>

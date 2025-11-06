@@ -256,6 +256,31 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     .order('created_at', { ascending: false })
     .limit(3)
 
+  // Fetch posts from the same category
+  const { data: similarPosts } = await supabase
+    .from('posts')
+    .select(`
+      id,
+      title,
+      city,
+      district,
+      price,
+      price_type,
+      images,
+      views,
+      created_at,
+      categories (
+        name
+      )
+    `)
+    .eq('category_id', post.category_id)
+    .eq('status', 'active')
+    .eq('is_deleted', false)
+    .neq('id', id)
+    .neq('user_id', post.user_id)
+    .order('created_at', { ascending: false })
+    .limit(6)
+
   // Prepare JSON-LD structured data
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
 
@@ -600,7 +625,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   </div>
                 ) : !user ? (
                   <Link href="/login">
-                    <Button className="w-full rounded-full bg-black hover:bg-black/80 text-white border border-border py-5 md:py-6 text-base md:text-lg">
+                    <Button className="w-full rounded-full bg-card hover:bg-accent text-foreground border border-border py-5 md:py-6 text-base md:text-lg">
                       Zaloguj się aby skontaktować
                     </Button>
                   </Link>
@@ -610,7 +635,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       <p className="text-base text-muted-foreground">To Twoje ogłoszenie</p>
                     </div>
                     <Link href={`/dashboard/my-posts/${post.id}/edit`}>
-                      <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border border-border py-6 text-lg">
+                      <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border border-border py-6 text-lg">
                         Edytuj ogłoszenie
                       </Button>
                     </Link>
@@ -742,6 +767,121 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             )}
           </div>
         </div>
+
+        {/* Similar Posts from Same Category - Full Width */}
+        {similarPosts && similarPosts.length > 0 && (
+          <div className="mt-6 md:mt-8">
+            <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4 md:mb-6">
+              Podobne ogłoszenia
+            </h2>
+
+            {/* Mobile: Horizontal Carousel */}
+            <div className="md:hidden -mx-6">
+              <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-140px)]">
+                {similarPosts.map((similarPost: any) => (
+                  <Link key={similarPost.id} href={`/posts/${similarPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
+                    <div className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                      {/* Image */}
+                      {similarPost.images && similarPost.images.length > 0 && (
+                        <div className="relative w-full h-40 bg-muted">
+                          <Image
+                            src={similarPost.images[0]}
+                            alt={similarPost.title}
+                            fill
+                            sizes="280px"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        </div>
+                      )}
+
+                      <div className="p-4 flex flex-col flex-1">
+                        {similarPost.categories && (
+                          <div className="mb-2">
+                            <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
+                              {similarPost.categories.name}
+                            </Badge>
+                          </div>
+                        )}
+                        <h3 className="text-base font-bold text-foreground mb-3">{similarPost.title}</h3>
+
+                        <div className="flex items-center justify-between gap-2 mt-auto">
+                          {/* Location - Left */}
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
+                            <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span className="truncate">{similarPost.city}</span>
+                          </div>
+
+                          {/* Price - Right */}
+                          <div className="flex items-center gap-1 flex-shrink-0">
+                            <span className="font-bold text-brand text-base whitespace-nowrap">
+                              {similarPost.price === 0 ? 'Za darmo' : `${similarPost.price.toLocaleString('pl-PL')} zł`}
+                              {similarPost.price_type === 'negotiable' && <span className="text-xs font-normal text-muted-foreground ml-1">do neg.</span>}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop: Grid */}
+            <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {similarPosts.map((similarPost: any) => (
+                <Link key={similarPost.id} href={`/posts/${similarPost.id}`}>
+                  <div className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                    {/* Image */}
+                    {similarPost.images && similarPost.images.length > 0 && (
+                      <div className="relative w-full h-40 bg-muted">
+                        <Image
+                          src={similarPost.images[0]}
+                          alt={similarPost.title}
+                          fill
+                          sizes="280px"
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+
+                    <div className="p-4 flex flex-col flex-1">
+                      {similarPost.categories && (
+                        <div className="mb-2">
+                          <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
+                            {similarPost.categories.name}
+                          </Badge>
+                        </div>
+                      )}
+                      <h3 className="text-base font-bold text-foreground mb-3">{similarPost.title}</h3>
+
+                      <div className="flex items-center justify-between gap-2 mt-auto">
+                        {/* Location - Left */}
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
+                          <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg>
+                          <span className="truncate">{similarPost.city}</span>
+                        </div>
+
+                        {/* Price - Right */}
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <span className="font-bold text-brand text-base whitespace-nowrap">
+                            {similarPost.price === 0 ? 'Za darmo' : `${similarPost.price.toLocaleString('pl-PL')} zł`}
+                            {similarPost.price_type === 'negotiable' && <span className="text-xs font-normal text-muted-foreground ml-1">do neg.</span>}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </main>
 
       {/* Mobile Action Dock - Only for logged-in users who are not the post author */}

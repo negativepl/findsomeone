@@ -307,6 +307,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
   }
 
   const isPendingModeration = (post: Post): boolean => {
+    // Odrzucone posty nie są już "oczekujące"
+    if (post.moderation_status === 'rejected') return false
+
     return (post.status === 'pending' ||
             post.moderation_status === 'checking' ||
             post.moderation_status === 'pending' ||
@@ -380,13 +383,13 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
     <>
       {/* Pending Moderation Alert */}
       {pendingModerationPosts.length > 0 && (
-        <div className="mb-6 bg-yellow-50 border border-yellow-200 rounded-2xl p-4 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+        <div className="mb-6 bg-muted/50 border border-border rounded-2xl p-4 flex items-start gap-3">
+          <AlertCircle className="w-5 h-5 text-muted-foreground flex-shrink-0 mt-0.5" />
           <div className="flex-1">
-            <h3 className="font-semibold text-yellow-900 mb-1">
+            <h3 className="font-semibold text-foreground mb-1">
               {getPendingPostsText(pendingModerationPosts.length).title}
             </h3>
-            <p className="text-sm text-yellow-800">
+            <p className="text-sm text-muted-foreground">
               {getPendingPostsText(pendingModerationPosts.length).description}
             </p>
           </div>
@@ -465,22 +468,22 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               {post.title}
                             </h3>
                             {post.moderation_status === 'rejected' ? (
-                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-red-50 border border-red-200 rounded-lg flex-shrink-0">
-                                <XCircle className="w-3 h-3 text-red-600" />
-                                <span className="text-xs font-semibold text-red-700">Odrzucone</span>
+                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-destructive/10 border border-destructive/30 rounded-lg flex-shrink-0">
+                                <XCircle className="w-3 h-3 text-destructive" />
+                                <span className="text-xs font-semibold text-destructive">Odrzucone</span>
                               </div>
                             ) : isPendingModeration(post) ? (
-                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-50 border border-yellow-200 rounded-lg flex-shrink-0">
-                                <Clock className="w-3 h-3 text-yellow-600" />
-                                <span className="text-xs font-semibold text-yellow-700">Oczekuje</span>
+                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-muted border border-border rounded-lg flex-shrink-0">
+                                <Clock className="w-3 h-3 text-muted-foreground" />
+                                <span className="text-xs font-semibold text-muted-foreground">Oczekuje</span>
                               </div>
                             ) : null}
                           </div>
 
                           {/* Rejection reason */}
                           {post.moderation_status === 'rejected' && post.moderation_reason && (
-                            <div className="mb-2 p-2 bg-red-50 border border-red-200 rounded-xl">
-                              <p className="text-xs text-red-800">
+                            <div className="mb-2 p-2 bg-destructive/10 border border-destructive/30 rounded-xl">
+                              <p className="text-xs text-destructive">
                                 <span className="font-semibold">Powód:</span> {post.moderation_reason}
                               </p>
                             </div>
@@ -566,9 +569,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                       e.preventDefault()
                                       openAppealDialog(post.id)
                                     }}
-                                    className="h-8 w-8 rounded-lg bg-card border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
+                                    className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                   >
-                                    <MessageSquare className="w-3 h-3" />
+                                    <ShieldAlert className="w-3 h-3 text-foreground" />
                                   </button>
                                 </TooltipTrigger>
                                 <TooltipContent sideOffset={5}>
@@ -582,7 +585,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                             <TooltipProvider delayDuration={500}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <div className="h-8 px-3 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-1.5">
+                                  <div className="h-8 px-3 rounded-lg bg-card border border-border text-muted-foreground flex items-center justify-center gap-1.5">
                                     <Clock className="w-3 h-3" />
                                     <span className="text-xs font-semibold">W trakcie</span>
                                   </div>
@@ -779,22 +782,22 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           </h3>
                           {/* Status badge (only important states) */}
                           {post.moderation_status === 'rejected' ? (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg flex-shrink-0">
-                              <XCircle className="w-4 h-4 text-red-600" />
-                              <span className="text-sm font-semibold text-red-700">Odrzucone</span>
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-destructive/10 border border-destructive/30 rounded-lg flex-shrink-0">
+                              <XCircle className="w-4 h-4 text-destructive" />
+                              <span className="text-sm font-semibold text-destructive">Odrzucone</span>
                             </div>
                           ) : isPendingModeration(post) ? (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-yellow-50 border border-yellow-200 rounded-lg flex-shrink-0">
-                              <Clock className="w-4 h-4 text-yellow-600" />
-                              <span className="text-sm font-semibold text-yellow-700">Oczekuje</span>
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted border border-border rounded-lg flex-shrink-0">
+                              <Clock className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-sm font-semibold text-muted-foreground">Oczekuje</span>
                             </div>
                           ) : null}
                         </div>
 
                         {/* Rejection reason */}
                         {post.moderation_status === 'rejected' && post.moderation_reason && (
-                          <div className="mb-3 p-3 bg-red-50 border border-red-200 rounded-xl">
-                            <p className="text-sm text-red-800">
+                          <div className="mb-3 p-3 bg-destructive/10 border border-destructive/30 rounded-xl">
+                            <p className="text-sm text-destructive">
                               <span className="font-semibold">Powód odrzucenia:</span> {post.moderation_reason}
                             </p>
                           </div>
@@ -869,9 +872,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           e.preventDefault()
                                           openAppealDialog(post.id)
                                         }}
-                                        className="h-10 w-10 rounded-lg bg-card border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
+                                        className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                       >
-                                        <MessageSquare className="w-4 h-4" />
+                                        <ShieldAlert className="w-4 h-4 text-foreground" />
                                       </button>
                                     </TooltipTrigger>
                                     <TooltipContent sideOffset={5}>
@@ -885,7 +888,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 <TooltipProvider delayDuration={500}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <div className="h-10 px-4 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-2">
+                                      <div className="h-10 px-4 rounded-lg bg-card border border-border text-muted-foreground flex items-center justify-center gap-2">
                                         <Clock className="w-4 h-4" />
                                         <span className="text-sm font-semibold">W trakcie</span>
                                       </div>
@@ -1082,14 +1085,14 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                         <div className="flex items-start justify-between gap-2 mb-2 md:mb-3">
                           {/* Status badge (only important states) */}
                           {post.moderation_status === 'rejected' ? (
-                            <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-red-50 border border-red-200 rounded-lg flex-shrink-0">
-                              <XCircle className="w-3 h-3 md:w-4 md:h-4 text-red-600" />
-                              <span className="text-xs md:text-sm font-semibold text-red-700">Odrzucone</span>
+                            <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-destructive/10 border border-destructive/30 rounded-lg flex-shrink-0">
+                              <XCircle className="w-3 h-3 md:w-4 md:h-4 text-destructive" />
+                              <span className="text-xs md:text-sm font-semibold text-destructive">Odrzucone</span>
                             </div>
                           ) : isPendingModeration(post) ? (
-                            <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-yellow-50 border border-yellow-200 rounded-lg flex-shrink-0">
-                              <Clock className="w-3 h-3 md:w-4 md:h-4 text-yellow-600" />
-                              <span className="text-xs md:text-sm font-semibold text-yellow-700">Oczekuje</span>
+                            <div className="inline-flex items-center gap-1 md:gap-1.5 px-2 md:px-3 py-0.5 md:py-1 bg-muted border border-border rounded-lg flex-shrink-0">
+                              <Clock className="w-3 h-3 md:w-4 md:h-4 text-muted-foreground" />
+                              <span className="text-xs md:text-sm font-semibold text-muted-foreground">Oczekuje</span>
                             </div>
                           ) : null}
                         </div>
@@ -1100,8 +1103,8 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
                         {/* Rejection reason */}
                         {post.moderation_status === 'rejected' && post.moderation_reason && (
-                          <div className="mb-2 md:mb-3 p-2 md:p-3 bg-red-50 border border-red-200 rounded-xl">
-                            <p className="text-xs md:text-sm text-red-800">
+                          <div className="mb-2 md:mb-3 p-2 md:p-3 bg-destructive/10 border border-destructive/30 rounded-xl">
+                            <p className="text-xs md:text-sm text-destructive">
                               <span className="font-semibold">Powód odrzucenia:</span> {post.moderation_reason}
                             </p>
                           </div>
@@ -1165,9 +1168,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                           e.preventDefault()
                                           openAppealDialog(post.id)
                                         }}
-                                        className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-blue-200 text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-all relative z-20"
+                                        className="h-8 w-8 md:h-10 md:w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
                                       >
-                                        <MessageSquare className="w-3 h-3 md:w-4 md:h-4" />
+                                        <ShieldAlert className="w-3 h-3 md:w-4 md:h-4 text-foreground" />
                                       </button>
                                     </TooltipTrigger>
                                     <TooltipContent sideOffset={5}>
@@ -1181,7 +1184,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                                 <TooltipProvider delayDuration={500}>
                                   <Tooltip>
                                     <TooltipTrigger asChild>
-                                      <div className="h-8 px-2 md:h-10 md:px-3 rounded-lg bg-card border border-yellow-200 text-yellow-700 flex items-center justify-center gap-1">
+                                      <div className="h-8 px-2 md:h-10 md:px-3 rounded-lg bg-card border border-border text-muted-foreground flex items-center justify-center gap-1">
                                         <Clock className="w-3 h-3 md:w-4 md:h-4" />
                                         <span className="text-xs md:text-sm font-semibold hidden md:inline">W trakcie</span>
                                       </div>
@@ -1415,7 +1418,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="rounded-3xl border-0 shadow-xl sm:max-w-md">
+        <AlertDialogContent className="sm:max-w-md border border-border rounded-3xl bg-card shadow-xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-2xl">
               Usuń ogłoszenie
@@ -1424,17 +1427,17 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               Czy na pewno chcesz usunąć to ogłoszenie? Ta akcja jest nieodwracalna.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="mt-8 pt-6 border-t-2 border-border">
+          <div className="mt-8 pt-6 border-t-2 border-black/5">
             <AlertDialogFooter className="gap-2 sm:gap-2">
               <AlertDialogCancel
-                className="rounded-full border border-border hover:border-border hover:bg-muted"
+                className="rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none"
                 disabled={isPending}
               >
                 Anuluj
               </AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDelete}
-                className="rounded-full bg-brand hover:bg-brand/90 text-white border-0"
+                className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
                 disabled={isPending}
               >
                 {isPending ? 'Usuwanie...' : 'Usuń'}
@@ -1446,7 +1449,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
       {/* Appeal Dialog */}
       <AlertDialog open={appealDialogOpen} onOpenChange={setAppealDialogOpen}>
-        <AlertDialogContent className="rounded-3xl border-0 shadow-xl sm:max-w-lg">
+        <AlertDialogContent className="sm:max-w-lg border border-border rounded-3xl bg-card shadow-xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-2xl">
               Odwołaj się od decyzji moderacji
@@ -1455,8 +1458,8 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               Jeśli uważasz, że Twoje ogłoszenie zostało niesłusznie odrzucone, możesz wysłać odwołanie. Moderator ponownie sprawdzi treść w ciągu 24 godzin.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="my-4">
-            <Label htmlFor="appeal-message" className="text-sm font-semibold mb-2 block">
+          <div className="space-y-3 py-4">
+            <Label htmlFor="appeal-message" className="text-base font-semibold">
               Wyjaśnij dlaczego uważasz, że odrzucenie było błędne *
             </Label>
             <Textarea
@@ -1464,24 +1467,24 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               value={appealMessage}
               onChange={(e) => setAppealMessage(e.target.value)}
               placeholder="np. Moje ogłoszenie nie zawiera treści zabronionych. Podane informacje są zgodne z regulaminem..."
-              className="rounded-2xl border border-border min-h-[120px] focus:border-border"
+              className="rounded-2xl border border-black/10 min-h-[120px] focus:border-black/30"
               maxLength={500}
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="text-xs text-muted-foreground">
               {appealMessage.length}/500 znaków
             </p>
           </div>
-          <div className="mt-8 pt-6 border-t-2 border-border">
-            <AlertDialogFooter className="gap-3 sm:gap-3">
+          <div className="mt-8 pt-6 border-t-2 border-black/5">
+            <AlertDialogFooter className="gap-2 sm:gap-2">
             <AlertDialogCancel
-              className="rounded-full border border-border hover:border-border hover:bg-muted h-11"
+              className="rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none"
               disabled={isPending}
             >
               Anuluj
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleAppeal}
-              className="rounded-full bg-blue-600 hover:bg-blue-700 text-white border-0 h-11 font-semibold"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
               disabled={isPending || !appealMessage.trim()}
             >
               {isPending ? 'Wysyłanie...' : 'Wyślij odwołanie'}

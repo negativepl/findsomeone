@@ -48,6 +48,7 @@ export async function POST(request: NextRequest) {
     const status = getModerationStatus(result)
 
     // Update post with moderation result
+    // Only approved posts become active, everything else stays pending
     const { error: updateError } = await supabase
       .from('posts')
       .update({

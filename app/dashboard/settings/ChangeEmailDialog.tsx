@@ -82,10 +82,9 @@ export function ChangeEmailDialog() {
             <DialogFooter className="gap-2 sm:gap-2">
             <Button
               type="button"
-              variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full border border-border hover:border-brand hover:bg-brand/10"
+              className="rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none"
             >
               Anuluj
             </Button>

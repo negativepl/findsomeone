@@ -545,6 +545,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Validate category is selected
+    if (!selectedCategoryId) {
+      toast.error('Musisz wybrać kategorię')
+      return
+    }
+
     setLoading(true)
     setError(null)
     setShowModerationModal(true)
@@ -564,7 +571,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
         user_id: user.id,
         title: formData.title,
         description: formData.description,
-        category_id: selectedCategoryId, // Use the selected category ID from modal
+        category_id: selectedCategoryId || null, // Use null if empty string
         city: formData.city,
         district: formData.district || null,
         price: formData.price ? parseFloat(formData.price) : null,
@@ -605,11 +612,22 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
             const { embedding } = await embeddingResponse.json()
 
             // Update post with embedding if generated successfully
-            if (embedding) {
-              await supabase
+            if (embedding && Array.isArray(embedding)) {
+              // Format as PostgreSQL vector string
+              const embeddingString = `[${embedding.join(',')}]`
+
+              const { error: embeddingError } = await supabase
                 .from('posts')
-                .update({ embedding: `[${embedding.join(',')}]` })
+                .update({
+                  embedding: embeddingString,
+                  embedding_model: 'text-embedding-3-small',
+                  embedding_updated_at: new Date().toISOString()
+                })
                 .eq('id', newPost.id)
+
+              if (embeddingError) {
+                console.error('Failed to update embedding:', embeddingError)
+              }
             }
           }
         } catch (embeddingError) {
@@ -640,9 +658,11 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
       router.push('/dashboard/my-posts')
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wystąpił błąd')
+      const errorMessage = err instanceof Error ? err.message : 'Wystąpił błąd'
+      setError(errorMessage)
       setLoading(false)
       setShowModerationModal(false)
+      toast.error(errorMessage)
     }
   }
 
@@ -668,7 +688,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 </button>
                 <button
                   onClick={loadDraft}
-                  className="rounded-md bg-brand hover:bg-brand/90 text-white border-0 h-10 px-4 text-sm font-semibold transition-colors"
+                  className="rounded-md bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-10 px-4 text-sm font-semibold transition-colors"
                 >
                   Kontynuuj tworzenie
                 </button>
@@ -1020,8 +1040,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <Link href="/dashboard">
                   <Button
                     type="button"
-                    variant="outline"
-                    className="rounded-full border border-border hover:border-border hover:bg-muted h-11 px-6 text-sm"
+                    className="rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>
@@ -1029,7 +1048,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 px-8 text-sm font-semibold"
+                  className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold"
                 >
                   {loading ? 'Dodawanie...' : 'Opublikuj ogłoszenie'}
                 </Button>
@@ -1486,8 +1505,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <Link href="/dashboard" className="block w-full">
                 <Button
                   type="button"
-                  variant="outline"
-                  className="w-full rounded-full border border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold"
+                  className="w-full rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none h-11 text-sm font-semibold"
                 >
                   Anuluj
                 </Button>
@@ -1523,7 +1541,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 type="submit"
                 onClick={handleSubmit}
                 disabled={loading}
-                className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold"
+                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold"
               >
                 {loading ? 'Dodawanie...' : 'Opublikuj'}
               </Button>
