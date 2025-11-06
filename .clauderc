@@ -1,0 +1,1063 @@
+# FindSomeone - Mapa Pamięci Projektu dla Claude
+
+## 📋 PRZEGLĄD PROJEKTU
+
+**Nazwa:** FindSomeone
+**Typ:** Platforma ogłoszeń lokalnych i usług
+**Status:** Produkcja (findsomeone.app)
+**Wersja:** 1.0.0
+**Autor:** Marcin Baszewski (@negativepl)
+**Licencja:** Non-Commercial MIT
+
+### Opis
+FindSomeone to nowoczesna platforma webowa do publikowania i przeglądania ogłoszeń lokalnych. Obsługuje różne typy ogłoszeń: sprzedaż pojazdów, wynajem nieruchomości, oferty pracy, wynajem sprzętu, usługi i więcej. Projekt wykorzystuje zaawansowane funkcje AI, semantyczne wyszukiwanie, chatbota asystenta oraz nowoczesny, responsywny interfejs.
+
+---
+
+## 🛠️ STOS TECHNOLOGICZNY
+
+### Frontend
+- **Next.js 16.0.1** - App Router, Server Components, Server Actions, Turbopack
+- **React 19.2.0** - Najnowsza wersja z React Compiler
+- **TypeScript 5** - Silne typowanie
+- **Tailwind CSS 4** - Stylowanie (z PostCSS)
+- **shadcn/ui** - Komponenty UI (bazujące na Radix UI)
+- **Framer Motion 12.23.24** - Animacje i przejścia
+- **React Hook Form 7.64.0** - Zarządzanie formularzami
+- **Zod 4.1.12** - Walidacja schematów
+
+### Backend & Baza Danych
+- **Supabase** - PostgreSQL 15+, Authentication, Realtime, Storage
+- **pgvector** - Wyszukiwanie wektorowe dla embeddingów AI
+- **Row Level Security (RLS)** - Bezpieczeństwo na poziomie bazy danych
+
+### AI & Machine Learning
+- **OpenAI API** - GPT-4o mini (chat), text-embedding-3-small (embeddingi)
+- **Hugging Face** - Moderacja treści (wykrywanie spamu i treści obraźliwych)
+- Semantyczne wyszukiwanie z pgvector
+
+### Dodatkowe Usługi
+- **Vercel** - Hosting, deployment, analytics, speed insights
+- **Resend** - Wysyłka emaili
+- **Upstash Redis** - Rate limiting
+- **Lottie** - Animacje (lottie-react)
+- **TipTap** - Rich text editor (WYSIWYG)
+
+### PWA
+- **@ducanh2912/next-pwa** - Progressive Web App support
+- Service Worker automatycznie generowany
+- Manifest w /public/manifest.json
+- Ikony w /public/icons/
+
+---
+
+## 📁 STRUKTURA PROJEKTU
+
+### Główne katalogi:
+
+```
+findsomeone/
+├── app/                          # Next.js 16 App Router
+│   ├── (auth)/                  # Grupa routingu auth
+│   │   ├── login/              # Strona logowania
+│   │   └── signup/             # Strona rejestracji
+│   ├── about/                  # Strona "O nas"
+│   ├── admin/                  # Panel administracyjny
+│   │   ├── audit-logs/        # Logi akcji admina
+│   │   ├── categories/        # Zarządzanie kategoriami
+│   │   ├── chat-assistant/    # Zarządzanie AI chatem
+│   │   ├── content-bot/       # Generator treści AI
+│   │   ├── embeddings/       # Zarządzanie embeddingami
+│   │   ├── moderation/       # Moderacja postów
+│   │   ├── reports/          # Raporty użytkowników
+│   │   ├── synonyms/         # Generator synonimów AI
+│   │   └── users/            # Zarządzanie użytkownikami
+│   ├── api/                   # API Routes
+│   │   ├── admin/            # Endpointy admina
+│   │   ├── ai-chat/          # AI Navigator Bot
+│   │   ├── posts/            # Endpointy postów
+│   │   └── users/            # Endpointy użytkowników
+│   ├── banned/                # Strona dla zbanowanych
+│   ├── category/              # Przeglądanie kategorii
+│   │   └── [...slug]/        # Dynamiczne strony kategorii
+│   ├── contact/               # Formularz kontaktowy
+│   ├── dashboard/             # Dashboard użytkownika
+│   │   ├── favorites/        # Ulubione ogłoszenia
+│   │   ├── messages/         # System wiadomości
+│   │   ├── my-posts/         # Zarządzanie ogłoszeniami
+│   │   ├── profile/          # Profil użytkownika
+│   │   └── settings/         # Ustawienia użytkownika
+│   ├── faq/                   # FAQ
+│   ├── how-it-works/          # Jak to działa
+│   ├── install/               # Instrukcja instalacji PWA
+│   ├── posts/                 # Przeglądanie ogłoszeń
+│   │   └── [id]/             # Szczegóły ogłoszenia
+│   ├── privacy/               # Polityka prywatności
+│   ├── profile/               # Publiczne profile
+│   │   └── [userId]/         # Strona profilu użytkownika
+│   ├── terms/                 # Regulamin
+│   ├── layout.tsx             # Root layout
+│   ├── page.tsx               # Strona główna
+│   └── globals.css            # Globalne style
+│
+├── components/                # Komponenty React
+│   ├── admin/                # Komponenty panelu admina
+│   │   ├── AIChatSettings.tsx
+│   │   ├── AuditLogs.tsx
+│   │   ├── CategoryManager.tsx
+│   │   ├── EmbeddingManager.tsx
+│   │   ├── MessageReports.tsx
+│   │   ├── ModerationQueue.tsx
+│   │   ├── SynonymGenerator.tsx
+│   │   └── UserManagement.tsx
+│   ├── chat/                 # Komponenty AI Navigator
+│   │   ├── AIChatButton.tsx
+│   │   └── AIChatInterface.tsx
+│   ├── ui/                   # Komponenty UI (shadcn/ui)
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── dialog.tsx
+│   │   ├── input.tsx
+│   │   ├── form.tsx
+│   │   ├── select.tsx
+│   │   ├── tabs.tsx
+│   │   ├── tooltip.tsx
+│   │   └── ... (inne komponenty shadcn)
+│   ├── Footer.tsx            # Stopka z GitHub badge
+│   ├── Logo.tsx              # Logo aplikacji
+│   ├── MobileDock.tsx        # Mobilny dok nawigacyjny
+│   ├── Navbar.tsx            # Główna nawigacja
+│   ├── NavbarWithHide.tsx    # Nawigacja z auto-ukrywaniem
+│   └── PostCard.tsx          # Karta ogłoszenia
+│
+├── lib/                       # Biblioteki i narzędzia
+│   ├── actions/              # Server Actions
+│   │   ├── admin.ts         # Akcje admina
+│   │   ├── messages.ts      # Akcje wiadomości
+│   │   ├── posts.ts         # Akcje postów
+│   │   └── search.ts        # Silnik wyszukiwania AI
+│   ├── supabase/            # Klienty Supabase
+│   │   ├── client.ts        # Klient dla Client Components
+│   │   ├── middleware.ts    # Klient dla middleware
+│   │   └── server.ts        # Klient dla Server Components
+│   ├── types/               # Typy TypeScript
+│   │   └── database.ts      # Typy tabel Supabase
+│   ├── admin.ts             # Funkcje pomocnicze admina
+│   └── utils.ts             # Funkcje narzędziowe
+│
+├── contexts/                 # React Context providers
+│
+├── hooks/                    # Custom React hooks
+│
+├── supabase/                 # Konfiguracja Supabase
+│   ├── migrations/          # Migracje SQL
+│   │   ├── 20250110_add_user_preferences.sql
+│   │   ├── 20250111000000_create_cities_table.sql
+│   │   ├── 20250111120000_add_embeddings.sql
+│   │   ├── 20250111120001_user_search_history.sql
+│   │   ├── 20250111130000_add_post_moderation.sql
+│   │   └── ... (inne migracje)
+│   └── config.toml          # Konfiguracja Supabase
+│
+├── public/                   # Pliki statyczne
+│   ├── icons/               # Ikony PWA
+│   ├── images/              # Obrazy
+│   └── manifest.json        # Manifest PWA
+│
+├── docs/                     # Dokumentacja
+│   ├── ai/                  # Dokumentacja funkcji AI
+│   ├── architecture/        # Dokumentacja architektury
+│   ├── compliance/          # Dokumentacja prawna i moderacji
+│   ├── setup/               # Przewodniki konfiguracji
+│   └── tests/               # Raporty testów
+│
+├── scripts/                  # Skrypty narzędziowe
+│   ├── tests/               # Skrypty testowe
+│   └── utils/               # Narzędzia diagnostyczne
+│
+├── email-templates/          # Szablony emaili (React Email)
+│
+├── proxy.ts                  # Proxy (następca middleware)
+├── next.config.ts           # Konfiguracja Next.js
+├── tsconfig.json            # Konfiguracja TypeScript
+├── tailwind.config.ts       # Konfiguracja Tailwind CSS
+├── components.json          # Konfiguracja shadcn/ui
+├── package.json             # Zależności projektu
+├── vercel.json              # Konfiguracja Vercel
+└── clear-cache.sh           # Skrypt czyszczenia cache
+```
+
+---
+
+## 🗄️ SCHEMAT BAZY DANYCH (Supabase PostgreSQL)
+
+### Główne tabele:
+
+#### `profiles`
+Rozszerza auth.users o dodatkowe informacje o użytkowniku
+```sql
+- id: UUID (FK -> auth.users.id)
+- full_name: TEXT
+- bio: TEXT
+- phone: TEXT
+- city: TEXT
+- avatar_url: TEXT
+- banner_url: TEXT (nowe pole)
+- rating: DECIMAL (średnia ocen)
+- is_admin: BOOLEAN
+- is_banned: BOOLEAN
+- created_at: TIMESTAMP
+- updated_at: TIMESTAMP
+- privacy_settings: JSONB (ustawienia prywatności)
+```
+**RLS:** Użytkownicy mogą edytować tylko swoje profile
+
+#### `posts`
+Ogłoszenia użytkowników
+```sql
+- id: UUID (PK)
+- user_id: UUID (FK -> profiles.id)
+- category_id: UUID (FK -> categories.id)
+- title: TEXT
+- description: TEXT
+- city: TEXT
+- price_min: DECIMAL
+- price_max: DECIMAL
+- images: TEXT[] (URLs z Supabase Storage)
+- status: TEXT (active/inactive/expired)
+- moderation_status: TEXT (pending/approved/rejected)
+- embedding: VECTOR(1536) (OpenAI embedding dla semantycznego wyszukiwania)
+- views_count: INTEGER
+- phone_clicks: INTEGER (nowe pole)
+- created_at: TIMESTAMP
+- updated_at: TIMESTAMP
+- expires_at: TIMESTAMP
+```
+**Indeksy:**
+- HNSW (semantyczne wyszukiwanie)
+- GIN (full-text search)
+- Trigram (tolerancja literówek)
+
+**RLS:** Publiczny odczyt, edycja tylko przez właściciela
+
+#### `categories`
+Kategorie ogłoszeń
+```sql
+- id: UUID (PK)
+- name: TEXT
+- slug: TEXT (UNIQUE)
+- description: TEXT
+- seo_description: TEXT (dla SEO)
+- icon: TEXT (nazwa ikony Lucide)
+- parent_id: UUID (FK -> categories.id, dla podkategorii)
+- sort_order: INTEGER
+- is_active: BOOLEAN
+- created_at: TIMESTAMP
+```
+**RLS:** Publiczny odczyt, edycja tylko admin
+
+#### `messages`
+Prywatne wiadomości między użytkownikami
+```sql
+- id: UUID (PK)
+- sender_id: UUID (FK -> profiles.id)
+- receiver_id: UUID (FK -> profiles.id)
+- post_id: UUID (FK -> posts.id, opcjonalnie)
+- content: TEXT
+- read: BOOLEAN
+- reported: BOOLEAN
+- report_reason: TEXT
+- created_at: TIMESTAMP
+```
+**RLS:** Dostęp tylko dla nadawcy i odbiorcy
+**Realtime:** Subskrypcje dla live updates
+
+#### `favorites`
+Ulubione ogłoszenia użytkowników
+```sql
+- id: UUID (PK)
+- user_id: UUID (FK -> profiles.id)
+- post_id: UUID (FK -> posts.id)
+- created_at: TIMESTAMP
+```
+**RLS:** Użytkownicy widzą tylko swoje ulubione
+
+#### `reviews`
+Oceny i recenzje użytkowników
+```sql
+- id: UUID (PK)
+- reviewer_id: UUID (FK -> profiles.id)
+- reviewee_id: UUID (FK -> profiles.id)
+- post_id: UUID (FK -> posts.id, opcjonalnie)
+- rating: INTEGER (1-5)
+- comment: TEXT
+- created_at: TIMESTAMP
+```
+**RLS:** Publiczny odczyt, uwierzytelnieni użytkownicy mogą dodawać
+
+#### `search_analytics`
+Analityka wyszukiwania
+```sql
+- id: UUID (PK)
+- user_id: UUID (FK -> profiles.id, nullable)
+- query: TEXT
+- results_count: INTEGER
+- clicked_post_id: UUID (FK -> posts.id, nullable)
+- ip_address: TEXT
+- created_at: TIMESTAMP
+```
+**Funkcje:**
+- Rate limiting (10 zapytań/10s na IP)
+- Trending queries
+
+#### `synonyms`
+Synonimy dla wyszukiwania (generowane przez AI)
+```sql
+- id: UUID (PK)
+- term: TEXT
+- synonym: TEXT
+- status: TEXT (pending/approved/rejected)
+- generated_by_ai: BOOLEAN
+- created_by: UUID (FK -> profiles.id, nullable)
+- created_at: TIMESTAMP
+```
+**RLS:** Admin zarządza
+
+#### `category_synonyms`
+Synonimy specyficzne dla kategorii
+```sql
+- id: UUID (PK)
+- category_id: UUID (FK -> categories.id)
+- term: TEXT
+- synonym: TEXT
+- status: TEXT (pending/approved/rejected)
+- created_at: TIMESTAMP
+```
+**RLS:** Admin zarządza
+
+#### `admin_audit_logs`
+Logi akcji administracyjnych
+```sql
+- id: UUID (PK)
+- admin_id: UUID (FK -> profiles.id)
+- action_type: TEXT (create/update/delete/approve/reject/ban/unban)
+- target_table: TEXT
+- target_id: UUID
+- old_values: JSONB
+- new_values: JSONB
+- ip_address: TEXT
+- user_agent: TEXT
+- created_at: TIMESTAMP
+```
+**RLS:** Dostęp tylko dla adminów
+**Automatyczne czyszczenie:** Usuwanie logów starszych niż 2 lata (Supabase scheduler, niedziele 2:00)
+
+#### `ai_chat_settings`
+Ustawienia AI Navigator Bot
+```sql
+- id: UUID (PK)
+- enabled: BOOLEAN
+- model: TEXT (np. 'gpt-4o-mini')
+- system_prompt: TEXT
+- max_tokens: INTEGER
+- temperature: DECIMAL
+- updated_at: TIMESTAMP
+- updated_by: UUID (FK -> profiles.id)
+```
+**RLS:** Admin zarządza, publiczny odczyt statusu enabled
+
+#### `ai_chat_conversations`
+Historia konwersacji z chatbotem
+```sql
+- id: UUID (PK)
+- user_id: UUID (FK -> profiles.id, nullable)
+- session_id: TEXT
+- messages: JSONB (tablica {role, content})
+- created_at: TIMESTAMP
+- updated_at: TIMESTAMP
+```
+**RLS:** Użytkownicy mają dostęp tylko do swoich konwersacji
+
+#### `site_content_embeddings`
+Embeddingi statycznej treści strony dla AI
+```sql
+- id: UUID (PK)
+- content_type: TEXT (faq/guide/policy/about)
+- title: TEXT
+- content: TEXT
+- url: TEXT
+- embedding: VECTOR(1536)
+- created_at: TIMESTAMP
+- updated_at: TIMESTAMP
+```
+Używane przez AI Navigator do odpowiadania na pytania o stronę
+
+#### `cities`
+Lista miast polskich
+```sql
+- id: UUID (PK)
+- name: TEXT
+- province: TEXT
+- created_at: TIMESTAMP
+```
+
+#### `user_preferences`
+Preferencje użytkowników
+```sql
+- user_id: UUID (FK -> profiles.id)
+- theme: TEXT (light/dark/system)
+- language: TEXT
+- notifications_enabled: BOOLEAN
+- created_at: TIMESTAMP
+- updated_at: TIMESTAMP
+```
+
+---
+
+## 🔧 FUNKCJE POSTGRESQL
+
+### Wyszukiwanie
+- **`search_posts_hybrid()`** - Hybrydowe wyszukiwanie (semantyczne + full-text)
+  - Parametry: query_text, similarity_threshold, semantic_weight (0.6), fulltext_weight (0.4)
+  - Zwraca: posty z połączonym wynikiem similarity
+- **Auto-generowanie embeddingów** - Trigger przy dodawaniu/edycji postów
+
+### Moderacja
+- **Automatyczne logowanie akcji admina** - Trigger na wszystkich tabelach
+- **Trigger do update'u średniej oceny użytkownika** - Po dodaniu review
+
+### Cleanup
+- **Automatyczne usuwanie starych audit logs** - Funkcja wywoływana przez Supabase scheduler (niedziele 2:00)
+
+---
+
+## 🤖 FUNKCJE AI
+
+### 1. Semantyczne Wyszukiwanie (pgvector)
+**Lokalizacja:** `lib/actions/search.ts`, migracje bazy danych
+**Technologia:** OpenAI text-embedding-3-small (1536 wymiarów)
+**Implementacja:**
+- Hybrid search: 60% semantyczne + 40% full-text
+- HNSW index dla szybkiego wyszukiwania wektorowego
+- Trigram index dla tolerancji literówek
+- Auto-generowanie embeddingów przy tworzeniu/edycji postów
+
+**Przykład użycia:**
+```sql
+SELECT * FROM search_posts_hybrid(
+  query_text := 'hydraulik warszawa',
+  similarity_threshold := 0.7,
+  semantic_weight := 0.6,
+  fulltext_weight := 0.4
+)
+```
+
+### 2. AI Navigator Bot (OpenAI GPT)
+**Lokalizacja:** `app/api/ai-chat/`, `components/chat/`
+**Model:** GPT-4o mini (konfigurowalny w panelu admina)
+**Funkcje:**
+- Chatbot pomagający znaleźć ogłoszenia
+- Naturalna konwersacja z użytkownikami
+- Integracja z semantycznym wyszukiwaniem
+- Streaming responses (Server-Sent Events)
+- Context-aware (historia konwersacji)
+- Przeszukiwanie treści strony (FAQ, guides) przez embeddingi
+
+**Komponenty:**
+- `AIChatButton.tsx` - Przycisk otwierający chat
+- `AIChatInterface.tsx` - Interfejs chatu
+- `app/api/ai-chat/route.ts` - API endpoint
+
+### 3. Moderacja Treści (Hugging Face)
+**Lokalizacja:** `app/api/moderate/`, `app/admin/moderation/`
+**Funkcje:**
+- Automatyczna weryfikacja ogłoszeń
+- Wykrywanie spamu i treści obraźliwych
+- Status: pending → approved/rejected
+- Kolejka moderacji w panelu admina
+
+### 4. Generator Synonimów (OpenAI GPT)
+**Lokalizacja:** `app/admin/synonyms/`, `components/admin/SynonymGenerator.tsx`
+**Tryby:**
+- Trending (z najpopularniejszych zapytań)
+- Popular (z najczęściej klikanych)
+- Custom (ręczne wprowadzanie)
+- System review & approve
+- Integracja z full-text search
+
+### 5. Content Bot (Generator Ogłoszeń AI)
+**Lokalizacja:** `app/admin/content-bot/`
+**Funkcje:**
+- Masowe generowanie postów do testów/demo
+- Treść specyficzna dla kategorii
+- Konfigurowalna ilość i parametry
+
+---
+
+## 🔌 API ROUTES
+
+### Publiczne
+- `GET /api/posts` - Lista ogłoszeń (z filtrowaniem, paginacją)
+- `GET /api/posts/[id]` - Szczegóły ogłoszenia
+- `POST /api/ai-chat` - Chat z AI Navigator (streaming)
+- `GET /api/categories` - Lista kategorii
+
+### Wymagające autoryzacji
+- `POST /api/posts` - Tworzenie ogłoszenia
+- `PUT /api/posts/[id]` - Edycja ogłoszenia
+- `DELETE /api/posts/[id]` - Usuwanie ogłoszenia
+- `POST /api/messages` - Wysyłanie wiadomości
+- `GET /api/users/me` - Dane zalogowanego użytkownika
+
+### Admin
+- `POST /api/admin/moderate` - Moderacja postów
+- `PUT /api/admin/users/[id]/ban` - Banowanie użytkownika
+- `POST /api/admin/categories` - Zarządzanie kategoriami
+- `GET /api/admin/audit-logs` - Logi akcji admina
+- `POST /api/admin/embeddings/regenerate` - Regeneracja embeddingów
+- `PUT /api/admin/chat-settings` - Konfiguracja AI chata
+
+---
+
+## 🔐 BEZPIECZEŃSTWO
+
+### Row Level Security (RLS)
+Wszystkie tabele chronione politykami RLS:
+- Użytkownicy widzą tylko swoje dane
+- Wiadomości dostępne tylko dla uczestników
+- Admin ma pełen dostęp (przez funkcje security definer)
+
+### Rate Limiting
+- **Wyszukiwanie:** 10 req/10s na IP (PostgreSQL)
+- **API endpoints:** Upstash Redis rate limiting
+- **AI chat:** Ograniczenie zapytań na sesję
+
+### Walidacja
+- **Schematy Zod** dla wszystkich formularzy
+- **Server-side validation** w Server Actions
+- **XSS protection** - sanityzacja inputów
+- **CSRF protection** - tokeny Next.js
+
+### Autoryzacja
+- **Supabase Auth** - JWT tokens w cookies
+- **OAuth providers:** Google
+- **RLS policies** - sprawdzanie auth.uid()
+
+---
+
+## 📊 KLUCZOWE KOMPONENTY
+
+### Nawigacja
+- **`Navbar.tsx`** - Główny navbar z logo, search, user menu
+- **`NavbarWithHide.tsx`** - Navbar z auto-ukrywaniem przy scrollu
+- **`MobileDock.tsx`** - Mobilny bottom dock z gestami (vaul)
+- **`Footer.tsx`** - Stopka z linkami i GitHub badge
+
+### Ogłoszenia
+- **`PostCard.tsx`** - Karta ogłoszenia (lista)
+- **`app/posts/[id]/page.tsx`** - Szczegóły ogłoszenia
+- **`app/dashboard/my-posts/page.tsx`** - Zarządzanie własnymi ogłoszeniami
+- **`lib/actions/posts.ts`** - Server Actions dla postów
+
+### Dashboard
+- **`app/dashboard/messages/`** - System wiadomości (Realtime)
+- **`app/dashboard/favorites/`** - Ulubione ogłoszenia
+- **`app/dashboard/profile/`** - Edycja profilu
+- **`app/dashboard/settings/`** - Ustawienia użytkownika
+
+### Admin Panel
+- **`ModerationQueue.tsx`** - Kolejka moderacji postów
+- **`UserManagement.tsx`** - Zarządzanie użytkownikami
+- **`CategoryManager.tsx`** - Zarządzanie kategoriami
+- **`AuditLogs.tsx`** - Logi akcji admina
+- **`SynonymGenerator.tsx`** - Generator synonimów AI
+- **`EmbeddingManager.tsx`** - Zarządzanie embeddingami
+- **`AIChatSettings.tsx`** - Ustawienia AI chata
+
+### Formularze
+- **React Hook Form** - Zarządzanie stanem formularzy
+- **Zod** - Walidacja schematów
+- **shadcn/ui form components** - Komponenty UI
+
+---
+
+## 🎨 STYLING & UI
+
+### Design System
+- **Tailwind CSS 4** - Utility-first CSS framework
+- **shadcn/ui** - Komponenty bazujące na Radix UI
+- **next-themes** - Dark/light mode
+- **Framer Motion** - Animacje i przejścia
+- **CSS Variables** - Dla themowania (w globals.css)
+
+### Typografia
+- **Font:** System fonts (Inter fallback)
+- **Icons:** Lucide React, Tabler Icons React
+
+### Kolory (ciemny motyw - główny)
+Paleta zdefiniowana w globals.css poprzez CSS variables:
+- `--background`, `--foreground`
+- `--card`, `--card-foreground`
+- `--primary`, `--primary-foreground`
+- `--secondary`, `--secondary-foreground`
+- `--muted`, `--muted-foreground`
+- `--accent`, `--accent-foreground`
+- `--destructive`, `--destructive-foreground`
+
+### Responsywność
+- **Mobile-first approach**
+- **Breakpoints:** sm, md, lg, xl, 2xl (Tailwind defaults)
+- **Mobile dock** dla lepszej nawigacji na urządzeniach mobilnych
+
+---
+
+## 🌐 ROUTING & NAWIGACJA
+
+### App Router (Next.js 16)
+- **Route groups:** `(auth)` dla stron logowania/rejestracji
+- **Dynamic routes:** `[id]`, `[...slug]` dla postów i kategorii
+- **Parallel routes:** Nie używane obecnie
+- **Intercepting routes:** Nie używane obecnie
+
+### Główne ścieżki:
+```
+/                           # Strona główna
+/(auth)/login              # Logowanie
+/(auth)/signup             # Rejestracja
+/posts                     # Lista ogłoszeń
+/posts/[id]                # Szczegóły ogłoszenia
+/category/[...slug]        # Kategoria ogłoszeń
+/dashboard                 # Dashboard użytkownika
+/dashboard/my-posts        # Moje ogłoszenia
+/dashboard/messages        # Wiadomości
+/dashboard/favorites       # Ulubione
+/dashboard/profile         # Profil
+/dashboard/settings        # Ustawienia
+/admin                     # Panel admina
+/admin/moderation          # Moderacja
+/admin/users               # Użytkownicy
+/admin/categories          # Kategorie
+/admin/synonyms            # Synonimy
+/admin/embeddings          # Embeddingi
+/admin/chat-assistant      # Ustawienia AI chata
+/admin/audit-logs          # Logi akcji admina
+/about                     # O nas
+/contact                   # Kontakt
+/faq                       # FAQ
+/how-it-works              # Jak to działa
+/privacy                   # Polityka prywatności
+/terms                     # Regulamin
+/install                   # Instrukcja instalacji PWA
+/profile/[userId]          # Publiczny profil użytkownika
+/banned                    # Strona dla zbanowanych
+```
+
+---
+
+## 💬 SYSTEM WIADOMOŚCI (Realtime)
+
+### Technologia
+- **Supabase Realtime** - WebSocket subscriptions
+- **PostgreSQL triggers** - Auto-update
+- **RLS policies** - Bezpieczeństwo
+
+### Funkcje
+- Prywatne wiadomości między użytkownikami
+- Real-time delivery (bez odświeżania)
+- Wskaźniki online/offline presence
+- System raportowania wiadomości
+- Licznik nieprzeczytanych wiadomości
+- Kontekst ogłoszenia (opcjonalnie)
+
+### Implementacja
+**Lokalizacja:** `app/dashboard/messages/`, `lib/actions/messages.ts`
+
+**Subskrypcja Realtime:**
+```typescript
+supabase
+  .channel('messages')
+  .on('postgres_changes', {
+    event: 'INSERT',
+    schema: 'public',
+    table: 'messages',
+    filter: `receiver_id=eq.${userId}`
+  }, handleNewMessage)
+  .subscribe()
+```
+
+---
+
+## 🔍 WYSZUKIWANIE
+
+### Typy wyszukiwania:
+
+#### 1. Semantic Search (AI)
+- **Embedding model:** text-embedding-3-small (1536 wymiarów)
+- **Vector DB:** pgvector z HNSW index
+- **Threshold:** 0.7 (konfigurowalny)
+- **Waga:** 60% w hybrid search
+
+#### 2. Full-Text Search (PostgreSQL)
+- **Index:** GIN (tsvector)
+- **Język:** Polish (pl)
+- **Waga:** 40% w hybrid search
+
+#### 3. Trigram Search
+- **Index:** GIN trigram (pg_trgm)
+- **Funkcja:** Tolerancja literówek
+- **Podobieństwo:** > 0.3
+
+#### 4. Hybrid Search (połączenie)
+**Funkcja:** `search_posts_hybrid()`
+- Łączy semantic + full-text
+- Konfigurowalne wagi
+- Sortowanie po combined score
+- Filtrowanie po kategorii, mieście, cenie
+
+### Auto-complete & Suggestions
+- **Źródło:** search_analytics, trending queries
+- **Cache:** React Query (5 min)
+- **Synonimy:** Z tabeli synonyms, category_synonyms
+
+---
+
+## 📧 EMAILE
+
+### Technologia
+- **Resend** - Email delivery API
+- **@react-email/render** - Renderowanie React komponentów do HTML
+
+### Szablony
+**Lokalizacja:** `email-templates/`
+- Welcome email (nowe konto)
+- Post approved/rejected (moderacja)
+- New message notification
+- Password reset
+
+### Styl
+- Ciemny motyw (zgodny z aplikacją)
+- Responsywne (mobile-friendly)
+- Inline CSS
+
+---
+
+## 🚀 DEPLOYMENT & DEVOPS
+
+### Hosting
+- **Vercel** - Hosting Next.js app
+- **Supabase** - Backend (PostgreSQL, Auth, Storage, Realtime)
+
+### CI/CD
+- Auto-deploy przy push na main branch
+- Preview deployments dla PR-ów
+- Vercel Analytics & Speed Insights
+
+### Environment Variables (Production)
+```
+NEXT_PUBLIC_SUPABASE_URL=...
+NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+OPENAI_API_KEY=...
+RESEND_API_KEY=...
+UPSTASH_REDIS_REST_URL=...
+UPSTASH_REDIS_REST_TOKEN=...
+```
+
+### Build
+```bash
+npm run build          # Next.js build z Turbopack
+npm run start          # Production server
+```
+
+### Development
+```bash
+npm run dev            # Dev server z Turbopack
+npm run dev:clean      # Dev server z czyszczeniem cache
+npm run lint           # ESLint
+```
+
+---
+
+## 📦 KLUCZOWE ZALEŻNOŚCI
+
+### UI & Styling
+- `tailwindcss` - CSS framework
+- `@radix-ui/*` - Primitives dla shadcn/ui
+- `framer-motion` - Animacje
+- `lucide-react` - Ikony
+- `next-themes` - Obsługa dark mode
+- `class-variance-authority` - Warianty komponentów
+- `tailwind-merge` - Łączenie klas Tailwind
+
+### Forms & Validation
+- `react-hook-form` - Formularze
+- `@hookform/resolvers` - Resolvers dla Zod
+- `zod` - Schema validation
+
+### Data Fetching & State
+- `@tanstack/react-query` - Server state management
+- `@supabase/ssr` - Supabase SSR
+- `@supabase/supabase-js` - Supabase client
+
+### AI & APIs
+- `openai` - OpenAI API client
+- `resend` - Email API client
+- `@upstash/ratelimit` - Rate limiting
+- `@upstash/redis` - Redis client
+
+### Rich Text & Content
+- `@tiptap/react` - Rich text editor
+- `@tiptap/starter-kit` - TipTap extensions
+- `react-markdown` - Markdown renderer
+
+### Animations & Effects
+- `lottie-react` - Lottie animations
+- `gsap` - Animation library
+- `cobe` - 3D globe
+- `framer-motion` - Animacje React
+
+### PWA
+- `@ducanh2912/next-pwa` - Progressive Web App support
+- `nprogress` - Loading bar
+- `nextjs-toploader` - Top loading indicator
+
+### DnD & Utilities
+- `@dnd-kit/core` - Drag and drop
+- `@dnd-kit/sortable` - Sortable lists
+- `browser-image-compression` - Kompresja obrazów
+- `sonner` - Toast notifications
+- `vaul` - Drawer component
+- `cmdk` - Command palette
+
+---
+
+## 🎯 KONWENCJE KODOWANIA
+
+### TypeScript
+- **Strict mode** włączony
+- Wszystkie komponenty w TypeScript
+- Typy importowane z `lib/types/database.ts`
+- Brak `any` - używamy `unknown` lub konkretnych typów
+
+### React Components
+- **Server Components** jako domyślne
+- **'use client'** tylko gdy potrzebne (interaktywność, hooks)
+- **'use server'** dla Server Actions
+- Komponenty UI w `components/ui/` (shadcn)
+- Komponenty biznesowe w `components/`
+
+### Server Actions
+- **Lokalizacja:** `lib/actions/`
+- Zawsze z `'use server'`
+- Walidacja Zod na początku
+- Error handling z try/catch
+- Zwracanie `{ success: boolean, data?, error? }`
+
+### Nazewnictwo
+- **Komponenty:** PascalCase (np. `PostCard.tsx`)
+- **Pliki utility:** camelCase (np. `utils.ts`)
+- **Server Actions:** camelCase (np. `createPost()`)
+- **API routes:** kebab-case folders (np. `ai-chat/`)
+
+### Styling
+- **Tailwind classes** - główny sposób stylowania
+- **CSS modules** - UNIKAMY (preferujemy Tailwind)
+- **Globals.css** - tylko CSS variables i globalne resety
+- **cn()** utility - do łączenia klas (z utils.ts)
+
+### Git Conventions
+- **Branches:** feature/*, bugfix/*, hotfix/*
+- **Commits:** Conventional Commits (feat:, fix:, docs:, etc.)
+- **Polish language** w commitach
+
+---
+
+## 🧪 TESTOWANIE
+
+### Skrypty testowe
+**Lokalizacja:** `scripts/tests/`
+- Diagnostyka połączeń
+- Testy embeddingów
+- Testy wyszukiwania
+
+### Manualne testowanie
+- Profil użytkownika i edycja
+- Tworzenie, edycja, usuwanie postów
+- System wiadomości (realtime)
+- Wyszukiwanie (semantic + full-text)
+- AI chatbot
+- Panel admina (moderacja, bany, kategorie)
+- PWA installation
+
+---
+
+## 📚 DOKUMENTACJA
+
+### Lokalizacja
+**Główny folder:** `docs/`
+
+### Podkatalogi:
+- **`ai/`** - Dokumentacja funkcji AI (embeddings, search, chatbot)
+- **`architecture/`** - Dokumentacja architektury aplikacji
+- **`compliance/`** - RODO, moderacja, polityki
+- **`setup/`** - Przewodniki setup (Supabase, OpenAI, Resend)
+- **`tests/`** - Raporty testów i test plany
+
+### Kluczowe pliki:
+- `PROJECT_STRUCTURE.md` - Struktura projektu (ROOT)
+- `README.md` - Główny README (ROOT)
+- `.clauderc` - Mapa pamięci (ten plik)
+
+---
+
+## 🐛 ZNANE PROBLEMY & WORKAROUNDS
+
+### Problem: Turbopack cache
+**Symptom:** Stare zmiany widoczne po hot reload
+**Solution:** `npm run dev:clean` lub usuń `.next/`
+
+### Problem: Supabase session refresh
+**Symptom:** Użytkownik wylogowywany po czasie
+**Solution:** Implementacja refresh tokenu w middleware (proxy.ts)
+
+### Problem: Rate limiting w development
+**Symptom:** Zbyt wiele requestów podczas devu
+**Solution:** Wyższe limity dla localhost w production
+
+---
+
+## 🔄 WORKFLOW ROZWOJU
+
+### Dodawanie nowej funkcji:
+1. **Planowanie:** Zdefiniuj wymagania i API
+2. **Baza danych:** Stwórz migrację (jeśli potrzebna)
+3. **Typy:** Wygeneruj typy z Supabase (`supabase gen types`)
+4. **Server Actions:** Stwórz funkcje w `lib/actions/`
+5. **Komponenty:** Zbuduj UI w `components/`
+6. **Strony:** Dodaj routing w `app/`
+7. **Testy:** Testuj manualnie + skrypty
+8. **Dokumentacja:** Zaktualizuj `docs/`
+
+### Dodawanie nowej tabeli:
+1. Stwórz migrację SQL w `supabase/migrations/`
+2. Dodaj RLS policies
+3. Wygeneruj typy TypeScript
+4. Stwórz Server Actions
+5. Dodaj do dokumentacji
+
+### Edycja istniejącej funkcji:
+1. Znajdź komponent/action w strukturze
+2. Sprawdź typy i RLS policies
+3. Wprowadź zmiany
+4. Testuj lokalnie
+5. Deploy na Vercel (auto)
+
+---
+
+## 🎓 NAJLEPSZE PRAKTYKI
+
+### Security
+- Zawsze używaj RLS policies
+- Waliduj dane server-side (Zod)
+- Nigdy nie exposeuj OPENAI_API_KEY w client code
+- Rate limiting na wszystkich publicznych API
+- Sanityzacja user input
+
+### Performance
+- Server Components jako domyślne
+- Dynamic imports dla ciężkich komponentów
+- Image optimization (Next.js Image)
+- Kompresja obrazów przed uploadem (browser-image-compression)
+- React Query cache dla danych
+- HNSW index dla wektorów (szybsze niż IVFFlat)
+
+### UX
+- Loading states (Suspense, skeletons)
+- Error states (Error boundaries)
+- Optimistic updates (React Query)
+- Toast notifications (sonner)
+- Mobile-first design
+- Accessibility (ARIA labels, keyboard navigation)
+
+### Code Quality
+- TypeScript strict mode
+- ESLint + Next.js rules
+- Konsystentne nazewnictwo
+- Komentarze dla skomplikowanej logiki
+- Reusable components
+- Single Responsibility Principle
+
+---
+
+## 📞 KONTAKT & SUPPORT
+
+### Autor
+**Marcin Baszewski**
+GitHub: [@negativepl](https://github.com/negativepl)
+
+### Repository
+https://github.com/negativepl/findsomeone
+
+### Issues & Questions
+GitHub Issues: https://github.com/negativepl/findsomeone/issues
+
+### License
+Non-Commercial MIT - Zobacz LICENSE file
+
+---
+
+## 🔮 ROADMAP (Przyszłe funkcje)
+
+### Planowane:
+- [ ] Powiadomienia push (PWA)
+- [ ] Geolokalizacja (mapa postów)
+- [ ] Płatności online (Stripe)
+- [ ] Wyróżnione ogłoszenia (boost)
+- [ ] Statystyki użytkownika
+- [ ] API publiczne (REST/GraphQL)
+- [ ] Mobile app (React Native)
+- [ ] Multi-language support (i18n)
+- [ ] Advanced analytics dashboard
+- [ ] Video support w ogłoszeniach
+
+### W przygotowaniu:
+- [ ] Improved AI moderation
+- [ ] Better search filters
+- [ ] Social sharing features
+
+---
+
+## 📌 QUICK REFERENCE
+
+### Ważne komendy:
+```bash
+npm run dev                    # Start dev server
+npm run build                  # Production build
+npm run start                  # Start production
+npm run lint                   # Lint code
+./clear-cache.sh              # Clear Next.js cache
+```
+
+### Ważne pliki:
+- `lib/actions/` - Server Actions
+- `lib/supabase/` - Supabase clients
+- `lib/types/database.ts` - Typy bazy danych
+- `app/api/` - API routes
+- `components/ui/` - Komponenty UI (shadcn)
+- `supabase/migrations/` - Migracje bazy
+- `proxy.ts` - Middleware (refresh session)
+- `next.config.ts` - Konfiguracja Next.js
+
+### Admin access:
+Sprawdź `profiles.is_admin = true` w bazie danych
+
+### Supabase Dashboard:
+https://supabase.com/dashboard
+
+### OpenAI Dashboard:
+https://platform.openai.com/
+
+---
+
+**Ostatnia aktualizacja:** 2025-11-06
+**Wersja mapy pamięci:** 1.0
+**Status:** Production Ready ✅
