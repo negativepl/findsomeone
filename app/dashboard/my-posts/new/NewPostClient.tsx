@@ -17,7 +17,7 @@ import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
 import { RichTextToolbar } from '@/components/RichTextToolbar'
 import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle, DialogDescription, DialogHeader, DialogFooter } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
 import { toast } from 'sonner'
 import { CategorySelector } from '@/components/CategorySelector'
@@ -669,33 +669,36 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
   return (
       <main className="md:container md:mx-auto md:px-6 h-full md:h-auto md:pt-24 md:pb-8 flex flex-col md:block">
         {/* Draft Recovery Modal */}
-        {showDraftModal && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-card rounded-lg border p-6 shadow-lg max-w-md w-full">
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold text-foreground mb-2">Niedokończone ogłoszenie</h2>
-                <p className="text-sm text-muted-foreground">
-                  Znaleziono rozpoczęte wcześniej ogłoszenie. Możesz kontynuować jego tworzenie lub zacząć od początku.
-                </p>
-              </div>
+        <Dialog open={showDraftModal} onOpenChange={setShowDraftModal}>
+          <DialogContent className="p-0 gap-0 overflow-hidden">
+            <DialogHeader className="p-4 md:p-6">
+              <DialogTitle>Niedokończone ogłoszenie</DialogTitle>
+              <DialogDescription>
+                Znaleziono rozpoczęte wcześniej ogłoszenie. Możesz kontynuować jego tworzenie lub zacząć od początku.
+              </DialogDescription>
+            </DialogHeader>
 
-              <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
-                <button
-                  onClick={discardDraft}
-                  className="rounded-md border border-border hover:border-border hover:bg-muted h-10 px-4 text-sm font-medium transition-colors"
-                >
-                  Zacznij od początku
-                </button>
-                <button
-                  onClick={loadDraft}
-                  className="rounded-md bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-10 px-4 text-sm font-semibold transition-colors"
-                >
-                  Kontynuuj tworzenie
-                </button>
-              </div>
+            <div className="px-4 md:px-6">
+              <div className="border-t border-border" />
             </div>
-          </div>
-        )}
+
+            <DialogFooter className="gap-3 p-4 md:p-6">
+              <Button
+                onClick={discardDraft}
+                variant="outline"
+                className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
+              >
+                Zacznij od początku
+              </Button>
+              <Button
+                onClick={loadDraft}
+                className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
+              >
+                Kontynuuj tworzenie
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Page Header - Above Card - Hidden on mobile */}
         <div className="mb-8 hidden md:block">
@@ -760,14 +763,13 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
                     onClick={handleSuggestCategory}
                     disabled={suggestingCategory || (!formData.title && !formData.description)}
-                    className="rounded-full border border-brand/20 hover:border-brand hover:bg-brand/5 hover:text-brand h-8 px-3 text-xs font-semibold text-brand disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-full border border-border hover:bg-muted h-10 px-4 text-sm bg-card text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {suggestingCategory ? (
                       <>
-                        <svg className="w-3.5 h-3.5 mr-1.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
                           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                           <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -775,7 +777,7 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       </>
                     ) : (
                       <>
-                        <svg className="w-3.5 h-3.5 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z" />
                         </svg>
                         Wykryj kategorię
@@ -900,12 +902,11 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                   <Button
                     type="button"
                     variant="outline"
-                    size="sm"
                     onClick={handleDetectLocation}
                     disabled={detectingLocation}
-                    className="rounded-full border border-brand/20 hover:border-brand hover:bg-brand/5 hover:text-brand h-8 px-3 text-xs font-semibold text-brand disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="rounded-full border border-border hover:bg-muted h-10 px-4 text-sm bg-card text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <MapPin className="w-3.5 h-3.5 mr-1.5" />
+                    <MapPin className="w-4 h-4 mr-2" />
                     {detectingLocation ? 'Wykrywam...' : 'Wykryj lokalizację'}
                   </Button>
                 </div>
@@ -1040,7 +1041,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 <Link href="/dashboard">
                   <Button
                     type="button"
-                    className="rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none h-11 px-6 text-sm"
+                    variant="outline"
+                    className="rounded-full border border-border hover:bg-muted bg-card text-foreground h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>
@@ -1189,12 +1191,11 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     <Button
                       type="button"
                       variant="outline"
-                      size="sm"
                       onClick={handleDetectLocation}
                       disabled={detectingLocation}
-                      className="rounded-full border border-brand/20 hover:border-brand hover:bg-brand/5 hover:text-brand h-8 px-3 text-xs font-semibold text-brand disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="rounded-full border border-border hover:bg-muted h-9 px-3 text-sm bg-card text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <MapPin className="w-3.5 h-3.5 mr-1.5" />
+                      <MapPin className="w-4 h-4 mr-1.5" />
                       {detectingLocation ? 'Wykrywam...' : 'Wykryj'}
                     </Button>
                   </div>
@@ -1505,7 +1506,8 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
               <Link href="/dashboard" className="block w-full">
                 <Button
                   type="button"
-                  className="w-full rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none h-11 text-sm font-semibold"
+                  variant="outline"
+                  className="w-full rounded-full border border-border hover:bg-muted bg-card text-foreground h-11 text-sm font-semibold"
                 >
                   Anuluj
                 </Button>

@@ -1418,8 +1418,8 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="sm:max-w-md border border-border rounded-3xl bg-card shadow-xl">
-          <AlertDialogHeader>
+        <AlertDialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
+          <AlertDialogHeader className="p-4 md:p-6">
             <AlertDialogTitle className="text-2xl">
               Usuń ogłoszenie
             </AlertDialogTitle>
@@ -1427,30 +1427,33 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               Czy na pewno chcesz usunąć to ogłoszenie? Ta akcja jest nieodwracalna.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="mt-8 pt-6 border-t-2 border-black/5">
-            <AlertDialogFooter className="gap-2 sm:gap-2">
-              <AlertDialogCancel
-                className="rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none"
-                disabled={isPending}
-              >
-                Anuluj
-              </AlertDialogCancel>
-              <AlertDialogAction
-                onClick={handleDelete}
-                className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
-                disabled={isPending}
-              >
-                {isPending ? 'Usuwanie...' : 'Usuń'}
-              </AlertDialogAction>
-            </AlertDialogFooter>
+
+          <div className="px-4 md:px-6">
+            <div className="border-t border-border" />
           </div>
+
+          <AlertDialogFooter className="gap-3 p-4 md:p-6">
+            <AlertDialogCancel
+              className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
+              disabled={isPending}
+            >
+              Anuluj
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
+              disabled={isPending}
+            >
+              {isPending ? 'Usuwanie...' : 'Usuń'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
 
       {/* Appeal Dialog */}
       <AlertDialog open={appealDialogOpen} onOpenChange={setAppealDialogOpen}>
-        <AlertDialogContent className="sm:max-w-lg border border-border rounded-3xl bg-card shadow-xl">
-          <AlertDialogHeader>
+        <AlertDialogContent className="sm:max-w-lg p-0 gap-0 overflow-hidden">
+          <AlertDialogHeader className="p-4 md:p-6">
             <AlertDialogTitle className="text-2xl">
               Odwołaj się od decyzji moderacji
             </AlertDialogTitle>
@@ -1458,7 +1461,8 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               Jeśli uważasz, że Twoje ogłoszenie zostało niesłusznie odrzucone, możesz wysłać odwołanie. Moderator ponownie sprawdzi treść w ciągu 24 godzin.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="space-y-3 py-4">
+
+          <div className="space-y-3 px-4 md:px-6 py-4">
             <Label htmlFor="appeal-message" className="text-base font-semibold">
               Wyjaśnij dlaczego uważasz, że odrzucenie było błędne *
             </Label>
@@ -1474,10 +1478,14 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               {appealMessage.length}/500 znaków
             </p>
           </div>
-          <div className="mt-8 pt-6 border-t-2 border-black/5">
-            <AlertDialogFooter className="gap-2 sm:gap-2">
+
+          <div className="px-4 md:px-6">
+            <div className="border-t border-border" />
+          </div>
+
+          <AlertDialogFooter className="gap-3 p-4 md:p-6">
             <AlertDialogCancel
-              className="rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none"
+              className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
               disabled={isPending}
             >
               Anuluj
@@ -1490,7 +1498,6 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               {isPending ? 'Wysyłanie...' : 'Wyślij odwołanie'}
             </AlertDialogAction>
           </AlertDialogFooter>
-          </div>
         </AlertDialogContent>
       </AlertDialog>
     </>

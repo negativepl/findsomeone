@@ -4,8 +4,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { FavoriteButton } from '@/components/FavoriteButton'
+import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
+import { RatingDisplay } from '@/components/RatingDisplay'
 import { useFavorites } from '@/lib/hooks/useFavorites'
 import { Loader2 } from 'lucide-react'
 
@@ -39,100 +39,116 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
       {posts && posts.length > 0 ? (
         posts.map((post) => (
           <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
-            <Card className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col">
+            <Card className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col relative">
               {/* Image */}
               {post.images && post.images.length > 0 && (
-                <div className="relative w-full h-48 bg-muted overflow-hidden">
+                <div className="relative w-full h-40 md:h-48 bg-muted overflow-hidden rounded-t-3xl">
                   <Image
                     src={post.images[0]}
                     alt={post.title}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-3 right-3 z-10" data-no-loader="true">
-                    <div className="bg-card/80 backdrop-blur-md rounded-full p-2 hover:bg-card transition-all border border-white/60 shadow-sm">
-                      <FavoriteButton
-                        postId={post.id}
-                        initialIsFavorite={true}
-                      />
-                    </div>
+                  <div className="absolute top-3 left-3 z-10" data-no-loader="true">
+                    <FavoriteButtonWrapper
+                      postId={post.id}
+                      initialIsFavorite={true}
+                      withContainer={true}
+                    />
                   </div>
                 </div>
               )}
 
-              <CardHeader className="pb-4 pt-6">
-                {post.categories && (
-                  <div className="mb-3">
-                    <Badge variant="outline" className="rounded-full border-border text-muted-foreground">
-                      {post.categories.name}
-                    </Badge>
+              <div className="flex-1 flex flex-col min-h-0">
+                <CardHeader className="pb-4 pt-4 px-4 md:pt-6 md:px-6">
+                  <CardTitle className="text-base md:text-xl font-bold text-foreground">
+                    {post.title}
+                  </CardTitle>
+                  {/* Mobile - Location and date in header */}
+                  <div className="flex md:hidden items-center justify-between gap-2 mt-2 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                      </svg>
+                      <span className="truncate">{post.city}</span>
+                    </div>
                   </div>
-                )}
-                <CardTitle className="text-base md:text-base font-bold text-foreground">{post.title}</CardTitle>
-              </CardHeader>
+                </CardHeader>
 
-              <CardContent className="pb-6 mt-auto space-y-3">
-                {/* Location */}
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                  </svg>
-                  {post.city}{post.district && `, ${post.district}`}
-                </div>
+                <CardContent className="pb-4 px-4 md:pb-6 md:px-6 mt-auto space-y-0 md:space-y-3 flex-shrink-0">
+                  {/* Mobile - Border separator */}
+                  <div className="md:hidden mb-3">
+                    <div className="border-t-2 border-border"></div>
+                  </div>
 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {post.profiles?.avatar_url ? (
-                      <Image
-                        src={post.profiles.avatar_url}
-                        alt={post.profiles.full_name || 'User'}
-                        width={36}
-                        height={36}
-                        className="rounded-full"
-                      />
-                    ) : (
-                      <div className="w-9 h-9 rounded-full bg-black/10 flex items-center justify-center">
-                        <span className="text-sm font-semibold text-foreground">
-                          {post.profiles?.full_name?.charAt(0) || 'U'}
-                        </span>
-                      </div>
-                    )}
-                    <div>
-                      <p className="text-sm font-semibold text-foreground">
-                        {post.profiles?.full_name || 'Anonymous'}
-                      </p>
-                      {post.profiles?.rating && post.profiles.rating > 0 ? (
-                        <p className="text-xs text-muted-foreground">
-                          ★ {post.profiles.rating.toFixed(1)} ({post.profiles.total_reviews || 0} {post.profiles.total_reviews === 1 ? 'opinia' : 'opinii'})
-                        </p>
+                  {/* Desktop - Location above user info */}
+                  <div className="hidden md:flex items-center gap-1 text-sm text-muted-foreground mb-3">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span className="truncate">{post.city}{post.district && `, ${post.district}`}</span>
+                  </div>
+
+                  {/* Desktop - Border separator */}
+                  <div className="hidden md:block mb-3">
+                    <div className="border-t-2 border-border"></div>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      {post.profiles?.avatar_url ? (
+                        <Image
+                          src={post.profiles.avatar_url}
+                          alt={post.profiles.full_name || 'User'}
+                          width={28}
+                          height={28}
+                          className="rounded-full flex-shrink-0 md:w-8 md:h-8"
+                        />
                       ) : (
-                        <p className="text-xs text-muted-foreground italic">Brak opinii</p>
+                        <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-black/10 flex items-center justify-center flex-shrink-0">
+                          <span className="text-xs font-semibold text-foreground">
+                            {post.profiles?.full_name?.charAt(0) || 'U'}
+                          </span>
+                        </div>
                       )}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs md:text-sm font-semibold text-foreground truncate">
+                          {post.profiles?.full_name || 'Anonymous'}
+                        </p>
+                        <RatingDisplay
+                          userId={post.user_id}
+                          rating={post.profiles?.rating || 0}
+                          reviewCount={post.profiles?.total_reviews || 0}
+                          className="text-xs md:text-sm"
+                          clickable={false}
+                        />
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Price */}
-                  {post.price ? (
-                    <div className="text-right">
-                      <p className="text-lg font-bold text-foreground">
-                        {post.price} zł{post.price_negotiable ? '*' : ''}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {post.price_negotiable
-                          ? 'do negocjacji'
-                          : post.price_type === 'hourly'
-                          ? 'za godzinę'
-                          : 'cena stała'}
-                      </p>
-                    </div>
-                  ) : post.price_type === 'free' ? (
-                    <div className="text-right">
-                      <p className="text-sm font-bold text-green-600">Za darmo</p>
-                    </div>
-                  ) : null}
-                </div>
-              </CardContent>
+                    {/* Price */}
+                    {post.price ? (
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-base md:text-xl font-bold text-foreground whitespace-nowrap">
+                          {post.price} zł
+                        </p>
+                        <p className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">
+                          {post.price_negotiable
+                            ? 'do negocjacji'
+                            : post.price_type === 'hourly'
+                            ? 'za godzinę'
+                            : 'cena stała'}
+                        </p>
+                      </div>
+                    ) : post.price_type === 'free' ? (
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-sm md:text-base font-bold text-green-600 whitespace-nowrap">Za darmo</p>
+                      </div>
+                    ) : null}
+                  </div>
+                </CardContent>
+              </div>
             </Card>
           </Link>
         ))

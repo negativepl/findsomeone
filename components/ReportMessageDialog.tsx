@@ -74,9 +74,9 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
       <DialogTrigger className="text-muted-foreground hover:text-red-600 dark:hover:text-red-400 transition-colors p-1" aria-label="Zgłoś wiadomość">
         <Flag className="w-4 h-4" aria-hidden="true" />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md bg-card border border-border rounded-3xl shadow-xl">
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
         {success ? (
-          <div className="text-center py-8">
+          <div className="text-center p-8">
             <div className="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -87,19 +87,14 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
           </div>
         ) : (
           <>
-            <DialogHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center">
-                  <Flag className="w-5 h-5 text-red-600 dark:text-red-400" />
-                </div>
-                <DialogTitle className="text-2xl text-foreground">Zgłoś wiadomość</DialogTitle>
-              </div>
-              <DialogDescription className="text-base text-muted-foreground">
+            <DialogHeader className="p-4 md:p-6">
+              <DialogTitle className="text-2xl">Zgłoś wiadomość</DialogTitle>
+              <DialogDescription className="text-base">
                 Zgłoś tę wiadomość, jeśli narusza regulamin lub zawiera nieodpowiednie treści.
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit}>
-              <div className="space-y-5 py-4">
+              <div className="space-y-5 px-4 md:px-6 py-4">
                 <div className="space-y-3">
                   <Label htmlFor="reason" className="text-base font-semibold text-foreground">
                     Powód zgłoszenia *
@@ -144,26 +139,28 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
                 </p>
               </div>
 
-              <div className="mt-8 pt-6 border-t-2 border-border">
-                <DialogFooter className="gap-2 sm:gap-2">
+              <div className="px-4 md:px-6">
+                <div className="border-t border-border" />
+              </div>
+
+              <DialogFooter className="gap-3 p-4 md:p-6">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setOpen(false)}
                     disabled={isSubmitting}
-                    className="rounded-full border"
+                    className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
                   >
                     Anuluj
                   </Button>
                   <Button
                     type="submit"
                     disabled={isSubmitting || !reason}
-                    className="rounded-full bg-red-600 hover:bg-red-700 text-white border-0"
+                    className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
                   >
                     {isSubmitting ? 'Wysyłanie...' : 'Zgłoś'}
                   </Button>
                 </DialogFooter>
-              </div>
             </form>
           </>
         )}

@@ -47,15 +47,15 @@ export function DeleteAccountDialog() {
           Usuń konto
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md border border-border rounded-3xl bg-card shadow-xl">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
+        <DialogHeader className="p-4 md:p-6">
           <DialogTitle className="text-2xl font-bold text-red-600">Usuń konto</DialogTitle>
           <DialogDescription className="text-base text-red-700">
             ⚠️ Ta akcja jest nieodwracalna. Wszystkie twoje dane zostaną permanentnie usunięte.
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit}>
-          <div className="space-y-5 py-4">
+          <div className="space-y-5 px-4 md:px-6 py-4">
             <div className="space-y-3">
               <Label htmlFor="password" className="text-base font-semibold text-foreground">
                 Hasło
@@ -68,7 +68,6 @@ export function DeleteAccountDialog() {
                 disabled={loading}
                 className="rounded-2xl border border-red-200 h-12 focus:border-red-400"
               />
-              <p className="text-xs text-red-600">Potwierdź swoją tożsamość</p>
             </div>
             <div className="space-y-3">
               <Label htmlFor="confirmation" className="text-base font-semibold text-foreground">
@@ -86,14 +85,18 @@ export function DeleteAccountDialog() {
               <p className="text-xs text-red-600">To działanie jest nieodwracalne!</p>
             </div>
           </div>
-          <div className="mt-8 pt-6 border-t-2 border-red-500/20">
-            <DialogFooter className="gap-2 sm:gap-2">
+
+          <div className="px-4 md:px-6">
+            <div className="border-t border-red-500/20" />
+          </div>
+
+          <DialogFooter className="gap-3 p-4 md:p-6">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full border border-border hover:border-brand hover:bg-brand/10"
+              className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
             >
               Anuluj
             </Button>
@@ -105,7 +108,6 @@ export function DeleteAccountDialog() {
               {loading ? 'Usuwam...' : 'Usuń konto'}
             </Button>
           </DialogFooter>
-          </div>
         </form>
       </DialogContent>
     </Dialog>

@@ -30,6 +30,7 @@ interface FavoritePost {
       full_name: string | null
       avatar_url: string | null
       rating: number
+      total_reviews: number
     } | null
     categories: {
       name: string
@@ -114,7 +115,8 @@ export function useFavorites(userId: string | null | undefined) {
             profiles:user_id (
               full_name,
               avatar_url,
-              rating
+              rating,
+              total_reviews
             ),
             categories (
               name,

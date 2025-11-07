@@ -36,19 +36,19 @@ export function ChangePasswordDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="rounded-full text-foreground hover:bg-muted">
+        <Button variant="outline" className="rounded-full border border-border hover:bg-muted bg-card text-foreground">
           Zmień
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md border border-border rounded-3xl bg-card shadow-xl">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
+        <DialogHeader className="p-4 md:p-6">
           <DialogTitle className="text-2xl">Zmiana hasła</DialogTitle>
           <DialogDescription className="text-base">
             Wprowadź obecne hasło i nowe hasło
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit}>
-          <div className="space-y-5 py-4">
+          <div className="space-y-5 px-4 md:px-6 py-4">
             <div className="space-y-3">
               <Label htmlFor="currentPassword" className="text-base font-semibold">
                 Obecne hasło
@@ -92,13 +92,18 @@ export function ChangePasswordDialog() {
               />
             </div>
           </div>
-          <div className="mt-8 pt-6 border-t-2 border-black/5">
-            <DialogFooter className="gap-2 sm:gap-2">
+
+          <div className="px-4 md:px-6">
+            <div className="border-t border-border" />
+          </div>
+
+          <DialogFooter className="gap-3 p-4 md:p-6">
             <Button
               type="button"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full hover:bg-accent text-foreground bg-transparent border-0 shadow-none"
+              variant="outline"
+              className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
             >
               Anuluj
             </Button>
@@ -110,7 +115,6 @@ export function ChangePasswordDialog() {
               {loading ? 'Zmieniam...' : 'Zmień hasło'}
             </Button>
           </DialogFooter>
-          </div>
         </form>
       </DialogContent>
     </Dialog>

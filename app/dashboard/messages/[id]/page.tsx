@@ -91,38 +91,38 @@ export default async function ConversationPage({
 
       {/* Chat Header - Fixed (Desktop only) */}
       <div className="hidden md:block fixed top-16 left-0 right-0 bg-card border-b border-border rounded-b-3xl z-30">
-        <div className="container mx-auto">
-          <div className="flex items-center gap-4">
+        <div className="container mx-auto h-16">
+          <div className="flex items-center gap-4 h-full">
             <Link
               href="/dashboard/messages"
-              className="flex-shrink-0 hover:bg-muted rounded-full p-2 transition-colors"
+              className="flex-shrink-0 hover:bg-muted rounded-full p-1.5 transition-colors"
               aria-label="Wróć do listy wiadomości"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </Link>
 
             <Link
               href={`/profile/${otherUser.id}`}
-              className="flex items-center gap-2 md:gap-3 p-2 hover:bg-muted rounded-2xl transition-colors"
+              className="flex items-center gap-2 md:gap-3 p-1 hover:bg-muted rounded-2xl transition-colors"
             >
               {otherUser.avatar_url ? (
                 <img
                   src={otherUser.avatar_url}
                   alt=""
-                  className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover flex-shrink-0"
+                  className="w-9 h-9 rounded-full object-cover flex-shrink-0"
                 />
               ) : (
-                <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand flex items-center justify-center flex-shrink-0">
-                  <span className="text-base md:text-lg font-semibold text-brand-foreground">
+                <div className="w-9 h-9 rounded-full bg-brand flex items-center justify-center flex-shrink-0">
+                  <span className="text-sm font-semibold text-brand-foreground">
                     {otherUser.full_name?.charAt(0) || 'U'}
                   </span>
                 </div>
               )}
 
               <div className="min-w-0 flex items-center gap-2">
-                <h2 className="text-base md:text-lg font-semibold text-foreground truncate">
+                <h2 className="text-base font-semibold text-foreground truncate">
                   {otherUser.full_name || 'Użytkownik'}
                 </h2>
                 <PresenceIndicator userId={otherUser.id} showText={true} size="sm" />

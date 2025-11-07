@@ -773,7 +773,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               {/* View Profile Button */}
               <Link href={`/profile/${initialUser.id}`} target="_blank">
                 <Button
-                  className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
+                  className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold"
                 >
                   Zobacz swój profil
                 </Button>
