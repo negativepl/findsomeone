@@ -109,7 +109,7 @@ export async function PostsSection({ section, userFavorites }: PostsSectionProps
             {subtitle && <p className="text-lg text-muted-foreground">{subtitle}</p>}
           </div>
           {showButton && (
-            <Link href={buttonLink} className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground px-6 py-2.5 text-sm font-medium transition-colors inline-block">
+            <Link href={buttonLink} className="rounded-full border border-border hover:bg-muted text-foreground px-6 py-2.5 text-sm font-medium transition-colors inline-block bg-card">
               Zobacz wszystkie
             </Link>
           )}

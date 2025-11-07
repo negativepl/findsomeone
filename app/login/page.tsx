@@ -104,7 +104,7 @@ export default function LoginPage() {
           </div>
 
           {/* Right side - Success message */}
-          <div className="flex items-center justify-start p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
+          <div className="min-h-screen flex items-center justify-center p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
             <div className="w-full max-w-md pb-20 lg:pb-0">
             {/* Logo/Header */}
             <div className="text-center mb-8">
@@ -169,7 +169,7 @@ export default function LoginPage() {
         </div>
 
         {/* Right side - Reset form */}
-        <div className="flex items-center justify-start p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
+        <div className="min-h-screen flex items-center justify-center p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
           <div className="w-full max-w-md pb-20 lg:pb-0">
           {/* Logo/Header */}
           <div className="text-center mb-8">
@@ -258,7 +258,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right side - Login form */}
-      <div className="flex items-center justify-start p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
+      <div className="min-h-screen flex items-center justify-center p-6 pb-safe lg:pb-6 lg:pl-24 lg:pr-6">
         <div className="w-full max-w-md pb-20 lg:pb-0">
         {/* Logo/Header */}
         <div className="text-center mb-8">

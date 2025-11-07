@@ -314,7 +314,7 @@ export default async function PostsPage({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background flex flex-col">
       {/* Structured Data for SEO */}
       <StructuredData
         type="breadcrumb"
@@ -335,7 +335,7 @@ export default async function PostsPage({
       />
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+      <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8 flex-1">
         <div className="hidden md:block md:mb-4">
           <h2 className="text-2xl md:text-4xl font-bold mb-3 text-foreground">
             {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Wszystkie ogłoszenia'}

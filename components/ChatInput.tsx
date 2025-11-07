@@ -89,32 +89,29 @@ export function ChatInput({
     <form onSubmit={handleSubmit} className="relative">
       <div className="py-4 space-y-2">
         <div className="flex items-center gap-3">
-          <div className="flex-1 relative">
+          <div className="flex-1 relative flex items-center rounded-2xl border border-border bg-background focus-within:ring-2 focus-within:ring-brand/20 focus-within:border-brand disabled:bg-muted h-[44px] px-4">
             <textarea
               value={message}
               onChange={(e) => handleChange(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               disabled={disabled}
-              rows={1}
               maxLength={MAX_MESSAGE_LENGTH}
-              className="w-full resize-none rounded-2xl border border-border bg-background px-4 pr-20 text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand disabled:bg-muted disabled:cursor-not-allowed max-h-32 overflow-y-auto flex items-center"
+              rows={1}
+              className="resize-none text-base text-foreground placeholder:text-muted-foreground focus:outline-none bg-transparent disabled:cursor-not-allowed overflow-x-auto overflow-y-hidden whitespace-nowrap leading-normal py-2.5"
               style={{
-                minHeight: '44px',
-                maxHeight: '128px',
-                paddingTop: '11px',
-                paddingBottom: '11px',
-                lineHeight: '1.5'
-              }}
-              onInput={(e) => {
-                const target = e.target as HTMLTextAreaElement
-                target.style.height = '44px'
-                target.style.height = Math.min(target.scrollHeight, 128) + 'px'
+                maxHeight: '44px',
+                width: 'calc(100% - 72px)'
               }}
             />
-            {/* Character count inside textarea */}
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-xs pointer-events-none">
-              <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-orange-500' : 'text-muted-foreground'}>
+            {/* Character count and warning on the right */}
+            <div className="absolute right-4 flex items-center gap-2 text-xs pointer-events-none bg-background pl-2">
+              {showWarning && (
+                <span className="text-brand">
+                  Wpisz minimum {MIN_MESSAGE_LENGTH} znaków
+                </span>
+              )}
+              <span className={characterCount > MAX_MESSAGE_LENGTH - 100 ? 'text-brand' : 'text-muted-foreground'}>
                 {characterCount} / {MAX_MESSAGE_LENGTH}
               </span>
             </div>
@@ -123,7 +120,7 @@ export function ChatInput({
           <button
             type="submit"
             disabled={disabled || !isValid}
-            className="flex-shrink-0 w-11 h-11 rounded-full bg-brand hover:bg-brand/90 text-white disabled:bg-muted disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+            className="flex-shrink-0 w-11 h-11 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground disabled:bg-muted disabled:text-border disabled:cursor-not-allowed transition-colors flex items-center justify-center border border-border/50"
             aria-label="Wyślij wiadomość"
           >
             <svg
@@ -143,17 +140,10 @@ export function ChatInput({
           </button>
         </div>
 
-        {/* Validation errors/warnings only */}
-        {(error || showWarning) && (
+        {/* Validation errors only */}
+        {error && (
           <div className="px-1 text-xs">
-            {error && (
-              <span className="text-red-500">{error}</span>
-            )}
-            {!error && showWarning && (
-              <span className="text-orange-500">
-                Minimum {MIN_MESSAGE_LENGTH} znaków
-              </span>
-            )}
+            <span className="text-red-500">{error}</span>
           </div>
         )}
       </div>

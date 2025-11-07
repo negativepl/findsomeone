@@ -18,13 +18,14 @@ interface NavbarProps {
   user: User | null
   showAddButton?: boolean
   noRounding?: boolean
+  mobileOnlyRounding?: boolean
   pageTitle?: string
   stepInfo?: ReactNode
   backUrl?: string
   otherUserId?: string
 }
 
-export async function Navbar({ user, showAddButton = true, noRounding = false, pageTitle, stepInfo, backUrl, otherUserId }: NavbarProps) {
+export async function Navbar({ user, showAddButton = true, noRounding = false, mobileOnlyRounding = false, pageTitle, stepInfo, backUrl, otherUserId }: NavbarProps) {
   const userRole = user ? await getUserRole() : null
   const isAdmin = userRole === 'admin'
 
@@ -41,8 +42,10 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, p
   }
 
 
+  const roundingClass = noRounding ? '' : (mobileOnlyRounding ? 'rounded-b-3xl md:rounded-none' : 'rounded-b-3xl')
+
   return (
-    <header className={`fixed top-0 left-0 right-0 bg-card border-b border-border ${noRounding ? '' : 'rounded-b-3xl'} before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-card before:-translate-y-full before:z-[-1]`} style={{ zIndex: 9999, paddingTop: 'env(safe-area-inset-top, 0px)' }}>
+    <header className={`fixed top-0 left-0 right-0 bg-card border-b border-border ${roundingClass} before:content-[''] before:absolute before:inset-x-0 before:top-0 before:h-20 before:bg-card before:-translate-y-full before:z-[-1]`} style={{ zIndex: 9999, paddingTop: 'env(safe-area-inset-top, 0px)' }}>
       <div className="container mx-auto px-6">
         <nav className="flex items-center justify-between gap-3 md:gap-4 h-16">
           {/* Left Section */}

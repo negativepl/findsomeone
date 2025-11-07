@@ -83,7 +83,7 @@ export default async function ConversationPage({
       <NavbarWithHide
         user={user}
         alwaysVisible={true}
-        noRounding={true}
+        mobileOnlyRounding={true}
         pageTitle={otherUser.full_name || 'Czat'}
         backUrl="/dashboard/messages"
         otherUserId={otherUser.id}
@@ -115,7 +115,7 @@ export default async function ConversationPage({
                 />
               ) : (
                 <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-brand flex items-center justify-center flex-shrink-0">
-                  <span className="text-base md:text-lg font-semibold text-white">
+                  <span className="text-base md:text-lg font-semibold text-brand-foreground">
                     {otherUser.full_name?.charAt(0) || 'U'}
                   </span>
                 </div>

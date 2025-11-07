@@ -20,15 +20,48 @@ export function MessagesIcon({ user }: MessagesIconProps) {
   const queryClient = useQueryClient()
   const [hasChanged, setHasChanged] = useState(false)
   const [isMounted, setIsMounted] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false)
   const prevCountRef = useRef(0)
   const audioContextRef = useRef<AudioContext | null>(null)
   const audioBufferRef = useRef<AudioBuffer | null>(null)
   const audioArrayBufferRef = useRef<ArrayBuffer | null>(null)
   const notificationAnimationRef = useRef<any>(null)
 
-  // Fix hydration mismatch
+  // Fix hydration mismatch and detect theme
   useEffect(() => {
     setIsMounted(true)
+
+    // Detect initial theme
+    const checkTheme = () => {
+      const isDark = document.documentElement.classList.contains('dark')
+      setIsDarkMode(isDark)
+
+      // Load appropriate animation based on theme
+      const animationFile = isDark ? '/animations/message-notification-dark.json' : '/animations/message-notification-light.json'
+      fetch(animationFile)
+        .then(res => res.json())
+        .then(data => {
+          notificationAnimationRef.current = data
+        })
+        .catch(err => console.error('Failed to load notification animation:', err))
+    }
+
+    checkTheme()
+
+    // Watch for theme changes
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === 'class') {
+          checkTheme()
+        }
+      })
+    })
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
+    })
+
     // Load audio file (but don't create AudioContext yet - iOS requires user interaction)
     if (typeof window !== 'undefined') {
       // Pre-load audio file as ArrayBuffer
@@ -68,13 +101,10 @@ export function MessagesIcon({ user }: MessagesIconProps) {
       document.addEventListener('touchstart', initAudio, { once: true })
       document.addEventListener('keydown', initAudio, { once: true })
     }
-    // Preload Lottie animation
-    fetch('/animations/message-notification.json')
-      .then(res => res.json())
-      .then(data => {
-        notificationAnimationRef.current = data
-      })
-      .catch(err => console.error('Failed to load notification animation:', err))
+
+    return () => {
+      observer.disconnect()
+    }
   }, [])
 
   useEffect(() => {
@@ -148,8 +178,11 @@ export function MessagesIcon({ user }: MessagesIconProps) {
           // Show custom toast with Lottie animation
           const animData = notificationAnimationRef.current
 
+          const isDark = document.documentElement.classList.contains('dark')
+          const iconSrc = isDark ? '/icons/message-notification-dark.svg' : '/icons/message-notification-light.svg'
+
           toast.custom((t) => (
-            <div className="bg-white rounded-2xl shadow-lg border border-black/10 p-4 min-w-[320px]">
+            <div className="bg-card rounded-2xl shadow-lg border border-border p-4 min-w-[320px]">
               <div className="flex items-center gap-3 mb-3">
                 <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center">
                   {animData ? (
@@ -161,21 +194,21 @@ export function MessagesIcon({ user }: MessagesIconProps) {
                     />
                   ) : (
                     <img
-                      src="/icons/message-notification.svg"
+                      src={iconSrc}
                       alt="Message"
                       className="w-12 h-12"
                     />
                   )}
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-bold text-black">Nowa wiadomość</p>
-                  <p className="text-sm text-black/60">Od: {senderName}</p>
+                  <p className="text-sm font-bold text-foreground">Nowa wiadomość</p>
+                  <p className="text-sm text-muted-foreground">Od: {senderName}</p>
                 </div>
               </div>
               <Link
                 href="/dashboard/messages"
                 onClick={() => toast.dismiss(t)}
-                className="block w-full text-center bg-brand hover:bg-brand/90 text-white text-sm font-medium py-2 rounded-xl transition-colors"
+                className="block w-full text-center bg-brand hover:bg-brand/90 text-brand-foreground text-sm font-medium py-2 rounded-xl transition-colors"
               >
                 Zobacz wiadomość
               </Link>

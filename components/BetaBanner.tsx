@@ -35,24 +35,25 @@ export function BetaBanner() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
-          className="fixed top-16 left-0 right-0 z-[9998] bg-card border-b border-brand/30 rounded-b-3xl"
+          className="fixed top-16 left-0 right-0 z-[9998] bg-card border-b border-border rounded-b-3xl"
         >
           <div className="container mx-auto px-6 py-3">
             <div className="flex items-center justify-center gap-4 text-sm md:text-base">
               <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-brand/20 text-brand font-semibold text-xs">
+                <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-brand/20 text-brand font-semibold text-xs">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                   </svg>
                   BETA
                 </div>
                 <p className="text-foreground">
-                  Projekt jest w fazie beta. Masz uwagi lub sugestie?{' '}
+                  Projekt w fazie beta. Masz uwagi lub sugestie?{' '}
                   <a
                     href="mailto:mbaszewski@findsomeone.app"
                     className="font-semibold text-brand hover:text-brand/80 transition-colors underline decoration-brand/30 hover:decoration-brand/60"
                   >
-                    Napisz do mnie
+                    <span className="hidden md:inline">Napisz do mnie</span>
+                    <span className="md:hidden">Napisz</span>
                   </a>
                 </p>
               </div>
