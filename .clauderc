@@ -150,14 +150,29 @@ findsomeone/
 ├── hooks/                    # Custom React hooks
 │
 ├── supabase/                 # Konfiguracja Supabase
-│   ├── migrations/          # Migracje SQL
+│   ├── migrations/          # 99 migracji SQL (pełna historia)
 │   │   ├── 20250110_add_user_preferences.sql
 │   │   ├── 20250111000000_create_cities_table.sql
 │   │   ├── 20250111120000_add_embeddings.sql
 │   │   ├── 20250111120001_user_search_history.sql
 │   │   ├── 20250111130000_add_post_moderation.sql
-│   │   └── ... (inne migracje)
-│   └── config.toml          # Konfiguracja Supabase
+│   │   └── ... (pozostałe 94 migracje)
+│   ├── migrations_consolidated/  # 4 skonsolidowane migracje (dla nowych instalacji)
+│   │   ├── 01_core_schema.sql
+│   │   ├── 02_ai_features.sql
+│   │   ├── 03_admin_features.sql
+│   │   ├── 04_reference_data.sql
+│   │   └── README.md
+│   ├── functions/           # Edge Functions (Deno) i funkcje SQL
+│   │   ├── expire-posts/    # Funkcja wygaszania postów
+│   │   ├── notify-expiring-posts/  # Powiadomienia o wygasających postach
+│   │   └── *.sql           # Funkcje SQL (search, analytics)
+│   ├── policies/           # Polityki Row Level Security
+│   ├── archive/            # Zarchiwizowane pliki (patrz: archive/README.md)
+│   │   ├── deprecated_functions/  # Stare funkcje SQL
+│   │   ├── duplicate_migrations/  # Backup migracji
+│   │   └── old_scripts/    # Ad-hoc skrypty
+│   └── config.toml         # Konfiguracja Supabase
 │
 ├── public/                   # Pliki statyczne
 │   ├── icons/               # Ikony PWA
@@ -1043,7 +1058,9 @@ npm run lint                   # Lint code
 - `lib/types/database.ts` - Typy bazy danych
 - `app/api/` - API routes
 - `components/ui/` - Komponenty UI (shadcn)
-- `supabase/migrations/` - Migracje bazy
+- `supabase/migrations/` - Migracje bazy (99 plików, pełna historia)
+- `supabase/migrations_consolidated/` - Migracje skonsolidowane (4 pliki, dla nowych instalacji)
+- `supabase/MIGRATIONS_README.md` - Dokumentacja migracji
 - `proxy.ts` - Middleware (refresh session)
 - `next.config.ts` - Konfiguracja Next.js
 
@@ -1058,6 +1075,7 @@ https://platform.openai.com/
 
 ---
 
-**Ostatnia aktualizacja:** 2025-11-06
-**Wersja mapy pamięci:** 1.0
+**Ostatnia aktualizacja:** 2025-11-08
+**Wersja mapy pamięci:** 1.1
 **Status:** Production Ready ✅
+**Zmiany:** Zaktualizowano strukturę supabase/ po reorganizacji archiwum

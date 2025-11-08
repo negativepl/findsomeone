@@ -70,4 +70,4 @@ For contribution guidelines, see the [main README](../README.md).
 
 ---
 
-**Last Updated:** November 5, 2025
+**Last Updated:** November 8, 2025
