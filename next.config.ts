@@ -130,5 +130,122 @@ export default withPWA({
   workboxOptions: {
     // Import custom push notification handler
     importScripts: ['/sw-push.js'],
+    // Disable precaching to avoid build ID mismatches
+    disablePrecacheManifest: true,
+    // Use runtime caching instead
+    runtimeCaching: [
+      {
+        urlPattern: /^https:\/\/fonts\.(?:gstatic)\.com\/.*/i,
+        handler: 'CacheFirst',
+        options: {
+          cacheName: 'google-fonts-webfonts',
+          expiration: {
+            maxEntries: 4,
+            maxAgeSeconds: 365 * 24 * 60 * 60 // 365 days
+          }
+        }
+      },
+      {
+        urlPattern: /^https:\/\/fonts\.(?:googleapis)\.com\/.*/i,
+        handler: 'StaleWhileRevalidate',
+        options: {
+          cacheName: 'google-fonts-stylesheets',
+          expiration: {
+            maxEntries: 4,
+            maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
+          }
+        }
+      },
+      {
+        urlPattern: /\.(?:eot|otf|ttc|ttf|woff|woff2|font.css)$/i,
+        handler: 'StaleWhileRevalidate',
+        options: {
+          cacheName: 'static-font-assets',
+          expiration: {
+            maxEntries: 4,
+            maxAgeSeconds: 7 * 24 * 60 * 60 // 7 days
+          }
+        }
+      },
+      {
+        urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp|avif)$/i,
+        handler: 'StaleWhileRevalidate',
+        options: {
+          cacheName: 'static-image-assets',
+          expiration: {
+            maxEntries: 64,
+            maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          }
+        }
+      },
+      {
+        urlPattern: /\/_next\/image\?url=.+$/i,
+        handler: 'StaleWhileRevalidate',
+        options: {
+          cacheName: 'next-image',
+          expiration: {
+            maxEntries: 64,
+            maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          }
+        }
+      },
+      {
+        urlPattern: /\.(?:js)$/i,
+        handler: 'StaleWhileRevalidate',
+        options: {
+          cacheName: 'static-js-assets',
+          expiration: {
+            maxEntries: 32,
+            maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          }
+        }
+      },
+      {
+        urlPattern: /\.(?:css|less)$/i,
+        handler: 'StaleWhileRevalidate',
+        options: {
+          cacheName: 'static-style-assets',
+          expiration: {
+            maxEntries: 32,
+            maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          }
+        }
+      },
+      {
+        urlPattern: /\/_next\/data\/.+\/.+\.json$/i,
+        handler: 'StaleWhileRevalidate',
+        options: {
+          cacheName: 'next-data',
+          expiration: {
+            maxEntries: 32,
+            maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          }
+        }
+      },
+      {
+        urlPattern: /\/api\/.*$/i,
+        handler: 'NetworkFirst',
+        options: {
+          cacheName: 'apis',
+          expiration: {
+            maxEntries: 16,
+            maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          },
+          networkTimeoutSeconds: 10
+        }
+      },
+      {
+        urlPattern: /.*/i,
+        handler: 'NetworkFirst',
+        options: {
+          cacheName: 'others',
+          expiration: {
+            maxEntries: 32,
+            maxAgeSeconds: 24 * 60 * 60 // 24 hours
+          },
+          networkTimeoutSeconds: 10
+        }
+      }
+    ]
   },
 })(nextConfig);
