@@ -30,22 +30,14 @@
 
 ### Step 1: Run Database Migrations
 
-You need to execute SQL migrations in Supabase:
+You need to execute SQL migrations in Supabase. The embeddings functionality is included in the main migrations.
 
-1. Open Supabase Dashboard: https://supabase.com/dashboard
-2. Select your project
-3. Go to **SQL Editor**
-4. Run these files in order:
+**For new installations:** Use `supabase/migrations_consolidated/02_ai_features.sql` - includes all embeddings setup
 
-```sql
--- 1. First: Add pgvector extension and embeddings
--- File: supabase/migrations/20250111120000_add_embeddings.sql
--- Copy entire contents and run in SQL Editor
-
--- 2. Then: Add user search history and preferences
--- File: supabase/migrations/20250111120001_user_search_history.sql
--- Copy entire contents and run in SQL Editor
-```
+**For existing installations:**
+1. Check if `embedding` column exists in `posts` table
+2. If not, apply embeddings migrations from `supabase/migrations/`
+3. See `/supabase/MIGRATIONS_README.md` for guidance
 
 **Or via CLI:**
 ```bash
