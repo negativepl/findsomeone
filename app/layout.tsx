@@ -7,6 +7,7 @@ import TopLoader from "@/components/TopLoader";
 import { MobileDockWrapper } from "@/components/MobileDockWrapper";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import CookieConsent from "@/components/CookieConsent";
+import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
 
@@ -132,6 +133,7 @@ export default async function RootLayout({
           <MobileDockWrapper user={user} />
           <InstallPrompt />
           <CookieConsent />
+          <ServiceWorkerRegistration />
         </Providers>
         <ConditionalAnalytics />
       </body>
