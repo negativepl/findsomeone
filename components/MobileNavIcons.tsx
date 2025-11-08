@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { User } from '@supabase/supabase-js'
 import { MobileSearchBar } from '@/components/MobileSearchBar'
 import { AIAssistant } from '@/components/AIAssistant'
+import { NotificationsIcon } from '@/components/NotificationsIcon'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useFavoritesCount } from '@/lib/hooks/useFavorites'
@@ -102,9 +103,6 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
   return (
     <>
       <div className="md:hidden flex items-center gap-2.5">
-        {/* AI Assistant - Only show when user is logged in on mobile */}
-        {user && <AIAssistant />}
-
         {/* Search Icon */}
         <button
           onClick={() => setIsSearchOpen(true)}
@@ -115,6 +113,9 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </button>
+
+        {/* AI Assistant - Only show when user is logged in on mobile */}
+        {user && <AIAssistant />}
 
         {/* Show Messages and Favorites icons only when user is logged in */}
         {user && (
@@ -150,6 +151,9 @@ export function MobileNavIcons({ user }: MobileNavIconsProps) {
                 </span>
               )}
             </Link>
+
+            {/* Notifications Icon */}
+            <NotificationsIcon user={user} />
           </>
         )}
       </div>

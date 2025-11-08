@@ -756,6 +756,41 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                 </div>
               </div>
 
+              {/* Description */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Label className="text-base font-semibold text-foreground">
+                    Opis <span className="text-brand">*</span>
+                  </Label>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Pomoc: Jak napisać dobry opis?">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="right" className="max-w-xs">
+                      <p className="font-semibold mb-1">Jak napisać dobry opis?</p>
+                      <ul className="space-y-0.5 text-xs">
+                        <li>• Opisz szczegółowo czego szukasz/co oferujesz</li>
+                        <li>• Dodaj istotne detale i wymagania</li>
+                        <li>• Bądź uczciwy i konkretny</li>
+                        <li>• Unikaj danych kontaktowych (używaj wiadomości)</li>
+                      </ul>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+                <div className="min-h-[300px]">
+                  <RichTextEditor
+                    content={formData.description}
+                    onChange={(content) => setFormData({ ...formData, description: content })}
+                    placeholder="Opisz szczegółowo swoje ogłoszenie: zakres usług lub potrzeb, termin, wymagania..."
+                    className="h-full"
+                  />
+                </div>
+              </div>
+
               {/* Category Selector */}
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -821,41 +856,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     }`} />
                   </div>
                 </button>
-              </div>
-
-              {/* Description */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Label className="text-base font-semibold text-foreground">
-                    Opis <span className="text-brand">*</span>
-                  </Label>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button type="button" className="text-muted-foreground hover:text-foreground transition-colors" aria-label="Pomoc: Jak napisać dobry opis?">
-                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="right" className="max-w-xs">
-                      <p className="font-semibold mb-1">Jak napisać dobry opis?</p>
-                      <ul className="space-y-0.5 text-xs">
-                        <li>• Opisz szczegółowo czego szukasz/co oferujesz</li>
-                        <li>• Dodaj istotne detale i wymagania</li>
-                        <li>• Bądź uczciwy i konkretny</li>
-                        <li>• Unikaj danych kontaktowych (używaj wiadomości)</li>
-                      </ul>
-                    </TooltipContent>
-                  </Tooltip>
-                </div>
-                <div className="min-h-[300px]">
-                  <RichTextEditor
-                    content={formData.description}
-                    onChange={(content) => setFormData({ ...formData, description: content })}
-                    placeholder="Opisz szczegółowo swoje ogłoszenie: zakres usług lub potrzeb, termin, wymagania..."
-                    className="h-full"
-                  />
-                </div>
               </div>
 
               {/* Images */}
@@ -1071,9 +1071,9 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
 
         {/* Mobile: Step-by-step */}
         <div className="flex-1 flex flex-col overflow-hidden">
-              {/* Step 1: Podstawowe informacje */}
+              {/* Step 1: Tytuł i Opis */}
               {currentStep === 1 && (
-                <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 bg-card">
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 bg-card flex-1 flex flex-col overflow-hidden">
                   <div className="space-y-2">
                     <Label htmlFor="title-mobile" className="text-base font-semibold text-foreground">
                       Tytuł ogłoszenia <span className="text-brand">*</span>
@@ -1100,8 +1100,55 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                     </div>
                   </div>
 
+                  <div className="space-y-2 flex-1 flex flex-col overflow-hidden">
+                    <Label className="text-base font-semibold text-foreground">Opis <span className="text-brand">*</span></Label>
+                    <div className="flex-1 overflow-hidden">
+                      <RichTextEditor
+                        content={formData.description}
+                        onChange={(content) => setFormData({ ...formData, description: content })}
+                        placeholder="Opisz szczegółowo swoje ogłoszenie..."
+                        hideToolbar={true}
+                        onEditorReady={setRichTextEditor}
+                        noBorder={true}
+                        className="h-full flex flex-col"
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Step 2: Kategoria */}
+              {currentStep === 2 && (
+                <div className="space-y-3 animate-in fade-in duration-300 px-3 pt-6 pb-4 bg-card">
                   <div className="space-y-2">
-                    <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-brand">*</span></Label>
+                    <div className="flex items-center justify-between">
+                      <Label className="text-base font-semibold text-foreground">Kategoria <span className="text-brand">*</span></Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={handleSuggestCategory}
+                        disabled={suggestingCategory || (!formData.title && !formData.description)}
+                        className="rounded-full border border-border hover:bg-muted h-10 px-4 text-sm bg-card text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {suggestingCategory ? (
+                          <>
+                            <svg className="w-4 h-4 mr-2 animate-spin" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Wykrywam...
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z" />
+                            </svg>
+                            Wykryj kategorię
+                          </>
+                        )}
+                      </Button>
+                    </div>
+
                     <button
                       type="button"
                       onClick={() => setShowCategorySelector(true)}
@@ -1138,22 +1185,6 @@ export function NewPostClient({ onStepChange }: NewPostClientProps = {}) {
                       </div>
                     </button>
                   </div>
-                </div>
-              )}
-
-              {/* Step 2: Opis */}
-              {currentStep === 2 && (
-                <div className="animate-in fade-in duration-300 flex flex-col flex-1 overflow-y-auto">
-                  {/* Editor Content */}
-                  <RichTextEditor
-                    content={formData.description}
-                    onChange={(content) => setFormData({ ...formData, description: content })}
-                    placeholder="Opisz szczegółowo swoje ogłoszenie..."
-                    hideToolbar={true}
-                    onEditorReady={setRichTextEditor}
-                    noBorder={true}
-                    className="h-full flex flex-col"
-                  />
                 </div>
               )}
 

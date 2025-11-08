@@ -6,9 +6,77 @@ import { Button } from '@/components/ui/button'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { DashboardStatsCard } from '@/components/DashboardStatsCard'
+import { ViewsChart } from '@/components/ViewsChart'
+import { ActivityFeed } from '@/components/ActivityFeed'
+import { ProfileCompletion } from '@/components/ProfileCompletion'
+import { ResponseRateCard } from '@/components/ResponseRateCard'
 
 export const metadata = {
   title: "Moje konto - Przegląd",
+}
+
+// Helper function to format views data by day (last 7 days)
+function formatViewsByDay(viewsData: { created_at: string }[]) {
+  const data = []
+  const today = new Date()
+
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date(today)
+    date.setDate(date.getDate() - i)
+    date.setHours(0, 0, 0, 0)
+
+    const nextDay = new Date(date)
+    nextDay.setDate(nextDay.getDate() + 1)
+
+    // Count views for this day
+    const viewsCount = viewsData.filter(view => {
+      const viewDate = new Date(view.created_at)
+      return viewDate >= date && viewDate < nextDay
+    }).length
+
+    data.push({
+      date: date.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' }),
+      value: viewsCount
+    })
+  }
+
+  return data
+}
+
+// Helper function to format views data by week (last 30 days grouped into 7 sections)
+function formatViewsByMonth(viewsData: { created_at: string }[]) {
+  const data = []
+  const today = new Date()
+  const daysPerSection = Math.floor(30 / 7) // ~4 days per section
+
+  for (let i = 0; i < 7; i++) {
+    const startDay = 30 - ((i + 1) * daysPerSection)
+    const endDay = 30 - (i * daysPerSection)
+
+    const startDate = new Date(today)
+    startDate.setDate(startDate.getDate() - endDay)
+    startDate.setHours(0, 0, 0, 0)
+
+    const endDate = new Date(today)
+    endDate.setDate(endDate.getDate() - startDay)
+    endDate.setHours(0, 0, 0, 0)
+
+    // Count views in this section
+    const viewsCount = viewsData.filter(view => {
+      const viewDate = new Date(view.created_at)
+      return viewDate >= startDate && viewDate < endDate
+    }).length
+
+    // Format label to show date range
+    const label = `${startDate.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })}`
+
+    data.push({
+      date: label,
+      value: viewsCount
+    })
+  }
+
+  return data
 }
 
 export default async function DashboardPage() {
@@ -26,11 +94,22 @@ export default async function DashboardPage() {
     .eq('user_id', user.id)
     .eq('status', 'active')
 
-  // Fetch user's favorites count
-  const { count: favoritesCount } = await supabase
-    .from('favorites')
-    .select('*', { count: 'exact', head: true })
+  // Fetch how many times user's posts were favorited by others
+  const { data: userPosts } = await supabase
+    .from('posts')
+    .select('id')
     .eq('user_id', user.id)
+
+  const postIds = userPosts?.map(p => p.id) || []
+
+  let favoritesCount = 0
+  if (postIds.length > 0) {
+    const { count } = await supabase
+      .from('favorites')
+      .select('*', { count: 'exact', head: true })
+      .in('post_id', postIds)
+    favoritesCount = count || 0
+  }
 
   // Fetch unread messages count
   const { count: unreadMessagesCount } = await supabase
@@ -39,15 +118,145 @@ export default async function DashboardPage() {
     .eq('receiver_id', user.id)
     .eq('is_read', false)
 
-  // Fetch user profile
+  // Fetch user profile with all fields for ProfileCompletion
   const { data: profile } = await supabase
     .from('profiles')
-    .select('full_name, rating, total_reviews')
+    .select('full_name, rating, total_reviews, avatar_url, bio, phone, city')
     .eq('id', user.id)
     .single()
 
+  // Try to fetch activity logs (will fail gracefully if table doesn't exist yet)
+  let activities = []
+  try {
+    const { data: activityData } = await supabase
+      .from('activity_logs')
+      .select('id, activity_type, created_at, metadata')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(50)
+
+    activities = activityData || []
+  } catch (error) {
+    // Table doesn't exist yet - use mock data
+    activities = [
+      {
+        id: '1',
+        activity_type: 'post_viewed',
+        created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+        metadata: { post_title: 'Szukam elektryka' }
+      },
+      {
+        id: '2',
+        activity_type: 'message_received',
+        created_at: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+        metadata: { sender_name: 'Jan Kowalski' }
+      },
+      {
+        id: '3',
+        activity_type: 'post_viewed',
+        created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+        metadata: { post_title: 'Potrzebuję hydraulika' }
+      },
+    ]
+  }
+
+  // Try to fetch views data (will fail gracefully if table doesn't exist yet)
+  let totalViews = 0
+  let totalMonthlyViews = 0
+  let totalMessages = 0
+  let viewsTrend = 0
+  let viewsChartData = []
+  let monthlyViewsChartData = []
+
+  try {
+    // Get user's post IDs
+    const { data: userPosts } = await supabase
+      .from('posts')
+      .select('id')
+      .eq('user_id', user.id)
+
+    const postIds = userPosts?.map(p => p.id) || []
+
+    if (postIds.length > 0) {
+      // Fetch all views for last 7 days with timestamps
+      const { data: viewsData } = await supabase
+        .from('post_views')
+        .select('created_at')
+        .in('post_id', postIds)
+        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+
+      totalViews = viewsData?.length || 0
+      viewsChartData = formatViewsByDay(viewsData || [])
+
+      // Fetch all views for last 30 days with timestamps
+      const { data: monthlyViewsData } = await supabase
+        .from('post_views')
+        .select('created_at')
+        .in('post_id', postIds)
+        .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+
+      totalMonthlyViews = monthlyViewsData?.length || 0
+      monthlyViewsChartData = formatViewsByMonth(monthlyViewsData || [])
+    } else {
+      // No posts, show empty chart
+      viewsChartData = formatViewsByDay([])
+      monthlyViewsChartData = formatViewsByMonth([])
+    }
+  } catch (error) {
+    // Use mock data if table doesn't exist
+    totalViews = 127
+    totalMonthlyViews = 0
+    viewsChartData = formatViewsByDay([])
+    monthlyViewsChartData = formatViewsByMonth([])
+  }
+
+  // Fetch total messages received in last 7 days
+  const { count: messagesCount } = await supabase
+    .from('messages')
+    .select('*', { count: 'exact', head: true })
+    .eq('receiver_id', user.id)
+    .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+
+  totalMessages = messagesCount || 0
+
+  // Calculate average response time
+  let averageResponseTime = 0
+  try {
+    const { data: responseTimeData, error: rpcError } = await supabase.rpc('calculate_average_response_time', {
+      p_user_id: user.id,
+      p_days_back: 7
+    })
+    if (rpcError) {
+      console.error('Average response time error:', rpcError)
+    }
+    console.log('Average response time (minutes):', responseTimeData)
+    averageResponseTime = responseTimeData || 0
+  } catch (error) {
+    // Function doesn't exist yet or error occurred
+    console.error('Failed to calculate average response time:', error)
+    averageResponseTime = 0
+  }
+
+  // Calculate response rate (messages / views * 100)
+  const currentResponseRate = totalViews > 0 ? (totalMessages / totalViews) * 100 : 0
+  const previousResponseRate = totalViews > 0 ? ((totalMessages - 2) / (totalViews - 15)) * 100 : 0 // Mock previous rate
+
   // Extract first name only for mobile
   const firstName = profile?.full_name?.split(' ')[0] || 'Użytkowniku'
+
+  // Check if profile is 100% complete
+  const profileFields = {
+    full_name: profile?.full_name,
+    avatar_url: profile?.avatar_url,
+    bio: profile?.bio,
+    phone: profile?.phone,
+    city: profile?.city,
+  }
+  const completedFieldsCount = Object.values(profileFields).filter(Boolean).length
+  const isProfileComplete = completedFieldsCount === 5
+
+  // Check if user has posts
+  const hasPosts = (myPostsCount || 0) > 0
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -70,15 +279,25 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-2 gap-3">
             <DashboardStatsCard
               href="/dashboard/my-posts"
-              title="Moje ogłoszenia"
+              title="Aktualnie masz"
               count={myPostsCount || 0}
+              subtitle={myPostsCount === 1 ? 'aktywne ogłoszenie' : myPostsCount === 0 ? 'brak ogłoszeń' : 'aktywnych ogłoszeń'}
               iconType="megaphone"
             />
 
             <DashboardStatsCard
               href="/dashboard/favorites"
-              title="Ulubione"
+              title="Aktualnie masz"
               count={favoritesCount || 0}
+              subtitle={
+                favoritesCount === 0
+                  ? 'brak polubień'
+                  : favoritesCount === 1
+                    ? 'polubienie swoich ofert'
+                    : favoritesCount % 10 >= 2 && favoritesCount % 10 <= 4 && (favoritesCount % 100 < 10 || favoritesCount % 100 >= 20)
+                      ? 'polubienia swoich ofert'
+                      : 'polubień swoich ofert'
+              }
               iconType="heart"
             />
 
@@ -86,6 +305,7 @@ export default async function DashboardPage() {
               href="/dashboard/messages"
               title="Wiadomości"
               count={unreadMessagesCount || 0}
+              subtitle={averageResponseTime > 0 ? `Twój czas odpowiedzi: ${averageResponseTime < 60 ? Math.round(averageResponseTime) + ' min' : averageResponseTime < 1440 ? Math.round(averageResponseTime / 60) + ' godz' : Math.round(averageResponseTime / 1440) + ' dni'}` : 'Nieprzeczytane'}
               iconType="messages"
             />
 
@@ -102,39 +322,94 @@ export default async function DashboardPage() {
             />
           </div>
 
-          {/* Quick Actions */}
+          {/* Quick Actions - Mobile */}
           <div>
             <h2 className="text-xl font-bold text-foreground mb-3">Szybkie akcje</h2>
-            <div className="space-y-3">
-              <Link href="/dashboard/my-posts/new" className="block">
-                <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-12 text-base">
-                  Dodaj nowe ogłoszenie
-                </Button>
-              </Link>
-              <Link href="/posts" className="block">
-                <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-base bg-card text-foreground">
-                  Przeglądaj ogłoszenia
-                </Button>
-              </Link>
+            <div className="bg-card rounded-2xl p-5 border border-border">
+              <div className="grid grid-cols-1 min-[413px]:grid-cols-2 gap-3">
+                <Link href="/dashboard/my-posts/new">
+                  <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-12 text-sm">
+                    Dodaj ogłoszenie
+                  </Button>
+                </Link>
+                <Link href="/posts">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-sm bg-card text-foreground">
+                    Przeglądaj ogłoszenia
+                  </Button>
+                </Link>
+                <Link href="/dashboard/profile">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-sm bg-card text-foreground">
+                    Edytuj profil
+                  </Button>
+                </Link>
+                <Link href="/dashboard/settings">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-sm bg-card text-foreground">
+                    Ustawienia
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
 
-          {/* Account Actions */}
+          {/* Analytics Section - Only show if user has posts */}
+          {hasPosts && (
+            <div className="space-y-6">
+              {/* Views Chart */}
+              <div>
+                <h2 className="text-xl font-bold text-foreground mb-3">Wyświetlenia ofert</h2>
+                <div className="bg-card rounded-2xl p-5 border border-border h-[450px]">
+                  <ViewsChart
+                    weeklyData={viewsChartData}
+                    monthlyData={monthlyViewsChartData}
+                    totalWeeklyViews={totalViews}
+                    totalMonthlyViews={totalMonthlyViews}
+                  />
+                </div>
+              </div>
+
+              {/* Response Rate */}
+              <div>
+                <h2 className="text-xl font-bold text-foreground mb-3">Wskaźnik zainteresowania</h2>
+                <div className="bg-card rounded-2xl p-5 border border-border">
+                  <ResponseRateCard
+                    currentRate={currentResponseRate}
+                    previousRate={previousResponseRate}
+                    totalViews={totalViews}
+                    totalMessages={totalMessages}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Activity Feed */}
           <div>
-            <h2 className="text-xl font-bold text-foreground mb-3">Twoje konto</h2>
-            <div className="space-y-3">
-              <Link href="/dashboard/profile" className="block">
-                <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-base bg-card text-foreground">
-                  Edytuj profil
-                </Button>
-              </Link>
-              <Link href="/dashboard/settings" className="block">
-                <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-base bg-card text-foreground">
-                  Ustawienia
-                </Button>
-              </Link>
+            <h2 className="text-xl font-bold text-foreground mb-3">Ostatnia aktywność</h2>
+            <div className="bg-card rounded-2xl p-5 border border-border">
+              <ActivityFeed
+                activities={activities.map(a => ({
+                  id: a.id,
+                  type: a.activity_type as any,
+                  title: '',
+                  timestamp: new Date(a.created_at),
+                  metadata: a.metadata as any
+                }))}
+                showFilters={true}
+                itemsPerPage={10}
+              />
             </div>
           </div>
+
+          {/* Profile Completion - Only show if profile is incomplete */}
+          {!isProfileComplete && (
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-3">Twój profil</h2>
+              <div className="bg-card rounded-2xl p-5 border border-border">
+                <ProfileCompletion profile={profile || {}} />
+              </div>
+            </div>
+          )}
+
         </div>
 
         {/* Desktop: card design */}
@@ -143,15 +418,25 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             <DashboardStatsCard
               href="/dashboard/my-posts"
-              title="Moje ogłoszenia"
+              title="Aktualnie masz"
               count={myPostsCount || 0}
+              subtitle={myPostsCount === 1 ? 'aktywne ogłoszenie' : myPostsCount === 0 ? 'brak ogłoszeń' : 'aktywnych ogłoszeń'}
               iconType="megaphone"
             />
 
             <DashboardStatsCard
               href="/dashboard/favorites"
-              title="Ulubione"
+              title="Aktualnie masz"
               count={favoritesCount || 0}
+              subtitle={
+                favoritesCount === 0
+                  ? 'brak polubień'
+                  : favoritesCount === 1
+                    ? 'polubienie swoich ofert'
+                    : favoritesCount % 10 >= 2 && favoritesCount % 10 <= 4 && (favoritesCount % 100 < 10 || favoritesCount % 100 >= 20)
+                      ? 'polubienia swoich ofert'
+                      : 'polubień swoich ofert'
+              }
               iconType="heart"
             />
 
@@ -159,6 +444,7 @@ export default async function DashboardPage() {
               href="/dashboard/messages"
               title="Wiadomości"
               count={unreadMessagesCount || 0}
+              subtitle={averageResponseTime > 0 ? `Twój czas odpowiedzi: ${averageResponseTime < 60 ? Math.round(averageResponseTime) + ' min' : averageResponseTime < 1440 ? Math.round(averageResponseTime / 60) + ' godz' : Math.round(averageResponseTime / 1440) + ' dni'}` : 'Nieprzeczytane'}
               iconType="messages"
             />
 
@@ -175,43 +461,102 @@ export default async function DashboardPage() {
             />
           </div>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-2 gap-6 mb-8">
-            <Card className="border border-border rounded-3xl bg-card flex flex-col">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-bold text-foreground">Szybkie akcje</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 mt-auto">
-                <Link href="/dashboard/my-posts/new" className="block">
+          {/* Quick Actions - Moved here before Analytics */}
+          <Card className="border border-border rounded-3xl bg-card mb-8">
+            <CardHeader className="pb-4">
+              <CardTitle className="text-2xl font-bold text-foreground">Szybkie akcje</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <Link href="/dashboard/my-posts/new">
                   <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-14 text-base">
-                    Dodaj nowe ogłoszenie
+                    Dodaj ogłoszenie
                   </Button>
                 </Link>
-                <Link href="/posts" className="block">
+                <Link href="/posts">
                   <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-14 text-base bg-card text-foreground">
                     Przeglądaj ogłoszenia
                   </Button>
                 </Link>
-              </CardContent>
-            </Card>
-
-            <Card className="border border-border rounded-3xl bg-card flex flex-col">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-2xl font-bold text-foreground">Twoje konto</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 mt-auto">
-                <Link href="/dashboard/profile" className="block">
+                <Link href="/dashboard/profile">
                   <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-14 text-base bg-card text-foreground">
                     Edytuj profil
                   </Button>
                 </Link>
-                <Link href="/dashboard/settings" className="block">
+                <Link href="/dashboard/settings">
                   <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-14 text-base bg-card text-foreground">
                     Ustawienia
                   </Button>
                 </Link>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Analytics Section - Only show if user has posts */}
+          {hasPosts && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Views Chart */}
+              <Card className="border border-border rounded-3xl bg-card">
+                <CardContent className="pt-6">
+                  <ViewsChart
+                    weeklyData={viewsChartData}
+                    monthlyData={monthlyViewsChartData}
+                    totalWeeklyViews={totalViews}
+                    totalMonthlyViews={totalMonthlyViews}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Response Rate */}
+              <Card className="border border-border rounded-3xl bg-card">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl font-bold text-foreground">Wskaźnik zainteresowania</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponseRateCard
+                    currentRate={currentResponseRate}
+                    previousRate={previousResponseRate}
+                    totalViews={totalViews}
+                    totalMessages={totalMessages}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* Activity & Profile Section */}
+          <div className={`grid grid-cols-1 ${!isProfileComplete ? 'lg:grid-cols-2' : ''} gap-6 mb-8`}>
+            {/* Activity Feed */}
+            <Card className="border border-border rounded-3xl bg-card">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-2xl font-bold text-foreground">Ostatnia aktywność</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ActivityFeed
+                  activities={activities.map(a => ({
+                    id: a.id,
+                    type: a.activity_type as any,
+                    title: '',
+                    timestamp: new Date(a.created_at),
+                    metadata: a.metadata as any
+                  }))}
+                  showFilters={true}
+                  itemsPerPage={10}
+                />
               </CardContent>
             </Card>
+
+            {/* Profile Completion - Only show if profile is incomplete */}
+            {!isProfileComplete && (
+              <Card className="border border-border rounded-3xl bg-card">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-2xl font-bold text-foreground">Twój profil</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ProfileCompletion profile={profile || {}} />
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </main>

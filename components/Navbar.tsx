@@ -4,6 +4,7 @@ import { LogoWithText } from '@/components/Logo'
 import { UserMenu } from '@/components/UserMenu'
 import { MessagesIcon } from '@/components/MessagesIcon'
 import { FavoritesIcon } from '@/components/FavoritesIcon'
+import { NotificationsIcon } from '@/components/NotificationsIcon'
 import { MobileNavIcons } from '@/components/MobileNavIcons'
 import { NavbarSearchWrapper } from '@/components/NavbarSearchWrapper'
 import { PresenceIndicator } from '@/components/PresenceIndicator'
@@ -126,6 +127,7 @@ export async function Navbar({ user, showAddButton = true, noRounding = false, m
                 <AIAssistant />
                 <FavoritesIcon user={user} />
                 <MessagesIcon user={user} />
+                <NotificationsIcon user={user} />
                 <UserMenu user={user} profile={profile} isAdmin={isAdmin} />
               </>
             ) : (

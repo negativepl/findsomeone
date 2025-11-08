@@ -45,9 +45,10 @@ export function ViewCounter({ postId, userId, postAuthorId }: ViewCounterProps) 
 
       const supabase = createClient()
 
-      // Call the RPC function to increment views
-      const { error } = await supabase.rpc('increment_post_views', {
-        post_id: postId
+      // Call the RPC function to record view and log activity
+      const { error } = await supabase.rpc('record_post_view', {
+        p_post_id: postId,
+        p_user_id: userId || null
       })
 
       if (!error) {

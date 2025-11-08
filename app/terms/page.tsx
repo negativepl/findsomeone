@@ -63,7 +63,7 @@ export default async function TermsPage() {
                   Użyte w Regulaminie pojęcia oznaczają:
                 </p>
                 <ul className="space-y-3 text-muted-foreground">
-                  <li><strong>Administrator</strong> - Marcin Baszewski, prowadzący działalność gospodarczą, właściciel i operator Platformy</li>
+                  <li><strong>Administrator</strong> - Marcin Baszewski, właściciel i operator Platformy</li>
                   <li><strong>Platforma / Serwis</strong> - serwis internetowy FindSomeone dostępny pod adresem findsomeone.app</li>
                   <li><strong>Użytkownik</strong> - osoba fizyczna, osoba prawna lub jednostka organizacyjna nieposiadająca osobowości prawnej, korzystająca z Platformy</li>
                   <li><strong>Konto</strong> - indywidualne konto Użytkownika w Platformie, umożliwiające korzystanie z pełnej funkcjonalności Serwisu</li>
@@ -267,8 +267,7 @@ export default async function TermsPage() {
                   9.3. Decyzje dotyczące sankcji podejmowane są przez Administratora i są ostateczne, z zastrzeżeniem pkt 9.4.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  9.4. Użytkownik ma prawo do odwołania się od decyzji o zablokowaniu Konta lub odrzuceniu ogłoszenia w ciągu <strong>14 dni</strong>
-                  od daty otrzymania informacji o sankcji. Odwołanie można złożyć poprzez:
+                  9.4. Użytkownik ma prawo do odwołania się od decyzji o zablokowaniu Konta lub odrzuceniu ogłoszenia w ciągu <strong>14 dni</strong> od daty otrzymania informacji o sankcji. Odwołanie można złożyć poprzez:
                 </p>
                 <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4 ml-4">
                   <li><strong>Przycisk "Odwołaj się"</strong> - dostępny przy odrzuconym ogłoszeniu na stronie "Moje ogłoszenia"</li>

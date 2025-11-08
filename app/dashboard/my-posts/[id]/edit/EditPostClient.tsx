@@ -512,6 +512,18 @@ export function EditPostClient({ post }: EditPostClientProps) {
               </div>
             </div>
 
+            {/* Description */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold text-foreground">
+                Opis <span className="text-brand">*</span>
+              </Label>
+              <RichTextEditor
+                content={formData.description}
+                onChange={(content) => setFormData({ ...formData, description: content })}
+                placeholder="Opisz szczegółowo swoje ogłoszenie: zakres usług lub potrzeb, termin, wymagania..."
+              />
+            </div>
+
             {/* Category Selector */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -576,18 +588,6 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   }`} />
                 </div>
               </button>
-            </div>
-
-            {/* Description */}
-            <div className="space-y-3">
-              <Label className="text-base font-semibold text-foreground">
-                Opis <span className="text-brand">*</span>
-              </Label>
-              <RichTextEditor
-                content={formData.description}
-                onChange={(content) => setFormData({ ...formData, description: content })}
-                placeholder="Opisz szczegółowo swoje ogłoszenie: zakres usług lub potrzeb, termin, wymagania..."
-              />
             </div>
 
             {/* Images */}

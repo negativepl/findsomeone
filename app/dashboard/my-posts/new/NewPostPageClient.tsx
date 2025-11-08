@@ -39,8 +39,8 @@ export function NewPostPageClient({ user }: NewPostPageClientProps) {
 
   const getStepTitle = (step: number): string => {
     switch (step) {
-      case 1: return 'Podstawowe informacje'
-      case 2: return 'Opis ogłoszenia'
+      case 1: return 'Tytuł i opis'
+      case 2: return 'Kategoria'
       case 3: return 'Zdjęcia'
       case 4: return 'Lokalizacja'
       case 5: return 'Budżet'

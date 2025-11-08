@@ -496,4 +496,20 @@ body.beta-banner-visible header::before {
   display: none !important;
 }
 
+/* =============================================
+   Notification Count Animation
+   ============================================= */
+
+@keyframes scale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 

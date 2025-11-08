@@ -33,7 +33,14 @@ export default function LoginPage() {
     })
 
     if (error) {
-      setError('Nieprawidłowy email lub hasło')
+      // Check if it's an unconfirmed email error
+      if (error.message.includes('Email not confirmed') || error.message.includes('not confirmed')) {
+        setError('Musisz potwierdzić swoje konto. Sprawdź email i kliknij w link aktywacyjny.')
+      } else if (error.message.includes('Invalid login credentials')) {
+        setError('Nieprawidłowy email lub hasło')
+      } else {
+        setError(error.message)
+      }
       setLoading(false)
     } else {
       // Store remember me preference

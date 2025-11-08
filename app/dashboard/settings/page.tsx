@@ -83,6 +83,7 @@ export default async function SettingsPage() {
               <NotificationSettings
                 emailNotifications={profile?.email_notifications ?? false}
                 messageNotifications={profile?.message_notifications ?? false}
+                user={user}
               />
             </div>
           </div>
@@ -165,6 +166,7 @@ export default async function SettingsPage() {
               <NotificationSettings
                 emailNotifications={profile?.email_notifications ?? false}
                 messageNotifications={profile?.message_notifications ?? false}
+                user={user}
               />
             </CardContent>
           </Card>

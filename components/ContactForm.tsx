@@ -22,7 +22,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
     email: userEmail || '',
     subject: '',
     message: '',
-    category: 'general' as 'general' | 'support',
+    category: 'general' as 'general' | 'support' | 'moderation' | 'complaints' | 'gdpr',
     gdprConsent: false
   })
 
@@ -127,6 +127,9 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 <SelectContent>
                   <SelectItem value="general">Kontakt ogólny</SelectItem>
                   <SelectItem value="support">Pomoc techniczna</SelectItem>
+                  <SelectItem value="moderation">Sprawy moderacyjne</SelectItem>
+                  <SelectItem value="complaints">Reklamacje</SelectItem>
+                  <SelectItem value="gdpr">Sprawy RODO</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -246,6 +249,9 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 <SelectContent>
                   <SelectItem value="general">Kontakt ogólny</SelectItem>
                   <SelectItem value="support">Pomoc techniczna</SelectItem>
+                  <SelectItem value="moderation">Sprawy moderacyjne</SelectItem>
+                  <SelectItem value="complaints">Reklamacje</SelectItem>
+                  <SelectItem value="gdpr">Sprawy RODO</SelectItem>
                 </SelectContent>
               </Select>
             </div>

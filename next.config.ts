@@ -127,4 +127,8 @@ export default withPWA({
   register: true,
   skipWaiting: true,
   sw: "sw.js",
+  workboxOptions: {
+    // Import custom push notification handler
+    importScripts: ['/sw-push.js'],
+  },
 })(nextConfig);

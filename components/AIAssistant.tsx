@@ -52,12 +52,10 @@ export function AIAssistant() {
   const [messages, setMessages] = useState<Message[]>(loadMessagesFromStorage)
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
   const [showGradient, setShowGradient] = useState(false)
   const [settings, setSettings] = useState<ChatSettings | null>(null)
   const [isLoadingSettings, setIsLoadingSettings] = useState(true)
   const [isPinned, setIsPinned] = useState(false)
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const [mounted, setMounted] = useState(false)
@@ -178,29 +176,13 @@ export function AIAssistant() {
     localStorage.removeItem('ai-assistant-messages')
   }
 
-  const handleMouseEnter = () => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current)
-      closeTimeoutRef.current = null
-    }
-    setIsHovered(true)
-    setIsOpen(true)
+  const handleToggle = () => {
+    setIsOpen(!isOpen)
 
     // Close other dropdowns when AI chat opens
-    window.dispatchEvent(new CustomEvent('ai-chat-opened'))
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-    // Don't auto-close if pinned
-    if (isPinned) return
-
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current)
+    if (!isOpen) {
+      window.dispatchEvent(new CustomEvent('ai-chat-opened'))
     }
-    closeTimeoutRef.current = setTimeout(() => {
-      setIsOpen(false)
-    }, 200)
   }
 
   // Block body scroll when chat is open on mobile ONLY
@@ -225,28 +207,16 @@ export function AIAssistant() {
     }
   }, [isOpen])
 
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (closeTimeoutRef.current) {
-        clearTimeout(closeTimeoutRef.current)
-      }
-    }
-  }, [])
-
   // Don't render if assistant is disabled
   if (settings && !settings.enabled) {
     return null
   }
 
   return (
-    <div
-      className="relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+    <div className="relative">
       {/* AI Button in Navbar */}
       <button
+        onClick={handleToggle}
         className="relative inline-flex items-center justify-center h-[34px] w-[34px] md:h-10 md:w-10 rounded-full bg-brand hover:bg-brand/90 transition-colors text-brand-foreground"
         aria-label="Asystent AI"
         aria-expanded={isOpen}
