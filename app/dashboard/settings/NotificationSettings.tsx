@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useState, useTransition, useEffect } from 'react'
 import { Switch } from '@/components/ui/switch'
 import { updateNotificationPreferences } from './actions'
 import { toast } from 'sonner'
@@ -36,6 +36,34 @@ export function NotificationSettings({
     subscribe,
     unsubscribe,
   } = usePushNotifications(user)
+
+  const [debugInfo, setDebugInfo] = useState<string>('')
+
+  useEffect(() => {
+    // Debug info
+    const getDebugInfo = async () => {
+      const info: string[] = []
+      info.push(`SW Supported: ${'serviceWorker' in navigator}`)
+      info.push(`Push Supported: ${'PushManager' in window}`)
+
+      if ('serviceWorker' in navigator) {
+        const reg = await navigator.serviceWorker.getRegistration()
+        info.push(`SW Registered: ${!!reg}`)
+        if (reg) {
+          info.push(`SW Active: ${!!reg.active}`)
+          info.push(`SW Installing: ${!!reg.installing}`)
+          info.push(`SW Waiting: ${!!reg.waiting}`)
+        }
+      }
+
+      info.push(`Environment: ${process.env.NODE_ENV}`)
+      info.push(`Permission: ${Notification.permission}`)
+
+      setDebugInfo(info.join('\n'))
+    }
+
+    getDebugInfo()
+  }, [])
 
   async function handleEmailChange(checked: boolean) {
     setEmailNotifications(checked)
@@ -230,6 +258,16 @@ export function NotificationSettings({
             <p className="text-sm text-muted-foreground/70">Nieobsługiwane przez tę przeglądarkę</p>
           </div>
           <Switch checked={false} disabled={true} />
+        </div>
+      )}
+
+      {/* Debug Panel */}
+      {debugInfo && (
+        <div className="col-span-full p-4 rounded-2xl bg-muted/30 border border-muted">
+          <p className="text-xs font-semibold text-muted-foreground mb-2">Debug Info (Service Worker Status)</p>
+          <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono">
+            {debugInfo}
+          </pre>
         </div>
       )}
     </div>
