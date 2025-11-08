@@ -251,7 +251,7 @@ export default async function TermsPage() {
                   <li><strong>Usunięcie treści</strong> - usunięcie ogłoszenia, wiadomości lub innych materiałów naruszających Regulamin</li>
                   <li><strong>Czasowe zawieszenie Konta</strong> - od 7 do 90 dni, w zależności od wagi naruszenia</li>
                   <li><strong>Trwałe usunięcie Konta</strong> - w przypadku poważnych lub powtarzających się naruszeń</li>
-                  <li><strong>Ban IP</strong> - blokada dostępu z danego adresu IP w przypadku drastycznych naruszeń</li>
+                  <li><strong>Blokada IP</strong> - blokada dostępu z danego adresu IP w przypadku drastycznych naruszeń</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   9.2. Poważne naruszenia obejmują w szczególności:
@@ -310,7 +310,7 @@ export default async function TermsPage() {
                     nawet jeśli użyjesz innych słów niż w oryginalnym ogłoszeniu</li>
                   <li><strong>Nawigatorek (chatbot)</strong> - asystent pomagający w znalezieniu ogłoszeń poprzez naturalną konwersację.
                     Korzystanie z chatbota jest dobrowolne</li>
-                  <li><strong>Wypełniaczka (bot generujący treści demo)</strong> - bot automatycznie generujący przykładowe ogłoszenia
+                  <li><strong>Wypełniaczek (bot generujący treści demo)</strong> - bot automatycznie generujący przykładowe ogłoszenia
                     oznaczone etykietą "AI". Profil bota jest oznaczony i nie można z nim prowadzić konwersacji</li>
                   <li><strong>Automatyczna moderacja</strong> - AI wykrywa potencjalnie niewłaściwe treści (spam, treści obraźliwe).
                     Końcowa decyzja należy zawsze do człowieka-moderatora</li>

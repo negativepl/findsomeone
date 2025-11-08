@@ -265,19 +265,19 @@ export default async function PrivacyPage() {
                   Masz prawo do sprzeciwu wobec przetwarzania Twoich danych przez systemy AI. Skontaktuj się z nami poprzez formularz kontaktowy.
                 </p>
 
-                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">8.5 Wypełniaczka - Bot generujący ogłoszenia demo</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">8.5 Wypełniaczek - Bot generujący ogłoszenia demo</h3>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  Platforma używa bota o nazwie <strong>Wypełniaczka</strong> do automatycznego generowania przykładowych ogłoszeń,
+                  Platforma używa bota o nazwie <strong>Wypełniaczek</strong> do automatycznego generowania przykładowych ogłoszeń,
                   które wypełniają platformę i ułatwiają nowym użytkownikom zrozumienie jak działa serwis.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  <strong>Charakterystyka bota Wypełniaczka:</strong>
+                  <strong>Charakterystyka bota Wypełniaczek:</strong>
                 </p>
                 <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
                   <li>Profil oznaczony wyraźną etykietą "AI" z ikoną Sparkles</li>
                   <li>Generuje realistyczne ogłoszenia przy użyciu GPT-4o mini</li>
                   <li>Wszystkie ogłoszenia mają flagę <code>is_ai_generated = true</code></li>
-                  <li>Nie można wysyłać wiadomości do bota Wypełniaczka (funkcja wiadomości jest wyłączona)</li>
+                  <li>Nie można wysyłać wiadomości do bota Wypełniaczek (funkcja wiadomości jest wyłączona)</li>
                   <li>Ogłoszenia bota są wyraźnie oznaczone dla użytkowników</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
@@ -286,6 +286,70 @@ export default async function PrivacyPage() {
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   <strong>Dane przetwarzane:</strong> Bot wykorzystuje te same dane co semantyczne wyszukiwanie (kategorie, miasta, opisy)
                   do generowania realistycznych ogłoszeń. Wszystkie wygenerowane treści są fikcyjne.
+                </p>
+
+                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">8.6 Wykorzystanie danych lokalizacyjnych</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  Platforma przetwarza dane lokalizacyjne w celu zapewnienia właściwego działania funkcji wyszukiwania i dopasowania ogłoszeń.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Jakie dane lokalizacyjne zbieramy:</strong>
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
+                  <li><strong>Miasto wybrane przez użytkownika</strong> - przy tworzeniu ogłoszenia użytkownik wybiera miasto z listy</li>
+                  <li><strong>Województwo</strong> - automatycznie przypisywane na podstawie wybranego miasta</li>
+                  <li><strong>Współrzędne geograficzne (opcjonalnie)</strong> - jeśli użytkownik wyrazi zgodę, możemy wykorzystać geolokalizację przeglądarki do sugerowania najbliższego miasta</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Cel przetwarzania:</strong>
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
+                  <li>Wyświetlanie ogłoszeń z wybranego obszaru geograficznego</li>
+                  <li>Filtrowanie wyników wyszukiwania według lokalizacji</li>
+                  <li>Sugerowanie najbliższych miast na podstawie geolokalizacji (wymagana zgoda)</li>
+                  <li>Generowanie statystyk dotyczących aktywności w poszczególnych regionach</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Geolokalizacja przeglądarki:</strong> Jeśli użytkownik wyrazi zgodę na udostępnienie lokalizacji przeglądarki,
+                  współrzędne geograficzne są wykorzystywane <strong>wyłącznie</strong> do sugerowania najbliższego miasta z listy.
+                  Współrzędne nie są przechowywane w bazie danych - zapisywane jest tylko wybrane miasto.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4 italic">
+                  <strong>Ważne:</strong> Dane o mieście są publiczne i widoczne w ogłoszeniach. Nie zbieramy precyzyjnych adresów
+                  zamieszkania - użytkownik samodzielnie decyduje o poziomie szczegółowości w opisie ogłoszenia.
+                </p>
+
+                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">8.7 Automatyczne wykrywanie kategorii przez AI</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  Platforma wykorzystuje sztuczną inteligencję do automatycznego sugerowania odpowiedniej kategorii podczas tworzenia ogłoszenia.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Jak to działa:</strong>
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
+                  <li>Podczas pisania tytułu i opisu ogłoszenia, system AI analizuje treść w czasie rzeczywistym</li>
+                  <li>AI sugeruje najbardziej odpowiednią kategorię na podstawie słów kluczowych i kontekstu</li>
+                  <li>Użytkownik może zaakceptować sugestię lub wybrać inną kategorię ręcznie</li>
+                  <li>Wybór kategorii zawsze należy do użytkownika - AI jedynie sugeruje</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Jakie dane przetwarzamy:</strong>
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
+                  <li>Tytuł ogłoszenia (wersja robocza podczas pisania)</li>
+                  <li>Opis ogłoszenia (wersja robocza podczas pisania)</li>
+                  <li>Lista dostępnych kategorii do dopasowania</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Cel:</strong> Ułatwienie użytkownikom właściwego kategoryzowania ogłoszeń, co poprawia jakość wyników wyszukiwania
+                  i pomaga innym użytkownikom znaleźć odpowiednie oferty.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Przetwarzanie:</strong> Analiza treści odbywa się poprzez OpenAI API. Dane są wysyłane wyłącznie w celu otrzymania
+                  sugestii kategorii i nie są przechowywane przez OpenAI (zgodnie z polityką OpenAI dla API).
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4 italic">
+                  <strong>Uwaga:</strong> Funkcja jest opcjonalna - użytkownik może zawsze wybrać kategorię ręcznie bez korzystania z sugestii AI.
                 </p>
               </section>
 
@@ -367,12 +431,12 @@ export default async function PrivacyPage() {
                   <li>Ochronę praw użytkowników i administratorów</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">9.6 Banowanie użytkowników i prawo do odwołania</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">9.6 Blokowanie użytkowników i prawo do odwołania</h3>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  W przypadku poważnych naruszeń Regulaminu, Administrator może <strong>zbanować</strong> (zablokować) konto użytkownika.
+                  W przypadku poważnych naruszeń Regulaminu, Administrator może <strong>zablokować</strong> konto użytkownika.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  <strong>Powody banowania:</strong>
+                  <strong>Powody blokowania:</strong>
                 </p>
                 <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
                   <li>Wielokrotne naruszenia Regulaminu</li>
@@ -383,7 +447,7 @@ export default async function PrivacyPage() {
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   <strong>Prawo do odwołania:</strong> Jeśli Twoje konto zostało zablokowane, masz prawo odwołać się od tej decyzji w ciągu
-                  <strong> 14 dni</strong> od otrzymania informacji o banie. Aby się odwołać:
+                  <strong> 14 dni</strong> od otrzymania informacji o blokadzie. Aby się odwołać:
                 </p>
                 <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
                   <li>Wyślij wiadomość poprzez <a href="/contact" className="text-brand hover:underline">formularz kontaktowy</a></li>
@@ -394,7 +458,7 @@ export default async function PrivacyPage() {
                   Odwołania są rozpatrywane przez zespół moderacji w ciągu <strong>7 dni roboczych</strong>. Decyzja jest ostateczna.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4 italic">
-                  <strong>Ważne:</strong> Ban IP i całkowita blokada są stosowane tylko w skrajnych przypadkach (działalność przestępcza, masowy spam).
+                  <strong>Ważne:</strong> Całkowita blokada IP jest stosowana tylko w skrajnych przypadkach (działalność przestępcza, masowy spam).
                 </p>
               </section>
 
