@@ -1,109 +1,100 @@
 'use client'
 
-import { useState } from 'react'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { updatePreferences } from './actions'
+import { useState, useEffect } from 'react'
+import { Switch } from '@/components/ui/switch'
+import { updateVibrationPreference } from './actions'
 import { toast } from 'sonner'
 
 interface PreferencesSettingsProps {
-  language?: string
-  theme?: string
+  vibrationEnabled?: boolean
+}
+
+// Detect if device is iOS
+function isIOS(): boolean {
+  if (typeof window === 'undefined') return false
+
+  const userAgent = window.navigator.userAgent.toLowerCase()
+  return /iphone|ipad|ipod/.test(userAgent)
+}
+
+// Detect if device is mobile (Android or iOS)
+function isMobileDevice(): boolean {
+  if (typeof window === 'undefined') return false
+
+  const userAgent = window.navigator.userAgent.toLowerCase()
+  return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent)
+}
+
+// Check if vibration API is supported
+function isVibrationSupported(): boolean {
+  if (typeof window === 'undefined') return false
+  return 'vibrate' in navigator
 }
 
 export function PreferencesSettings({
-  language: initialLanguage = 'pl',
-  theme: initialTheme = 'light'
+  vibrationEnabled: initialVibration = false
 }: PreferencesSettingsProps) {
-  const [language, setLanguage] = useState(initialLanguage)
-  const [theme, setTheme] = useState(initialTheme)
+  const [vibrationEnabled, setVibrationEnabled] = useState(initialVibration)
   const [loading, setLoading] = useState(false)
+  const [isiOS, setIsIOS] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+  const [vibrationSupported, setVibrationSupported] = useState(false)
 
-  async function handleLanguageChange(value: string) {
-    setLanguage(value)
+  useEffect(() => {
+    setIsIOS(isIOS())
+    setIsMobile(isMobileDevice())
+    setVibrationSupported(isVibrationSupported())
+  }, [])
+
+  async function handleVibrationChange(checked: boolean) {
+    setVibrationEnabled(checked)
     setLoading(true)
 
     const formData = new FormData()
-    formData.append('language', value)
-    formData.append('theme', theme)
+    formData.append('vibrationEnabled', String(checked))
 
-    const result = await updatePreferences(formData)
+    const result = await updateVibrationPreference(formData)
     setLoading(false)
 
     if (result.success) {
-      toast.success('Język został zmieniony')
+      toast.success('Ustawienia zapisane')
+      // Test vibration if enabled (only on mobile, non-iOS devices)
+      if (checked && vibrationSupported && !isiOS && isMobile) {
+        navigator.vibrate(200)
+      }
     } else {
-      setLanguage(initialLanguage) // revert on error
+      setVibrationEnabled(!checked) // revert on error
       toast.error(result.error)
     }
   }
 
-  async function handleThemeChange(value: string) {
-    setTheme(value)
-    setLoading(true)
+  // Determine if vibration should be disabled
+  const isDisabled = loading || isiOS || !vibrationSupported || !isMobile
 
-    const formData = new FormData()
-    formData.append('language', language)
-    formData.append('theme', value)
-
-    const result = await updatePreferences(formData)
-    setLoading(false)
-
-    if (result.success) {
-      toast.success('Motyw został zmieniony')
-    } else {
-      setTheme(initialTheme) // revert on error
-      toast.error(result.error)
-    }
+  // Get status message
+  const getStatusMessage = () => {
+    if (!isMobile) return 'Dostępne tylko na urządzeniach mobilnych'
+    if (isiOS) return 'Nieobsługiwane na iOS'
+    if (!vibrationSupported) return 'Nieobsługiwane przez tę przeglądarkę'
+    return 'Wibracje przy interakcjach'
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
+    <div className="grid grid-cols-1 gap-4">
+      <div className={`flex items-center justify-between p-5 rounded-2xl ${isDisabled ? 'bg-muted/50 opacity-50' : 'bg-background'}`}>
         <div className="flex-1 pr-4">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-base font-semibold text-muted-foreground">Język</p>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
-              Wkrótce
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground/70">Wybierz język aplikacji</p>
+          <p className={`text-base font-semibold mb-1 ${isDisabled ? 'text-muted-foreground' : 'text-foreground'}`}>
+            Wibracje
+          </p>
+          <p className={`text-sm ${isDisabled ? 'text-muted-foreground/70' : 'text-muted-foreground'}`}>
+            {getStatusMessage()}
+          </p>
         </div>
-        <Select value={language} onValueChange={handleLanguageChange} disabled={true}>
-          <SelectTrigger className="w-36 rounded-xl">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="pl">Polski</SelectItem>
-            <SelectItem value="en">English</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
-        <div className="flex-1 pr-4">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-base font-semibold text-muted-foreground">Motyw</p>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
-              Wkrótce
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground/70">Dostosuj wygląd aplikacji</p>
-        </div>
-        <Select value={theme} onValueChange={handleThemeChange} disabled={true}>
-          <SelectTrigger className="w-36 rounded-xl">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="light">Jasny</SelectItem>
-            <SelectItem value="dark">Ciemny</SelectItem>
-            <SelectItem value="system">System</SelectItem>
-          </SelectContent>
-        </Select>
+        <Switch
+          checked={vibrationEnabled}
+          onCheckedChange={handleVibrationChange}
+          disabled={isDisabled}
+        />
       </div>
     </div>
   )

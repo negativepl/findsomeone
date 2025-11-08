@@ -6,21 +6,26 @@ import { updateNotificationPreferences } from './actions'
 import { toast } from 'sonner'
 import { User } from '@supabase/supabase-js'
 import { usePushNotifications } from '@/lib/hooks/usePushNotifications'
-import { Bell, BellOff } from 'lucide-react'
 
 interface NotificationSettingsProps {
   emailNotifications: boolean
   messageNotifications: boolean
+  favoriteNotifications: boolean
+  reviewNotifications: boolean
   user: User
 }
 
 export function NotificationSettings({
   emailNotifications: initialEmail,
   messageNotifications: initialMessage,
+  favoriteNotifications: initialFavorite,
+  reviewNotifications: initialReview,
   user
 }: NotificationSettingsProps) {
   const [emailNotifications, setEmailNotifications] = useState(initialEmail)
   const [messageNotifications, setMessageNotifications] = useState(initialMessage)
+  const [favoriteNotifications, setFavoriteNotifications] = useState(initialFavorite)
+  const [reviewNotifications, setReviewNotifications] = useState(initialReview)
   const [isPending, startTransition] = useTransition()
 
   const {
@@ -38,6 +43,8 @@ export function NotificationSettings({
     const formData = new FormData()
     formData.append('emailNotifications', String(checked))
     formData.append('messageNotifications', String(messageNotifications))
+    formData.append('favoriteNotifications', String(favoriteNotifications))
+    formData.append('reviewNotifications', String(reviewNotifications))
 
     startTransition(async () => {
       const result = await updateNotificationPreferences(formData)
@@ -56,6 +63,8 @@ export function NotificationSettings({
     const formData = new FormData()
     formData.append('emailNotifications', String(emailNotifications))
     formData.append('messageNotifications', String(checked))
+    formData.append('favoriteNotifications', String(favoriteNotifications))
+    formData.append('reviewNotifications', String(reviewNotifications))
 
     startTransition(async () => {
       const result = await updateNotificationPreferences(formData)
@@ -63,6 +72,46 @@ export function NotificationSettings({
         toast.success('Ustawienia zapisane')
       } else {
         setMessageNotifications(!checked) // revert on error
+        toast.error(result.error)
+      }
+    })
+  }
+
+  async function handleFavoriteChange(checked: boolean) {
+    setFavoriteNotifications(checked)
+
+    const formData = new FormData()
+    formData.append('emailNotifications', String(emailNotifications))
+    formData.append('messageNotifications', String(messageNotifications))
+    formData.append('favoriteNotifications', String(checked))
+    formData.append('reviewNotifications', String(reviewNotifications))
+
+    startTransition(async () => {
+      const result = await updateNotificationPreferences(formData)
+      if (result.success) {
+        toast.success('Ustawienia zapisane')
+      } else {
+        setFavoriteNotifications(!checked) // revert on error
+        toast.error(result.error)
+      }
+    })
+  }
+
+  async function handleReviewChange(checked: boolean) {
+    setReviewNotifications(checked)
+
+    const formData = new FormData()
+    formData.append('emailNotifications', String(emailNotifications))
+    formData.append('messageNotifications', String(messageNotifications))
+    formData.append('favoriteNotifications', String(favoriteNotifications))
+    formData.append('reviewNotifications', String(checked))
+
+    startTransition(async () => {
+      const result = await updateNotificationPreferences(formData)
+      if (result.success) {
+        toast.success('Ustawienia zapisane')
+      } else {
+        setReviewNotifications(!checked) // revert on error
         toast.error(result.error)
       }
     })
@@ -78,16 +127,20 @@ export function NotificationSettings({
         toast.success('Powiadomienia push wyłączone')
       }
     } catch (error: any) {
+      console.error('Push notification error:', error)
       if (error.message === 'Notification permission denied') {
         toast.error('Brak uprawnień do powiadomień. Sprawdź ustawienia przeglądarki.')
+      } else if (error.message?.includes('Service worker not registered')) {
+        toast.error('Push notifications działają tylko w trybie produkcyjnym (po zbudowaniu aplikacji).')
       } else {
-        toast.error('Nie udało się zmienić ustawień push')
+        toast.error('Nie udało się zmienić ustawień push: ' + error.message)
       }
     }
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {/* Email Notifications - Coming Soon */}
       <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
         <div className="flex-1 pr-4">
           <div className="flex items-center gap-2 mb-1">
@@ -104,20 +157,43 @@ export function NotificationSettings({
           disabled={true}
         />
       </div>
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
+
+      {/* Message Notifications - Active */}
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
         <div className="flex-1 pr-4">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-base font-semibold text-muted-foreground">Nowe wiadomości</p>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
-              Wkrótce
-            </span>
-          </div>
-          <p className="text-sm text-muted-foreground/70">Powiadomienia o nowych wiadomościach</p>
+          <p className="text-base font-semibold text-foreground mb-1">Nowe wiadomości</p>
+          <p className="text-sm text-muted-foreground">Powiadomienia o nowych wiadomościach</p>
         </div>
         <Switch
           checked={messageNotifications}
           onCheckedChange={handleMessageChange}
-          disabled={true}
+          disabled={isPending}
+        />
+      </div>
+
+      {/* Favorite Notifications - Active */}
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
+        <div className="flex-1 pr-4">
+          <p className="text-base font-semibold text-foreground mb-1">Dodanie do ulubionych</p>
+          <p className="text-sm text-muted-foreground">Powiadomienia gdy ktoś doda Twój post do ulubionych</p>
+        </div>
+        <Switch
+          checked={favoriteNotifications}
+          onCheckedChange={handleFavoriteChange}
+          disabled={isPending}
+        />
+      </div>
+
+      {/* Review Notifications - Active */}
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
+        <div className="flex-1 pr-4">
+          <p className="text-base font-semibold text-foreground mb-1">Nowe opinie</p>
+          <p className="text-sm text-muted-foreground">Powiadomienia o otrzymanych opiniach</p>
+        </div>
+        <Switch
+          checked={reviewNotifications}
+          onCheckedChange={handleReviewChange}
+          disabled={isPending}
         />
       </div>
 

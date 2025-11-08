@@ -146,6 +146,8 @@ export async function deleteAccount(formData: FormData) {
 export async function updateNotificationPreferences(formData: FormData) {
   const emailNotifications = formData.get('emailNotifications') === 'true'
   const messageNotifications = formData.get('messageNotifications') === 'true'
+  const favoriteNotifications = formData.get('favoriteNotifications') === 'true'
+  const reviewNotifications = formData.get('reviewNotifications') === 'true'
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -159,6 +161,8 @@ export async function updateNotificationPreferences(formData: FormData) {
     .update({
       email_notifications: emailNotifications,
       message_notifications: messageNotifications,
+      favorite_notifications: favoriteNotifications,
+      review_notifications: reviewNotifications,
     })
     .eq('id', user.id)
 
@@ -195,4 +199,29 @@ export async function updatePreferences(formData: FormData) {
 
   revalidatePath('/dashboard/settings')
   return { success: true, message: 'Preferencje zostały zapisane' }
+}
+
+export async function updateVibrationPreference(formData: FormData) {
+  const vibrationEnabled = formData.get('vibrationEnabled') === 'true'
+
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { success: false, error: 'Nie znaleziono użytkownika' }
+  }
+
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      vibration_enabled: vibrationEnabled,
+    })
+    .eq('id', user.id)
+
+  if (error) {
+    return { success: false, error: error.message }
+  }
+
+  revalidatePath('/dashboard/settings')
+  return { success: true, message: 'Ustawienia wibracji zostały zapisane' }
 }

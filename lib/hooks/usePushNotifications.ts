@@ -35,7 +35,13 @@ export function usePushNotifications(user: User | null): UsePushNotificationsRet
     if (!user) return
 
     try {
-      const registration = await navigator.serviceWorker.ready
+      // Check if service worker is registered first
+      const registration = await navigator.serviceWorker.getRegistration()
+      if (!registration) {
+        console.log('No service worker registered')
+        return
+      }
+
       const subscription = await registration.pushManager.getSubscription()
       setIsSubscribed(!!subscription)
     } catch (error) {
@@ -80,7 +86,10 @@ export function usePushNotifications(user: User | null): UsePushNotificationsRet
       }
 
       // Get service worker registration
-      const registration = await navigator.serviceWorker.ready
+      const registration = await navigator.serviceWorker.getRegistration()
+      if (!registration) {
+        throw new Error('Service worker not registered. PWA must be enabled in production mode.')
+      }
 
       // Subscribe to push
       const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
@@ -121,7 +130,13 @@ export function usePushNotifications(user: User | null): UsePushNotificationsRet
     setIsLoading(true)
 
     try {
-      const registration = await navigator.serviceWorker.ready
+      const registration = await navigator.serviceWorker.getRegistration()
+      if (!registration) {
+        console.log('No service worker registered')
+        setIsLoading(false)
+        return
+      }
+
       const subscription = await registration.pushManager.getSubscription()
 
       if (subscription) {

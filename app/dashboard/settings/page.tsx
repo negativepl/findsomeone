@@ -26,7 +26,7 @@ export default async function SettingsPage() {
   // Fetch user profile for preferences
   const { data: profile } = await supabase
     .from('profiles')
-    .select('email_notifications, message_notifications, language, theme')
+    .select('email_notifications, message_notifications, favorite_notifications, review_notifications, language, theme, vibration_enabled')
     .eq('id', user.id)
     .single()
 
@@ -83,6 +83,8 @@ export default async function SettingsPage() {
               <NotificationSettings
                 emailNotifications={profile?.email_notifications ?? false}
                 messageNotifications={profile?.message_notifications ?? false}
+                favoriteNotifications={profile?.favorite_notifications ?? true}
+                reviewNotifications={profile?.review_notifications ?? true}
                 user={user}
               />
             </div>
@@ -93,13 +95,12 @@ export default async function SettingsPage() {
             <div className="mb-4">
               <h2 className="text-xl font-bold text-foreground mb-1">Preferencje</h2>
               <p className="text-sm text-muted-foreground">
-                Dostosuj wygląd i działanie aplikacji
+                Dostosuj ustawienia aplikacji
               </p>
             </div>
             <div className="bg-card rounded-2xl p-5">
               <PreferencesSettings
-                language={profile?.language ?? 'pl'}
-                theme={profile?.theme ?? 'light'}
+                vibrationEnabled={profile?.vibration_enabled ?? false}
               />
             </div>
           </div>
@@ -166,6 +167,8 @@ export default async function SettingsPage() {
               <NotificationSettings
                 emailNotifications={profile?.email_notifications ?? false}
                 messageNotifications={profile?.message_notifications ?? false}
+                favoriteNotifications={profile?.favorite_notifications ?? true}
+                reviewNotifications={profile?.review_notifications ?? true}
                 user={user}
               />
             </CardContent>
@@ -176,13 +179,12 @@ export default async function SettingsPage() {
             <CardHeader>
               <CardTitle className="text-3xl font-bold text-foreground">Preferencje</CardTitle>
               <CardDescription className="text-base text-muted-foreground">
-                Dostosuj wygląd i działanie aplikacji
+                Dostosuj ustawienia aplikacji
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4 pt-6">
+            <CardContent className="pt-6">
               <PreferencesSettings
-                language={profile?.language ?? 'pl'}
-                theme={profile?.theme ?? 'light'}
+                vibrationEnabled={profile?.vibration_enabled ?? false}
               />
             </CardContent>
           </Card>
