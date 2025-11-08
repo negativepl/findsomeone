@@ -220,9 +220,9 @@ export default async function PrivacyPage() {
                   OpenAI <strong>nie przechowuje</strong> Twoich danych ani nie używa ich do trenowania modeli (zgodnie z polityką OpenAI dla API).
                 </p>
 
-                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">8.2 AI Navigator - Chatbot asystent</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">8.2 Nawigatorek - Chatbot asystent</h3>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  Platforma oferuje chatbota AI Navigator, który pomaga w znalezieniu ogłoszeń poprzez naturalne rozmowy.
+                  Platforma oferuje chatbota Nawigatorek, który pomaga w znalezieniu ogłoszeń poprzez naturalne rozmowy.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   <strong>Jakie dane przetwarzamy:</strong>
@@ -263,6 +263,29 @@ export default async function PrivacyPage() {
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   Masz prawo do sprzeciwu wobec przetwarzania Twoich danych przez systemy AI. Skontaktuj się z nami poprzez formularz kontaktowy.
+                </p>
+
+                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">8.5 Wypełniaczka - Bot generujący ogłoszenia demo</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  Platforma używa bota o nazwie <strong>Wypełniaczka</strong> do automatycznego generowania przykładowych ogłoszeń,
+                  które wypełniają platformę i ułatwiają nowym użytkownikom zrozumienie jak działa serwis.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Charakterystyka bota Wypełniaczka:</strong>
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
+                  <li>Profil oznaczony wyraźną etykietą "AI" z ikoną Sparkles</li>
+                  <li>Generuje realistyczne ogłoszenia przy użyciu GPT-4o mini</li>
+                  <li>Wszystkie ogłoszenia mają flagę <code>is_ai_generated = true</code></li>
+                  <li>Nie można wysyłać wiadomości do bota Wypełniaczka (funkcja wiadomości jest wyłączona)</li>
+                  <li>Ogłoszenia bota są wyraźnie oznaczone dla użytkowników</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Cel:</strong> Zapewnienie treści demonstracyjnych, szczególnie w nowych kategoriach, aby platforma wydawała się aktywna i pomocna dla nowych użytkowników.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Dane przetwarzane:</strong> Bot wykorzystuje te same dane co semantyczne wyszukiwanie (kategorie, miasta, opisy)
+                  do generowania realistycznych ogłoszeń. Wszystkie wygenerowane treści są fikcyjne.
                 </p>
               </section>
 
@@ -306,6 +329,11 @@ export default async function PrivacyPage() {
                   Zgłoszenia są weryfikowane przez zespół moderacji w ciągu <strong>24-48 godzin</strong>.
                   Fałszywe zgłoszenia mogą skutkować ostrzeżeniem lub zawieszeniem konta.
                 </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Odwołanie od decyzji moderacji:</strong> Jeśli Twoje ogłoszenie zostało odrzucone przez system automatycznej moderacji
+                  lub moderatora, masz prawo do odwołania się od tej decyzji. Przycisk "Odwołaj się" znajduje się na stronie Twoich ogłoszeń
+                  przy ogłoszeniu odrzuconym. Odwołania są rozpatrywane przez innego moderatora w ciągu 48 godzin.
+                </p>
 
                 <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">9.4 Audit Logs (Dziennik dostępów)</h3>
                 <p className="text-muted-foreground leading-relaxed mb-4">
@@ -338,6 +366,36 @@ export default async function PrivacyPage() {
                   <li>Wykazanie zgodności z RODO w razie kontroli</li>
                   <li>Ochronę praw użytkowników i administratorów</li>
                 </ul>
+
+                <h3 className="text-xl font-semibold text-foreground mb-3 mt-6">9.6 Banowanie użytkowników i prawo do odwołania</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  W przypadku poważnych naruszeń Regulaminu, Administrator może <strong>zbanować</strong> (zablokować) konto użytkownika.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Powody banowania:</strong>
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
+                  <li>Wielokrotne naruszenia Regulaminu</li>
+                  <li>Spam lub publikowanie zabronionych treści</li>
+                  <li>Molestowanie innych użytkowników</li>
+                  <li>Działalność przestępcza (oszustwa, groźby)</li>
+                  <li>Próby obejścia wcześniejszych blokad</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  <strong>Prawo do odwołania:</strong> Jeśli Twoje konto zostało zablokowane, masz prawo odwołać się od tej decyzji w ciągu
+                  <strong> 14 dni</strong> od otrzymania informacji o banie. Aby się odwołać:
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4">
+                  <li>Wyślij wiadomość poprzez <a href="/contact" className="text-brand hover:underline">formularz kontaktowy</a></li>
+                  <li>Wybierz kategorię "Sprawy moderacyjne"</li>
+                  <li>Opisz sytuację i powód odwołania</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  Odwołania są rozpatrywane przez zespół moderacji w ciągu <strong>7 dni roboczych</strong>. Decyzja jest ostateczna.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4 italic">
+                  <strong>Ważne:</strong> Ban IP i całkowita blokada są stosowane tylko w skrajnych przypadkach (działalność przestępcza, masowy spam).
+                </p>
               </section>
 
               <section>

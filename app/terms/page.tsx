@@ -267,11 +267,19 @@ export default async function TermsPage() {
                   9.3. Decyzje dotyczące sankcji podejmowane są przez Administratora i są ostateczne, z zastrzeżeniem pkt 9.4.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  9.4. Użytkownik ma prawo do odwołania się od decyzji o zablokowaniu Konta w ciągu 14 dni od daty otrzymania
-                  informacji o sankcji, poprzez kontakt z Administratorem.
+                  9.4. Użytkownik ma prawo do odwołania się od decyzji o zablokowaniu Konta lub odrzuceniu ogłoszenia w ciągu <strong>14 dni</strong>
+                  od daty otrzymania informacji o sankcji. Odwołanie można złożyć poprzez:
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4 ml-4">
+                  <li><strong>Przycisk "Odwołaj się"</strong> - dostępny przy odrzuconym ogłoszeniu na stronie "Moje ogłoszenia"</li>
+                  <li><strong>Formularz kontaktowy</strong> - dla spraw dotyczących blokady konta (kategoria "Sprawy moderacyjne")</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  9.5. Odwołania są rozpatrywane przez innego moderatora lub Administratora w ciągu <strong>7 dni roboczych</strong>.
+                  Decyzja w sprawie odwołania jest ostateczna.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  9.5. Administrator może przekazać informacje o nielegalnej działalności właściwym organom ścigania.
+                  9.6. Administrator może przekazać informacje o nielegalnej działalności właściwym organom ścigania.
                 </p>
               </section>
 
@@ -300,12 +308,12 @@ export default async function TermsPage() {
                 <ul className="space-y-3 text-muted-foreground list-disc list-inside mb-4 ml-4">
                   <li><strong>Semantyczne wyszukiwanie</strong> - AI analizuje treść ogłoszeń i dopasowuje wyniki wyszukiwania
                     nawet jeśli użyjesz innych słów niż w oryginalnym ogłoszeniu</li>
-                  <li><strong>AI Navigator (chatbot)</strong> - asystent pomagający w znalezieniu ogłoszeń poprzez naturalną konwersację.
+                  <li><strong>Nawigatorek (chatbot)</strong> - asystent pomagający w znalezieniu ogłoszeń poprzez naturalną konwersację.
                     Korzystanie z chatbota jest dobrowolne</li>
+                  <li><strong>Wypełniaczka (bot generujący treści demo)</strong> - bot automatycznie generujący przykładowe ogłoszenia
+                    oznaczone etykietą "AI". Profil bota jest oznaczony i nie można z nim prowadzić konwersacji</li>
                   <li><strong>Automatyczna moderacja</strong> - AI wykrywa potencjalnie niewłaściwe treści (spam, treści obraźliwe).
                     Końcowa decyzja należy zawsze do człowieka-moderatora</li>
-                  <li><strong>Generowanie treści demo</strong> - platforma może zawierać przykładowe ogłoszenia wygenerowane przez AI,
-                    oznaczone wyraźną etykietą "AI"</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   11.2. Użytkownik akceptuje, że jego publiczne treści (tytuł i opis ogłoszenia) mogą być przetwarzane przez systemy AI

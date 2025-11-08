@@ -1,56 +1,56 @@
-# 🛠️ Scripts FindSomeone
+# FindSomeone Scripts
 
-Zbiór skryptów pomocniczych do zarządzania projektem.
+Collection of utility scripts for project management and testing.
 
-## 📂 Struktura
+## Directory Structure
 
 ```
 scripts/
-├── tests/              # Skrypty testowe
-├── utils/              # Narzędzia diagnostyczne
-└── *.ts/js            # Skrypty produkcyjne
+├── tests/              # Test scripts
+├── utils/              # Diagnostic utilities
+└── *.ts/js            # Production scripts
 ```
 
-## 🧪 Testy (tests/)
+## Test Scripts (tests/)
 
 ### Chatbot Testing
-- **`test-chatbot-quick.js`** ⭐ - Szybki test 5 różnych zapytań do chatbota
-- **`test-chatbot-comprehensive.js`** - Pełny test 15 zapytań (wymaga rate limit bypass)
-- **`test-chatbot.js`** - Podstawowy test chatbota
-- **`test-diverse-queries.js`** - Test różnorodnych zapytań
+- **`test-chatbot-quick.js`** - Quick test with 5 different chatbot queries (recommended)
+- **`test-chatbot-comprehensive.js`** - Full test with 15 queries (requires rate limit bypass)
+- **`test-chatbot.js`** - Basic chatbot test
+- **`test-diverse-queries.js`** - Test with diverse query types
 
-**Uruchomienie:**
+**Usage:**
 ```bash
 node scripts/tests/test-chatbot-quick.js
 ```
 
-## 🔧 Narzędzia (utils/)
+## Diagnostic Utilities (utils/)
 
-### Diagnostyka AI
-- **`check-ai-settings.js`** - Sprawdza konfigurację AI chatbota
-- **`check-ai-prompt.js`** - Weryfikuje system prompt
-- **`check-posts.js`** - Sprawdza status postów
+### AI Diagnostics
+- **`check-ai-settings.js`** - Checks AI chatbot configuration
+- **`check-ai-prompt.js`** - Verifies system prompt
+- **`check-posts.js`** - Checks posts status
 
-**Uruchomienie:**
+**Usage:**
 ```bash
 node scripts/utils/check-ai-settings.js
 ```
 
-## 🗃️ Skrypty produkcyjne (root)
+## Production Scripts (root)
 
-- `generate-site-embeddings.ts` - Generuje embeddingi
-- `setup-site-embeddings.ts` - Konfiguruje embeddingi
-- `change-ai-model.js` - Zmienia model AI
-- `run-migration.js` - Uruchamia migracje
+- `generate-site-embeddings.ts` - Generates embeddings for posts
+- `setup-site-embeddings.ts` - Sets up embeddings configuration
+- `change-ai-model.js` - Changes AI model
+- `run-migration.js` - Runs database migrations
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
-# Test chatbota
+# Test chatbot
 node scripts/tests/test-chatbot-quick.js
 
-# Sprawdź konfigurację AI
+# Check AI configuration
 node scripts/utils/check-ai-settings.js
 ```
 
-Więcej info: [`docs/tests/`](../docs/tests/)
+For more information, see [`docs/tests/`](../docs/tests/)
