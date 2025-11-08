@@ -1,6 +1,6 @@
 # Consolidated Migrations Summary
 
-This directory contains 4 consolidated migration files that replace the 99 original migration files from `/migrations_archive/`.
+This directory contains 4 consolidated migration files that replace the 99 original migration files from `/migrations/` (archived copies available in `/archive/duplicate_migrations/`).
 
 ## Overview
 
@@ -298,8 +298,13 @@ psql your_database -c "SELECT COUNT(*) FROM cities;"  # Should be 49
 
 ## Changelog
 
+**2025-11-08** - Archive cleanup
+- Reorganized deprecated files into `/archive/` with clear structure
+- Moved duplicate migrations to `/archive/duplicate_migrations/`
+- Updated documentation references
+
 **2025-11-05** - Initial consolidation
-- Analyzed 99 migration files from migrations_archive
+- Analyzed 99 migration files from original migrations
 - Created 4 consolidated migration files
 - Organized by feature area (core, AI, admin, reference data)
 - Added comprehensive documentation and comments

@@ -27,13 +27,18 @@ supabase db push --db-url $DATABASE_URL --migrations-dir supabase/migrations_con
 ```
 supabase/
 ├── migrations/                    # Original 99 migration files (for existing databases)
-├── migrations_archive/            # Backup of original migrations
-├── migrations_consolidated/       # NEW: 4 consolidated files (for new installations)
+├── migrations_consolidated/       # 4 consolidated files (for new installations)
 │   ├── 01_core_schema.sql        # Core tables and structure
 │   ├── 02_ai_features.sql        # AI & semantic search
 │   ├── 03_admin_features.sql     # Admin & moderation
 │   ├── 04_reference_data.sql     # Cities & categories data
 │   └── README.md                 # Detailed documentation
+├── functions/                     # Edge Functions (TypeScript) and SQL functions
+├── policies/                      # Row Level Security policies
+├── archive/                       # Archived/deprecated files (see archive/README.md)
+│   ├── deprecated_functions/      # Old optional SQL functions
+│   ├── duplicate_migrations/      # Backup copy of migrations/
+│   └── old_scripts/              # Ad-hoc SQL scripts
 └── MIGRATIONS_README.md           # This file
 ```
 
@@ -160,6 +165,7 @@ See detailed documentation in `migrations_consolidated/README.md` or open an iss
 
 ---
 
-**Last Updated:** November 5, 2025
+**Last Updated:** November 8, 2025
 **Database Version:** 1.0.0
 **Compatible with:** PostgreSQL 15+, pgvector 0.5.0+
+**Archive Cleanup:** November 8, 2025 - Deprecated files moved to `/archive/` (see archive/README.md)

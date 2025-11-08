@@ -119,9 +119,13 @@ RESEND_API_KEY=re-your-key
 ### Database Setup
 
 1. Create a new project at [Supabase](https://supabase.com)
-2. Run migrations from `supabase/migrations/` in order
+2. Run migrations:
+   - **For new installations**: Use consolidated migrations from `supabase/migrations_consolidated/` (4 files, ~30 seconds)
+   - **For existing databases**: Use incremental migrations from `supabase/migrations/` (99 files, full history)
 3. Configure authentication providers in the Supabase Dashboard
 4. Enable pgvector extension in your database
+
+See [supabase/MIGRATIONS_README.md](./supabase/MIGRATIONS_README.md) for detailed setup instructions.
 
 ## Project Structure
 
@@ -132,6 +136,11 @@ findsomeone/
 ├── contexts/               # React Context providers
 ├── lib/                    # Utilities, actions, and Supabase clients
 ├── supabase/              # Database migrations and configuration
+│   ├── migrations/         # 99 incremental migrations (full history)
+│   ├── migrations_consolidated/  # 4 consolidated migrations (recommended for new setups)
+│   ├── functions/          # Edge Functions (TypeScript) and SQL functions
+│   ├── policies/           # Row Level Security policies
+│   └── archive/           # Archived/deprecated files (see archive/README.md)
 ├── public/                # Static assets
 ├── docs/                  # Documentation
 └── scripts/               # Utility scripts

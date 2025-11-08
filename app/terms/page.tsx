@@ -34,7 +34,7 @@ export default async function TermsPage() {
         {/* Mobile flat, Desktop card */}
         <div className="bg-card border border-border rounded-2xl md:rounded-3xl p-5 md:p-8">
             <p className="text-muted-foreground mb-8">
-              Ostatnia aktualizacja: 1.11.2025
+              Ostatnia aktualizacja: 8.11.2025
             </p>
 
             <div className="space-y-8">
@@ -152,6 +152,16 @@ export default async function TermsPage() {
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   5.5. Użytkownik ponosi pełną odpowiedzialność za treść publikowanych przez siebie ogłoszeń.
                 </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  5.6. <strong>Wygasanie ogłoszeń:</strong>
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4 ml-4">
+                  <li>Ogłoszenia automatycznie wygasają po <strong>30 dniach</strong> od daty publikacji</li>
+                  <li>Użytkownik może przedłużyć ważność ogłoszenia o kolejne 30 dni za pomocą przycisku "Przedłuż"</li>
+                  <li>Wygasłe ogłoszenia otrzymują status "closed" i nie są widoczne w wynikach wyszukiwania</li>
+                  <li>System wysyła powiadomienia 7, 3 i 1 dzień przed wygaśnięciem ogłoszenia</li>
+                  <li>Przedłużenie ogłoszenia jest bezpłatne i nieograniczone</li>
+                </ul>
               </section>
 
               <section>
@@ -241,7 +251,7 @@ export default async function TermsPage() {
                   <li><strong>Usunięcie treści</strong> - usunięcie ogłoszenia, wiadomości lub innych materiałów naruszających Regulamin</li>
                   <li><strong>Czasowe zawieszenie Konta</strong> - od 7 do 90 dni, w zależności od wagi naruszenia</li>
                   <li><strong>Trwałe usunięcie Konta</strong> - w przypadku poważnych lub powtarzających się naruszeń</li>
-                  <li><strong>Ban IP</strong> - blokada dostępu z danego adresu IP w przypadku drastycznych naruszeń</li>
+                  <li><strong>Blokada IP</strong> - blokada dostępu z danego adresu IP w przypadku drastycznych naruszeń</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   9.2. Poważne naruszenia obejmują w szczególności:
@@ -257,11 +267,19 @@ export default async function TermsPage() {
                   9.3. Decyzje dotyczące sankcji podejmowane są przez Administratora i są ostateczne, z zastrzeżeniem pkt 9.4.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  9.4. Użytkownik ma prawo do odwołania się od decyzji o zablokowaniu Konta w ciągu 14 dni od daty otrzymania
-                  informacji o sankcji, poprzez kontakt z Administratorem.
+                  9.4. Użytkownik ma prawo do odwołania się od decyzji o zablokowaniu Konta lub odrzuceniu ogłoszenia w ciągu <strong>14 dni</strong>
+                  od daty otrzymania informacji o sankcji. Odwołanie można złożyć poprzez:
+                </p>
+                <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4 ml-4">
+                  <li><strong>Przycisk "Odwołaj się"</strong> - dostępny przy odrzuconym ogłoszeniu na stronie "Moje ogłoszenia"</li>
+                  <li><strong>Formularz kontaktowy</strong> - dla spraw dotyczących blokady konta (kategoria "Sprawy moderacyjne")</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  9.5. Odwołania są rozpatrywane przez innego moderatora lub Administratora w ciągu <strong>7 dni roboczych</strong>.
+                  Decyzja w sprawie odwołania jest ostateczna.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  9.5. Administrator może przekazać informacje o nielegalnej działalności właściwym organom ścigania.
+                  9.6. Administrator może przekazać informacje o nielegalnej działalności właściwym organom ścigania.
                 </p>
               </section>
 
@@ -283,66 +301,94 @@ export default async function TermsPage() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-foreground mb-4">11. Prawa własności intelektualnej</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4">11. Funkcje AI i automatyzacja</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  11.1. Wszelkie prawa do Platformy, w tym prawa autorskie, znaki towarowe, layout, grafika i kod źródłowy,
-                  należą do Administratora.
+                  11.1. Platforma wykorzystuje systemy sztucznej inteligencji w celu poprawy jakości usług:
+                </p>
+                <ul className="space-y-3 text-muted-foreground list-disc list-inside mb-4 ml-4">
+                  <li><strong>Semantyczne wyszukiwanie</strong> - AI analizuje treść ogłoszeń i dopasowuje wyniki wyszukiwania
+                    nawet jeśli użyjesz innych słów niż w oryginalnym ogłoszeniu</li>
+                  <li><strong>Nawigatorek (chatbot)</strong> - asystent pomagający w znalezieniu ogłoszeń poprzez naturalną konwersację.
+                    Korzystanie z chatbota jest dobrowolne</li>
+                  <li><strong>Wypełniaczek (bot generujący treści demo)</strong> - bot automatycznie generujący przykładowe ogłoszenia
+                    oznaczone etykietą "AI". Profil bota jest oznaczony i nie można z nim prowadzić konwersacji</li>
+                  <li><strong>Automatyczna moderacja</strong> - AI wykrywa potencjalnie niewłaściwe treści (spam, treści obraźliwe).
+                    Końcowa decyzja należy zawsze do człowieka-moderatora</li>
+                </ul>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  11.2. Użytkownik akceptuje, że jego publiczne treści (tytuł i opis ogłoszenia) mogą być przetwarzane przez systemy AI
+                  w celach poprawy funkcjonalności platformy.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  11.2. Zabrania się kopiowania, modyfikowania, rozpowszechniania lub wykorzystywania elementów Platformy
-                  bez pisemnej zgody Administratora.
+                  11.3. Szczegóły dotyczące przetwarzania danych przez systemy AI znajdują się w <a href="/privacy" className="text-brand hover:underline">Polityce Prywatności</a>.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  11.3. Użytkownik publikując treści na Platformie, udziela Administratorowi niewyłącznej, nieodpłatnej licencji
-                  na wykorzystanie tych treści w celach związanych z funkcjonowaniem Platformy.
-                </p>
-                <p className="text-muted-foreground leading-relaxed mb-4">
-                  11.4. Użytkownik oświadcza, że publikowane przez niego treści nie naruszają praw osób trzecich.
+                  11.4. Administrator nie ponosi odpowiedzialności za błędy lub niedokładności systemów AI. Wszystkie decyzje moderacyjne
+                  są weryfikowane przez człowieka.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-foreground mb-4">12. Ochrona danych osobowych</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4">12. Prawa własności intelektualnej</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  12.1. Zasady przetwarzania danych osobowych określa <a href="/privacy" className="text-brand hover:underline">Polityka Prywatności</a>,
+                  12.1. Wszelkie prawa do Platformy, w tym prawa autorskie, znaki towarowe, layout, grafika i kod źródłowy,
+                  należą do Administratora.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  12.2. Zabrania się kopiowania, modyfikowania, rozpowszechniania lub wykorzystywania elementów Platformy
+                  bez pisemnej zgody Administratora.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  12.3. Użytkownik publikując treści na Platformie, udziela Administratorowi niewyłącznej, nieodpłatnej licencji
+                  na wykorzystanie tych treści w celach związanych z funkcjonowaniem Platformy.
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  12.4. Użytkownik oświadcza, że publikowane przez niego treści nie naruszają praw osób trzecich.
+                </p>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold text-foreground mb-4">13. Ochrona danych osobowych</h2>
+                <p className="text-muted-foreground leading-relaxed mb-4">
+                  13.1. Zasady przetwarzania danych osobowych określa <a href="/privacy" className="text-brand hover:underline">Polityka Prywatności</a>,
                   stanowiąca integralną część niniejszego Regulaminu.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  12.2. Korzystając z Platformy, Użytkownik wyraża zgodę na przetwarzanie swoich danych osobowych zgodnie
+                  13.2. Korzystając z Platformy, Użytkownik wyraża zgodę na przetwarzanie swoich danych osobowych zgodnie
                   z Polityką Prywatności.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-foreground mb-4">13. Prawo odstąpienia od umowy</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4">14. Prawo odstąpienia od umowy</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  13.1. Użytkownik będący konsumentem ma prawo odstąpić od umowy zawartej z Administratorem (np. zakup usług premium)
+                  14.1. Użytkownik będący konsumentem ma prawo odstąpić od umowy zawartej z Administratorem (np. zakup usług premium)
                   w terminie 14 dni bez podania przyczyny.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  13.2. Termin do odstąpienia od umowy wygasa po upływie 14 dni od dnia zawarcia umowy.
+                  14.2. Termin do odstąpienia od umowy wygasa po upływie 14 dni od dnia zawarcia umowy.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  13.3. Aby skorzystać z prawa odstąpienia, Użytkownik musi poinformować Administratora o swojej decyzji
+                  14.3. Aby skorzystać z prawa odstąpienia, Użytkownik musi poinformować Administratora o swojej decyzji
                   poprzez jednoznaczne oświadczenie (np. email).
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  13.4. W przypadku odstąpienia od umowy, Administrator zwróci wszystkie otrzymane płatności niezwłocznie,
+                  14.4. W przypadku odstąpienia od umowy, Administrator zwróci wszystkie otrzymane płatności niezwłocznie,
                   nie później niż w ciągu 14 dni.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-foreground mb-4">14. Reklamacje</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4">15. Reklamacje</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  14.1. Reklamacje dotyczące funkcjonowania Platformy można składać:
+                  15.1. Reklamacje dotyczące funkcjonowania Platformy można składać:
                 </p>
                 <ul className="space-y-2 text-muted-foreground mb-4 ml-4">
                   <li>- Poprzez formularz kontaktowy na stronie</li>
                   <li>- Mailowo na adres podany w sekcji Kontakt</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  14.2. Reklamacja powinna zawierać:
+                  15.2. Reklamacja powinna zawierać:
                 </p>
                 <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4 ml-4">
                   <li>Imię i nazwisko oraz adres email Użytkownika</li>
@@ -350,35 +396,35 @@ export default async function TermsPage() {
                   <li>Żądanie Użytkownika</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  14.3. Administrator rozpatrzy reklamację w ciągu 14 dni roboczych od jej otrzymania.
+                  15.3. Administrator rozpatrzy reklamację w ciągu 14 dni roboczych od jej otrzymania.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  14.4. Odpowiedź na reklamację zostanie wysłana na adres email podany w reklamacji.
+                  15.4. Odpowiedź na reklamację zostanie wysłana na adres email podany w reklamacji.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-foreground mb-4">15. Pozasądowe rozwiązywanie sporów</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4">16. Pozasądowe rozwiązywanie sporów</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  15.1. Konsument ma prawo do skorzystania z pozasądowych sposobów rozpatrywania reklamacji i dochodzenia roszczeń.
+                  16.1. Konsument ma prawo do skorzystania z pozasądowych sposobów rozpatrywania reklamacji i dochodzenia roszczeń.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  15.2. Informacje o pozasądowych sposobach rozwiązywania sporów dostępne są na stronie internetowej
+                  16.2. Informacje o pozasądowych sposobach rozwiązywania sporów dostępne są na stronie internetowej
                   Urzędu Ochrony Konkurencji i Konsumentów: <a href="https://www.uokik.gov.pl" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">www.uokik.gov.pl</a>
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  15.3. Konsument może skorzystać również z platformy ODR dostępnej pod adresem:
+                  16.3. Konsument może skorzystać również z platformy ODR dostępnej pod adresem:
                   <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer" className="text-brand hover:underline ml-1">ec.europa.eu/consumers/odr</a>
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-foreground mb-4">16. Zmiany regulaminu</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4">17. Zmiany regulaminu</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  16.1. Administrator zastrzega sobie prawo do zmiany Regulaminu.
+                  17.1. Administrator zastrzega sobie prawo do zmiany Regulaminu.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  16.2. O zmianach w Regulaminie Użytkownicy zostaną poinformowani co najmniej na 7 dni przed wejściem w życie zmian,
+                  17.2. O zmianach w Regulaminie Użytkownicy zostaną poinformowani co najmniej na 7 dni przed wejściem w życie zmian,
                   poprzez:
                 </p>
                 <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4 ml-4">
@@ -386,17 +432,17 @@ export default async function TermsPage() {
                   <li>Wiadomość email na adres przypisany do Konta</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  16.3. Użytkownik, który nie akceptuje zmian w Regulaminie, może usunąć swoje Konto przed datą wejścia w życie zmian.
+                  17.3. Użytkownik, który nie akceptuje zmian w Regulaminie, może usunąć swoje Konto przed datą wejścia w życie zmian.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  16.4. Kontynuowanie korzystania z Platformy po wejściu w życie zmian oznacza akceptację nowego Regulaminu.
+                  17.4. Kontynuowanie korzystania z Platformy po wejściu w życie zmian oznacza akceptację nowego Regulaminu.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-foreground mb-4">17. Postanowienia końcowe</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4">18. Postanowienia końcowe</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  17.1. W sprawach nieuregulowanych niniejszym Regulaminem mają zastosowanie przepisy prawa polskiego,
+                  18.1. W sprawach nieuregulowanych niniejszym Regulaminem mają zastosowanie przepisy prawa polskiego,
                   w szczególności:
                 </p>
                 <ul className="space-y-2 text-muted-foreground list-disc list-inside mb-4 ml-4">
@@ -406,19 +452,19 @@ export default async function TermsPage() {
                   <li>Rozporządzenie Parlamentu Europejskiego i Rady (UE) 2016/679 (RODO)</li>
                 </ul>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  17.2. Wszelkie spory wynikłe z korzystania z Platformy będą rozstrzygane przez właściwy sąd polski.
+                  18.2. Wszelkie spory wynikłe z korzystania z Platformy będą rozstrzygane przez właściwy sąd polski.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  17.3. W przypadku gdy którekolwiek postanowienie Regulaminu zostanie uznane za nieważne lub nieskuteczne,
+                  18.3. W przypadku gdy którekolwiek postanowienie Regulaminu zostanie uznane za nieważne lub nieskuteczne,
                   pozostałe postanowienia zachowują pełną moc.
                 </p>
                 <p className="text-muted-foreground leading-relaxed mb-4">
-                  17.4. Regulamin wchodzi w życie z dniem publikacji na stronie Platformy.
+                  18.4. Regulamin wchodzi w życie z dniem publikacji na stronie Platformy.
                 </p>
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold text-foreground mb-4">18. Kontakt</h2>
+                <h2 className="text-2xl font-bold text-foreground mb-4">19. Kontakt</h2>
                 <p className="text-muted-foreground leading-relaxed mb-4">
                   W przypadku pytań dotyczących Regulaminu lub funkcjonowania Platformy, prosimy o kontakt:
                 </p>

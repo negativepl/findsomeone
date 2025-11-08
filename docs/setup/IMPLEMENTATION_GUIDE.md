@@ -3,7 +3,7 @@
 ## What Has Been Implemented:
 
 ### 1. Database Migration
-File: `supabase/migrations/20251016000000_add_post_expiration.sql`
+Migrations: See `/supabase/migrations/` or `/supabase/migrations_consolidated/` for consolidated version
 
 **Added fields to `posts` table:**
 - `expires_at` - expiration date (default: 30 days from creation)
@@ -68,13 +68,12 @@ File: `app/dashboard/my-posts/MyListingsClient.tsx`
 ## What Still Needs to Be Done:
 
 ### 1. **Run Database Migration**
-```bash
-# Connect to Supabase and run:
-psql "$DATABASE_URL" -f supabase/migrations/20251016000000_add_post_expiration.sql
-```
 
-Or via Supabase Dashboard:
-- SQL Editor → Paste migration file contents → Run
+The post expiration functionality is included in the main migrations.
+
+**For new installations:** Already included in `supabase/migrations_consolidated/01_core_schema.sql`
+
+**For existing installations:** Apply relevant migrations from `supabase/migrations/` or see `/supabase/MIGRATIONS_README.md`
 
 ### 2. **Deploy Edge Functions**
 ```bash

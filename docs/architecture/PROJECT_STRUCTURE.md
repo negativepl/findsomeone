@@ -92,9 +92,22 @@ findsomeone/
 ├── contexts/                  # React Context providers
 │
 ├── supabase/                  # Supabase configuration
-│   └── migrations/           # SQL migrations
-│       ├── 20250111120000_*.sql  # Database migrations
-│       └── ...
+│   ├── migrations/           # 99 SQL migrations (full history)
+│   │   ├── 20250111120000_*.sql  # Incremental database migrations
+│   │   └── ...
+│   ├── migrations_consolidated/  # 4 consolidated migrations (for new setups)
+│   │   ├── 01_core_schema.sql
+│   │   ├── 02_ai_features.sql
+│   │   ├── 03_admin_features.sql
+│   │   ├── 04_reference_data.sql
+│   │   └── README.md
+│   ├── functions/            # Edge Functions and SQL functions
+│   ├── policies/             # Row Level Security policies
+│   ├── archive/              # Archived/deprecated files
+│   │   ├── deprecated_functions/
+│   │   ├── duplicate_migrations/
+│   │   └── old_scripts/
+│   └── MIGRATIONS_README.md  # Migration documentation
 │
 ├── public/                    # Static files
 │   ├── icons/                # PWA icons

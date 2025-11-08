@@ -38,11 +38,21 @@
 ### Critical (Before Production)
 
 1. **Run SQL in Supabase**
+
+   The audit logs functionality is included in the main migrations.
+
+   **For new installations:** Already included in `supabase/migrations_consolidated/`
+
+   **For existing installations:**
    ```sql
-   -- In Supabase SQL Editor:
-   1. Run: /supabase/add_audit_logs_function.sql
-   2. Database → Extensions → Enable pg_cron
-   3. Schedule cron job (see: AUDIT_LOGS_SETUP.md)
+   -- In Supabase SQL Editor, check if audit logs exist:
+   SELECT * FROM admin_message_access_logs LIMIT 1;
+
+   -- If table doesn't exist, see /supabase/MIGRATIONS_README.md
+
+   -- Enable pg_cron:
+   -- Database → Extensions → Enable pg_cron
+   -- Schedule cron job (see: AUDIT_LOGS_SETUP.md)
    ```
 
 2. **Update Privacy Policy**
