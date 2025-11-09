@@ -1,14 +1,6 @@
 import type { NextConfig } from "next";
 import withPWA from "@ducanh2912/next-pwa";
 
-// Debug: Check if VAPID key is available during build
-console.log('=== BUILD TIME ENV CHECK ===')
-console.log('NEXT_PUBLIC_VAPID_PUBLIC_KEY:', process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY ? 'SET' : 'NOT SET')
-if (process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
-  console.log('Value starts with:', process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY.substring(0, 10))
-}
-console.log('===========================')
-
 const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,

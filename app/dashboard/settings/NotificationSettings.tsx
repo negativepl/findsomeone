@@ -37,43 +37,6 @@ export function NotificationSettings({
     unsubscribe,
   } = usePushNotifications(user)
 
-  const [debugInfo, setDebugInfo] = useState<string>('')
-
-  useEffect(() => {
-    // Debug info
-    const getDebugInfo = async () => {
-      const info: string[] = []
-      info.push(`SW Supported: ${'serviceWorker' in navigator}`)
-      info.push(`Push Supported: ${'PushManager' in window}`)
-
-      if ('serviceWorker' in navigator) {
-        const reg = await navigator.serviceWorker.getRegistration()
-        info.push(`SW Registered: ${!!reg}`)
-        if (reg) {
-          info.push(`SW Active: ${!!reg.active}`)
-          info.push(`SW Installing: ${!!reg.installing}`)
-          info.push(`SW Waiting: ${!!reg.waiting}`)
-        }
-      }
-
-      info.push(`Environment: ${process.env.NODE_ENV}`)
-      info.push(`Permission: ${Notification.permission}`)
-
-      // Check VAPID key - with multiple checks
-      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-      info.push(`VAPID Key: ${vapidKey ? 'SET (' + vapidKey.substring(0, 20) + '...)' : 'NOT SET'}`)
-
-      // Debug all env vars that start with NEXT_PUBLIC
-      const allEnvKeys = Object.keys(process.env).filter(k => k.startsWith('NEXT_PUBLIC'))
-      info.push(`All NEXT_PUBLIC vars: ${allEnvKeys.length} found`)
-      info.push(`Keys: ${allEnvKeys.join(', ')}`)
-
-      setDebugInfo(info.join('\n'))
-    }
-
-    getDebugInfo()
-  }, [])
-
   async function handleEmailChange(checked: boolean) {
     setEmailNotifications(checked)
 
@@ -267,16 +230,6 @@ export function NotificationSettings({
             <p className="text-sm text-muted-foreground/70">Nieobsługiwane przez tę przeglądarkę</p>
           </div>
           <Switch checked={false} disabled={true} />
-        </div>
-      )}
-
-      {/* Debug Panel */}
-      {debugInfo && (
-        <div className="col-span-full p-4 rounded-2xl bg-muted/30 border border-muted">
-          <p className="text-xs font-semibold text-muted-foreground mb-2">Debug Info (Service Worker Status)</p>
-          <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono">
-            {debugInfo}
-          </pre>
         </div>
       )}
     </div>
