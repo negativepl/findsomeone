@@ -33,8 +33,10 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
   const [shouldAnimate, setShouldAnimate] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const touchStartX = useRef<number>(0)
+  const touchStartY = useRef<number>(0)
   const mouseStartX = useRef<number>(0)
   const isDragging = useRef<boolean>(false)
+  const isHorizontalSwipe = useRef<boolean>(false)
   const prevCountRef = useRef<number>(0)
   const deleteQueueRef = useRef<Set<string>>(new Set())
   const deleteTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -208,6 +210,8 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
 
   const handleTouchStart = (e: React.TouchEvent, id: string) => {
     touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+    isHorizontalSwipe.current = false
     setSwipedId(id)
     setSwipeDistance(0)
   }
@@ -215,27 +219,37 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
   const handleTouchMove = (e: React.TouchEvent, id: string) => {
     if (swipedId !== id) return
     const currentX = e.touches[0].clientX
-    const diff = touchStartX.current - currentX
+    const currentY = e.touches[0].clientY
+    const diffX = touchStartX.current - currentX
+    const diffY = Math.abs(touchStartY.current - currentY)
 
-    // Update swipe distance
-    const newDistance = Math.max(0, Math.min(diff, 80))
-    setSwipeDistance(newDistance)
+    // Determine if this is a horizontal swipe (only on first significant movement)
+    if (!isHorizontalSwipe.current && (Math.abs(diffX) > 5 || diffY > 5)) {
+      isHorizontalSwipe.current = Math.abs(diffX) > diffY
+    }
 
-    // Prevent scroll when actively swiping
-    if (newDistance > 0) {
+    // Only handle horizontal swipes
+    if (isHorizontalSwipe.current) {
+      // Update swipe distance
+      const newDistance = Math.max(0, Math.min(diffX, 80))
+      setSwipeDistance(newDistance)
+
+      // Prevent scroll when actively swiping horizontally
       e.preventDefault()
     }
   }
 
   const handleTouchEnd = async (id: string) => {
     // If swiped left more than 60px, delete
-    if (swipeDistance >= 60) {
+    if (isHorizontalSwipe.current && swipeDistance >= 60) {
       await deleteNotification(id)
     } else {
       // Reset state if not deleting
       setSwipedId(null)
       setSwipeDistance(0)
       touchStartX.current = 0
+      touchStartY.current = 0
+      isHorizontalSwipe.current = false
     }
   }
 
@@ -417,7 +431,8 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
                         className="relative p-4 hover:bg-muted/50 cursor-pointer bg-card select-none"
                         style={{
                           transform: `translateX(-${currentSwipeDistance}px)`,
-                          transition: isThisItemSwiped ? 'none' : 'transform 0.3s ease-out'
+                          transition: isThisItemSwiped ? 'none' : 'transform 0.3s ease-out',
+                          touchAction: 'pan-y'
                         }}
                         onTouchStart={(e) => handleTouchStart(e, activity.id)}
                         onTouchMove={(e) => handleTouchMove(e, activity.id)}

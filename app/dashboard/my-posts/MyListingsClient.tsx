@@ -1432,16 +1432,16 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
             <div className="border-t border-border" />
           </div>
 
-          <AlertDialogFooter className="gap-3 p-4 md:p-6">
+          <AlertDialogFooter className="gap-3 p-4 md:p-6 flex-row">
             <AlertDialogCancel
-              className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
+              className="flex-1 rounded-full border border-border hover:bg-muted bg-card text-foreground"
               disabled={isPending}
             >
               Anuluj
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
               disabled={isPending}
             >
               {isPending ? 'Usuwanie...' : 'Usuń'}

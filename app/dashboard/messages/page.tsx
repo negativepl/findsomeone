@@ -152,7 +152,7 @@ export default async function MessagesPage() {
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {/* Left Column - Conversations List */}
-          <div className="md:col-span-1 lg:col-span-1">
+          <div className="md:col-span-1 lg:col-span-1 min-w-0">
             {conversations && conversations.length > 0 ? (
             <Card className="border border-border rounded-3xl bg-card overflow-hidden">
               <div className="divide-y divide-border">
@@ -167,7 +167,7 @@ export default async function MessagesPage() {
                         isUnread ? 'bg-muted/50' : ''
                       }`}
                     >
-                      <div className="flex items-start gap-3 md:gap-4">
+                      <div className="flex items-start gap-3 md:gap-4 min-w-0 overflow-hidden">
                         {/* Avatar */}
                         <div className="flex-shrink-0">
                           {conversation.other_user.avatar_url ? (
@@ -186,9 +186,9 @@ export default async function MessagesPage() {
                         </div>
 
                         {/* Message Info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between gap-2 mb-1">
-                            <p className={`text-base md:text-lg font-semibold text-foreground truncate ${isUnread ? 'font-bold' : ''}`}>
+                        <div className="flex-1 min-w-0 overflow-hidden">
+                          <div className="flex items-start justify-between gap-2 mb-1 min-w-0">
+                            <p className={`text-base md:text-lg font-semibold text-foreground truncate flex-1 min-w-0 ${isUnread ? 'font-bold' : ''}`}>
                               {conversation.other_user.full_name || 'Użytkownik'}
                             </p>
                             <span className="text-xs md:text-sm text-muted-foreground flex-shrink-0 whitespace-nowrap">
@@ -202,15 +202,15 @@ export default async function MessagesPage() {
                           </div>
 
                           {conversation.post && (
-                            <div className="text-xs md:text-sm text-brand mb-1 flex items-center gap-1 truncate">
+                            <div className="text-xs md:text-sm text-brand mb-1 flex items-center gap-1 min-w-0 overflow-hidden">
                               <svg className="w-3 h-3 md:w-4 md:h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
                               </svg>
-                              <span className="truncate">{conversation.post.title}</span>
+                              <span className="truncate flex-1 min-w-0">{conversation.post.title}</span>
                             </div>
                           )}
 
-                          <p className={`text-sm md:text-base text-muted-foreground line-clamp-2 ${isUnread ? 'font-semibold' : ''}`}>
+                          <p className={`text-sm md:text-base text-muted-foreground line-clamp-2 break-words ${isUnread ? 'font-semibold' : ''}`}>
                             {conversation.last_message.sender_id === user.id && (
                               <span className="text-muted-foreground">Ty: </span>
                             )}

@@ -90,20 +90,20 @@ export function DeleteAccountDialog() {
             <div className="border-t border-red-500/20" />
           </div>
 
-          <DialogFooter className="gap-3 p-4 md:p-6">
+          <DialogFooter className="gap-3 p-4 md:p-6 flex-row">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
+              className="flex-1 rounded-full border border-border hover:bg-muted bg-card text-foreground"
             >
               Anuluj
             </Button>
             <Button
               type="submit"
               disabled={loading}
-              className="rounded-full bg-red-600 hover:bg-red-700 text-white border-0"
+              className="flex-1 rounded-full bg-red-600 hover:bg-red-700 text-white border-0"
             >
               {loading ? 'Usuwam...' : 'Usuń konto'}
             </Button>

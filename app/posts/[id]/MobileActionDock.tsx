@@ -90,9 +90,9 @@ export function MobileActionDock({
   }
 
   return (
-    <div className={`md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border z-30 pb-[72px] transition-transform duration-300 ${
+    <div className={`md:hidden fixed left-0 right-0 bg-card border-t border-border z-30 transition-transform duration-300 ${
       (isVisible && !isMenuOpen) ? 'translate-y-0' : 'translate-y-full'
-    }`}>
+    }`} style={{ bottom: '88px' }}>
       {/* Action buttons */}
       <div className="flex gap-2 px-4 py-3">
         {isOwnPost ? (
@@ -100,7 +100,7 @@ export function MobileActionDock({
           <div className="flex-1">
             <Button
               onClick={() => window.location.href = `/dashboard/my-posts/${postId}/edit`}
-              className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold gap-0"
+              className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold gap-0"
             >
               Edytuj ogłoszenie
             </Button>

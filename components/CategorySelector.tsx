@@ -148,7 +148,7 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col rounded-3xl">
+      <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col rounded-3xl max-w-[calc(100%-3rem)] sm:max-w-2xl">
         <DialogHeader className="pb-4 border-b border-border">
           <DialogTitle className="text-2xl font-bold text-foreground">Wybierz kategorię</DialogTitle>
         </DialogHeader>

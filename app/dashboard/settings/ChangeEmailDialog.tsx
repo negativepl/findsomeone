@@ -60,7 +60,7 @@ export function ChangeEmailDialog() {
                 required
                 disabled={loading}
                 placeholder="twoj.email@example.com"
-                className="rounded-2xl border border-black/10 h-12 focus:border-black/30"
+                className="rounded-2xl border border-border h-12 focus:border-brand/50"
               />
             </div>
             <div className="space-y-3">
@@ -73,7 +73,7 @@ export function ChangeEmailDialog() {
                 type="password"
                 required
                 disabled={loading}
-                className="rounded-2xl border border-black/10 h-12 focus:border-black/30"
+                className="rounded-2xl border border-border h-12 focus:border-brand/50"
               />
             </div>
           </div>
@@ -82,20 +82,20 @@ export function ChangeEmailDialog() {
             <div className="border-t border-border" />
           </div>
 
-          <DialogFooter className="gap-3 p-4 md:p-6">
+          <DialogFooter className="gap-3 p-4 md:p-6 flex-row">
             <Button
               type="button"
               onClick={() => setOpen(false)}
               disabled={loading}
               variant="outline"
-              className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
+              className="flex-1 rounded-full border border-border hover:bg-muted bg-card text-foreground"
             >
               Anuluj
             </Button>
             <Button
               type="submit"
               disabled={loading}
-              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
             >
               {loading ? 'Zmieniam...' : 'Zmień email'}
             </Button>

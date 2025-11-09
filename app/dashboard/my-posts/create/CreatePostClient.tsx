@@ -14,6 +14,7 @@ import { MapPin, Loader2, Tag, FileText, ImageIcon, DollarSign } from 'lucide-re
 import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { Switch } from '@/components/ui/switch'
+import { CategorySelector } from '@/components/CategorySelector'
 
 interface Category {
   id: string
@@ -37,7 +38,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
   const supabase = createClient()
 
   const [currentStep, setCurrentStep] = useState(1)
-  const totalSteps = 6
+  const totalSteps = 7
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   const [formData, setFormData] = useState({
@@ -73,6 +74,14 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
   const [showModerationModal, setShowModerationModal] = useState(false)
   const [moderationInProgress, setModerationInProgress] = useState(false)
   const [moderationResult, setModerationResult] = useState<any>(null)
+
+  // AI Category suggestion state
+  const [suggestingCategory, setSuggestingCategory] = useState(false)
+
+  // Category selector state
+  const [showCategorySelector, setShowCategorySelector] = useState(false)
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('')
+  const [categoryPath, setCategoryPath] = useState<Array<{ id: string; name: string; slug: string }>>([])
 
   // Get user ID on mount
   useEffect(() => {
@@ -200,12 +209,20 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
         }
       },
       (error) => {
-        console.error('Błąd geolokalizacji:', error)
+        console.warn('Geolokalizacja niedostępna:', error.code, error.message)
         setIsDetectingLocation(false)
 
         if (error.code === error.PERMISSION_DENIED) {
           toast.error('Odmówiono dostępu do lokalizacji', {
             description: 'Sprawdź ustawienia przeglądarki'
+          })
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          toast.error('Nie można określić lokalizacji', {
+            description: 'Spróbuj ponownie później'
+          })
+        } else if (error.code === error.TIMEOUT) {
+          toast.error('Przekroczono czas oczekiwania', {
+            description: 'Spróbuj ponownie'
           })
         } else {
           toast.error('Błąd podczas wykrywania lokalizacji')
@@ -216,12 +233,13 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
   const getStepTitle = (step: number): string => {
     switch (step) {
-      case 1: return 'Podstawowe informacje'
+      case 1: return 'Tytuł'
       case 2: return 'Opis'
-      case 3: return 'Zdjęcia'
-      case 4: return 'Lokalizacja'
-      case 5: return 'Cena'
-      case 6: return 'Podsumowanie'
+      case 3: return 'Kategoria'
+      case 4: return 'Zdjęcia'
+      case 5: return 'Lokalizacja'
+      case 6: return 'Cena'
+      case 7: return 'Podsumowanie'
       default: return ''
     }
   }
@@ -242,26 +260,107 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
     return formData.priceNegotiable ? `${basePrice} (do negocjacji)` : basePrice
   }
 
+  const handleSuggestCategory = async () => {
+    if (!formData.title && !formData.description) {
+      toast.error('Brak danych', {
+        description: 'Wpisz tytuł lub opis, aby wykryć kategorię'
+      })
+      return
+    }
+
+    setSuggestingCategory(true)
+
+    try {
+      const response = await fetch('/api/posts/suggest-category', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Nie udało się wykryć kategorii')
+      }
+
+      if (data.suggestion) {
+        // Fetch the full category data
+        const { data: allCats } = await supabase
+          .from('categories')
+          .select('id, name, slug, parent_id')
+
+        if (allCats) {
+          // Find the suggested category (use most specific level available)
+          const targetSlug = data.suggestion.thirdLevelSlug
+            || data.suggestion.subcategorySlug
+            || data.suggestion.categorySlug
+          const targetCategory = allCats.find((cat: Category) => cat.slug === targetSlug)
+
+          if (targetCategory) {
+            // Build the full path from root to this category
+            const path: Array<{ id: string; name: string; slug: string }> = []
+            let currentCat: any = targetCategory
+
+            while (currentCat) {
+              path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
+              currentCat = (currentCat.parent_id
+                ? allCats.find((cat: any) => cat.id === currentCat.parent_id)
+                : null) || null
+            }
+
+            setSelectedCategoryId(targetCategory.id)
+            setCategoryPath(path)
+
+            // Also update formData for backward compatibility
+            const topLevel = path[0]
+            const secondLevel = path[1]
+            setFormData({
+              ...formData,
+              category: topLevel?.slug || '',
+              subcategory: secondLevel?.slug || ''
+            })
+
+            toast.success('Kategoria wykryta!')
+          }
+        }
+      }
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Wystąpił błąd podczas wykrywania kategorii'
+      toast.error('Błąd wykrywania', {
+        description: errorMessage
+      })
+    } finally {
+      setSuggestingCategory(false)
+    }
+  }
+
   const isStepValid = (step: number): boolean => {
     switch (step) {
       case 1:
-        const hasRequiredFields = !!(formData.category && formData.title.trim())
-        const hasSubcategoryIfNeeded = subcategories.length === 0 || !!formData.subcategory
-        return hasRequiredFields && hasSubcategoryIfNeeded
+        // Step 1: Only title
+        return !!formData.title.trim()
       case 2:
+        // Step 2: Description
         return formData.description.trim().length > 0
       case 3:
-        return images.length > 0
+        // Step 3: Category (now using CategorySelector)
+        return selectedCategoryId !== ''
       case 4:
-        return formData.city.trim().length > 0
+        // Step 4: Images (required, at least 1 image)
+        return images.length > 0
       case 5:
-        // If free, always valid
+        // Step 5: Location
+        return formData.city.trim().length > 0
+      case 6:
+        // Step 6: Price
         if (formData.priceType === 'free') return true
-        // If fixed or hourly, must have a price > 0
-        const priceNum = parseFloat(formData.price.replace(',', '.'))
+        const priceNum = parseFloat(formData.price.replace(/\s/g, '').replace(',', '.'))
         return !isNaN(priceNum) && priceNum > 0
       default:
-        return true // Placeholder steps are always valid for now
+        return true
     }
   }
 
@@ -408,7 +507,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
       // Convert price
       let price = null
       if (formData.priceType !== 'free' && formData.price) {
-        price = parseFloat(formData.price.replace(',', '.'))
+        // Remove spaces and replace comma with dot for decimal
+        price = parseFloat(formData.price.replace(/\s/g, '').replace(',', '.'))
       }
 
       // Create post
@@ -559,13 +659,13 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           currentStep === 2 ? 'pb-16' : 'pb-24'
         } transition-all duration-200 ${isTransitioning ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'}`}
       >
-        {/* Step 1: Podstawowe informacje */}
+        {/* Step 1: Tytuł */}
         {currentStep === 1 && (
           <div className="p-4 space-y-6 animate-in fade-in duration-300">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label htmlFor="title" className="text-base text-foreground">
-                  Tytuł ogłoszenia *
+                  Tytuł ogłoszenia <span className="text-brand">*</span>
                 </Label>
                 <span className="text-xs text-foreground/40 font-medium">
                   {formData.title.length}/80
@@ -581,50 +681,6 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card"
               />
             </div>
-
-            <div className="space-y-2">
-              <Label className="text-base text-foreground">Wybierz kategorię *</Label>
-              <Select
-                value={formData.category}
-                onValueChange={(value) => {
-                  setFormData({ ...formData, category: value, subcategory: '' })
-                }}
-                required
-              >
-                <SelectTrigger className="rounded-2xl border border-border !h-12 w-full text-base bg-card">
-                  <SelectValue placeholder="Wybierz kategorię" />
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.id} value={cat.slug}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {subcategories.length > 0 && (
-              <div className="space-y-2">
-                <Label className="text-base text-foreground">Wybierz podkategorię *</Label>
-                <Select
-                  value={formData.subcategory}
-                  onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
-                  required
-                >
-                  <SelectTrigger className="rounded-2xl border border-border !h-12 w-full text-base bg-card">
-                    <SelectValue placeholder="Wybierz podkategorię" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subcategories.map((subcat) => (
-                      <SelectItem key={subcat.id} value={subcat.slug}>
-                        {subcat.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
           </div>
         )}
 
@@ -646,8 +702,66 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           </div>
         )}
 
-        {/* Step 3: Zdjęcia */}
+        {/* Step 3: Kategoria */}
         {currentStep === 3 && (
+          <div className="p-4 space-y-6 animate-in fade-in duration-300">
+            {/* Detect Category Button */}
+            <Button
+              type="button"
+              onClick={handleSuggestCategory}
+              disabled={suggestingCategory || (!formData.title && !formData.description)}
+              className="w-full rounded-full bg-card border border-border hover:border-brand hover:bg-brand/5 text-foreground h-12 text-sm font-semibold transition-colors"
+            >
+              {suggestingCategory ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Wykrywam kategorię...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z" />
+                  </svg>
+                  Wykryj kategorię
+                </>
+              )}
+            </Button>
+
+            <div className="space-y-2">
+              <Label className="text-base text-foreground">Wybierz kategorię <span className="text-brand">*</span></Label>
+              <button
+                type="button"
+                onClick={() => setShowCategorySelector(true)}
+                className={`w-full rounded-2xl border transition-all p-4 text-left ${
+                  categoryPath.length > 0
+                    ? 'border-brand/30 bg-brand/5'
+                    : 'border-border bg-card hover:bg-muted'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <div className={`font-medium text-sm ${
+                      categoryPath.length > 0 ? 'text-foreground' : 'text-muted-foreground'
+                    }`}>
+                      {categoryPath.length > 0
+                        ? categoryPath.map(c => c.name).join(' > ')
+                        : 'Wybierz kategorię'
+                      }
+                    </div>
+                  </div>
+                  <svg className={`w-5 h-5 flex-shrink-0 ${
+                    categoryPath.length > 0 ? 'text-brand' : 'text-muted-foreground'
+                  }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Zdjęcia */}
+        {currentStep === 4 && (
           <div className="p-4 animate-in fade-in duration-300">
             <ImageUpload
               images={images}
@@ -660,8 +774,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           </div>
         )}
 
-        {/* Step 4: Lokalizacja */}
-        {currentStep === 4 && (
+        {/* Step 5: Lokalizacja */}
+        {currentStep === 5 && (
           <div className="p-4 space-y-6 animate-in fade-in duration-300">
             {/* Detect Location Button */}
             <Button
@@ -685,7 +799,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
             {/* City Input */}
             <div className="space-y-2 relative">
-              <Label className="text-base text-foreground">Miasto *</Label>
+              <Label className="text-base text-foreground">Miasto <span className="text-brand">*</span></Label>
               <div className="relative">
                 <Input
                   ref={cityInputRef}
@@ -776,12 +890,12 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           </div>
         )}
 
-        {/* Step 5: Cena */}
-        {currentStep === 5 && (
+        {/* Step 6: Cena */}
+        {currentStep === 6 && (
           <div className="p-4 space-y-6 animate-in fade-in duration-300">
             {/* Price Type Selection */}
             <div className="space-y-3">
-              <Label className="text-base text-foreground">Typ ceny <span className="text-red-500">*</span></Label>
+              <Label className="text-base text-foreground">Typ ceny <span className="text-brand">*</span></Label>
 
               {/* Fixed Price */}
               <button
@@ -836,7 +950,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             {formData.priceType !== 'free' && (
               <div className="space-y-2">
                 <Label htmlFor="price" className="text-base text-foreground">
-                  Cena {formData.priceType === 'hourly' ? 'za godzinę ' : ''}<span className="text-red-500">*</span>
+                  Cena {formData.priceType === 'hourly' ? 'za godzinę ' : ''}<span className="text-brand">*</span>
                 </Label>
                 <div className="relative">
                   <Input
@@ -847,9 +961,25 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     value={formData.price}
                     onChange={(e) => {
                       const value = e.target.value
+                      // Remove all spaces first
+                      const cleanValue = value.replace(/\s/g, '')
+
                       // Allow only numbers, comma and dot
-                      if (value === '' || /^[\d,\.]+$/.test(value)) {
-                        setFormData({ ...formData, price: value })
+                      if (cleanValue === '' || /^[\d,\.]+$/.test(cleanValue)) {
+                        // Split by comma or dot to handle decimal part
+                        const parts = cleanValue.split(/[,\.]/)
+                        const integerPart = parts[0]
+                        const decimalPart = parts[1]
+
+                        // Add spaces every 3 digits from the right in integer part
+                        const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+
+                        // Reconstruct with decimal part if exists
+                        const formattedValue = decimalPart !== undefined
+                          ? `${formattedInteger},${decimalPart}`
+                          : formattedInteger
+
+                        setFormData({ ...formData, price: formattedValue })
                       }
                     }}
                     className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card pr-12"
@@ -865,24 +995,37 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                 )}
 
                 {/* Negotiable switch */}
-                <div className="flex items-center gap-2 pt-2">
+                <div
+                  className={`w-full flex items-center justify-between gap-3 px-4 h-12 rounded-2xl border transition-all ${
+                    formData.priceNegotiable
+                      ? 'border-brand bg-brand/5 text-brand'
+                      : 'border-border bg-card text-foreground/70'
+                  }`}
+                >
+                  <label htmlFor="priceNegotiable" className="text-sm font-medium cursor-pointer flex-1">
+                    Do negocjacji
+                  </label>
                   <Switch
                     id="priceNegotiable"
                     checked={formData.priceNegotiable}
                     onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
                   />
-                  <label htmlFor="priceNegotiable" className="text-sm text-foreground/70 cursor-pointer select-none">
-                    Cena do negocjacji
-                  </label>
                 </div>
               </div>
             )}
           </div>
         )}
 
-        {/* Step 6: Podsumowanie */}
-        {currentStep === 6 && (
+        {/* Step 7: Podsumowanie */}
+        {currentStep === 7 && (
           <div className="p-4 space-y-4 animate-in fade-in duration-300">
+            {/* Info */}
+            <div className="bg-brand/5 border border-brand/20 rounded-2xl p-4">
+              <p className="text-sm text-foreground/70 text-center">
+                Sprawdź dokładnie wszystkie informacje przed opublikowaniem ogłoszenia
+              </p>
+            </div>
+
             {/* Title */}
             <div className="bg-card rounded-2xl border border-border p-4">
               <h2 className="text-xl font-bold text-foreground mb-1">{formData.title}</h2>
@@ -955,13 +1098,6 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               </div>
               <p className="text-xl font-bold text-brand">{getPriceDisplay()}</p>
             </div>
-
-            {/* Info */}
-            <div className="bg-brand/5 border border-brand/20 rounded-2xl p-4">
-              <p className="text-sm text-foreground/70 text-center">
-                Sprawdź dokładnie wszystkie informacje przed opublikowaniem ogłoszenia
-              </p>
-            </div>
           </div>
         )}
       </main>
@@ -989,7 +1125,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             <button
               onClick={nextStep}
               disabled={!isStepValid(currentStep)}
-              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-white h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Dalej
             </button>
@@ -997,7 +1133,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
             <button
               onClick={handleSubmit}
               disabled={isSubmitting}
-              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-white h-11 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground h-11 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? 'Publikowanie...' : 'Opublikuj'}
             </button>
@@ -1040,8 +1176,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
               <div className="text-center">
                 {moderationResult?.status === 'approved' && (
                   <>
-                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-green-500/10 border border-green-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-green-600 dark:text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
                     </div>
@@ -1053,7 +1189,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     </p>
                     <Button
                       onClick={() => router.push('/dashboard/my-posts')}
-                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-white h-11"
+                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground h-11"
                     >
                       Zobacz moje ogłoszenia
                     </Button>
@@ -1062,8 +1198,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
                 {moderationResult?.status === 'flagged' && (
                   <>
-                    <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-yellow-500/10 border border-yellow-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-yellow-600 dark:text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
                     </div>
@@ -1074,9 +1210,9 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                       Twoje ogłoszenie zostało dodane, ale wymaga weryfikacji przez moderatora przed publikacją.
                     </p>
                     {moderationResult.reasons && moderationResult.reasons.length > 0 && (
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4 mb-6 text-left">
-                        <p className="text-sm font-semibold text-yellow-800 mb-2">Powody:</p>
-                        <ul className="text-sm text-yellow-700 space-y-1">
+                      <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-2xl p-4 mb-6 text-left">
+                        <p className="text-sm font-semibold text-yellow-600 dark:text-yellow-500 mb-2">Powody:</p>
+                        <ul className="text-sm text-yellow-700 dark:text-yellow-400 space-y-1">
                           {moderationResult.reasons.map((reason: string, i: number) => (
                             <li key={i}>• {reason}</li>
                           ))}
@@ -1085,7 +1221,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     )}
                     <Button
                       onClick={() => router.push('/dashboard/my-posts')}
-                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-white h-11"
+                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground h-11"
                     >
                       Rozumiem
                     </Button>
@@ -1094,8 +1230,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
                 {moderationResult?.status === 'rejected' && (
                   <>
-                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-red-500/10 border border-red-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-red-600 dark:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </div>
@@ -1106,9 +1242,9 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                       Niestety, Twoje ogłoszenie nie spełnia naszych wytycznych i nie może zostać opublikowane.
                     </p>
                     {moderationResult.reasons && moderationResult.reasons.length > 0 && (
-                      <div className="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 text-left">
-                        <p className="text-sm font-semibold text-red-800 mb-2">Powody odrzucenia:</p>
-                        <ul className="text-sm text-red-700 space-y-1">
+                      <div className="bg-red-500/10 border border-red-500/30 rounded-2xl p-4 mb-6 text-left">
+                        <p className="text-sm font-semibold text-red-600 dark:text-red-500 mb-2">Powody odrzucenia:</p>
+                        <ul className="text-sm text-red-700 dark:text-red-400 space-y-1">
                           {moderationResult.reasons.map((reason: string, i: number) => (
                             <li key={i}>• {reason}</li>
                           ))}
@@ -1117,7 +1253,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     )}
                     <Button
                       onClick={() => setShowModerationModal(false)}
-                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-white h-11"
+                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground h-11"
                     >
                       Popraw ogłoszenie
                     </Button>
@@ -1126,8 +1262,8 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
 
                 {moderationResult?.status === 'error' && (
                   <>
-                    <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="w-20 h-20 bg-red-500/10 border border-red-500/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <svg className="w-10 h-10 text-red-600 dark:text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                       </svg>
                     </div>
@@ -1139,7 +1275,7 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
                     </p>
                     <Button
                       onClick={() => setShowModerationModal(false)}
-                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-white h-11"
+                      className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground h-11"
                     >
                       Spróbuj ponownie
                     </Button>
@@ -1150,6 +1286,25 @@ export function CreatePostClient({ categories }: CreatePostClientProps) {
           </div>
         </div>
       )}
+
+      {/* Category Selector Modal */}
+      <CategorySelector
+        open={showCategorySelector}
+        onOpenChange={setShowCategorySelector}
+        onSelect={(categoryId, path) => {
+          setSelectedCategoryId(categoryId)
+          setCategoryPath(path)
+          // Also update formData for backward compatibility
+          const topLevel = path[0]
+          const secondLevel = path[1]
+          setFormData({
+            ...formData,
+            category: topLevel?.slug || '',
+            subcategory: secondLevel?.slug || ''
+          })
+        }}
+        selectedCategoryId={selectedCategoryId}
+      />
     </div>
   )
 }

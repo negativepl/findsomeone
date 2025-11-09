@@ -85,11 +85,8 @@ export function usePushNotifications(user: User | null): UsePushNotificationsRet
         throw new Error('Notification permission denied')
       }
 
-      // Get service worker registration
-      const registration = await navigator.serviceWorker.getRegistration()
-      if (!registration) {
-        throw new Error('Service worker not registered. PWA must be enabled in production mode.')
-      }
+      // Wait for service worker to be ready
+      const registration = await navigator.serviceWorker.ready
 
       // Subscribe to push
       const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY

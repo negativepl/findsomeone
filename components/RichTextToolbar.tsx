@@ -5,7 +5,7 @@ interface RichTextToolbarProps {
 }
 
 export function RichTextToolbar({ editor }: RichTextToolbarProps) {
-  if (!editor) {
+  if (!editor || !editor.view || !editor.can) {
     return null
   }
 

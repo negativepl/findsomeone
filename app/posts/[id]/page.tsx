@@ -23,6 +23,7 @@ import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { Metadata } from 'next'
 import { AI_BOT_USER_ID } from '@/lib/constants'
+import { UserBadge, type BadgeType } from '@/components/ui/user-badge'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -145,7 +146,10 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         created_at,
         show_phone,
         show_messages,
-        show_profile_link
+        show_profile_link,
+        verified,
+        is_company,
+        is_ai_bot
       ),
       categories (
         name,
@@ -527,7 +531,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
               )}
               <CardContent className="p-4 md:p-6">
-                <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+                <div className="flex items-start gap-3 md:gap-4 mb-4 md:mb-6">
                   <div className="relative flex-shrink-0">
                     {post.profiles?.avatar_url ? (
                       <Image
@@ -546,7 +550,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     )}
                     {/* Online Status Indicator */}
                     <div
-                      className={`absolute bottom-0 right-0 w-3 h-3 md:w-4 md:h-4 border border-white rounded-full ${
+                      className={`absolute bottom-0 right-0 w-3 h-3 md:w-4 md:h-4 border-2 border-card rounded-full ${
                         isOnline ? 'bg-green-500' : 'bg-gray-400'
                       }`}
                       title={isOnline ? 'Online' : 'Offline'}
@@ -562,6 +566,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       reviewCount={post.profiles?.total_reviews || 0}
                       clickable={post.profiles?.show_profile_link !== false}
                     />
+                  </div>
+                  {/* Badge display logic - positioned on the right */}
+                  <div className="flex-shrink-0">
+                    {post.profiles?.is_ai_bot && <UserBadge type="ai_bot" />}
+                    {!post.profiles?.is_ai_bot && post.profiles?.is_company && <UserBadge type="company" />}
+                    {!post.profiles?.is_ai_bot && !post.profiles?.is_company && post.profiles?.verified && <UserBadge type="verified" />}
                   </div>
                 </div>
 
