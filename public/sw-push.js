@@ -46,8 +46,15 @@ self.addEventListener('push', function (event) {
     requireInteraction: false,
   }
 
+  console.log('[Service Worker] Showing notification with title:', data.title)
+  console.log('[Service Worker] Notification options:', options)
+
   event.waitUntil(
-    self.registration.showNotification(data.title || 'FindSomeone', options)
+    self.registration.showNotification(data.title || 'FindSomeone', options).then(() => {
+      console.log('[Service Worker] Notification shown successfully')
+    }).catch((error) => {
+      console.error('[Service Worker] Error showing notification:', error)
+    })
   )
 })
 
