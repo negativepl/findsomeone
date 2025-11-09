@@ -1,73 +1,5 @@
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-// Helper function to convert VAPID keys
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
-  const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
-  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
-  const rawData = atob(base64)
-  const outputArray = new Uint8Array(rawData.length)
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i)
-  }
-  return outputArray
-}
-
-// Send Web Push notification
-async function sendWebPush(
-  subscription: any,
-  payload: string,
-  vapidPublicKey: string,
-  vapidPrivateKey: string
-) {
-  const endpoint = subscription.endpoint
-  const keys = subscription.keys
-
-  // Import VAPID keys
-  const vapidPrivateKeyUint8 = urlBase64ToUint8Array(vapidPrivateKey)
-
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw',
-    vapidPrivateKeyUint8,
-    { name: 'ECDSA', namedCurve: 'P-256' },
-    true,
-    ['sign']
-  )
-
-  // Create JWT for authentication
-  const jwtHeader = btoa(JSON.stringify({ typ: 'JWT', alg: 'ES256' }))
-  const jwtPayload = btoa(JSON.stringify({
-    aud: new URL(endpoint).origin,
-    exp: Math.floor(Date.now() / 1000) + 43200, // 12 hours
-    sub: 'mailto:noreply@findsomeone.pl'
-  }))
-
-  const unsignedToken = `${jwtHeader}.${jwtPayload}`
-  const signature = await crypto.subtle.sign(
-    { name: 'ECDSA', hash: 'SHA-256' },
-    cryptoKey,
-    new TextEncoder().encode(unsignedToken)
-  )
-
-  const jwt = `${unsignedToken}.${btoa(String.fromCharCode(...new Uint8Array(signature)))}`
-
-  // Send push notification
-  const response = await fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/octet-stream',
-      'Content-Encoding': 'aes128gcm',
-      'Authorization': `vapid t=${jwt}, k=${vapidPublicKey}`,
-      'TTL': '86400'
-    },
-    body: payload
-  })
-
-  if (!response.ok) {
-    throw new Error(`Push failed: ${response.status} ${response.statusText}`)
-  }
-
-  return response
-}
+import webpush from 'npm:web-push@3.6.7'
 
 Deno.serve(async (req) => {
   try {
@@ -134,6 +66,13 @@ Deno.serve(async (req) => {
       )
     }
 
+    // Configure web-push with VAPID keys
+    webpush.setVapidDetails(
+      'mailto:noreply@findsomeone.pl',
+      vapidPublicKey,
+      vapidPrivateKey
+    )
+
     // Prepare notification payload
     const payload = JSON.stringify({
       title: title || 'FindSomeone',
@@ -146,15 +85,30 @@ Deno.serve(async (req) => {
     })
 
     // Send push to all user's subscriptions
+    console.log('Sending push to', subscriptions.length, 'subscriptions')
+    console.log('Payload:', payload)
+
     const results = await Promise.allSettled(
-      subscriptions.map(sub =>
-        sendWebPush(
-          { endpoint: sub.endpoint, keys: sub.keys },
-          payload,
-          vapidPublicKey,
-          vapidPrivateKey
-        )
-      )
+      subscriptions.map(async (sub) => {
+        console.log('Attempting to send to endpoint:', sub.endpoint.substring(0, 50) + '...')
+        try {
+          const pushSubscription = {
+            endpoint: sub.endpoint,
+            keys: sub.keys
+          }
+
+          // Log subscription keys for debugging
+          console.log('Subscription keys:', sub.keys ? 'present' : 'missing')
+
+          const result = await webpush.sendNotification(pushSubscription, payload)
+          console.log('Successfully sent to:', sub.endpoint.substring(0, 50) + '...')
+          return result
+        } catch (error) {
+          console.error('Failed to send to:', sub.endpoint.substring(0, 50) + '...', error)
+          console.error('Error details:', JSON.stringify(error, null, 2))
+          throw error
+        }
+      })
     )
 
     // Count successes and failures
