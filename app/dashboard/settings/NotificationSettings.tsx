@@ -144,16 +144,34 @@ export function NotificationSettings({
       return
     }
 
+    console.log('[DEBUG] Notification.permission:', Notification.permission)
+    console.log('[DEBUG] navigator.permissions:', navigator.permissions)
+
     try {
+      // Check permission first
+      if (Notification.permission !== 'granted') {
+        toast.error('Uprawnienia do powiadomień nie są nadane. Status: ' + Notification.permission)
+        return
+      }
+
       const registration = await navigator.serviceWorker.ready
-      await registration.showNotification('Test FindSomeone', {
+      console.log('[DEBUG] Service Worker registration:', registration)
+
+      const result = await registration.showNotification('Test FindSomeone', {
         body: 'To jest testowe powiadomienie',
         icon: '/icon-192.png',
         badge: '/icon-192.png',
         tag: 'test',
         vibrate: [200, 100, 200],
+        requireInteraction: false,
       })
-      toast.success('Powiadomienie testowe wysłane')
+
+      console.log('[DEBUG] showNotification result:', result)
+      toast.success('Powiadomienie testowe wysłane - sprawdź centrum powiadomień systemu!')
+
+      // Also try to get notifications to see if it was created
+      const notifications = await registration.getNotifications({ tag: 'test' })
+      console.log('[DEBUG] Active notifications with tag "test":', notifications)
     } catch (error: any) {
       console.error('Test notification error:', error)
       toast.error('Błąd: ' + error.message)
