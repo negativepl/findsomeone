@@ -59,6 +59,10 @@ export function NotificationSettings({
       info.push(`Environment: ${process.env.NODE_ENV}`)
       info.push(`Permission: ${Notification.permission}`)
 
+      // Check VAPID key
+      const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
+      info.push(`VAPID Key: ${vapidKey ? 'SET (' + vapidKey.substring(0, 20) + '...)' : 'NOT SET'}`)
+
       setDebugInfo(info.join('\n'))
     }
 
