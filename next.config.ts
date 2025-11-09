@@ -130,9 +130,7 @@ export default withPWA({
   workboxOptions: {
     // Import custom push notification handler
     importScripts: ['/sw-push.js'],
-    // Disable precaching to avoid build ID mismatches
-    disablePrecacheManifest: true,
-    // Use runtime caching instead
+    // Use runtime caching for all assets
     runtimeCaching: [
       {
         urlPattern: /^https:\/\/fonts\.(?:gstatic)\.com\/.*/i,
