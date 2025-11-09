@@ -201,14 +201,7 @@ export function NotificationSettings({
       {isSupported ? (
         <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
           <div className="flex-1 pr-4">
-            <div className="flex items-center gap-2 mb-1">
-              <p className="text-base font-semibold text-foreground">Powiadomienia push</p>
-              {isSubscribed && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-brand/10 text-brand font-medium">
-                  Aktywne
-                </span>
-              )}
-            </div>
+            <p className="text-base font-semibold text-foreground mb-1">Powiadomienia push</p>
             <p className="text-sm text-muted-foreground">
               {permission === 'granted'
                 ? 'Otrzymuj powiadomienia na tym urządzeniu'
