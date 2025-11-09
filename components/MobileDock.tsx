@@ -727,7 +727,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
           pointerEvents: 'auto'
         }}
       >
-        <div className="relative flex items-center justify-around px-4 py-3 pb-4">
+        <div className="relative flex items-center justify-around px-4 py-3 safe-area-inset-bottom">
           {/* Animated indicator background */}
           <motion.div
             className="absolute bg-brand"

@@ -61,3 +61,5 @@ self.addEventListener('notificationclick', function (event) {
     })
   )
 })
+
+console.log('[Service Worker] Push notification handler loaded')
