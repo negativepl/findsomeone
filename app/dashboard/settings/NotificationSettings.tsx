@@ -138,8 +138,41 @@ export function NotificationSettings({
     }
   }
 
+  async function testNotification() {
+    if (!('serviceWorker' in navigator)) {
+      toast.error('Service Worker nie jest obsługiwany')
+      return
+    }
+
+    try {
+      const registration = await navigator.serviceWorker.ready
+      await registration.showNotification('Test FindSomeone', {
+        body: 'To jest testowe powiadomienie',
+        icon: '/icon-192.png',
+        badge: '/icon-192.png',
+        tag: 'test',
+        vibrate: [200, 100, 200],
+      })
+      toast.success('Powiadomienie testowe wysłane')
+    } catch (error: any) {
+      console.error('Test notification error:', error)
+      toast.error('Błąd: ' + error.message)
+    }
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div className="space-y-4">
+      {/* Test Button */}
+      {isSupported && permission === 'granted' && (
+        <button
+          onClick={testNotification}
+          className="w-full p-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+        >
+          🔔 Testuj powiadomienie (bezpośrednio z Service Worker)
+        </button>
+      )}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Email Notifications - Coming Soon */}
       <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
         <div className="flex-1 pr-4">
@@ -225,6 +258,7 @@ export function NotificationSettings({
           <Switch checked={false} disabled={true} />
         </div>
       )}
+      </div>
     </div>
   )
 }
