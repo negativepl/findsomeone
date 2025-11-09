@@ -59,9 +59,14 @@ export function NotificationSettings({
       info.push(`Environment: ${process.env.NODE_ENV}`)
       info.push(`Permission: ${Notification.permission}`)
 
-      // Check VAPID key
+      // Check VAPID key - with multiple checks
       const vapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
       info.push(`VAPID Key: ${vapidKey ? 'SET (' + vapidKey.substring(0, 20) + '...)' : 'NOT SET'}`)
+
+      // Debug all env vars that start with NEXT_PUBLIC
+      const allEnvKeys = Object.keys(process.env).filter(k => k.startsWith('NEXT_PUBLIC'))
+      info.push(`All NEXT_PUBLIC vars: ${allEnvKeys.length} found`)
+      info.push(`Keys: ${allEnvKeys.join(', ')}`)
 
       setDebugInfo(info.join('\n'))
     }
