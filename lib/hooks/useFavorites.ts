@@ -85,14 +85,16 @@ export function useFavoritesCount(userId: string | null | undefined) {
   })
 }
 
-// Fetch user's favorite posts with full details
-export function useFavorites(userId: string | null | undefined) {
+// Fetch user's favorite posts with full details (paginated)
+export function useFavorites(userId: string | null | undefined, page: number = 1, pageSize: number = 12) {
   const supabase = createClient()
 
   return useQuery({
-    queryKey: ['favorites', userId],
+    queryKey: ['favorites', userId, page],
     queryFn: async () => {
       if (!userId) return []
+
+      const offset = (page - 1) * pageSize
 
       const { data, error } = await supabase
         .from('favorites')
@@ -126,6 +128,7 @@ export function useFavorites(userId: string | null | undefined) {
         `)
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
+        .range(offset, offset + pageSize - 1)
 
       if (error) throw error
 

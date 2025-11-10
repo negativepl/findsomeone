@@ -2,19 +2,24 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
 import { RatingDisplay } from '@/components/RatingDisplay'
-import { useFavorites } from '@/lib/hooks/useFavorites'
+import { useFavorites, useFavoritesCount } from '@/lib/hooks/useFavorites'
 import { Loader2 } from 'lucide-react'
 
 interface FavoritesClientProps {
   userId: string
 }
 
+const PAGE_SIZE = 12
+
 export function FavoritesClient({ userId }: FavoritesClientProps) {
-  const { data: favorites, isLoading, error } = useFavorites(userId)
+  const [page, setPage] = useState(1)
+  const { data: favorites, isLoading, error } = useFavorites(userId, page, PAGE_SIZE)
+  const { data: totalCount } = useFavoritesCount(userId)
 
   if (isLoading) {
     return (
@@ -33,9 +38,11 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
   }
 
   const posts = favorites?.map(fav => fav.posts).filter(Boolean) || []
+  const hasMore = totalCount ? page * PAGE_SIZE < totalCount : false
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="flex flex-col">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
       {posts && posts.length > 0 ? (
         posts.map((post) => (
           <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
@@ -172,6 +179,34 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
               </Button>
             </Link>
           </div>
+        </div>
+      )}
+      </div>
+
+      {/* Load More Button */}
+      {hasMore && (
+        <div className="mt-8 flex justify-center">
+          <Button
+            onClick={() => setPage(page + 1)}
+            disabled={isLoading}
+            className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 px-8"
+          >
+            {isLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                Wczytywanie...
+              </>
+            ) : (
+              'Wczytaj więcej'
+            )}
+          </Button>
+        </div>
+      )}
+
+      {/* Show total count */}
+      {totalCount && totalCount > 0 && (
+        <div className="mt-6 text-center text-muted-foreground text-sm">
+          {posts.length}/{totalCount} ulubionych ogłoszeń
         </div>
       )}
     </div>

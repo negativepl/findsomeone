@@ -46,9 +46,10 @@ CREATE INDEX IF NOT EXISTS idx_posts_type_status ON posts(type, status) WHERE is
 CREATE INDEX IF NOT EXISTS idx_post_views_post_created ON post_views(post_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_post_views_created_date ON post_views(created_at DESC);
 
--- 3. Favorites (for counting and filtering)
+-- 3. Favorites (for counting, filtering, and dashboard display)
 CREATE INDEX IF NOT EXISTS idx_favorites_post_id ON favorites(post_id);
 CREATE INDEX IF NOT EXISTS idx_favorites_user_post ON favorites(user_id, post_id);
+CREATE INDEX IF NOT EXISTS idx_favorites_user_created ON favorites(user_id, created_at DESC);
 
 -- 4. Messages (for unread count and conversation queries)
 CREATE INDEX IF NOT EXISTS idx_messages_receiver_read ON messages(receiver_id, is_read);
@@ -91,11 +92,13 @@ SELECT * FROM post_views WHERE created_at >= ? ORDER BY created_at DESC
 ### Favorites Indexes
 - **idx_favorites_post_id**: Speeds up "count favorites for post" queries
 - **idx_favorites_user_post**: Speeds up "is post favorited by user" checks
+- **idx_favorites_user_created**: Speeds up "user's favorite posts with sorting" queries (dashboard/favorites page)
 
 **Queries optimized:**
 ```sql
 SELECT COUNT(*) FROM favorites WHERE post_id = ?
 SELECT * FROM favorites WHERE user_id = ? AND post_id = ?
+SELECT * FROM favorites WHERE user_id = ? ORDER BY created_at DESC
 ```
 
 ### Messages Indexes
@@ -183,7 +186,12 @@ The `EXPLAIN ANALYZE` command will show:
 
 ## 💡 Future Optimization
 
-If you want more optimization later:
+### Favorites Page Optimization
+- **Implement pagination**: Load 12-20 favorites at a time instead of all at once
+- **Virtual scrolling**: For users with 100+ favorites, use virtual scrolling to render only visible items
+- **Lazy load related data**: Defer loading profile data until user hovers/interacts with card
+
+### Other Optimizations
 - Consider partitioning `post_views` table by date (for large datasets)
 - Add full-text search indexes on posts title/description
 - Cache frequently accessed data (Redis)
