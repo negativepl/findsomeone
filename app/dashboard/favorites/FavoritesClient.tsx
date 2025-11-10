@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FavoriteButtonWrapper } from '@/components/FavoriteButtonWrapper'
@@ -18,16 +18,21 @@ const PAGE_SIZE = 12
 
 export function FavoritesClient({ userId }: FavoritesClientProps) {
   const [page, setPage] = useState(1)
+  const [allFavorites, setAllFavorites] = useState<any[]>([])
   const { data: favorites, isLoading, error } = useFavorites(userId, page, PAGE_SIZE)
   const { data: totalCount } = useFavoritesCount(userId)
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-brand" />
-      </div>
-    )
-  }
+  // Accumulate favorites from all pages
+  useEffect(() => {
+    if (favorites && favorites.length > 0) {
+      setAllFavorites(prev => {
+        // Avoid duplicates by checking if items already exist
+        const existingIds = new Set(prev.map(f => f.post_id))
+        const newItems = favorites.filter(f => !existingIds.has(f.post_id))
+        return [...prev, ...newItems]
+      })
+    }
+  }, [favorites])
 
   if (error) {
     return (
@@ -37,8 +42,8 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
     )
   }
 
-  const posts = favorites?.map(fav => fav.posts).filter(Boolean) || []
-  const hasMore = totalCount ? page * PAGE_SIZE < totalCount : false
+  const posts = allFavorites.map(fav => fav.posts).filter(Boolean) || []
+  const hasMore = totalCount ? allFavorites.length < totalCount : false
 
   return (
     <div className="flex flex-col">
@@ -183,6 +188,16 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
       )}
       </div>
 
+      {/* Loading indicator when fetching next page */}
+      {isLoading && page > 1 && (
+        <div className="mt-8 flex justify-center">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Wczytywanie następnej strony...
+          </div>
+        </div>
+      )}
+
       {/* Load More Button */}
       {hasMore && (
         <div className="mt-12 flex justify-center">
@@ -197,7 +212,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
                 Wczytywanie...
               </>
             ) : (
-              `Wczytaj więcej (${totalCount - page * PAGE_SIZE})`
+              `Wczytaj więcej (${totalCount ? totalCount - allFavorites.length : 0})`
             )}
           </button>
         </div>
