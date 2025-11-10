@@ -185,30 +185,24 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
 
       {/* Load More Button */}
       {hasMore && (
-        <div className="mt-8 flex justify-center">
-          <Button
+        <div className="mt-12 flex justify-center">
+          <button
             onClick={() => setPage(page + 1)}
             disabled={isLoading}
-            className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 px-8"
+            className="px-8 py-2.5 text-sm font-semibold text-brand hover:bg-brand/5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {isLoading ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                <Loader2 className="w-4 h-4 animate-spin" />
                 Wczytywanie...
               </>
             ) : (
-              'Wczytaj więcej'
+              `Wczytaj więcej (${totalCount - page * PAGE_SIZE})`
             )}
-          </Button>
+          </button>
         </div>
       )}
 
-      {/* Show total count */}
-      {totalCount && totalCount > 0 && (
-        <div className="mt-6 text-center text-muted-foreground text-sm">
-          {posts.length}/{totalCount} ulubionych ogłoszeń
-        </div>
-      )}
     </div>
   )
 }
