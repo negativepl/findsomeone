@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { DashboardStatsCard } from '@/components/DashboardStatsCard'
-import { ViewsChart } from '@/components/ViewsChart'
+import { ViewsChartWrapper } from '@/components/ViewsChartWrapper'
 import { ActivityFeed } from '@/components/ActivityFeed'
 import { ProfileCompletion } from '@/components/ProfileCompletion'
 import { ResponseRateCard } from '@/components/ResponseRateCard'
@@ -87,21 +87,36 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // Fetch user's posts count
-  const { count: myPostsCount } = await supabase
-    .from('posts')
-    .select('*', { count: 'exact', head: true })
-    .eq('user_id', user.id)
-    .eq('status', 'active')
+  // Parallelize initial queries for better performance
+  const [
+    { count: myPostsCount, data: userPosts },
+    { count: unreadMessagesCount },
+    { data: profile }
+  ] = await Promise.all([
+    // Query 1: Get all posts with count (reuse for favorites check)
+    supabase
+      .from('posts')
+      .select('id', { count: 'exact' })
+      .eq('user_id', user.id),
 
-  // Fetch how many times user's posts were favorited by others
-  const { data: userPosts } = await supabase
-    .from('posts')
-    .select('id')
-    .eq('user_id', user.id)
+    // Query 2: Unread messages count
+    supabase
+      .from('messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('receiver_id', user.id)
+      .eq('is_read', false),
+
+    // Query 3: User profile
+    supabase
+      .from('profiles')
+      .select('full_name, rating, total_reviews, avatar_url, bio, phone, city')
+      .eq('id', user.id)
+      .single()
+  ])
 
   const postIds = userPosts?.map(p => p.id) || []
 
+  // Fetch favorites count only if user has posts
   let favoritesCount = 0
   if (postIds.length > 0) {
     const { count } = await supabase
@@ -111,21 +126,8 @@ export default async function DashboardPage() {
     favoritesCount = count || 0
   }
 
-  // Fetch unread messages count
-  const { count: unreadMessagesCount } = await supabase
-    .from('messages')
-    .select('*', { count: 'exact', head: true })
-    .eq('receiver_id', user.id)
-    .eq('is_read', false)
-
-  // Fetch user profile with all fields for ProfileCompletion
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('full_name, rating, total_reviews, avatar_url, bio, phone, city')
-    .eq('id', user.id)
-    .single()
-
   // Try to fetch activity logs (will fail gracefully if table doesn't exist yet)
+  // Limit to 10 for initial load, rest loaded on-demand via "Show more" button
   let activities = []
   try {
     const { data: activityData } = await supabase
@@ -133,7 +135,7 @@ export default async function DashboardPage() {
       .select('id, activity_type, created_at, metadata')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
-      .limit(50)
+      .limit(10)
 
     activities = activityData || []
   } catch (error) {
@@ -169,38 +171,53 @@ export default async function DashboardPage() {
   let monthlyViewsChartData = []
 
   try {
-    // Get user's post IDs
-    const { data: userPosts } = await supabase
-      .from('posts')
-      .select('id')
-      .eq('user_id', user.id)
-
-    const postIds = userPosts?.map(p => p.id) || []
-
+    // Reuse postIds from earlier query to avoid duplicate fetch
     if (postIds.length > 0) {
-      // Fetch all views for last 7 days with timestamps
-      const { data: viewsData } = await supabase
-        .from('post_views')
-        .select('created_at')
-        .in('post_id', postIds)
-        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+      // Fetch views for last 7 and 30 days in parallel
+      const [viewsWeek, viewsMonth, messagesMonth] = await Promise.all([
+        // Weekly views
+        supabase
+          .from('post_views')
+          .select('created_at')
+          .in('post_id', postIds)
+          .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
 
-      totalViews = viewsData?.length || 0
-      viewsChartData = formatViewsByDay(viewsData || [])
+        // Monthly views
+        supabase
+          .from('post_views')
+          .select('created_at')
+          .in('post_id', postIds)
+          .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()),
 
-      // Fetch all views for last 30 days with timestamps
-      const { data: monthlyViewsData } = await supabase
-        .from('post_views')
-        .select('created_at')
-        .in('post_id', postIds)
-        .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString())
+        // Messages in last 7 days
+        supabase
+          .from('messages')
+          .select('*', { count: 'exact', head: true })
+          .eq('receiver_id', user.id)
+          .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+      ])
 
-      totalMonthlyViews = monthlyViewsData?.length || 0
-      monthlyViewsChartData = formatViewsByMonth(monthlyViewsData || [])
+      const viewsData = viewsWeek.data || []
+      const monthlyViewsData = viewsMonth.data || []
+
+      totalViews = viewsData.length
+      totalMonthlyViews = monthlyViewsData.length
+      totalMessages = messagesMonth.count || 0
+
+      viewsChartData = formatViewsByDay(viewsData)
+      monthlyViewsChartData = formatViewsByMonth(monthlyViewsData)
     } else {
-      // No posts, show empty chart
+      // No posts, show empty chart and fetch messages separately
       viewsChartData = formatViewsByDay([])
       monthlyViewsChartData = formatViewsByMonth([])
+
+      const { count: messagesCount } = await supabase
+        .from('messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('receiver_id', user.id)
+        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+
+      totalMessages = messagesCount || 0
     }
   } catch (error) {
     // Use mock data if table doesn't exist
@@ -210,14 +227,8 @@ export default async function DashboardPage() {
     monthlyViewsChartData = formatViewsByMonth([])
   }
 
-  // Fetch total messages received in last 7 days
-  const { count: messagesCount } = await supabase
-    .from('messages')
-    .select('*', { count: 'exact', head: true })
-    .eq('receiver_id', user.id)
-    .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
-
-  totalMessages = messagesCount || 0
+  // messagesCount is now calculated above as totalMessages
+  const messagesCount = totalMessages
 
   // Calculate average response time
   let averageResponseTime = 0
@@ -358,7 +369,7 @@ export default async function DashboardPage() {
               <div>
                 <h2 className="text-xl font-bold text-foreground mb-3">Wyświetlenia ofert</h2>
                 <div className="bg-card rounded-2xl p-5 border border-border h-[450px]">
-                  <ViewsChart
+                  <ViewsChartWrapper
                     weeklyData={viewsChartData}
                     monthlyData={monthlyViewsChartData}
                     totalWeeklyViews={totalViews}
@@ -498,7 +509,7 @@ export default async function DashboardPage() {
               {/* Views Chart */}
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="pt-6">
-                  <ViewsChart
+                  <ViewsChartWrapper
                     weeklyData={viewsChartData}
                     monthlyData={monthlyViewsChartData}
                     totalWeeklyViews={totalViews}

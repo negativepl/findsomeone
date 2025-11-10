@@ -18,9 +18,10 @@ interface SectionRendererProps {
   section: HomepageSection
   userFavorites: string[]
   userId?: string
+  preloadedPostsData?: any[]
 }
 
-export function SectionRenderer({ section, userFavorites, userId }: SectionRendererProps) {
+export function SectionRenderer({ section, userFavorites, userId, preloadedPostsData }: SectionRendererProps) {
   // Check visibility based on device
   const visibilityClasses = []
   if (!section.visible_on_mobile) visibilityClasses.push('hidden md:block')
@@ -152,7 +153,7 @@ export function SectionRenderer({ section, userFavorites, userId }: SectionRende
     case 'seeking_help':
     case 'offering_help':
     case 'newest_posts':
-      return <PostsSection section={section} userFavorites={userFavorites} />
+      return <PostsSection section={section} userFavorites={userFavorites} preloadedPostsData={preloadedPostsData} />
 
     case 'popular_categories':
       return <PopularCategoriesSection section={section} />

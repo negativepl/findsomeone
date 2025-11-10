@@ -29,15 +29,76 @@ export default async function Home() {
       .order('sort_order', { ascending: true })
   ])
 
-  // Fetch user favorites if logged in
-  let userFavorites: string[] = []
-  if (user) {
-    const { data: favoritesData } = await supabase
-      .from('favorites')
-      .select('post_id')
-      .eq('user_id', user.id)
+  // Collect all PostsSection configs for batch processing
+  const postsSectionConfigs = sections?.filter(section =>
+    ['seeking_help', 'offering_help', 'newest_posts'].includes(section.type)
+  ) || []
 
-    userFavorites = favoritesData?.map(f => f.post_id) || []
+  // Fetch user favorites and pre-cache posts data for PostsSections in parallel
+  const fetchPostsSectionData = async () => {
+    const postsDataMap = new Map<string, any[]>()
+
+    for (const section of postsSectionConfigs) {
+      const config = section.config as any
+      const limit = config.limit || 8
+      const categoryFilter = config.category_filter as string[] | undefined
+      const postTypeFilter = config.post_type_filter || config.post_type
+      const sortBy = config.sort_by || 'created_at'
+      const sortOrder = config.sort_order || 'desc'
+
+      let query = supabase
+        .from('posts')
+        .select(`
+          *,
+          profiles:user_id (
+            full_name,
+            avatar_url,
+            rating,
+            total_reviews
+          ),
+          categories (
+            name
+          )
+        `)
+        .eq('status', 'active')
+        .eq('is_deleted', false)
+        .limit(limit)
+
+      // Apply sorting
+      if (sortBy === 'price') {
+        query = query.order('price', { ascending: sortOrder === 'asc', nullsFirst: false })
+      } else if (sortBy === 'views') {
+        query = query.order('view_count', { ascending: sortOrder === 'asc' })
+      } else {
+        query = query.order('created_at', { ascending: sortOrder === 'asc' })
+      }
+
+      // Apply filters
+      if (postTypeFilter && postTypeFilter !== 'all') {
+        query = query.eq('type', postTypeFilter)
+      }
+
+      if (categoryFilter && categoryFilter.length > 0) {
+        query = query.in('category_id', categoryFilter)
+      }
+
+      const { data: posts } = await query
+      if (posts && posts.length > 0) {
+        postsDataMap.set(section.id, posts)
+      }
+    }
+
+    return postsDataMap
+  }
+
+  const [postsDataMap, favoritesData] = await Promise.all([
+    fetchPostsSectionData(),
+    user ? supabase.from('favorites').select('post_id').eq('user_id', user.id) : Promise.resolve({ data: null })
+  ])
+
+  let userFavorites: string[] = []
+  if (favoritesData?.data) {
+    userFavorites = favoritesData.data.map(f => f.post_id) || []
   }
 
   // JSON-LD structured data for homepage
@@ -112,6 +173,7 @@ export default async function Home() {
             section={section}
             userFavorites={userFavorites}
             userId={user?.id}
+            preloadedPostsData={postsDataMap.get(section.id)}
           />
         ))}
 

@@ -114,19 +114,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Check if user is admin
-  let isAdmin = false
-  if (user) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('is_admin')
-      .eq('id', user.id)
-      .single()
-
-    isAdmin = profile?.is_admin || false
-  }
-
-  // Fetch post details
+  // Fetch post details first (needed for subsequent queries)
   const { data: post } = await supabase
     .from('posts')
     .select(`
@@ -168,12 +156,105 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
     notFound()
   }
 
-  // Check if user is online (last_seen within 5 minutes)
-  const { data: userPresence } = await supabase
-    .from('user_presence')
-    .select('status, last_seen')
-    .eq('user_id', post.user_id)
-    .single()
+  // Parallelize all independent queries
+  const [
+    userProfileResult,
+    userPresenceResult,
+    reviewResult,
+    favoriteResult,
+    otherPostsResult,
+    similarPostsResult
+  ] = await Promise.all([
+    // Query 1: Get user profile (admin check)
+    user
+      ? supabase.from('profiles').select('is_admin').eq('id', user.id).single()
+      : Promise.resolve({ data: null }),
+
+    // Query 2: Get user presence
+    supabase
+      .from('user_presence')
+      .select('status, last_seen')
+      .eq('user_id', post.user_id)
+      .single(),
+
+    // Query 3: Check if user reviewed post author
+    user && user.id !== post.user_id
+      ? supabase
+          .from('reviews')
+          .select('id')
+          .eq('reviewer_id', user.id)
+          .eq('reviewed_id', post.user_id)
+          .eq('post_id', id)
+          .single()
+      : Promise.resolve({ data: null }),
+
+    // Query 4: Check if post is favorited
+    user
+      ? supabase
+          .from('favorites')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('post_id', id)
+          .single()
+      : Promise.resolve({ data: null }),
+
+    // Query 5: Other posts from author
+    supabase
+      .from('posts')
+      .select(`
+        id,
+        title,
+        city,
+        district,
+        price,
+        price_type,
+        images,
+        views,
+        created_at,
+        categories (
+          name
+        )
+      `)
+      .eq('user_id', post.user_id)
+      .eq('status', 'active')
+      .eq('is_deleted', false)
+      .neq('id', id)
+      .order('created_at', { ascending: false })
+      .limit(3),
+
+    // Query 6: Similar posts from same category
+    supabase
+      .from('posts')
+      .select(`
+        id,
+        title,
+        city,
+        district,
+        price,
+        price_type,
+        images,
+        views,
+        created_at,
+        categories (
+          name
+        )
+      `)
+      .eq('category_id', post.category_id)
+      .eq('status', 'active')
+      .eq('is_deleted', false)
+      .neq('id', id)
+      .neq('user_id', post.user_id)
+      .order('created_at', { ascending: false })
+      .limit(6)
+  ])
+
+  // Extract results from parallel queries
+  const isAdmin = userProfileResult.data?.is_admin || false
+  const userPresence = userPresenceResult.data
+  const hasReviewed = !!reviewResult.data
+  const isFavorite = !!favoriteResult.data
+  const otherPosts = otherPostsResult.data
+  const similarPosts = similarPostsResult.data
 
   // Calculate if user is online based on last_seen time
   const lastSeenTime = userPresence?.last_seen ? new Date(userPresence.last_seen).getTime() : null
@@ -208,82 +289,6 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
   const daysOnPlatform = post.profiles?.created_at
     ? Math.floor((Date.now() - new Date(post.profiles.created_at).getTime()) / (1000 * 60 * 60 * 24))
     : 0
-
-  // Check if current user already reviewed this post's author
-  let hasReviewed = false
-  if (user && user.id !== post.user_id) {
-    const { data: existingReview } = await supabase
-      .from('reviews')
-      .select('id')
-      .eq('reviewer_id', user.id)
-      .eq('reviewed_id', post.user_id)
-      .eq('post_id', id)
-      .single()
-
-    hasReviewed = !!existingReview
-  }
-
-  // Check if this post is in user's favorites
-  let isFavorite = false
-  if (user) {
-    const { data: favoriteData } = await supabase
-      .from('favorites')
-      .select('id')
-      .eq('user_id', user.id)
-      .eq('post_id', id)
-      .single()
-
-    isFavorite = !!favoriteData
-  }
-
-  // Fetch other posts from the same author
-  const { data: otherPosts } = await supabase
-    .from('posts')
-    .select(`
-      id,
-      title,
-      city,
-      district,
-      price,
-      price_type,
-      images,
-      views,
-      created_at,
-      categories (
-        name
-      )
-    `)
-    .eq('user_id', post.user_id)
-    .eq('status', 'active')
-    .eq('is_deleted', false)
-    .neq('id', id)
-    .order('created_at', { ascending: false })
-    .limit(3)
-
-  // Fetch posts from the same category
-  const { data: similarPosts } = await supabase
-    .from('posts')
-    .select(`
-      id,
-      title,
-      city,
-      district,
-      price,
-      price_type,
-      images,
-      views,
-      created_at,
-      categories (
-        name
-      )
-    `)
-    .eq('category_id', post.category_id)
-    .eq('status', 'active')
-    .eq('is_deleted', false)
-    .neq('id', id)
-    .neq('user_id', post.user_id)
-    .order('created_at', { ascending: false })
-    .limit(6)
 
   // Prepare JSON-LD structured data
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'

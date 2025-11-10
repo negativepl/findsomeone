@@ -9,59 +9,65 @@ import { HomepageSection } from '@/lib/homepage-sections/types'
 interface PostsSectionProps {
   section: HomepageSection
   userFavorites: string[]
+  preloadedPostsData?: any[]
 }
 
-export async function PostsSection({ section, userFavorites }: PostsSectionProps) {
-  const supabase = await createClient()
-  const config = section.config as any
+export async function PostsSection({ section, userFavorites, preloadedPostsData }: PostsSectionProps) {
+  const showButton = section.config?.show_see_all_button !== false
 
-  const limit = config.limit || 8
-  const categoryFilter = config.category_filter as string[] | undefined
-  const postTypeFilter = config.post_type_filter || config.post_type
-  const showButton = config.show_see_all_button !== false
-  const sortBy = config.sort_by || 'created_at'
-  const sortOrder = config.sort_order || 'desc'
+  // Use preloaded data if available (from batch query), otherwise fetch individually
+  let posts = preloadedPostsData || []
 
-  let query = supabase
-    .from('posts')
-    .select(`
-      *,
-      profiles:user_id (
-        full_name,
-        avatar_url,
-        rating,
-        total_reviews
-      ),
-      categories (
-        name
-      )
-    `)
-    .eq('status', 'active')
-    .eq('is_deleted', false)
-    .limit(limit)
+  // If no preloaded data, fetch individually (fallback for edge cases)
+  if (!preloadedPostsData) {
+    const supabase = await createClient()
+    const config = section.config as any
 
-  // Apply sorting
-  if (sortBy === 'price') {
-    // Sort by price
-    query = query.order('price', { ascending: sortOrder === 'asc', nullsFirst: false })
-  } else if (sortBy === 'views') {
-    query = query.order('view_count', { ascending: sortOrder === 'asc' })
-  } else {
-    // Default: created_at
-    query = query.order('created_at', { ascending: sortOrder === 'asc' })
+    const limit = config.limit || 8
+    const categoryFilter = config.category_filter as string[] | undefined
+    const postTypeFilter = config.post_type_filter || config.post_type
+    const sortBy = config.sort_by || 'created_at'
+    const sortOrder = config.sort_order || 'desc'
+
+    let query = supabase
+      .from('posts')
+      .select(`
+        *,
+        profiles:user_id (
+          full_name,
+          avatar_url,
+          rating,
+          total_reviews
+        ),
+        categories (
+          name
+        )
+      `)
+      .eq('status', 'active')
+      .eq('is_deleted', false)
+      .limit(limit)
+
+    // Apply sorting
+    if (sortBy === 'price') {
+      query = query.order('price', { ascending: sortOrder === 'asc', nullsFirst: false })
+    } else if (sortBy === 'views') {
+      query = query.order('view_count', { ascending: sortOrder === 'asc' })
+    } else {
+      query = query.order('created_at', { ascending: sortOrder === 'asc' })
+    }
+
+    // Apply filters
+    if (postTypeFilter && postTypeFilter !== 'all') {
+      query = query.eq('type', postTypeFilter)
+    }
+
+    if (categoryFilter && categoryFilter.length > 0) {
+      query = query.in('category_id', categoryFilter)
+    }
+
+    const { data: postsData } = await query
+    posts = postsData || []
   }
-
-  // Apply post type filter if specified
-  if (postTypeFilter && postTypeFilter !== 'all') {
-    query = query.eq('type', postTypeFilter)
-  }
-
-  // Apply category filter if specified
-  if (categoryFilter && categoryFilter.length > 0) {
-    query = query.in('category_id', categoryFilter)
-  }
-
-  const { data: posts } = await query
 
   if (!posts || posts.length === 0) {
     return null
