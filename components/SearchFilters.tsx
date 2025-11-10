@@ -484,9 +484,110 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
         </div>
       </div>
 
-      {/* Desktop: Sticky sidebar with scroll - temporarily hidden */}
-      <div className="hidden">
-        {/* Will be redesigned */}
+      {/* Desktop: Sticky sidebar with categories */}
+      <div className="hidden lg:block space-y-4">
+        {/* Clear filters button */}
+        {hasActiveFilters && (
+          <button
+            onClick={clearFilters}
+            data-navigate="true"
+            className="text-sm text-brand hover:text-brand/90 font-medium"
+          >
+            Wyczyść filtry
+          </button>
+        )}
+
+        {/* Categories */}
+        <div className="space-y-2">
+          {mainCategories.map((mainCategory) => {
+            const subcategories = getSubcategories(mainCategory.id)
+            const hasSubcategories = subcategories.length > 0
+            const isMainSelected = currentCategory.toLowerCase() === mainCategory.name.toLowerCase()
+
+            return (
+              <div key={mainCategory.id}>
+                {/* Main category button */}
+                <button
+                  onClick={() => {
+                    if (hasSubcategories) {
+                      setExpandedCategory(expandedCategory === mainCategory.id ? null : mainCategory.id)
+                    } else {
+                      updateFilter('category', mainCategory.name.toLowerCase())
+                    }
+                  }}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
+                    isMainSelected
+                      ? 'bg-brand text-white'
+                      : 'bg-card text-foreground border border-border hover:bg-muted'
+                  }`}
+                >
+                  <CategoryIcon iconName={mainCategory.icon} className={`w-5 h-5 flex-shrink-0 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`} />
+                  <span className="font-medium flex-1">{mainCategory.name}</span>
+                  {hasSubcategories && (
+                    <ChevronDown className={`w-4 h-4 transition-transform ${expandedCategory === mainCategory.id ? 'rotate-180' : ''}`} />
+                  )}
+                </button>
+
+                {/* Subcategories - collapsible */}
+                {hasSubcategories && expandedCategory === mainCategory.id && (
+                  <div className="mt-2 ml-4 space-y-1 border-l border-border pl-4">
+                    {subcategories.map((subcategory) => {
+                      const isSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
+                      const subSubcategories = getSubcategories(subcategory.id)
+                      const hasSubSubcategories = subSubcategories.length > 0
+
+                      return (
+                        <div key={subcategory.id}>
+                          <button
+                            onClick={() => {
+                              if (hasSubSubcategories) {
+                                setExpandedCategory(expandedCategory === subcategory.id ? null : subcategory.id)
+                              } else {
+                                updateFilter('category', subcategory.name.toLowerCase())
+                              }
+                            }}
+                            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left transition-colors ${
+                              isSelected
+                                ? 'bg-brand/10 text-brand font-medium'
+                                : 'text-foreground hover:bg-muted/50'
+                            }`}
+                          >
+                            <span className="flex-1">{subcategory.name}</span>
+                            {hasSubSubcategories && (
+                              <ChevronDown className={`w-3 h-3 transition-transform ${expandedCategory === subcategory.id ? 'rotate-180' : ''}`} />
+                            )}
+                          </button>
+
+                          {/* Sub-subcategories */}
+                          {hasSubSubcategories && expandedCategory === subcategory.id && (
+                            <div className="mt-1 ml-4 space-y-1 border-l border-border/50 pl-3">
+                              {subSubcategories.map((subSubcategory) => {
+                                const isSubSubSelected = currentCategory.toLowerCase() === subSubcategory.name.toLowerCase()
+                                return (
+                                  <button
+                                    key={subSubcategory.id}
+                                    onClick={() => updateFilter('category', subSubcategory.name.toLowerCase())}
+                                    className={`w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs text-left transition-colors ${
+                                      isSubSubSelected
+                                        ? 'bg-brand/10 text-brand font-medium'
+                                        : 'text-muted-foreground hover:text-foreground'
+                                    }`}
+                                  >
+                                    {subSubcategory.name}
+                                  </button>
+                                )
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
       </div>
     </>
   )
