@@ -277,10 +277,10 @@ export function AIAssistant() {
                     </svg>
                   </button>
                 )}
-                {/* Pin button */}
+                {/* Pin button - desktop only */}
                 <button
                   onClick={() => setIsPinned(!isPinned)}
-                  className={`w-8 h-8 rounded-full hover:bg-muted flex items-center justify-center transition-colors ${isPinned ? 'text-brand' : 'text-muted-foreground'}`}
+                  className={`hidden md:flex w-8 h-8 rounded-full hover:bg-muted items-center justify-center transition-colors ${isPinned ? 'text-brand' : 'text-muted-foreground'}`}
                   title={isPinned ? "Odepnij okno" : "Przypnij okno"}
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -26,6 +26,7 @@ export default async function HowItWorksPage() {
       <NavbarWithHide user={user} pageTitle="Jak to działa?" />
 
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+        {/* Desktop header */}
         <div className="hidden md:block md:mb-4">
           <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-3">Jak to działa?</h1>
           <p className="text-base md:text-lg text-muted-foreground">
@@ -34,10 +35,15 @@ export default async function HowItWorksPage() {
         </div>
 
         {/* Dla poszukujących */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
-              Szukasz pomocy?
-            </h2>
+          <section className="mb-6 md:mb-16">
+            <div className="mb-4 md:mb-8">
+              <h2 className="text-xl md:text-3xl font-bold text-foreground mb-1 text-left md:text-center">
+                Szukasz pomocy?
+              </h2>
+              <p className="text-sm md:text-base text-muted-foreground text-left md:text-center">
+                Znajdź odpowiednią osobę w kilku prostych krokach
+              </p>
+            </div>
             <div className="grid md:grid-cols-3 gap-6">
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
@@ -78,10 +84,15 @@ export default async function HowItWorksPage() {
           </section>
 
           {/* Dla oferujących */}
-          <section className="mb-16">
-            <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
-              Chcesz pomóc innym?
-            </h2>
+          <section className="mb-6 md:mb-16">
+            <div className="mb-4 md:mb-8">
+              <h2 className="text-xl md:text-3xl font-bold text-foreground mb-1 text-left md:text-center">
+                Chcesz pomóc innym?
+              </h2>
+              <p className="text-sm md:text-base text-muted-foreground text-left md:text-center">
+                Zacznij oferować swoje usługi w okolicy
+              </p>
+            </div>
             <div className="grid md:grid-cols-3 gap-6">
               <Card className="border border-border rounded-3xl bg-card">
                 <CardContent className="p-8 text-center">
@@ -120,28 +131,6 @@ export default async function HowItWorksPage() {
               </Card>
             </div>
           </section>
-
-          {/* CTA */}
-          <div className="bg-card border border-border rounded-3xl p-12 text-center">
-            <h2 className="text-3xl font-bold text-foreground mb-4">
-              Gotowy, żeby zacząć?
-            </h2>
-            <p className="text-lg text-muted-foreground mb-8">
-              Dołącz do FindSomeone już dziś - to nic nie kosztuje!
-            </p>
-            <div className="flex gap-4 justify-center flex-wrap">
-              <Link href="/signup">
-                <Button className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border border-border px-10 py-6 text-base font-semibold">
-                  Zarejestruj się
-                </Button>
-              </Link>
-              <Link href="/dashboard">
-                <Button variant="ghost" className="rounded-full px-10 py-6 text-base font-semibold">
-                  Przeglądaj ogłoszenia
-                </Button>
-              </Link>
-            </div>
-          </div>
       </main>
 
       <Footer />

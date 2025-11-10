@@ -3,7 +3,7 @@ import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Metadata } from 'next'
-import { Zap, Smartphone, Wifi } from 'lucide-react'
+import { Zap, Smartphone, Bell } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: "Zainstaluj aplikację - FindSomeone",
@@ -16,9 +16,10 @@ export default async function InstallPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <NavbarWithHide user={user} pageTitle="Zainstaluj aplikację" />
+      <NavbarWithHide user={user} pageTitle="Aplikacja" />
 
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+        {/* Desktop header */}
         <div className="hidden md:block md:mb-4">
           <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-3">Zainstaluj aplikację</h1>
           <p className="text-base md:text-lg text-muted-foreground">
@@ -27,8 +28,8 @@ export default async function InstallPage() {
         </div>
 
         {/* Korzyści z instalacji */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8 text-center">
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left md:text-center">
             Dlaczego warto zainstalować?
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -59,11 +60,11 @@ export default async function InstallPage() {
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-8 text-center">
                 <div className="w-16 h-16 rounded-full bg-brand text-brand-foreground flex items-center justify-center mx-auto mb-6">
-                  <Wifi className="w-8 h-8" />
+                  <Bell className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-3">Działa offline</h3>
+                <h3 className="text-xl font-bold text-foreground mb-3">Powiadomienia push</h3>
                 <p className="text-muted-foreground">
-                  Przeglądaj zapisane treści nawet bez połączenia z internetem
+                  Otrzymuj natychmiastowe powiadomienia o wiadomościach, ulubionych i recenzjach. Łatwo skonfiguruj w ustawieniach
                 </p>
               </CardContent>
             </Card>
@@ -71,8 +72,8 @@ export default async function InstallPage() {
         </section>
 
         {/* Instrukcje dla telefonu */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">
             Instalacja na telefonie
           </h2>
 
@@ -140,8 +141,8 @@ export default async function InstallPage() {
         </section>
 
         {/* Instrukcje dla komputera */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">
             Instalacja na komputerze
           </h2>
 
@@ -220,8 +221,8 @@ export default async function InstallPage() {
         </section>
 
         {/* FAQ */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">
             Często zadawane pytania
           </h2>
 

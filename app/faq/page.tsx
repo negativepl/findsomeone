@@ -26,6 +26,7 @@ export default async function FAQPage() {
       <NavbarWithHide user={user} pageTitle="FAQ" />
 
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
+        {/* Desktop header */}
         <div className="hidden md:block md:mb-4">
           <h1 className="text-2xl md:text-4xl font-bold text-foreground mb-3">Często zadawane pytania</h1>
           <p className="text-base md:text-lg text-muted-foreground">
@@ -34,8 +35,8 @@ export default async function FAQPage() {
         </div>
 
         {/* Ogólne */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Ogólne</h2>
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">Ogólne</h2>
           <div className="space-y-4">
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-6 md:p-8">
@@ -71,8 +72,8 @@ export default async function FAQPage() {
         </section>
 
         {/* Ogłoszenia */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Ogłoszenia</h2>
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">Ogłoszenia</h2>
           <div className="space-y-4">
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-6 md:p-8">
@@ -128,8 +129,8 @@ export default async function FAQPage() {
         </section>
 
         {/* Komunikacja */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Komunikacja</h2>
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">Komunikacja</h2>
           <div className="space-y-4">
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-6 md:p-8">
@@ -171,8 +172,8 @@ export default async function FAQPage() {
         </section>
 
         {/* Bezpieczeństwo */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Bezpieczeństwo</h2>
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">Bezpieczeństwo</h2>
           <div className="space-y-4">
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-6 md:p-8">
@@ -213,8 +214,8 @@ export default async function FAQPage() {
         </section>
 
         {/* Płatności */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Płatności</h2>
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">Płatności</h2>
           <div className="space-y-4">
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-6 md:p-8">
@@ -239,8 +240,8 @@ export default async function FAQPage() {
         </section>
 
         {/* Pomoc techniczna */}
-        <section className="mb-16">
-          <h2 className="text-3xl font-bold text-foreground mb-8">Pomoc techniczna</h2>
+        <section className="mb-6 md:mb-16">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-4 md:mb-8 text-left">Pomoc techniczna</h2>
           <div className="space-y-4">
             <Card className="border border-border rounded-3xl bg-card">
               <CardContent className="p-6 md:p-8">
@@ -279,13 +280,15 @@ export default async function FAQPage() {
         </section>
 
         {/* CTA */}
-        <div className="bg-card border border-border rounded-3xl p-12 text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">
-            Nie znalazłeś odpowiedzi na swoje pytanie?
+        <div className="mb-4 md:mb-8">
+          <h2 className="text-xl md:text-3xl font-bold text-foreground mb-1 text-left md:text-center">
+            Nie znaleziono odpowiedzi?
           </h2>
-          <p className="text-lg text-muted-foreground mb-8">
+          <p className="text-sm md:text-base text-muted-foreground text-left md:text-center">
             Skontaktuj się z nami - chętnie pomożemy!
           </p>
+        </div>
+        <div className="bg-card border border-border rounded-3xl p-12 text-center">
           <Link href="/contact">
             <Button className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border border-border px-10 py-6 text-base font-semibold">
               Skontaktuj się z nami
