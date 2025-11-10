@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -50,7 +50,6 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(initialPosts.length < totalCount)
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set())
-  const observerTarget = useRef<HTMLDivElement>(null)
 
   const itemsPerPage = parseInt(searchParams.limit || '12', 10)
 
@@ -76,22 +75,23 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
     setLoadedImages(new Set())
   }, [initialPosts, totalCount])
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasMore && !loading) {
-          loadMore()
-        }
-      },
-      { threshold: 0.1 }
-    )
+  // Remove automatic infinite scroll - use manual button instead
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting && hasMore && !loading) {
+  //         loadMore()
+  //       }
+  //     },
+  //     { threshold: 0.1 }
+  //   )
 
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current)
-    }
+  //   if (observerTarget.current) {
+  //     observer.observe(observerTarget.current)
+  //   }
 
-    return () => observer.disconnect()
-  }, [hasMore, loading, posts.length])
+  //   return () => observer.disconnect()
+  // }, [hasMore, loading, posts.length])
 
   const loadMore = async () => {
     setLoading(true)
@@ -483,18 +483,26 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
         })}
       </div>
 
-      {/* Observer target for infinite scroll */}
+      {/* Load More Button */}
       {hasMore && (
-        <div ref={observerTarget} className="py-12 text-center">
-          {loading && (
-            <div className="flex flex-col items-center gap-3">
-              <svg className="animate-spin w-8 h-8 text-brand" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-              <span className="text-sm text-muted-foreground">Ładowanie więcej ogłoszeń...</span>
-            </div>
-          )}
+        <div className="mt-12 flex justify-center">
+          <button
+            onClick={() => loadMore()}
+            disabled={loading}
+            className="px-8 py-2.5 text-sm font-semibold text-brand hover:bg-brand/5 rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {loading ? (
+              <>
+                <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                Wczytywanie...
+              </>
+            ) : (
+              `Wczytaj więcej (${totalCount - posts.length})`
+            )}
+          </button>
         </div>
       )}
     </>
