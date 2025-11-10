@@ -8,12 +8,12 @@ const ViewsChart = dynamic(() => import('@/components/ViewsChart').then(mod => (
 })
 
 interface ViewsChartWrapperProps {
-  weeklyData: { date: string; value: number }[]
-  monthlyData: { date: string; value: number }[]
-  totalWeeklyViews: number
-  totalMonthlyViews: number
+  weeklyData?: { date: string; value: number }[]
+  monthlyData?: { date: string; value: number }[]
+  totalWeeklyViews?: number
+  totalMonthlyViews?: number
 }
 
-export function ViewsChartWrapper({ weeklyData, monthlyData, totalWeeklyViews, totalMonthlyViews }: ViewsChartWrapperProps) {
+export function ViewsChartWrapper({ weeklyData = [], monthlyData = [], totalWeeklyViews = 0, totalMonthlyViews = 0 }: ViewsChartWrapperProps) {
   return <ViewsChart weeklyData={weeklyData} monthlyData={monthlyData} totalWeeklyViews={totalWeeklyViews} totalMonthlyViews={totalMonthlyViews} />
 }

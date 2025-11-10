@@ -5,6 +5,7 @@ import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
 import { SearchFilters } from '@/components/SearchFilters'
 import { PostsFilters } from '@/components/PostsFilters'
+import { FiltersPlaceholder } from '@/components/FiltersPlaceholder'
 import { PostsListWrapper } from './PostsListWrapper'
 import { StructuredData } from '@/components/StructuredData'
 import { Metadata } from 'next'
@@ -99,9 +100,29 @@ export default async function PostsPage({
     .select('id, name, slug, icon, parent_id, display_order')
     .order('display_order')
 
-  // Sort all categories by display_order (since we get them flat)
+  // Fetch post counts per category (only active posts)
+  const { data: postCounts } = await supabase
+    .from('posts')
+    .select('category_id')
+    .eq('status', 'active')
+
+  // Create a map of category_id -> count
+  const countMap = new Map<string, number>()
+  postCounts?.forEach(post => {
+    const count = countMap.get(post.category_id) || 0
+    countMap.set(post.category_id, count + 1)
+  })
+
+  // Sort all categories by display_order and add post counts
   const sortedCategories = rawCategories?.sort((a, b) => (a.display_order || 0) - (b.display_order || 0)) || []
-  const categories = sortedCategories
+
+  // Transform to include post_count
+  const categoriesWithCounts = sortedCategories.map(cat => ({
+    ...cat,
+    post_count: countMap.get(cat.id) || 0,
+  }))
+
+  const categories = categoriesWithCounts
 
   const searchQuery = params.search || ''
   const cityQuery = params.city || ''
@@ -354,6 +375,11 @@ export default async function PostsPage({
           </p>
         </div>
 
+        {/* Full Width Filters Placeholder */}
+        <div className="w-full mb-6 p-4 bg-card rounded-xl border border-border">
+          <FiltersPlaceholder fullWidth />
+        </div>
+
         {/* Two Column Layout: Sidebar + Main Content */}
         <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
           {/* Left Sidebar - Filters */}
@@ -402,14 +428,14 @@ export default async function PostsPage({
                   </p>
                   {searchQuery || cityQuery || categoryQuery ? (
                     <Link href="/posts">
-                      <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-8">
+                      <Button className="rounded-full bg-brand hover:bg-brand/90 text-primary-foreground border border-border px-8">
                         Wyczyść filtry
                       </Button>
                     </Link>
                   ) : (
                     user && (
                       <Link href="/dashboard/my-posts/new">
-                        <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-8">
+                        <Button className="rounded-full bg-brand hover:bg-brand/90 text-primary-foreground border border-border px-8">
                           Dodaj ogłoszenie
                         </Button>
                       </Link>

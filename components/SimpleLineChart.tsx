@@ -11,7 +11,7 @@ interface SimpleLineChartProps {
 
 export function SimpleLineChart({ data, label, color = '#f27361', totalValue }: SimpleLineChartProps) {
   // Use provided totalValue or calculate from data
-  const displayValue = totalValue ?? data.reduce((sum, item) => sum + item.value, 0)
+  const displayValue = totalValue ?? (data?.reduce((sum, item) => sum + item.value, 0) || 0)
 
   // Custom dot component
   const CustomDot = (props: any) => {
@@ -23,16 +23,16 @@ export function SimpleLineChart({ data, label, color = '#f27361', totalValue }: 
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-muted-foreground">{label}</span>
-        <span className="text-2xl font-bold text-foreground">
+      <div className="flex items-center justify-between mb-4 animate-in fade-in slide-in-from-top-2 duration-500">
+        <span className="text-sm text-muted-foreground animate-in fade-in slide-in-from-left-3 duration-700">{label}</span>
+        <span className="text-2xl font-bold text-foreground animate-in fade-in slide-in-from-right-3 zoom-in-50 duration-700">
           {displayValue.toLocaleString('pl-PL')}
         </span>
       </div>
       <div className="flex-1 min-h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            data={data}
+            data={data || []}
             margin={{ top: 10, right: 6, left: 6, bottom: 0 }}
           >
           <defs>

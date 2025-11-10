@@ -13,10 +13,98 @@ interface Category {
   slug: string
   icon?: string | null
   parent_id?: string | null
+  post_count?: number
 }
 
 interface SearchFiltersProps {
   categories: Category[] | null
+}
+
+// Recursive category tree renderer
+function CategoryTree({
+  category,
+  categories,
+  currentCategory,
+  expandedCategories,
+  toggleExpandedCategory,
+  updateFilter,
+  level = 0
+}: {
+  category: Category
+  categories: Category[]
+  currentCategory: string
+  expandedCategories: Set<string>
+  toggleExpandedCategory: (id: string) => void
+  updateFilter: (key: string, value: string) => void
+  level?: number
+}) {
+  const subcategories = categories.filter(cat => cat.parent_id === category.id)
+  const hasSubcategories = subcategories.length > 0
+  const isSelected = currentCategory.toLowerCase() === category.name.toLowerCase()
+  const isExpanded = expandedCategories.has(category.id)
+
+  // Calculate total post count (category + all subcategories)
+  const getTotalPostCount = (cat: Category): number => {
+    const directCount = cat.post_count || 0
+    const childCategories = categories.filter(c => c.parent_id === cat.id)
+    const childCount = childCategories.reduce((sum, child) => sum + getTotalPostCount(child), 0)
+    return directCount + childCount
+  }
+
+  const totalCount = getTotalPostCount(category)
+
+  // Padding increases with level depth
+  const paddingLeft = level * 16
+  const fontSize = level === 0 ? 'text-base' : level === 1 ? 'text-sm' : level === 2 ? 'text-sm' : 'text-xs'
+
+  return (
+    <div>
+      <button
+        onClick={() => {
+          if (hasSubcategories) {
+            toggleExpandedCategory(category.id)
+          } else {
+            updateFilter('category', category.name.toLowerCase())
+          }
+        }}
+        style={{ paddingLeft: `${paddingLeft}px` }}
+        className={`w-full flex items-center gap-2 px-3 py-2 mb-1 rounded-lg text-left transition-colors ${
+          isSelected
+            ? 'bg-brand/10 text-brand font-medium'
+            : 'text-foreground hover:bg-muted/50'
+        } ${fontSize}`}
+      >
+        {level === 0 && category.icon && (
+          <CategoryIcon iconName={category.icon} className="w-5 h-5 flex-shrink-0 text-muted-foreground" />
+        )}
+        <span className="flex-1">{category.name}</span>
+        {totalCount > 0 && (
+          <span className="text-xs text-muted-foreground">({totalCount})</span>
+        )}
+        {hasSubcategories && (
+          <ChevronDown className={`w-3 h-3 transition-transform flex-shrink-0 ${isExpanded ? 'rotate-180' : ''}`} />
+        )}
+      </button>
+
+      {/* Recursive subcategories */}
+      {hasSubcategories && isExpanded && (
+        <div className="mt-0.5 space-y-0">
+          {subcategories.map((subcategory) => (
+            <CategoryTree
+              key={subcategory.id}
+              category={subcategory}
+              categories={categories}
+              currentCategory={currentCategory}
+              expandedCategories={expandedCategories}
+              toggleExpandedCategory={toggleExpandedCategory}
+              updateFilter={updateFilter}
+              level={level + 1}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
 }
 
 export function SearchFilters({ categories }: SearchFiltersProps) {
@@ -80,149 +168,25 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     // Cancel any pending close
     if (closeTimeoutRef.current) {
       clearTimeout(closeTimeoutRef.current)
-      closeTimeoutRef.current = null
     }
-
-    // Immediately set as expanded
-    setExpandedCategory(categoryId)
-
-    // Calculate position synchronously
-    const element = categoryRefs.current[categoryId]
-    if (!element) return
-
-    const rect = element.getBoundingClientRect()
-    const subcategories = getSubcategories(categoryId)
-
-    // Calculate available space
-    const spaceBelow = window.innerHeight - rect.top - 20 // 20px margin from bottom
-    const spaceAbove = rect.bottom - 20 // 20px margin from top
-
-    // Estimate ideal dropdown height (each item ~44px + padding)
-    const idealDropdownHeight = subcategories.length * 44 + 24 // 24px for padding
-
-    // Determine best position and calculate max height
-    let position: 'top' | 'bottom' = 'bottom'
-    let maxHeight: number | undefined
-
-    if (spaceBelow >= idealDropdownHeight) {
-      // Enough space below, use bottom position
-      position = 'bottom'
-      maxHeight = undefined // No constraint needed
-    } else if (spaceAbove >= idealDropdownHeight) {
-      // Enough space above, use top position
-      position = 'top'
-      maxHeight = undefined // No constraint needed
-    } else {
-      // Not enough space in either direction, use the side with more space
-      if (spaceBelow > spaceAbove) {
-        position = 'bottom'
-        maxHeight = spaceBelow - 20 // Leave some margin
-      } else {
-        position = 'top'
-        maxHeight = spaceAbove - 20 // Leave some margin
-      }
-    }
-
-    // Update position and max height
-    setDropdownPosition(prev => ({ ...prev, [categoryId]: { position, maxHeight } }))
   }
 
   const handleCategoryLeave = () => {
-    // Delay closing to allow moving to next category
     closeTimeoutRef.current = setTimeout(() => {
-      setExpandedCategory(null)
       setHoveredSubcategory(null)
     }, 100)
   }
 
-  const handleSubcategoryHover = (subcategoryId: string) => {
-    // Cancel any pending close
+  const handleSubcategoryHover = () => {
     if (subCloseTimeoutRef.current) {
       clearTimeout(subCloseTimeoutRef.current)
-      subCloseTimeoutRef.current = null
     }
-
-    setHoveredSubcategory(subcategoryId)
   }
 
   const handleSubcategoryLeave = () => {
-    // Delay closing to allow moving to next subcategory
     subCloseTimeoutRef.current = setTimeout(() => {
       setHoveredSubcategory(null)
     }, 100)
-  }
-
-  const getSubSubDropdownStyle = (subcategoryId: string) => {
-    const element = subcategoryRefs.current[subcategoryId]
-    if (!element) return {}
-
-    const rect = element.getBoundingClientRect()
-    const subSubcategories = getSubcategories(subcategoryId)
-
-    // Calculate available space
-    const spaceBelow = window.innerHeight - rect.top - 20
-    const spaceAbove = rect.bottom - 20
-
-    // Estimate dropdown height
-    const idealDropdownHeight = subSubcategories.length * 36 + 16
-
-    let position: 'top' | 'bottom' = 'bottom'
-    let maxHeight: number | undefined
-
-    if (spaceBelow >= idealDropdownHeight) {
-      position = 'bottom'
-      maxHeight = undefined
-    } else if (spaceAbove >= idealDropdownHeight) {
-      position = 'top'
-      maxHeight = undefined
-    } else {
-      if (spaceBelow > spaceAbove) {
-        position = 'bottom'
-        maxHeight = spaceBelow - 20
-      } else {
-        position = 'top'
-        maxHeight = spaceAbove - 20
-      }
-    }
-
-    const style: React.CSSProperties = {
-      position: 'fixed' as const,
-      left: `${rect.right + 12}px`,
-      [position === 'top' ? 'bottom' : 'top']: position === 'top'
-        ? `${window.innerHeight - rect.bottom}px`
-        : `${rect.top}px`,
-      zIndex: 60
-    }
-
-    if (maxHeight) {
-      style.maxHeight = `${maxHeight}px`
-    }
-
-    return style
-  }
-
-  const getDropdownStyle = (categoryId: string) => {
-    const element = categoryRefs.current[categoryId]
-    if (!element) return {}
-
-    const rect = element.getBoundingClientRect()
-    const positionData = dropdownPosition[categoryId] || { position: 'bottom' }
-    const { position, maxHeight } = positionData
-
-    const style: React.CSSProperties = {
-      position: 'fixed' as const,
-      left: `${rect.right + 8}px`,
-      [position === 'top' ? 'bottom' : 'top']: position === 'top'
-        ? `${window.innerHeight - rect.bottom}px`
-        : `${rect.top}px`,
-      zIndex: 50
-    }
-
-    if (maxHeight) {
-      style.maxHeight = `${maxHeight}px`
-    }
-
-    return style
   }
 
   const updateFilter = (key: string, value: string) => {
@@ -416,10 +380,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                     : 'bg-card text-foreground border border-border hover:bg-muted'
                 }`}
               >
-                <CategoryIcon
-                  iconName={mainCategory.icon}
-                  className={`w-5 h-5 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`}
-                />
+                <CategoryIcon iconName={mainCategory.icon} className="w-6 h-6 text-muted-foreground" />
                 <span className="font-medium flex-1">{mainCategory.name}</span>
                 {hasSubcategories && (
                   <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -433,12 +394,6 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
       </div>
     )
   }
-
-  const DesktopMenuContent = () => (
-    <>
-      {/* Desktop content will be added later */}
-    </>
-  )
 
   return (
     <>
@@ -494,109 +449,36 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
         </div>
       </div>
 
-      {/* Desktop: Sticky sidebar with categories */}
-      <div className="hidden lg:block space-y-4">
-        {/* Clear filters button */}
-        {hasActiveFilters && (
-          <button
-            onClick={clearFilters}
-            data-navigate="true"
-            className="text-sm text-brand hover:text-brand/90 font-medium"
-          >
-            Wyczyść filtry
-          </button>
-        )}
+      {/* Desktop: Sticky sidebar with recursive categories */}
+      <div className="hidden lg:flex flex-col max-h-[calc(100vh-120px)] overflow-y-auto space-y-2 px-3 py-4 bg-card rounded-xl border border-border sticky top-24">
+        {/* Header with clear button */}
+        <div className="flex items-center justify-between px-3 py-2">
+          <h3 className="text-sm font-semibold text-foreground">Kategorie</h3>
+          {hasActiveFilters && (
+            <button
+              onClick={clearFilters}
+              data-navigate="true"
+              className="text-xs text-brand hover:text-brand/90 font-medium px-2 py-1 rounded-md hover:bg-brand/5 transition-colors"
+            >
+              Wyczyść
+            </button>
+          )}
+        </div>
 
-        {/* Categories */}
-        <div className="space-y-2">
-          {mainCategories.map((mainCategory) => {
-            const subcategories = getSubcategories(mainCategory.id)
-            const hasSubcategories = subcategories.length > 0
-            const isMainSelected = currentCategory.toLowerCase() === mainCategory.name.toLowerCase()
-
-            return (
-              <div key={mainCategory.id}>
-                {/* Main category button */}
-                <button
-                  onClick={() => {
-                    if (hasSubcategories) {
-                      toggleExpandedCategory(mainCategory.id)
-                    } else {
-                      updateFilter('category', mainCategory.name.toLowerCase())
-                    }
-                  }}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
-                    isMainSelected
-                      ? 'bg-brand text-white'
-                      : 'bg-card text-foreground border border-border hover:bg-muted'
-                  }`}
-                >
-                  <CategoryIcon iconName={mainCategory.icon} className={`w-5 h-5 flex-shrink-0 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`} />
-                  <span className="font-medium flex-1">{mainCategory.name}</span>
-                  {hasSubcategories && (
-                    <ChevronDown className={`w-4 h-4 transition-transform ${expandedCategories.has(mainCategory.id) ? 'rotate-180' : ''}`} />
-                  )}
-                </button>
-
-                {/* Subcategories - collapsible */}
-                {hasSubcategories && expandedCategories.has(mainCategory.id) && (
-                  <div className="mt-2 ml-4 space-y-1 border-l border-border pl-4">
-                    {subcategories.map((subcategory) => {
-                      const isSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
-                      const subSubcategories = getSubcategories(subcategory.id)
-                      const hasSubSubcategories = subSubcategories.length > 0
-
-                      return (
-                        <div key={subcategory.id}>
-                          <button
-                            onClick={() => {
-                              if (hasSubSubcategories) {
-                                toggleExpandedCategory(subcategory.id)
-                              } else {
-                                updateFilter('category', subcategory.name.toLowerCase())
-                              }
-                            }}
-                            className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-left transition-colors ${
-                              isSelected
-                                ? 'bg-brand/10 text-brand font-medium'
-                                : 'text-foreground hover:bg-muted/50'
-                            }`}
-                          >
-                            <span className="flex-1">{subcategory.name}</span>
-                            {hasSubSubcategories && (
-                              <ChevronDown className={`w-3 h-3 transition-transform ${expandedCategories.has(subcategory.id) ? 'rotate-180' : ''}`} />
-                            )}
-                          </button>
-
-                          {/* Sub-subcategories */}
-                          {hasSubSubcategories && expandedCategories.has(subcategory.id) && (
-                            <div className="mt-1 ml-4 space-y-1 border-l border-border/50 pl-3">
-                              {subSubcategories.map((subSubcategory) => {
-                                const isSubSubSelected = currentCategory.toLowerCase() === subSubcategory.name.toLowerCase()
-                                return (
-                                  <button
-                                    key={subSubcategory.id}
-                                    onClick={() => updateFilter('category', subSubcategory.name.toLowerCase())}
-                                    className={`w-full flex items-center gap-2 px-3 py-1.5 rounded text-xs text-left transition-colors ${
-                                      isSubSubSelected
-                                        ? 'bg-brand/10 text-brand font-medium'
-                                        : 'text-muted-foreground hover:text-foreground'
-                                    }`}
-                                  >
-                                    {subSubcategory.name}
-                                  </button>
-                                )
-                              })}
-                            </div>
-                          )}
-                        </div>
-                      )
-                    })}
-                  </div>
-                )}
-              </div>
-            )
-          })}
+        {/* Main categories with recursive rendering */}
+        <div className="space-y-0.5">
+          {mainCategories.map((mainCategory) => (
+            <CategoryTree
+              key={mainCategory.id}
+              category={mainCategory}
+              categories={categories || []}
+              currentCategory={currentCategory}
+              expandedCategories={expandedCategories}
+              toggleExpandedCategory={toggleExpandedCategory}
+              updateFilter={updateFilter}
+              level={0}
+            />
+          ))}
         </div>
       </div>
     </>
