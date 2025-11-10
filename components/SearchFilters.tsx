@@ -23,7 +23,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
-  const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const [hoveredSubcategory, setHoveredSubcategory] = useState<string | null>(null)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [mobileViewingCategory, setMobileViewingCategory] = useState<string | null>(null)
@@ -240,6 +240,16 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     }
 
     router.push(`${pathname}?${params.toString()}`)
+  }
+
+  const toggleExpandedCategory = (categoryId: string) => {
+    const newExpanded = new Set(expandedCategories)
+    if (newExpanded.has(categoryId)) {
+      newExpanded.delete(categoryId)
+    } else {
+      newExpanded.add(categoryId)
+    }
+    setExpandedCategories(newExpanded)
   }
 
   const clearFilters = () => {
@@ -510,7 +520,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                 <button
                   onClick={() => {
                     if (hasSubcategories) {
-                      setExpandedCategory(expandedCategory === mainCategory.id ? null : mainCategory.id)
+                      toggleExpandedCategory(mainCategory.id)
                     } else {
                       updateFilter('category', mainCategory.name.toLowerCase())
                     }
@@ -524,12 +534,12 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                   <CategoryIcon iconName={mainCategory.icon} className={`w-5 h-5 flex-shrink-0 ${isMainSelected ? 'text-white' : 'text-muted-foreground'}`} />
                   <span className="font-medium flex-1">{mainCategory.name}</span>
                   {hasSubcategories && (
-                    <ChevronDown className={`w-4 h-4 transition-transform ${expandedCategory === mainCategory.id ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`w-4 h-4 transition-transform ${expandedCategories.has(mainCategory.id) ? 'rotate-180' : ''}`} />
                   )}
                 </button>
 
                 {/* Subcategories - collapsible */}
-                {hasSubcategories && expandedCategory === mainCategory.id && (
+                {hasSubcategories && expandedCategories.has(mainCategory.id) && (
                   <div className="mt-2 ml-4 space-y-1 border-l border-border pl-4">
                     {subcategories.map((subcategory) => {
                       const isSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
@@ -541,7 +551,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                           <button
                             onClick={() => {
                               if (hasSubSubcategories) {
-                                setExpandedCategory(expandedCategory === subcategory.id ? null : subcategory.id)
+                                toggleExpandedCategory(subcategory.id)
                               } else {
                                 updateFilter('category', subcategory.name.toLowerCase())
                               }
@@ -554,12 +564,12 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                           >
                             <span className="flex-1">{subcategory.name}</span>
                             {hasSubSubcategories && (
-                              <ChevronDown className={`w-3 h-3 transition-transform ${expandedCategory === subcategory.id ? 'rotate-180' : ''}`} />
+                              <ChevronDown className={`w-3 h-3 transition-transform ${expandedCategories.has(subcategory.id) ? 'rotate-180' : ''}`} />
                             )}
                           </button>
 
                           {/* Sub-subcategories */}
-                          {hasSubSubcategories && expandedCategory === subcategory.id && (
+                          {hasSubSubcategories && expandedCategories.has(subcategory.id) && (
                             <div className="mt-1 ml-4 space-y-1 border-l border-border/50 pl-3">
                               {subSubcategories.map((subSubcategory) => {
                                 const isSubSubSelected = currentCategory.toLowerCase() === subSubcategory.name.toLowerCase()
