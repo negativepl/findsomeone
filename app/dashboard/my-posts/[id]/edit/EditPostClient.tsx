@@ -395,6 +395,18 @@ export function EditPostClient({ post }: EditPostClientProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // Validate category is selected
+    if (!selectedCategoryId) {
+      toast.error('Musisz wybrać kategorię')
+      return
+    }
+
+    // Validate images are uploaded
+    if (images.length === 0) {
+      toast.error('Musisz dodać przynajmniej jedno zdjęcie')
+      return
+    }
+
     // Show modal immediately
     setShowModerationModal(true)
     setModerationInProgress(true)
@@ -767,8 +779,8 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 </Link>
                 <Button
                   type="submit"
-                  disabled={loading}
-                  className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold"
+                  disabled={loading || !formData.title.trim() || !formData.description.trim() || !selectedCategoryId || images.length === 0 || !formData.city.trim() || (formData.priceType !== 'free' && (!formData.price || parseFloat(formData.price.replace(/\s/g, '').replace(',', '.')) <= 0))}
+                  className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
                 </Button>
