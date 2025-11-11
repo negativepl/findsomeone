@@ -1730,7 +1730,7 @@ export function NewPostClient() {
 
     {/* Moderation Modal - Shared between mobile and desktop */}
     {showModerationModal && (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="fixed inset-0 bg-background/95 flex items-center justify-center z-50 p-4">
         <div className="bg-card border border-border rounded-3xl p-8 max-w-md w-full">
           {moderationInProgress ? (
             <div className="text-center">
