@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import { createClient } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -10,11 +11,12 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
-import { Check, ChevronsUpDown } from 'lucide-react'
+import { Check, ChevronsUpDown, Loader2, Tag, FileText, ImageIcon, DollarSign } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ImageUpload } from '@/components/ImageUpload'
 import { RichTextEditor } from '@/components/RichTextEditor'
+import { RichTextToolbar } from '@/components/RichTextToolbar'
 import NProgress from 'nprogress'
 import { Switch } from '@/components/ui/switch'
 import { MapPin, ChevronRight, Zap } from 'lucide-react'
@@ -82,14 +84,32 @@ export function EditPostClient({ post }: EditPostClientProps) {
 
   const [images, setImages] = useState<string[]>(post.images || [])
   const [imageRotations, setImageRotations] = useState<Record<string, number>>({})
+  const [richTextEditor, setRichTextEditor] = useState<any>(null)
 
   // Location detection state
   const [detectingLocation, setDetectingLocation] = useState(false)
 
-  // Cities from database
-  const [cities, setCities] = useState<Array<{ id: string; name: string; slug: string; voivodeship: string | null }>>([])
+  // Desktop: Cities from database (for Combobox)
+  const [desktopCities, setDesktopCities] = useState<Array<{ id: string; name: string; slug: string; voivodeship: string | null }>>([])
   const [loadingCities, setLoadingCities] = useState(true)
   const [openCityCombobox, setOpenCityCombobox] = useState(false)
+
+  // Mobile: Multi-step form state
+  const [currentStep, setCurrentStep] = useState(1)
+  const totalSteps = 7
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
+  // Mobile: City autocomplete (API-based)
+  const [mobileCityQuery, setMobileCityQuery] = useState('')
+  const [mobileCities, setMobileCities] = useState<Array<{ name: string; slug: string; voivodeship?: string; popular?: boolean }>>([])
+  const [isMobileCityDropdownOpen, setIsMobileCityDropdownOpen] = useState(false)
+  const [isLoadingMobileCities, setIsLoadingMobileCities] = useState(false)
+  const mobileCityInputRef = useRef<HTMLInputElement>(null)
+  const mobileCityDropdownRef = useRef<HTMLDivElement>(null)
+  const mobileCityDebounceTimerRef = useRef<NodeJS.Timeout>()
+
+  // Mobile: Subcategories for summary display
+  const [subcategories, setSubcategories] = useState<Category[]>([])
 
   // Load initial category path
   useEffect(() => {
@@ -121,7 +141,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
     loadCategoryPath()
   }, [supabase, post.categories?.id])
 
-  // Fetch cities from database
+  // Fetch cities from database (for desktop)
   useEffect(() => {
     const fetchCities = async () => {
       const { data, error } = await supabase
@@ -130,13 +150,243 @@ export function EditPostClient({ post }: EditPostClientProps) {
         .order('name', { ascending: true })
 
       if (data && !error) {
-        setCities(data)
+        setDesktopCities(data)
       }
       setLoadingCities(false)
     }
 
     fetchCities()
   }, [supabase])
+
+  // Fetch categories (for mobile summary display)
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name, slug, parent_id')
+        .order('display_order', { ascending: true })
+
+      if (data && !error) {
+        setCategories(data)
+      }
+    }
+
+    fetchCategories()
+  }, [supabase])
+
+  // Fetch subcategories when category changes (for mobile)
+  useEffect(() => {
+    if (!selectedCategoryId) {
+      setSubcategories([])
+      return
+    }
+
+    const fetchSubcategories = async () => {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name, slug, parent_id')
+        .eq('parent_id', selectedCategoryId)
+        .order('display_order', { ascending: true })
+
+      if (data && !error) {
+        setSubcategories(data)
+      }
+    }
+
+    fetchSubcategories()
+  }, [selectedCategoryId, supabase])
+
+  // Close mobile city dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        mobileCityInputRef.current && !mobileCityInputRef.current.contains(event.target as Node) &&
+        mobileCityDropdownRef.current && !mobileCityDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileCityDropdownOpen(false)
+      }
+    }
+
+    if (isMobileCityDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMobileCityDropdownOpen])
+
+  // Mobile city autocomplete functions
+  const fetchCities = useCallback(async (query: string) => {
+    try {
+      setIsLoadingMobileCities(true)
+      const response = await fetch(`/api/cities?q=${encodeURIComponent(query)}`)
+      const data = await response.json()
+      setMobileCities(data.cities || [])
+    } catch (error) {
+      console.error('Cities fetch error:', error)
+      setMobileCities([])
+    } finally {
+      setIsLoadingMobileCities(false)
+    }
+  }, [])
+
+  const handleCityChange = (value: string) => {
+    setMobileCityQuery(value)
+
+    if (mobileCityDebounceTimerRef.current) {
+      clearTimeout(mobileCityDebounceTimerRef.current)
+    }
+
+    mobileCityDebounceTimerRef.current = setTimeout(() => {
+      fetchCities(value)
+    }, 200)
+  }
+
+  const handleCitySelect = (cityName: string) => {
+    setFormData({ ...formData, city: cityName })
+    setMobileCityQuery('')
+    setIsMobileCityDropdownOpen(false)
+  }
+
+  // Mobile helper functions
+  const getStepTitle = (step: number): string => {
+    switch (step) {
+      case 1: return 'Tytuł'
+      case 2: return 'Opis'
+      case 3: return 'Kategoria'
+      case 4: return 'Zdjęcia'
+      case 5: return 'Lokalizacja'
+      case 6: return 'Cena'
+      case 7: return 'Podsumowanie'
+      default: return ''
+    }
+  }
+
+  const getCategoryName = (categoryId: string): string => {
+    const category = categories.find(cat => cat.id === categoryId)
+    return category?.name || ''
+  }
+
+  const getSubcategoryName = (subcategoryId: string): string => {
+    const subcat = subcategories.find(sub => sub.id === subcategoryId)
+    return subcat?.name || ''
+  }
+
+  const getPriceDisplay = (): string => {
+    if (formData.priceType === 'free') return 'Za darmo'
+    const basePrice = formData.priceType === 'hourly' ? `${formData.price} PLN/godz.` : `${formData.price} PLN`
+    return formData.priceNegotiable ? `${basePrice} (do negocjacji)` : basePrice
+  }
+
+  const isStepValid = (step: number): boolean => {
+    switch (step) {
+      case 1:
+        return !!formData.title.trim()
+      case 2:
+        return formData.description.trim().length > 0
+      case 3:
+        return selectedCategoryId !== ''
+      case 4:
+        return images.length > 0
+      case 5:
+        return formData.city.trim().length > 0
+      case 6:
+        if (formData.priceType === 'free') return true
+        const priceNum = parseFloat(formData.price.replace(/\s/g, '').replace(',', '.'))
+        return !isNaN(priceNum) && priceNum > 0
+      default:
+        return true
+    }
+  }
+
+  const nextStep = () => {
+    if (currentStep < totalSteps && isStepValid(currentStep)) {
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentStep(currentStep + 1)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        setTimeout(() => setIsTransitioning(false), 50)
+      }, 200)
+    }
+  }
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setIsTransitioning(true)
+      setTimeout(() => {
+        setCurrentStep(currentStep - 1)
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        setTimeout(() => setIsTransitioning(false), 50)
+      }, 200)
+    }
+  }
+
+  const handleCancel = () => {
+    router.push('/dashboard/my-posts')
+  }
+
+  // Detect location for mobile
+  const detectLocation = async () => {
+    if (!navigator.geolocation) {
+      toast.error('Twoja przeglądarka nie obsługuje wykrywania lokalizacji')
+      return
+    }
+
+    setDetectingLocation(true)
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords
+
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=pl`
+          )
+          const data = await response.json()
+
+          const city = data.address?.city ||
+                      data.address?.town ||
+                      data.address?.village ||
+                      data.address?.municipality ||
+                      null
+
+          if (city) {
+            handleCitySelect(city)
+          } else {
+            toast.error('Nie udało się określić miasta', {
+              description: 'Spróbuj wpisać miasto ręcznie'
+            })
+          }
+        } catch (error) {
+          console.error('Błąd podczas wykrywania lokalizacji:', error)
+          toast.error('Błąd podczas wykrywania lokalizacji')
+        } finally {
+          setDetectingLocation(false)
+        }
+      },
+      (error) => {
+        console.warn('Geolokalizacja niedostępna:', error.code, error.message)
+        setDetectingLocation(false)
+
+        if (error.code === error.PERMISSION_DENIED) {
+          toast.error('Odmówiono dostępu do lokalizacji', {
+            description: 'Sprawdź ustawienia przeglądarki'
+          })
+        } else if (error.code === error.POSITION_UNAVAILABLE) {
+          toast.error('Nie można określić lokalizacji', {
+            description: 'Spróbuj ponownie później'
+          })
+        } else if (error.code === error.TIMEOUT) {
+          toast.error('Przekroczono czas oczekiwania', {
+            description: 'Spróbuj ponownie'
+          })
+        } else {
+          toast.error('Błąd podczas wykrywania lokalizacji')
+        }
+      }
+    )
+  }
 
   // Process rotated images before submit
   const processRotatedImages = async (imagesToProcess: string[], rotations: Record<string, number>) => {
@@ -479,7 +729,8 @@ export function EditPostClient({ post }: EditPostClientProps) {
   }
 
   return (
-    <main className="min-h-screen bg-background">
+    <>
+    <main className="hidden md:block min-h-screen bg-background">
       <div className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
       {/* Page Header - Above Card */}
       <div className="mb-8">
@@ -658,7 +909,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                         <CommandList>
                           <CommandEmpty>Nie znaleziono miasta.</CommandEmpty>
                           <CommandGroup>
-                            {cities.map((city) => (
+                            {desktopCities.map((city) => (
                               <CommandItem
                                 key={city.id}
                                 value={city.name}
@@ -789,19 +1040,537 @@ export function EditPostClient({ post }: EditPostClientProps) {
           </form>
         </CardContent>
       </Card>
+      </div>
+    </main>
 
-      {/* Category Selector Modal */}
-      <CategorySelector
-        open={showCategorySelector}
-        onOpenChange={setShowCategorySelector}
-        onSelect={(categoryId, path) => {
-          setSelectedCategoryId(categoryId)
-          setCategoryPath(path)
-        }}
-        selectedCategoryId={selectedCategoryId}
-      />
+    {/* Mobile UI */}
+    <div className="md:hidden">
+      <div className={`min-h-screen max-h-screen flex flex-col overflow-hidden ${currentStep === 2 ? 'bg-card' : 'bg-background'}`}>
+        {/* Progress bar */}
+        <div className="fixed left-0 right-0 h-1 bg-muted z-50" style={{ top: 'env(safe-area-inset-top)' }}>
+          <div
+            className="h-full bg-brand transition-all duration-300 ease-out"
+            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          />
+        </div>
 
-      {/* Moderation Modal */}
+        {/* Header */}
+        <header className="fixed left-0 right-0 bg-card border-b border-border z-40 shadow-sm rounded-b-3xl" style={{ top: 'calc(1px + env(safe-area-inset-top))' }}>
+          <div className="flex items-center justify-between h-16 px-4">
+            <h1
+              className={`text-xl font-bold text-foreground transition-all duration-200 ${
+                isTransitioning ? 'opacity-0 blur-sm scale-95' : 'opacity-100 blur-0 scale-100'
+              }`}
+            >
+              {getStepTitle(currentStep)}
+            </h1>
+            <p
+              className={`text-lg text-muted-foreground font-semibold transition-all duration-200 ${
+                isTransitioning ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'
+              }`}
+            >
+              {currentStep}/{totalSteps}
+            </p>
+          </div>
+        </header>
+
+        {/* Sticky Toolbar for Step 2 */}
+        {currentStep === 2 && richTextEditor && (
+          <div className="fixed left-0 right-0 z-30 bg-card shadow-sm" style={{ top: 'calc(65px + env(safe-area-inset-top))' }}>
+            <RichTextToolbar editor={richTextEditor} />
+          </div>
+        )}
+
+        {/* Content */}
+        <main
+          className={`flex-1 flex flex-col overflow-y-auto ${
+            currentStep === 2 ? 'pb-24' : 'pb-32'
+          } transition-all duration-200 ${isTransitioning ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'}`}
+        >
+          {/* Step 1: Tytuł */}
+          {currentStep === 1 && (
+            <div className="p-4 space-y-6 animate-in fade-in duration-300" style={{ marginTop: 'calc(69px + env(safe-area-inset-top))' }}>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="title" className="text-base text-foreground">
+                    Tytuł ogłoszenia <span className="text-brand">*</span>
+                  </Label>
+                  <span className="text-xs text-foreground/40 font-medium">
+                    {formData.title.length}/80
+                  </span>
+                </div>
+                <Input
+                  id="title"
+                  placeholder="np. Szukam hydraulika w Warszawie"
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  required
+                  maxLength={80}
+                  className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Opis */}
+          {currentStep === 2 && (
+            <div
+              className="flex-1 bg-card overflow-auto cursor-text"
+              onClick={() => richTextEditor?.commands.focus()}
+              style={{ paddingTop: 'calc(120px + env(safe-area-inset-top))' }}
+            >
+              <RichTextEditor
+                content={formData.description}
+                onChange={(content) => setFormData({ ...formData, description: content })}
+                placeholder="Opisz szczegółowo czego szukasz lub co oferujesz..."
+                hideToolbar={true}
+                onEditorReady={setRichTextEditor}
+                noBorder={true}
+                className="h-full min-h-full"
+              />
+            </div>
+          )}
+
+          {/* Step 3: Kategoria */}
+          {currentStep === 3 && (
+            <div className="p-4 space-y-6 animate-in fade-in duration-300" style={{ marginTop: 'calc(69px + env(safe-area-inset-top))' }}>
+              <Button
+                type="button"
+                onClick={handleSuggestCategory}
+                disabled={suggestingCategory || (!formData.title && !formData.description)}
+                className="w-full rounded-full bg-card border border-border hover:border-brand hover:bg-brand/5 text-foreground h-12 text-sm font-semibold transition-colors"
+              >
+                {suggestingCategory ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Wykrywam kategorię...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="m10.25 21.25 1-7h-6.5l9-11.5-1 8 6.5.03z" />
+                    </svg>
+                    Wykryj kategorię
+                  </>
+                )}
+              </Button>
+
+              <div className="space-y-2">
+                <Label className="text-base text-foreground">Wybierz kategorię <span className="text-brand">*</span></Label>
+                <button
+                  type="button"
+                  onClick={() => setShowCategorySelector(true)}
+                  className={`w-full rounded-2xl border transition-all p-4 text-left ${
+                    categoryPath.length > 0
+                      ? 'border-brand/30 bg-brand/5'
+                      : 'border-border bg-card hover:bg-muted'
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div className="flex-1 min-w-0">
+                      <div className={`font-medium text-sm ${
+                        categoryPath.length > 0 ? 'text-foreground' : 'text-muted-foreground'
+                      }`}>
+                        {categoryPath.length > 0
+                          ? categoryPath.map(c => c.name).join(' > ')
+                          : 'Wybierz kategorię'
+                        }
+                      </div>
+                    </div>
+                    <svg className={`w-5 h-5 flex-shrink-0 ${
+                      categoryPath.length > 0 ? 'text-brand' : 'text-muted-foreground'
+                    }`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Zdjęcia */}
+          {currentStep === 4 && (
+            <div className="p-4 animate-in fade-in duration-300" style={{ marginTop: 'calc(69px + env(safe-area-inset-top))' }}>
+              <ImageUpload
+                images={images}
+                onImagesChange={setImages}
+                userId={post.user_id}
+                postId={post.id}
+                maxImages={6}
+                imageRotations={imageRotations}
+                onRotationsChange={setImageRotations}
+              />
+            </div>
+          )}
+
+          {/* Step 5: Lokalizacja */}
+          {currentStep === 5 && (
+            <div className="p-4 space-y-6 animate-in fade-in duration-300" style={{ marginTop: 'calc(69px + env(safe-area-inset-top))' }}>
+              <Button
+                type="button"
+                onClick={detectLocation}
+                disabled={detectingLocation}
+                className="w-full rounded-full bg-card border border-border hover:border-brand hover:bg-brand/5 text-foreground h-12 text-sm font-semibold transition-colors"
+              >
+                {detectingLocation ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Wykrywanie lokalizacji...
+                  </>
+                ) : (
+                  <>
+                    <MapPin className="w-4 h-4 mr-2" />
+                    Wykryj moją lokalizację
+                  </>
+                )}
+              </Button>
+
+              <div className="space-y-2 relative">
+                <Label className="text-base text-foreground">Miasto <span className="text-brand">*</span></Label>
+                <div className="relative">
+                  <Input
+                    ref={mobileCityInputRef}
+                    type="text"
+                    placeholder="Szukaj miasta..."
+                    value={formData.city || mobileCityQuery}
+                    onChange={(e) => {
+                      if (formData.city) {
+                        setFormData({ ...formData, city: '' })
+                      }
+                      handleCityChange(e.target.value)
+                      setIsMobileCityDropdownOpen(true)
+                    }}
+                    onFocus={() => {
+                      setIsMobileCityDropdownOpen(true)
+                      if (mobileCities.length === 0) {
+                        fetchCities('')
+                      }
+                    }}
+                    className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card pr-10"
+                  />
+                  {isLoadingMobileCities && (
+                    <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-foreground/40" />
+                  )}
+                </div>
+
+                {isMobileCityDropdownOpen && mobileCities.length > 0 && (
+                  <div ref={mobileCityDropdownRef} className="absolute z-10 w-full mt-1 bg-card border border-border rounded-2xl shadow-lg max-h-64 overflow-y-auto">
+                    {mobileCities.some(c => c.popular) && (
+                      <div className="p-2">
+                        <p className="text-xs font-semibold text-foreground/40 px-3 py-2">POPULARNE</p>
+                        {mobileCities.filter(c => c.popular).map((city) => (
+                          <button
+                            key={city.slug}
+                            type="button"
+                            onClick={() => handleCitySelect(city.name)}
+                            className="w-full text-left px-3 py-2 hover:bg-muted rounded-lg text-sm transition-colors"
+                          >
+                            <div className="font-medium text-foreground">{city.name}</div>
+                            {city.voivodeship && (
+                              <div className="text-xs text-muted-foreground">{city.voivodeship}</div>
+                            )}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+
+                    {Object.entries(
+                      mobileCities.filter(c => !c.popular).reduce((acc, city) => {
+                        const voivodeship = city.voivodeship || 'Inne'
+                        if (!acc[voivodeship]) acc[voivodeship] = []
+                        acc[voivodeship].push(city)
+                        return acc
+                      }, {} as Record<string, typeof mobileCities>)
+                    ).map(([voivodeship, voivodeshipCities]) => (
+                      <div key={voivodeship} className="p-2">
+                        <p className="text-xs font-semibold text-foreground/40 px-3 py-2">{voivodeship.toUpperCase()}</p>
+                        {voivodeshipCities.map((city) => (
+                          <button
+                            key={city.slug}
+                            type="button"
+                            onClick={() => handleCitySelect(city.name)}
+                            className="w-full text-left px-3 py-2 hover:bg-muted rounded-lg text-sm transition-colors"
+                          >
+                            {city.name}
+                          </button>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-base text-foreground">Dzielnica <span className="text-foreground/40 font-normal">(opcjonalnie)</span></Label>
+                <Input
+                  type="text"
+                  placeholder="np. Śródmieście"
+                  value={formData.district}
+                  onChange={(e) => setFormData({ ...formData, district: e.target.value })}
+                  className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Step 6: Cena */}
+          {currentStep === 6 && (
+            <div className="p-4 space-y-6 animate-in fade-in duration-300" style={{ marginTop: 'calc(69px + env(safe-area-inset-top))' }}>
+              <div className="space-y-3">
+                <Label className="text-base text-foreground">Typ ceny <span className="text-brand">*</span></Label>
+
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, priceType: 'fixed' })}
+                  className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
+                    formData.priceType === 'fixed'
+                      ? 'border-brand bg-brand/5'
+                      : 'border-border bg-card hover:border-black/20'
+                  }`}
+                >
+                  <div className="flex-1">
+                    <div className="font-semibold text-foreground">Stała cena</div>
+                    <div className="text-sm text-muted-foreground mt-0.5">Podaj konkretną kwotę</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, priceType: 'hourly' })}
+                  className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
+                    formData.priceType === 'hourly'
+                      ? 'border-brand bg-brand/5'
+                      : 'border-border bg-card hover:border-black/20'
+                  }`}
+                >
+                  <div className="flex-1">
+                    <div className="font-semibold text-foreground">Za godzinę</div>
+                    <div className="text-sm text-muted-foreground mt-0.5">Stawka godzinowa</div>
+                  </div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setFormData({ ...formData, priceType: 'free' })}
+                  className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
+                    formData.priceType === 'free'
+                      ? 'border-brand bg-brand/5'
+                      : 'border-border bg-card hover:border-black/20'
+                  }`}
+                >
+                  <div className="flex-1">
+                    <div className="font-semibold text-foreground">Za darmo</div>
+                    <div className="text-sm text-muted-foreground mt-0.5">Usługa lub produkt bezpłatny</div>
+                  </div>
+                </button>
+              </div>
+
+              {formData.priceType !== 'free' && (
+                <div className="space-y-2">
+                  <Label htmlFor="price" className="text-base text-foreground">
+                    Cena {formData.priceType === 'hourly' ? 'za godzinę ' : ''}<span className="text-brand">*</span>
+                  </Label>
+                  <div className="relative">
+                    <Input
+                      id="price"
+                      type="text"
+                      inputMode="decimal"
+                      placeholder="0,00"
+                      value={formData.price}
+                      onChange={(e) => {
+                        const value = e.target.value
+                        const cleanValue = value.replace(/\s/g, '')
+
+                        if (cleanValue === '' || /^[\d,\.]+$/.test(cleanValue)) {
+                          const parts = cleanValue.split(/[,\.]/)
+                          const integerPart = parts[0]
+                          const decimalPart = parts[1]
+
+                          const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+
+                          const formattedValue = decimalPart !== undefined
+                            ? `${formattedInteger},${decimalPart}`
+                            : formattedInteger
+
+                          setFormData({ ...formData, price: formattedValue })
+                        }
+                      }}
+                      className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card pr-12"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base text-muted-foreground font-medium">
+                      PLN
+                    </span>
+                  </div>
+                  {formData.priceType === 'hourly' && (
+                    <p className="text-xs text-foreground/50">
+                      Podaj stawkę za godzinę pracy
+                    </p>
+                  )}
+
+                  <div
+                    className={`w-full flex items-center justify-between gap-3 px-4 h-12 rounded-2xl border transition-all ${
+                      formData.priceNegotiable
+                        ? 'border-brand bg-brand/5 text-brand'
+                        : 'border-border bg-card text-foreground/70'
+                    }`}
+                  >
+                    <label htmlFor="priceNegotiable" className="text-sm font-medium cursor-pointer flex-1">
+                      Do negocjacji
+                    </label>
+                    <Switch
+                      id="priceNegotiable"
+                      checked={formData.priceNegotiable}
+                      onCheckedChange={(checked) => setFormData({ ...formData, priceNegotiable: checked })}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Step 7: Podsumowanie */}
+          {currentStep === 7 && (
+            <div className="p-4 space-y-4 animate-in fade-in duration-300" style={{ marginTop: 'calc(69px + env(safe-area-inset-top))' }}>
+              <div className="bg-brand/5 border border-brand/20 rounded-2xl p-4">
+                <p className="text-sm text-foreground/70 text-center">
+                  Sprawdź dokładnie wszystkie informacje przed zapisaniem zmian
+                </p>
+              </div>
+
+              <div className="bg-card rounded-2xl border border-border p-4">
+                <h2 className="text-xl font-bold text-foreground mb-1">{formData.title}</h2>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Tag className="w-4 h-4" />
+                  <span>
+                    {categoryPath.map(c => c.name).join(' → ')}
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-card rounded-2xl border border-border p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileText className="w-5 h-5 text-muted-foreground" />
+                  <h3 className="font-semibold text-foreground">Opis</h3>
+                </div>
+                <div
+                  className="prose prose-sm max-w-none text-foreground/80"
+                  dangerouslySetInnerHTML={{ __html: formData.description }}
+                />
+              </div>
+
+              {images.length > 0 && (
+                <div className="bg-card rounded-2xl border border-border p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <ImageIcon className="w-5 h-5 text-muted-foreground" />
+                    <h3 className="font-semibold text-foreground">Zdjęcia ({images.length})</h3>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {images.map((imageUrl, index) => (
+                      <div key={imageUrl} className="relative w-20 h-20 rounded-xl overflow-hidden border border-border">
+                        <Image
+                          src={imageUrl}
+                          alt={`Zdjęcie ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          style={{ transform: `rotate(${imageRotations[imageUrl] || 0}deg)` }}
+                        />
+                        {index === 0 && (
+                          <div className="absolute bottom-0 left-0 right-0 bg-black/60 text-white text-[9px] font-bold py-0.5 text-center">
+                            GŁÓWNE
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="bg-card rounded-2xl border border-border p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <MapPin className="w-5 h-5 text-muted-foreground" />
+                  <h3 className="font-semibold text-foreground">Lokalizacja</h3>
+                </div>
+                <p className="text-base text-foreground">
+                  {formData.city}
+                  {formData.district && `, ${formData.district}`}
+                </p>
+              </div>
+
+              <div className="bg-card rounded-2xl border border-border p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <DollarSign className="w-5 h-5 text-muted-foreground" />
+                  <h3 className="font-semibold text-foreground">Cena</h3>
+                </div>
+                <p className="text-xl font-bold text-brand">{getPriceDisplay()}</p>
+              </div>
+            </div>
+          )}
+        </main>
+
+        {/* Footer */}
+        <footer className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-40 rounded-t-3xl shadow-lg pb-safe">
+          <div className="flex gap-3 w-full px-4 py-4">
+            {currentStep === 1 ? (
+              <button
+                onClick={handleCancel}
+                className="flex-1 rounded-full border border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold text-foreground transition-colors"
+              >
+                Anuluj
+              </button>
+            ) : (
+              <button
+                onClick={prevStep}
+                className="flex-1 rounded-full border border-border hover:border-border hover:bg-muted h-11 text-sm font-semibold text-foreground transition-colors"
+              >
+                Wstecz
+              </button>
+            )}
+
+            {currentStep < totalSteps ? (
+              <button
+                onClick={nextStep}
+                disabled={!isStepValid(currentStep)}
+                className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground h-11 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Dalej
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                disabled={loading}
+                className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground h-11 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}
+              </button>
+            )}
+          </div>
+        </footer>
+
+        {/* Hide MobileDock using CSS */}
+        <style jsx global>{`
+          [data-mobile-dock] {
+            display: none !important;
+          }
+          .ProseMirror {
+            height: 100%;
+            min-height: 100%;
+          }
+        `}</style>
+      </div>
+    </div>
+
+    {/* Category Selector Modal - Shared between mobile and desktop */}
+    <CategorySelector
+      open={showCategorySelector}
+      onOpenChange={setShowCategorySelector}
+      onSelect={(categoryId, path) => {
+        setSelectedCategoryId(categoryId)
+        setCategoryPath(path)
+      }}
+      selectedCategoryId={selectedCategoryId}
+    />
+
+    {/* Moderation Modal - Shared between mobile and desktop */}
       {showModerationModal && (
         <div className="fixed inset-0 bg-black/50 dark:bg-black/70 flex items-center justify-center z-50 p-4">
           <div className="bg-card rounded-3xl p-8 max-w-md w-full">
@@ -880,7 +1649,6 @@ export function EditPostClient({ post }: EditPostClientProps) {
           </div>
         </div>
       )}
-      </div>
-    </main>
+    </>
   )
 }
