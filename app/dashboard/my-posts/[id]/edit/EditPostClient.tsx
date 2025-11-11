@@ -1431,12 +1431,6 @@ export function EditPostClient({ post }: EditPostClientProps) {
           {/* Step 7: Podsumowanie */}
           {currentStep === 7 && (
             <div className="p-4 space-y-4 animate-in fade-in duration-300" style={{ marginTop: 'calc(69px + env(safe-area-inset-top))' }}>
-              <div className="bg-brand/5 border border-brand/20 rounded-2xl p-4">
-                <p className="text-sm text-foreground/70 text-center">
-                  Sprawdź dokładnie wszystkie informacje przed zapisaniem zmian
-                </p>
-              </div>
-
               <div className="bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-800 rounded-2xl p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0">
@@ -1453,6 +1447,12 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     </p>
                   </div>
                 </div>
+              </div>
+
+              <div className="bg-brand/5 border border-brand/20 rounded-2xl p-4">
+                <p className="text-sm text-foreground/70 text-center">
+                  Sprawdź dokładnie wszystkie informacje przed zapisaniem zmian
+                </p>
               </div>
 
               <div className="bg-card rounded-2xl border border-border p-4">
