@@ -216,7 +216,7 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 w-64 bg-card border-r border-border z-50 transition-transform duration-300 ${
+        className={`fixed top-0 left-0 bottom-0 w-64 bg-background border border-border z-50 transition-transform duration-300 lg:rounded-3xl lg:m-2 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
@@ -314,10 +314,8 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
       </aside>
 
       {/* Main Content */}
-      <main className="lg:pl-64 pt-16 lg:pt-0">
-        <div className="p-6 lg:p-8 max-w-[1600px] mx-auto">
-          {children}
-        </div>
+      <main className="lg:pl-[272px] pt-16 lg:pt-0 w-full h-screen flex flex-col">
+        {children}
       </main>
     </div>
   )

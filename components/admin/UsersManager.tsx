@@ -159,9 +159,9 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 flex-1 flex flex-col overflow-hidden">
       {/* Search */}
-      <Card className="border border-border bg-card shadow-sm">
+      <Card className="border bg-background flex-shrink-0">
         <CardContent className="p-4">
           <div className="relative">
             <svg
@@ -177,7 +177,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
               placeholder="Szukaj użytkownika po nazwie, email lub ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-10 h-12 text-base rounded-xl border-border bg-card text-foreground placeholder:text-muted-foreground"
+              className="pl-12 pr-10 h-12 text-base border border-input focus:border-brand/40 bg-background"
             />
             {searchQuery && (
               <button
@@ -194,9 +194,9 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       </Card>
 
       {/* Users Table */}
-      <Card className="border border-border bg-card shadow-sm">
-        <CardContent className="p-0">
-          <div className="overflow-x-auto">
+      <Card className="border bg-background flex-1 flex flex-col overflow-hidden">
+        <CardContent className="p-0 flex-1 overflow-auto">
+          <div className="overflow-x-auto h-full">
             <table className="w-full">
               <thead className="bg-muted/50 border-b-2 border-border">
                 <tr>
@@ -229,8 +229,8 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               className="rounded-full"
                             />
                           ) : (
-                            <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
-                              <span className="text-sm font-semibold text-[#C44E35]">
+                            <div className="w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center">
+                              <span className="text-sm font-semibold text-brand">
                                 {user.full_name?.charAt(0) || 'U'}
                               </span>
                             </div>
@@ -241,7 +241,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             </p>
                             <button
                               onClick={() => copyToClipboard(user.id)}
-                              className="text-xs text-muted-foreground hover:text-[#C44E35] transition-colors flex items-center gap-1"
+                              className="text-xs text-muted-foreground hover:text-brand transition-colors flex items-center gap-1"
                               title="Kliknij aby skopiować ID"
                             >
                               <Copy className="w-3 h-3" />

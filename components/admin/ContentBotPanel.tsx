@@ -332,9 +332,9 @@ export default function ContentBotPanel() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 flex-1 overflow-y-auto">
       {/* Stats Card */}
-      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="border bg-background rounded-3xl overflow-hidden flex-shrink-0">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between mb-4">
             <div>
@@ -356,7 +356,7 @@ export default function ContentBotPanel() {
           </div>
 
 
-          <div className="text-5xl font-bold text-[#C44E35] mb-2">
+          <div className="text-5xl font-bold text-brand mb-2">
             {isLoadingCount ? '...' : aiPostsCount.toLocaleString()}
           </div>
           <p className="text-sm text-muted-foreground">aktywnych ogłoszeń AI</p>
@@ -364,7 +364,7 @@ export default function ContentBotPanel() {
       </div>
 
       {/* Category Selection */}
-      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="border bg-background rounded-3xl overflow-hidden flex-shrink-0">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -524,10 +524,10 @@ export default function ContentBotPanel() {
 
       {/* Generation Progress */}
       {generationProgress && (
-        <div className="bg-card rounded-3xl shadow-sm overflow-hidden border border-[#C44E35]/30">
+        <div className="rounded-3xl overflow-hidden border bg-background border-brand/30 flex-shrink-0">
           <div className="p-6 space-y-3">
             <div className="flex items-center gap-3 mb-4">
-              <Loader2 className="h-6 w-6 animate-spin text-[#C44E35]" />
+              <Loader2 className="h-6 w-6 animate-spin text-brand" />
               <div>
                 <h3 className="text-2xl font-bold text-foreground">Generowanie w toku...</h3>
               </div>
@@ -544,7 +544,7 @@ export default function ContentBotPanel() {
 
             <div className="w-full bg-muted rounded-full h-3">
               <div
-                className="bg-[#C44E35] h-3 rounded-full transition-all duration-300"
+                className="bg-brand h-3 rounded-full transition-all duration-300"
                 style={{ width: `${(generationProgress.current / generationProgress.total) * 100}%` }}
               ></div>
             </div>
@@ -594,58 +594,18 @@ export default function ContentBotPanel() {
       )}
 
       {/* Action Buttons */}
-      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="border bg-background rounded-3xl overflow-hidden flex-shrink-0">
         <div className="p-6">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-foreground mb-1">Akcje</h2>
             <p className="text-sm text-muted-foreground">Generuj lub usuń ogłoszenia AI</p>
           </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          {selectedCategories.size > 0 && (
-            <Button
-              onClick={handleDeleteByCategory}
-              disabled={isGenerating || isDeleting}
-              variant="outline"
-              className="flex-1 rounded-full border-orange-300 text-orange-600 hover:bg-orange-50 hover:text-orange-700 font-semibold py-6"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Usuwanie...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="mr-2 h-5 w-5" />
-                  Usuń AI z {selectedCategories.size} wybranych
-                </>
-              )}
-            </Button>
-          )}
-
-          <Button
-            onClick={handleDeleteAll}
-            disabled={isGenerating || isDeleting || aiPostsCount === 0}
-            variant="outline"
-            className="flex-1 rounded-full border-red-300 text-red-600 hover:bg-red-50 hover:text-red-700 font-semibold py-6"
-          >
-            {isDeleting ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Usuwanie...
-              </>
-            ) : (
-              <>
-                <Trash2 className="mr-2 h-5 w-5" />
-                Usuń wszystkie ogłoszenia AI ({aiPostsCount})
-              </>
-            )}
-          </Button>
-
+        <div className="flex flex-col gap-3">
           <Button
             onClick={handleGenerate}
             disabled={isGenerating || isDeleting}
-            className="flex-1 rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold py-6"
+            className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold py-6"
           >
             {isGenerating ? (
               <>
@@ -661,6 +621,48 @@ export default function ContentBotPanel() {
               </>
             )}
           </Button>
+
+          <div className="flex gap-3">
+            {selectedCategories.size > 0 && (
+              <Button
+                onClick={handleDeleteByCategory}
+                disabled={isGenerating || isDeleting}
+                variant="outline"
+                className="flex-1 rounded-full border-border hover:bg-muted font-semibold py-6"
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    Usuwanie...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="mr-2 h-5 w-5" />
+                    Usuń z {selectedCategories.size} wybranych
+                  </>
+                )}
+              </Button>
+            )}
+
+            <Button
+              onClick={handleDeleteAll}
+              disabled={isGenerating || isDeleting || aiPostsCount === 0}
+              variant="outline"
+              className="flex-1 rounded-full border-border hover:bg-muted font-semibold py-6"
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                  Usuwanie...
+                </>
+              ) : (
+                <>
+                  <Trash2 className="mr-2 h-5 w-5" />
+                  Usuń wszystkie ({aiPostsCount})
+                </>
+              )}
+            </Button>
+          </div>
         </div>
         </div>
       </div>

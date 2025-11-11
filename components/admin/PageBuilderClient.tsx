@@ -145,11 +145,11 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
     return (
       <div className="space-y-6">
         {/* Header with back button */}
-        <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
-          <div className="px-6 py-5 border-b border-border bg-gradient-to-r from-[#C44E35]/5 to-transparent">
+        <div className="bg-background border border-border rounded-3xl shadow-sm overflow-hidden">
+          <div className="px-6 py-5 border-b border-border bg-gradient-to-r from-brand/5 to-transparent">
             <button
               onClick={() => setEditingSection(null)}
-              className="text-muted-foreground hover:text-[#C44E35] flex items-center gap-2 transition-colors mb-4"
+              className="text-muted-foreground hover:text-brand flex items-center gap-2 transition-colors mb-4"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -163,8 +163,8 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
                   {SECTION_TYPES[editingSection.type]?.label || editingSection.type}
                 </p>
               </div>
-              <div className="px-4 py-2 bg-card rounded-full border border-border">
-                <span className="text-sm font-medium text-[#C44E35]">
+              <div className="px-4 py-2 bg-background rounded-full border border-border">
+                <span className="text-sm font-medium text-brand">
                   {SECTION_TYPES[editingSection.type]?.label}
                 </span>
               </div>
@@ -173,7 +173,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
         </div>
 
         {/* Edit form */}
-        <div className="bg-card border border-border rounded-3xl p-8 shadow-sm">
+        <div className="bg-background border border-border rounded-3xl p-8 shadow-sm">
           <SectionEditor
             section={editingSection}
             categories={categories}
@@ -189,7 +189,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-background border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -207,7 +207,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
         <div className="flex items-center justify-between">
           <Button
             onClick={() => setIsAddDialogOpen(true)}
-            className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-sm"
+            className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold shadow-sm"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -219,7 +219,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-[#C44E35] hover:text-[#B33D2A] bg-[#C44E35]/10 hover:bg-[#C44E35]/20 rounded-full transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-brand hover:text-brand/90 bg-brand/10 hover:bg-brand/20 rounded-full transition-colors"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -235,7 +235,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
       </div>
 
       {/* Sections list with drag & drop */}
-      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-background border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="p-6">
           <h2 className="text-2xl font-bold text-foreground mb-1">Sekcje strony głównej</h2>
           <p className="text-sm text-muted-foreground mb-6">Przeciągnij sekcje aby zmienić kolejność</p>
@@ -245,7 +245,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
             <p className="mb-4">Nie masz jeszcze żadnych sekcji</p>
             <Button
               onClick={() => setIsAddDialogOpen(true)}
-              className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
             >
               Dodaj pierwszą sekcję
             </Button>
@@ -256,7 +256,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
               const metadata = SECTION_TYPES[section.type]
               const title = section.title || metadata?.label || section.type
               return (
-                <div key={section.id} className="border rounded-2xl p-6 border-border bg-card">
+                <div key={section.id} className="border rounded-2xl p-6 border-border bg-background">
                   <div className="text-lg font-bold text-foreground">{title}</div>
                 </div>
               )

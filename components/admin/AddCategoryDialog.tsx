@@ -173,7 +173,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 px-8">
+        <Button className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 px-8">
           Dodaj kategorię
         </Button>
       </DialogTrigger>
@@ -206,7 +206,6 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                     onChange={(e) => handleNameChange(e.target.value)}
                     placeholder={isSubcategory ? "np. iPhone" : "np. Hydraulika"}
                     required
-                    className="rounded-xl"
                   />
                 </div>
 
@@ -218,7 +217,6 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                     onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                     placeholder={isSubcategory ? "iphone" : "hydraulika"}
                     required
-                    className="rounded-xl"
                   />
                   <p className="text-xs text-muted-foreground">
                     Slug jest generowany automatycznie, ale możesz go edytować
@@ -233,7 +231,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                       value={formData.parent_id || 'none'}
                       onValueChange={(value) => setFormData({ ...formData, parent_id: value === 'none' ? '' : value })}
                     >
-                      <SelectTrigger className="rounded-xl w-full">
+                      <SelectTrigger className="w-full">
                         <SelectValue placeholder="Brak - kategoria główna" />
                       </SelectTrigger>
                       <SelectContent>
@@ -260,7 +258,7 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                       size="sm"
                       onClick={handleGenerateDescription}
                       disabled={generatingDescription || !formData.name.trim()}
-                      className="rounded-full border border-border hover:border-border hover:bg-muted text-xs px-4 gap-2"
+                      className="rounded-full text-xs px-4 gap-2"
                     >
                       <Zap className="w-3 h-3" />
                       {generatingDescription ? 'Generuję...' : 'Wygeneruj opis'}
@@ -272,7 +270,6 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     placeholder="Krótki opis kategorii..."
                     rows={4}
-                    className="rounded-xl"
                   />
                 </div>
               </div>
@@ -290,20 +287,20 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
           </div>
 
           <div className="px-6 pb-6">
-            <div className="mt-8 pt-6 border-t-2 border-border">
+            <div className="mt-8 pt-6 border-t border-border">
               <DialogFooter className="gap-2 sm:gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="w-full sm:w-auto rounded-full border border-border hover:border-border hover:bg-muted"
+                  className="w-full sm:w-auto rounded-full"
                   disabled={loading}
                 >
                   Anuluj
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 font-semibold"
+                  className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
                   disabled={loading}
                 >
                   {loading ? 'Dodawanie...' : isSubcategory ? 'Dodaj podkategorię' : 'Dodaj kategorię'}

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { BannedUsersList } from '@/components/admin/BannedUsersList'
 import { Metadata } from 'next'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: "Zbanowani użytkownicy - Panel administracyjny",
@@ -41,25 +42,28 @@ export default async function AdminBannedUsersPage() {
   })) || []
 
   return (
-    <>
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">Zbanowani użytkownicy</h1>
-          <p className="text-muted-foreground">
-            Zarządzaj zbanowanymi użytkownikami - przeglądaj i odblokuj dostęp
-          </p>
-        </div>
-        <div className="text-right">
-          <p className="text-sm text-muted-foreground">
-            Łącznie zbanowanych
-          </p>
-          <p className="text-3xl font-bold text-red-600">
-            {transformedUsers.length}
-          </p>
-        </div>
-      </div>
-
-      <BannedUsersList initialUsers={transformedUsers} />
-    </>
+    <div className="w-full h-full p-2 flex flex-col">
+      <Card className="rounded-3xl border p-0 gap-0 flex-1 flex flex-col overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-8 py-4 border-b">
+          <div>
+            <CardTitle className="text-base font-bold">Zbanowani użytkownicy</CardTitle>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Zarządzaj zbanowanymi użytkownikami - przeglądaj i odblokuj dostęp
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-sm text-muted-foreground">
+              Łącznie zbanowanych
+            </p>
+            <p className="text-3xl font-bold text-red-600">
+              {transformedUsers.length}
+            </p>
+          </div>
+        </CardHeader>
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
+          <BannedUsersList initialUsers={transformedUsers} />
+        </CardContent>
+      </Card>
+    </div>
   )
 }

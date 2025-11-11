@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { PageBuilderClient } from '@/components/admin/PageBuilderClient'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: 'Page Builder - Admin Panel',
@@ -45,18 +46,23 @@ export default async function PageBuilderPage() {
     .order('name')
 
   return (
-    <>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Page Builder</h1>
-        <p className="text-muted-foreground">
-          Zarządzaj sekcjami strony głównej - przeciągaj, edytuj i dodawaj nowe
-        </p>
-      </div>
-
-      <PageBuilderClient
-        initialSections={sections || []}
-        categories={categories || []}
-      />
-    </>
+    <div className="w-full h-full p-2 flex flex-col">
+      <Card className="rounded-3xl border p-0 gap-0 flex-1 flex flex-col overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-8 py-4 border-b">
+          <div>
+            <CardTitle className="text-base font-bold">Page Builder</CardTitle>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Zarządzaj sekcjami strony głównej - przeciągaj, edytuj i dodawaj nowe
+            </p>
+          </div>
+        </CardHeader>
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
+          <PageBuilderClient
+            initialSections={sections || []}
+            categories={categories || []}
+          />
+        </CardContent>
+      </Card>
+    </div>
   )
 }

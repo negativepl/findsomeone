@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Card } from '@/components/ui/card'
-import { Eye, Shield, User, Calendar, AlertCircle } from 'lucide-react'
+import { Eye, Shield, User, Calendar, AlertCircle, Check } from 'lucide-react'
 
 interface AuditLog {
   log_id: string
@@ -28,16 +28,16 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
 
   if (logs.length === 0) {
     return (
-      <Card className="border border-border rounded-3xl bg-card p-12">
-        <div className="text-center">
-          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-blue-50 flex items-center justify-center">
-            <Shield className="w-10 h-10 text-blue-600" />
+      <Card className="border bg-background flex-1 flex items-center justify-center">
+        <div className="text-center py-12">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+            <Check className="w-10 h-10 text-muted-foreground" />
           </div>
           <h2 className="text-2xl font-bold text-foreground mb-2">
             Brak logów dostępu
           </h2>
           <p className="text-muted-foreground">
-            Żaden administrator nie przeglądał jeszcze wiadomości użytkowników.
+            Żaden administrator nie przeglądał jeszcze wiadomości użytkowników
           </p>
         </div>
       </Card>
@@ -48,12 +48,12 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
     <div className="grid lg:grid-cols-[1fr_500px] gap-6">
       {/* Logs List */}
       <div>
-        <Card className="border border-border rounded-3xl bg-card overflow-hidden">
+        <Card className="border border-border rounded-3xl bg-background overflow-hidden">
           <div className="divide-y divide-border">
             {logs.map((log) => (
               <div
                 key={log.log_id}
-                className="p-6 hover:bg-[#F5F1E8] transition-colors cursor-pointer"
+                className="p-6 hover:bg-muted transition-colors cursor-pointer"
                 onClick={() => setSelectedLog(log)}
               >
                 <div className="flex items-start gap-4">
@@ -119,7 +119,7 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
       {/* Details Panel */}
       <div className="lg:sticky lg:top-6 lg:self-start">
         {selectedLog ? (
-          <Card className="border border-border rounded-3xl bg-card p-6">
+          <Card className="border border-border rounded-3xl bg-background p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
                 <Shield className="w-6 h-6 text-blue-600" />
@@ -128,7 +128,7 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
                 <h2 className="text-xl font-bold text-foreground">
                   Szczegóły dostępu
                 </h2>
-                <p className="text-sm text-black/60">
+                <p className="text-sm text-muted-foreground">
                   ID: {selectedLog.log_id.slice(0, 8)}...
                 </p>
               </div>
@@ -142,7 +142,7 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
                   Administrator
                 </label>
                 <p className="text-foreground mt-1">{selectedLog.admin_name}</p>
-                <p className="text-sm text-black/60 mt-1">{selectedLog.admin_email}</p>
+                <p className="text-sm text-muted-foreground mt-1">{selectedLog.admin_email}</p>
               </div>
 
               <div>
@@ -173,7 +173,7 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-black/70">Konwersacja</label>
+                <label className="text-sm font-semibold text-muted-foreground">Konwersacja</label>
                 <p className="text-foreground mt-1">
                   <strong>{selectedLog.message_sender_name}</strong>
                   {' → '}
@@ -182,7 +182,7 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
               </div>
 
               <div>
-                <label className="text-sm font-semibold text-black/70">Treść wiadomości</label>
+                <label className="text-sm font-semibold text-muted-foreground">Treść wiadomości</label>
                 <div className="bg-muted rounded-2xl p-4 mt-1">
                   <p className="text-foreground text-sm">{selectedLog.message_content}</p>
                 </div>
@@ -190,7 +190,7 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
 
               {selectedLog.report_id && (
                 <div>
-                  <label className="text-sm font-semibold text-black/70 flex items-center gap-2 mb-2">
+                  <label className="text-sm font-semibold text-muted-foreground flex items-center gap-2 mb-2">
                     <AlertCircle className="w-4 h-4" />
                     Typ dostępu
                   </label>
@@ -223,9 +223,9 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
             </div>
           </Card>
         ) : (
-          <Card className="border border-border rounded-3xl bg-card p-12">
+          <Card className="border border-border rounded-3xl bg-background p-12">
             <div className="text-center">
-              <Eye className="w-12 h-12 text-black/30 mx-auto mb-4" />
+              <Eye className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">
                 Wybierz log z listy, aby zobaczyć szczegóły
               </p>

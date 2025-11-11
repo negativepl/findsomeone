@@ -512,9 +512,9 @@ export function PostsManagementClient() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
+      <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-[#C44E35] mx-auto mb-4" />
+          <Loader2 className="h-10 w-10 animate-spin text-brand mx-auto mb-4" />
           <p className="text-muted-foreground">Ładowanie ogłoszeń...</p>
         </div>
       </div>
@@ -524,9 +524,9 @@ export function PostsManagementClient() {
   return (
     <>
       {/* Search & Filters */}
-      <div className="mb-6 space-y-4">
+      <div className="mb-6 space-y-4 flex-shrink-0">
         {/* Search Bar - Full Width */}
-        <Card className="border border-border shadow-sm">
+        <Card className="border bg-background">
           <CardContent className="p-4">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -549,7 +549,7 @@ export function PostsManagementClient() {
         </Card>
 
         {/* Filters & Actions */}
-        <Card className="border border-border shadow-sm">
+        <Card className="border bg-background">
           <CardContent className="p-4">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
               {/* Filters */}
@@ -689,7 +689,7 @@ export function PostsManagementClient() {
       {/* Floating Bulk Actions */}
       {selectedPosts.size > 0 && (
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-5">
-          <div className="bg-card shadow-2xl border border-border p-4 min-w-[800px]">
+          <div className="bg-card shadow-2xl border p-4 min-w-[800px] rounded-xl">
             <div className="flex items-center justify-between gap-6">
               <div className="flex items-center gap-3">
                 <div className="bg-[#C44E35] text-primary-foreground w-10 h-10 flex items-center justify-center font-bold text-sm shadow-sm">
@@ -763,8 +763,8 @@ export function PostsManagementClient() {
       )}
 
       {/* Posts table */}
-      <Card className="border border-border">
-        <CardContent className="p-0">
+      <Card className="border bg-background flex-1 flex flex-col overflow-hidden">
+        <CardContent className="p-0 flex-1 overflow-auto">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-muted/50 border-b-2 border-border">
@@ -1113,19 +1113,19 @@ export function PostsManagementClient() {
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-6 border-t border-border flex-shrink-0 mt-4">
+          <div className="flex justify-end gap-3 pt-6 border-t flex-shrink-0 mt-4">
             <Button
               variant="outline"
               onClick={() => setEditingPost(null)}
               disabled={saving}
-              className="h-11 px-6 border border-input hover:border-border"
+              className="h-11 px-6 rounded-full"
             >
               Anuluj
             </Button>
             <Button
               onClick={handleSaveEdit}
               disabled={saving}
-              className="bg-[#C44E35] hover:bg-[#B33D2A] text-primary-foreground h-11 px-8 shadow-sm"
+              className="bg-brand hover:bg-brand/90 text-brand-foreground h-11 px-8 rounded-full border-0 font-semibold"
             >
               {saving ? (
                 <>

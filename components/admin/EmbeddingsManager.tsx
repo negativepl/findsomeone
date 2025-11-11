@@ -44,7 +44,7 @@ export function EmbeddingsManager() {
   }
 
   return (
-    <Card className="p-6 border border-border bg-card rounded-3xl">
+    <Card className="p-6 border bg-background rounded-3xl flex-1 flex flex-col">
       <div className="mb-6">
         <h3 className="text-2xl font-bold text-foreground mb-2">
           Semantic Search (AI Embeddings)
@@ -57,19 +57,19 @@ export function EmbeddingsManager() {
 
       {/* Info Cards */}
       <div className="grid md:grid-cols-3 gap-4 mb-6">
-        <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
+        <Card className="p-4 bg-brand/5 border-brand/20 rounded-2xl">
           <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Model</h4>
           <p className="text-lg font-bold text-foreground">text-embedding-3-small</p>
           <p className="text-xs text-muted-foreground mt-1">1536 wymiarów, $0.02/1M tokenów</p>
         </Card>
 
-        <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
+        <Card className="p-4 bg-brand/5 border-brand/20 rounded-2xl">
           <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Funkcje</h4>
           <p className="text-lg font-bold text-foreground">Semantyczne wyszukiwanie</p>
           <p className="text-xs text-muted-foreground mt-1">Znajduje podobne znaczenia</p>
         </Card>
 
-        <Card className="p-4 bg-[#C44E35]/5 border-[#C44E35]/20 rounded-2xl">
+        <Card className="p-4 bg-brand/5 border-brand/20 rounded-2xl">
           <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Koszt</h4>
           <p className="text-lg font-bold text-foreground">~$0.01-0.05</p>
           <p className="text-xs text-muted-foreground mt-1">za 100 postów</p>
@@ -80,7 +80,7 @@ export function EmbeddingsManager() {
       <Button
         onClick={generateEmbeddings}
         disabled={isGenerating}
-        className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 py-6 text-lg font-semibold"
+        className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 py-6 text-lg font-semibold"
       >
         {isGenerating ? (
           <>

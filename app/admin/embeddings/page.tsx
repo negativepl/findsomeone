@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { EmbeddingsManager } from '@/components/admin/EmbeddingsManager'
 import { Metadata } from 'next'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const metadata: Metadata = {
   title: "Wyszukiwanie semantyczne - Panel administracyjny",
@@ -31,83 +31,60 @@ export default async function EmbeddingsPage() {
   const coveragePercent = totalPosts ? Math.round((postsWithEmbeddings || 0) / totalPosts * 100) : 0
 
   return (
-    <>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Wyszukiwanie semantyczne AI</h1>
-        <p className="text-muted-foreground">
-          Generuj i zarządzaj indeksem wyszukiwania AI dla ogłoszeń
-        </p>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="border-0 rounded-3xl bg-card shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Wszystkie posty</p>
-                <div className="text-3xl font-bold text-foreground">{totalPosts || 0}</div>
-              </div>
-            </div>
+    <div className="w-full h-full p-2 flex flex-col">
+      <Card className="rounded-3xl border p-0 gap-0 flex-1 flex flex-col overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-8 py-4 border-b">
+          <div>
+            <CardTitle className="text-base font-bold">Wyszukiwanie semantyczne AI</CardTitle>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Generuj i zarządzaj indeksem wyszukiwania AI dla ogłoszeń
+            </p>
           </div>
-        </Card>
+        </CardHeader>
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <Card className="border bg-background">
+              <div className="p-6">
+                <p className="text-sm font-medium text-muted-foreground mb-2">Wszystkie posty</p>
+                <div className="flex items-baseline gap-2">
+                  <div className="text-3xl font-bold text-foreground">{totalPosts || 0}</div>
+                </div>
+              </div>
+            </Card>
 
-        <Card className="border-0 rounded-3xl bg-card shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            <Card className="border bg-background">
+              <div className="p-6">
+                <p className="text-sm font-medium text-muted-foreground mb-2">Z embeddingami</p>
+                <div className="flex items-baseline gap-2">
+                  <div className="text-3xl font-bold text-foreground">{postsWithEmbeddings || 0}</div>
+                </div>
               </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Z embeddingami</p>
-                <div className="text-3xl font-bold text-foreground">{postsWithEmbeddings || 0}</div>
+            </Card>
+
+            <Card className="border bg-background">
+              <div className="p-6">
+                <p className="text-sm font-medium text-muted-foreground mb-2">Bez embeddingów</p>
+                <div className="flex items-baseline gap-2">
+                  <div className="text-3xl font-bold text-foreground">{postsWithoutEmbeddings || 0}</div>
+                </div>
               </div>
-            </div>
+            </Card>
+
+            <Card className="border bg-background">
+              <div className="p-6">
+                <p className="text-sm font-medium text-muted-foreground mb-2">Pokrycie</p>
+                <div className="flex items-baseline gap-2">
+                  <div className="text-3xl font-bold text-foreground">{coveragePercent}%</div>
+                </div>
+              </div>
+            </Card>
           </div>
-        </Card>
 
-        <Card className="border-0 rounded-3xl bg-card shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Bez embeddingów</p>
-                <div className="text-3xl font-bold text-foreground">{postsWithoutEmbeddings || 0}</div>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="border-0 rounded-3xl bg-card shadow-sm">
-          <div className="p-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-brand/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Pokrycie</p>
-                <div className="text-3xl font-bold text-foreground">{coveragePercent}%</div>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Main Manager Component */}
-      <EmbeddingsManager />
-    </>
+          {/* Main Manager Component */}
+          <EmbeddingsManager />
+        </CardContent>
+      </Card>
+    </div>
   )
 }

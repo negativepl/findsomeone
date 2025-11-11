@@ -193,8 +193,8 @@ export function ReportsList({ initialReports }: ReportsListProps) {
 
   if (reports.length === 0) {
     return (
-      <Card className="border border-border rounded-3xl bg-card p-12">
-        <div className="text-center">
+      <Card className="border bg-background flex-1 flex items-center justify-center">
+        <div className="text-center py-12">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
             <Check className="w-10 h-10 text-muted-foreground" />
           </div>
@@ -213,22 +213,22 @@ export function ReportsList({ initialReports }: ReportsListProps) {
     <div className="grid lg:grid-cols-[1fr_550px] gap-6">
       {/* Reports List */}
       <div>
-        <Card className="border border-border rounded-3xl bg-card overflow-hidden">
+        <Card className="border bg-background rounded-3xl overflow-hidden">
           <div className="divide-y divide-border">
             {reports.map((report) => (
               <div
                 key={report.report_id}
                 className={`p-6 transition-colors cursor-pointer relative ${
                   !report.is_read
-                    ? 'bg-[#C44E35]/5 hover:bg-[#C44E35]/10 border-l-4 border-l-[#C44E35]'
-                    : 'hover:bg-[#F5F1E8]'
+                    ? 'bg-brand/5 hover:bg-brand/10 border-l-4 border-l-brand'
+                    : 'hover:bg-muted'
                 }`}
                 onClick={() => setSelectedReport(report)}
               >
                 {/* Unread Badge */}
                 {!report.is_read && (
                   <div className="absolute top-4 right-4">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#C44E35]/10 border border-[#C44E35]/30 text-[#C44E35] text-xs font-semibold shadow-sm">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand/10 border border-brand/30 text-brand text-xs font-semibold shadow-sm">
                       <Eye className="w-3.5 h-3.5" />
                       Nieodczytane - zostanie odnotowane w systemie audit trail
                     </span>
@@ -239,10 +239,10 @@ export function ReportsList({ initialReports }: ReportsListProps) {
                   {/* Icon */}
                   <div className="flex-shrink-0">
                     <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                      !report.is_read ? 'bg-[#C44E35]/10' : 'bg-red-50'
+                      !report.is_read ? 'bg-brand/10' : 'bg-red-50'
                     }`}>
                       <Flag className={`w-6 h-6 ${
-                        !report.is_read ? 'text-[#C44E35]' : 'text-red-600'
+                        !report.is_read ? 'text-brand' : 'text-red-600'
                       }`} />
                     </div>
                   </div>
@@ -314,7 +314,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       {/* Details Panel */}
       <div className="lg:sticky lg:top-6 lg:self-start">
         {selectedReport ? (
-          <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
+          <Card className="border bg-background rounded-3xl overflow-hidden">
             {/* Header */}
             <div className="px-6 py-5 border-b border-border">
               <div className="flex items-center justify-between gap-4 mb-2">
@@ -378,7 +378,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
                 <textarea
                   value={actionNotes}
                   onChange={(e) => setActionNotes(e.target.value)}
-                  className="w-full px-4 py-3 rounded-2xl border border-border focus:outline-none focus:ring-2 focus:ring-[#C44E35] resize-none bg-card text-foreground"
+                  className="w-full px-4 py-3 rounded-2xl border border-input focus:outline-none focus:ring-2 focus:ring-brand resize-none bg-background text-foreground"
                   rows={3}
                   placeholder="Dodaj notatki do zgłoszenia..."
                   disabled={isProcessing}
@@ -482,7 +482,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
                     <textarea
                       value={banReason}
                       onChange={(e) => setBanReason(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl border border-border focus:outline-none focus:ring-2 focus:ring-[#C44E35] resize-none bg-card text-foreground"
+                      className="w-full px-4 py-3 rounded-2xl border border-input focus:outline-none focus:ring-2 focus:ring-brand resize-none bg-background text-foreground"
                       rows={3}
                       placeholder="Np. Wielokrotne naruszanie regulaminu, spam, molestowanie..."
                       disabled={isProcessing}
@@ -516,7 +516,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
             )}
           </Card>
         ) : (
-          <Card className="border border-border rounded-3xl bg-card p-12">
+          <Card className="border bg-background rounded-3xl p-12">
             <div className="text-center">
               <Eye className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">

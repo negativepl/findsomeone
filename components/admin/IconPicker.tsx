@@ -24,25 +24,25 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
       <Label>Wybierz ikonkę</Label>
 
       {/* Container with rounded design */}
-      <div className="border border-border rounded-2xl overflow-hidden bg-card">
+      <div className="border rounded-2xl overflow-hidden bg-background">
         {/* Search */}
-        <div className="p-3 bg-[#FAF8F3] border-b-2 border-border">
+        <div className="p-3 bg-muted border-b">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
               placeholder="Szukaj ikony (np. wrench, hammer)..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="rounded-xl pl-9 border-border"
+              className="pl-9"
             />
           </div>
         </div>
 
         {/* Current selection */}
         {value && (
-          <div className="px-3 pt-3 pb-2 bg-[#FAF8F3]/50 border-b-2 border-border">
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-card border border-border">
-              <CategoryIcon iconName={value} className="w-5 h-5 text-[#C44E35]" />
+          <div className="px-3 pt-3 pb-2 bg-muted/50 border-b">
+            <div className="flex items-center gap-2 p-2.5 rounded-lg bg-card border">
+              <CategoryIcon iconName={value} className="w-5 h-5 text-brand" />
               <span className="text-sm font-medium">Wybrana: <span className="font-mono text-xs text-muted-foreground">{value}</span></span>
             </div>
           </div>
@@ -57,9 +57,9 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
                   key={iconName}
                   type="button"
                   onClick={() => onChange(iconName)}
-                  className={`p-3 rounded-xl border transition-all hover:border-[#C44E35] hover:bg-[#C44E35]/5 flex items-center justify-center ${
+                  className={`p-3 rounded-lg border transition-all hover:border-brand hover:bg-brand/5 flex items-center justify-center ${
                     value === iconName
-                      ? 'border-[#C44E35] bg-[#C44E35]/10'
+                      ? 'border-brand bg-brand/10'
                       : 'border-border'
                   }`}
                   title={iconName}
@@ -76,7 +76,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
         </div>
 
         {/* Custom icon input - footer */}
-        <div className="p-3 bg-[#FAF8F3] border-t-2 border-border rounded-t-xl rounded-b-2xl">
+        <div className="p-3 bg-muted border-t">
           <div className="space-y-2">
             <Label htmlFor="custom-icon" className="text-xs text-muted-foreground">
               Lub wpisz nazwę ikony z Lucide
@@ -86,7 +86,6 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
               value={value}
               onChange={(e) => onChange(e.target.value)}
               placeholder="np. wrench-screwdriver"
-              className="rounded-xl border-border"
             />
             <p className="text-xs text-muted-foreground">
               Zobacz wszystkie:{' '}
@@ -94,7 +93,7 @@ export function IconPicker({ value, onChange }: IconPickerProps) {
                 href="https://lucide.dev/icons/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[#C44E35] hover:underline font-medium"
+                className="text-brand hover:underline font-medium"
               >
                 lucide.dev/icons
               </a>

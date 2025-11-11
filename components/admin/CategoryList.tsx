@@ -5,12 +5,9 @@ import { Button } from '@/components/ui/button'
 import { EditCategoryDialog } from './EditCategoryDialog'
 import { EditSubcategoryDialog } from './EditSubcategoryDialog'
 import { DeleteCategoryDialog } from './DeleteCategoryDialog'
-import { SortAlphabeticallyButton } from './SortAlphabeticallyButton'
-import { AddCategoryDialog } from './AddCategoryDialog'
 import { CategoryIcon } from '@/lib/category-icons'
-import { ChevronRight, ChevronLeft, GripVertical, Search, X } from 'lucide-react'
+import { ChevronRight, ChevronLeft, GripVertical } from 'lucide-react'
 import { toast } from 'sonner'
-import { Input } from '@/components/ui/input'
 import {
   DndContext,
   closestCenter,
@@ -43,6 +40,8 @@ interface Category {
 interface CategoryListProps {
   categories: Category[]
   onCategoriesRefresh?: () => void
+  searchQuery: string
+  onSearchQueryChange: (query: string) => void
 }
 
 function SortableCategory({
@@ -78,7 +77,7 @@ function SortableCategory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl bg-card border border-border hover:border-border shadow-sm hover:shadow-md flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
+      className={`group relative rounded-xl bg-background border hover:bg-accent/30 flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
       onClick={onClick}
     >
       {/* Drag Handle */}
@@ -135,7 +134,7 @@ function SortableCategory({
         <Button
           size="sm"
           onClick={onEdit}
-          className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold text-xs px-4"
+          className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold text-xs px-4"
         >
           Edytuj
         </Button>
@@ -177,7 +176,7 @@ function SortableSubcategory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl bg-card border border-border hover:border-border shadow-sm hover:shadow-md flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
+      className={`group relative rounded-xl bg-background border hover:bg-accent/30 flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
       onClick={hasChildren ? onClick : undefined}
     >
       {/* Drag Handle */}
@@ -228,7 +227,7 @@ function SortableSubcategory({
         <Button
           size="sm"
           onClick={onEdit}
-          className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold text-xs px-4"
+          className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold text-xs px-4"
         >
           Edytuj
         </Button>
@@ -237,12 +236,11 @@ function SortableSubcategory({
   )
 }
 
-export function CategoryList({ categories: initialCategories, onCategoriesRefresh }: CategoryListProps) {
+export function CategoryList({ categories: initialCategories, onCategoriesRefresh, searchQuery, onSearchQueryChange }: CategoryListProps) {
   const [categories, setCategories] = useState(initialCategories)
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const [deletingCategory, setDeletingCategory] = useState<Category | null>(null)
   const [navigationPath, setNavigationPath] = useState<Category[]>([])
-  const [searchQuery, setSearchQuery] = useState('')
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Update categories when prop changes (e.g., after sorting)
@@ -398,71 +396,40 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
 
   return (
     <>
-      {/* Search, Breadcrumbs and Sort Button */}
-      <div className="mb-6 space-y-4">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-          <Input
-            type="text"
-            placeholder="Szukaj kategorii..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 pr-10 h-12 text-base rounded-xl border-border bg-card text-foreground placeholder:text-muted-foreground"
-          />
-          {searchQuery && (
+      {/* Breadcrumbs - hide when searching */}
+      {!searchResults && navigationPath.length > 0 && (
+        <div className="mb-6">
+          <div className="flex items-center gap-2 text-sm">
             <button
-              onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => {
+                setNavigationPath([])
+                onSearchQueryChange('')
+              }}
+              className="text-muted-foreground hover:text-foreground hover:underline"
             >
-              <X className="h-5 w-5" />
+              Kategorie główne
             </button>
-          )}
-        </div>
-
-        {/* Breadcrumbs, Add Button and Sort Button - hide when searching */}
-        {!searchResults && (
-          <div className="flex items-center justify-between gap-4">
-            {navigationPath.length > 0 ? (
-              <div className="flex items-center gap-2 text-sm">
-                <button
-                  onClick={() => setNavigationPath([])}
-                  className="text-muted-foreground hover:text-foreground hover:underline"
-                >
-                  Kategorie główne
-                </button>
-                {navigationPath.map((cat, index) => (
-                  <div key={cat.id} className="flex items-center gap-2">
-                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                    {index === navigationPath.length - 1 ? (
-                      <span className="font-semibold text-foreground">{cat.name}</span>
-                    ) : (
-                      <button
-                        onClick={() => setNavigationPath(navigationPath.slice(0, index + 1))}
-                        className="text-muted-foreground hover:text-foreground hover:underline"
-                      >
-                        {cat.name}
-                      </button>
-                    )}
-                  </div>
-                ))}
+            {navigationPath.map((cat, index) => (
+              <div key={cat.id} className="flex items-center gap-2">
+                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                {index === navigationPath.length - 1 ? (
+                  <span className="font-semibold text-foreground">{cat.name}</span>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setNavigationPath(navigationPath.slice(0, index + 1))
+                      onSearchQueryChange('')
+                    }}
+                    className="text-muted-foreground hover:text-foreground hover:underline"
+                  >
+                    {cat.name}
+                  </button>
+                )}
               </div>
-            ) : (
-              <div />
-            )}
-            <div className="flex gap-3">
-              <SortAlphabeticallyButton
-                parentId={selectedParentCategory?.id || null}
-                onSorted={onCategoriesRefresh}
-              />
-              <AddCategoryDialog
-                parentId={selectedParentCategory?.id || null}
-                onCategoryAdded={onCategoriesRefresh}
-              />
-            </div>
+            ))}
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Search Results - Global search across all categories */}
       {searchResults && (
@@ -481,7 +448,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                 return (
                   <div
                     key={cat.id}
-                    className="group relative rounded-xl bg-card border border-border hover:border-border shadow-sm hover:shadow-md flex items-center gap-4 p-4 transition-all"
+                    className="group relative rounded-xl bg-background border hover:bg-accent/30 flex items-center gap-4 p-4 transition-all"
                   >
                     {cat.icon && (
                       <div className="w-12 h-12 rounded-lg bg-muted group-hover:bg-muted flex items-center justify-center shrink-0 transition-colors">
@@ -512,7 +479,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                       <Button
                         size="sm"
                         onClick={() => setEditingCategory(cat)}
-                        className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white border-0 font-semibold text-xs px-4"
+                        className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold text-xs px-4"
                       >
                         Edytuj
                       </Button>
@@ -549,7 +516,10 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                       <SortableCategory
                         key={parent.id}
                         category={parent}
-                        onClick={() => setNavigationPath([parent])}
+                        onClick={() => {
+                          setNavigationPath([parent])
+                          onSearchQueryChange('')
+                        }}
                         onEdit={(e) => {
                           e.stopPropagation()
                           setEditingCategory(parent)
@@ -573,7 +543,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
       {selectedParentCategory && !searchResults && (
         <div>
           {/* Header with Back Button */}
-          <div className="mb-6 p-6 rounded-2xl bg-gradient-to-br from-[#FAF8F3] to-[#F5F1E8] border border-border">
+          <div className="mb-6 p-6 rounded-2xl bg-muted border">
             <div className="flex items-center gap-4">
               <Button
                 onClick={() => {
@@ -582,9 +552,10 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                   } else {
                     setNavigationPath([])
                   }
+                  onSearchQueryChange('')
                 }}
                 variant="outline"
-                className="rounded-full border border-border hover:border-border hover:bg-muted text-sm px-6 gap-2"
+                className="rounded-full text-sm px-6 gap-2"
               >
                 <ChevronLeft className="w-4 h-4" />
                 Cofnij
@@ -619,7 +590,10 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                       category={sub}
                       onEdit={() => setEditingCategory(sub)}
                       onDelete={() => setDeletingCategory(sub)}
-                      onClick={() => setNavigationPath([...navigationPath, sub])}
+                      onClick={() => {
+                        setNavigationPath([...navigationPath, sub])
+                        onSearchQueryChange('')
+                      }}
                       hasChildren={subHasChildren}
                     />
                   )

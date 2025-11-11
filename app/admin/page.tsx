@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 import { Metadata } from 'next'
+import { Check } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: "Panel administracyjny",
@@ -68,112 +69,69 @@ export default async function AdminPage() {
     .select('*', { count: 'exact', head: true })
 
   return (
-    <>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Panel administracyjny</h1>
-        <p className="text-muted-foreground">
-          Witaj ponownie {profile?.full_name}!
-        </p>
-      </div>
+    <div className="w-full h-full p-2 flex flex-col">
+      <Card className="rounded-3xl border p-0 gap-0 flex-1 flex flex-col overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-8 py-4 border-b">
+          <div>
+            <CardTitle className="text-base font-bold">Panel administracyjny</CardTitle>
+            <p className="text-sm text-muted-foreground mt-0.5">Witaj ponownie {profile?.full_name}!</p>
+          </div>
+        </CardHeader>
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col gap-8">
 
       {/* Statistics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card className="border-0  bg-card shadow-sm">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-shrink-0">
+        <Card className="border bg-background">
           <CardContent className="py-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Aktywne ogłoszenia</p>
-                <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold text-foreground">{activePosts || 0}</div>
-                  <p className="text-xs text-muted-foreground">z {totalPosts || 0}</p>
-                </div>
-              </div>
+            <p className="text-sm font-medium text-muted-foreground mb-2">Aktywne ogłoszenia</p>
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-foreground">{activePosts || 0}</div>
+              <p className="text-xs text-muted-foreground">z {totalPosts || 0}</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0  bg-card shadow-sm">
+        <Card className="border bg-background">
           <CardContent className="py-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Użytkownicy</p>
-                <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold text-foreground">{totalUsers || 0}</div>
-                  <p className="text-xs text-muted-foreground">aktywnych</p>
-                </div>
-              </div>
+            <p className="text-sm font-medium text-muted-foreground mb-2">Użytkownicy</p>
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-foreground">{totalUsers || 0}</div>
+              <p className="text-xs text-muted-foreground">aktywnych</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0  bg-card shadow-sm">
+        <Card className="border bg-background">
           <CardContent className="py-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Kategorie</p>
-                <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold text-foreground">{totalCategories || 0}</div>
-                  <p className="text-xs text-muted-foreground">aktywnych</p>
-                </div>
-              </div>
+            <p className="text-sm font-medium text-muted-foreground mb-2">Kategorie</p>
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-foreground">{totalCategories || 0}</div>
+              <p className="text-xs text-muted-foreground">aktywnych</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-0  bg-card shadow-sm">
+        <Card className="border bg-background">
           <CardContent className="py-6">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-lg bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                <svg className="w-6 h-6 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Wiadomości</p>
-                <div className="flex items-baseline gap-2">
-                  <div className="text-3xl font-bold text-foreground">{totalMessages || 0}</div>
-                  <p className="text-xs text-muted-foreground">wysłanych</p>
-                </div>
-              </div>
+            <p className="text-sm font-medium text-muted-foreground mb-2">Wiadomości</p>
+            <div className="flex items-baseline gap-2">
+              <div className="text-3xl font-bold text-foreground">{totalMessages || 0}</div>
+              <p className="text-xs text-muted-foreground">wysłanych</p>
             </div>
           </CardContent>
         </Card>
       </div>
 
       {/* Quick Actions */}
-      <div className="mb-8">
+      <div className="flex-1 flex flex-col">
         <h2 className="text-xl font-bold text-foreground mb-4">Status zadań</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
           {moderationCount && moderationCount > 0 ? (
             <Link href="/admin/moderation">
-              <Card className="border-0  bg-card hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <Card className="border bg-background hover:bg-accent/50 transition-all cursor-pointer">
                 <CardContent className="py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14  bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-muted-foreground mb-1">Moderacja</p>
-                      <p className="text-3xl font-bold text-[#C44E35]">{moderationCount}</p>
-                    </div>
-                  </div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-2">Moderacja</p>
+                  <p className="text-3xl font-bold text-brand">{moderationCount}</p>
                 </CardContent>
               </Card>
             </Link>
@@ -181,19 +139,10 @@ export default async function AdminPage() {
 
           {reportsCount && reportsCount > 0 ? (
             <Link href="/admin/reports">
-              <Card className="border-0  bg-card hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <Card className="border bg-background hover:bg-accent/50 transition-all cursor-pointer">
                 <CardContent className="py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14  bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-muted-foreground mb-1">Zgłoszenia wiadomości</p>
-                      <p className="text-3xl font-bold text-[#C44E35]">{reportsCount}</p>
-                    </div>
-                  </div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-2">Zgłoszenia wiadomości</p>
+                  <p className="text-3xl font-bold text-brand">{reportsCount}</p>
                 </CardContent>
               </Card>
             </Link>
@@ -201,19 +150,10 @@ export default async function AdminPage() {
 
           {postReportsCount && postReportsCount > 0 ? (
             <Link href="/admin/post-reports">
-              <Card className="border-0  bg-card hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <Card className="border bg-background hover:bg-accent/50 transition-all cursor-pointer">
                 <CardContent className="py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14  bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-muted-foreground mb-1">Zgłoszenia ogłoszeń</p>
-                      <p className="text-3xl font-bold text-[#C44E35]">{postReportsCount}</p>
-                    </div>
-                  </div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-2">Zgłoszenia ogłoszeń</p>
+                  <p className="text-3xl font-bold text-brand">{postReportsCount}</p>
                 </CardContent>
               </Card>
             </Link>
@@ -221,39 +161,36 @@ export default async function AdminPage() {
 
           {bannedUsersCount && bannedUsersCount > 0 ? (
             <Link href="/admin/banned-users">
-              <Card className="border-0  bg-card hover:shadow-lg transition-all cursor-pointer shadow-sm">
+              <Card className="border bg-background hover:bg-accent/50 transition-all cursor-pointer">
                 <CardContent className="py-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14  bg-[#C44E35]/10 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-7 h-7 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-muted-foreground mb-1">Zbanowani</p>
-                      <p className="text-3xl font-bold text-[#C44E35]">{bannedUsersCount}</p>
-                    </div>
-                  </div>
+                  <p className="text-sm font-semibold text-muted-foreground mb-2">Zbanowani</p>
+                  <p className="text-3xl font-bold text-brand">{bannedUsersCount}</p>
                 </CardContent>
               </Card>
             </Link>
           ) : null}
 
           {!moderationCount && !reportsCount && !postReportsCount && !bannedUsersCount && (
-            <Card className="sm:col-span-3 border-0  bg-card shadow-sm">
-              <CardContent className="pt-6 pb-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-lg bg-[#C44E35]/10 flex items-center justify-center">
-                  <svg className="w-8 h-8 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
+            <Card className="sm:col-span-3 border bg-background flex items-center justify-center">
+              <CardContent className="py-12">
+                <div className="text-center">
+                  <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                    <Check className="w-10 h-10 text-muted-foreground" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
+                    Wszystko wygląda dobrze!
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Brak zadań wymagających uwagi
+                  </p>
                 </div>
-                <p className="text-muted-foreground font-medium">Wszystko wygląda dobrze! Brak zadań wymagających uwagi.</p>
               </CardContent>
             </Card>
           )}
         </div>
       </div>
-
-    </>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

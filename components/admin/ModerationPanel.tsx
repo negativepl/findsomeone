@@ -7,7 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
-import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Check } from 'lucide-react'
 import { AnimatedTabs } from '@/components/AnimatedTabs'
 
 interface Post {
@@ -199,28 +199,36 @@ export function ModerationPanel({
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 flex-1 flex flex-col overflow-hidden">
       <AnimatedTabs tabs={tabs} activeTab={selectedStatus} onTabChange={setSelectedStatus} />
 
       {/* Posts List */}
       {loading ? (
-        <Card className="border border-border rounded-3xl bg-card">
+        <Card className="border bg-background rounded-3xl">
           <CardContent className="py-20 text-center">
             <div className="flex items-center justify-center gap-3">
-              <div className="w-6 h-6 border border-[#C44E35] border-t-transparent rounded-full animate-spin" />
+              <div className="w-6 h-6 border border-brand border-t-transparent rounded-full animate-spin" />
               <span className="text-muted-foreground">Ładowanie...</span>
             </div>
           </CardContent>
         </Card>
       ) : posts.length === 0 ? (
-        <Card className="border border-border rounded-3xl bg-card">
-          <CardContent className="py-20 text-center text-muted-foreground">
-            Brak ogłoszeń do wyświetlenia
-          </CardContent>
+        <Card className="border bg-background flex-1 flex items-center justify-center">
+          <div className="text-center py-12">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+              <Check className="w-10 h-10 text-muted-foreground" />
+            </div>
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Brak ogłoszeń do wyświetlenia
+            </h2>
+            <p className="text-muted-foreground">
+              Wszystkie ogłoszenia w tej kategorii zostały przetworzone
+            </p>
+          </div>
         </Card>
       ) : (
         <>
-          <Card className="border border-border rounded-3xl bg-card overflow-hidden">
+          <Card className="border bg-background rounded-3xl overflow-hidden flex-1 flex flex-col">
             <div className="divide-y divide-border">
               {currentPosts.map((post) => (
                 <div key={post.id} className="p-6">
@@ -329,7 +337,7 @@ export function ModerationPanel({
                               onChange={(e) =>
                                 setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
                               }
-                              className="rounded-2xl border-border bg-card text-foreground"
+                              className="rounded-2xl border-input bg-background text-foreground"
                               rows={2}
                             />
                           </div>
@@ -366,7 +374,7 @@ export function ModerationPanel({
                               onChange={(e) =>
                                 setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
                               }
-                              className="rounded-2xl border-border bg-card text-foreground"
+                              className="rounded-2xl border-input bg-background text-foreground"
                               rows={2}
                             />
                           </div>
@@ -425,7 +433,7 @@ export function ModerationPanel({
                     onClick={() => setCurrentPage(page)}
                     className={`rounded-full w-10 h-10 p-0 ${
                       currentPage === page
-                        ? 'bg-[#C44E35] hover:bg-[#B33D2A] text-white'
+                        ? 'bg-brand hover:bg-brand/90 text-brand-foreground border-0'
                         : 'border border-border'
                     }`}
                   >

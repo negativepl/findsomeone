@@ -82,10 +82,10 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex-1 flex flex-col overflow-hidden">
       {/* Chat Assistant Settings */}
-      <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
-        <CardContent className="space-y-6 p-6">
+      <Card className="border bg-background rounded-3xl overflow-hidden flex-1 flex flex-col">
+        <CardContent className="space-y-6 p-6 flex-1 overflow-y-auto">
           <div>
             <h2 className="text-2xl font-bold text-foreground mb-1">Konfiguracja asystenta</h2>
             <p className="text-sm text-muted-foreground mb-6">Ustawienia AI chatbota dla użytkowników (GPT-4o mini)</p>
@@ -180,11 +180,11 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-border">
+          <div className="flex justify-end gap-3 pt-4 border-t border-border flex-shrink-0">
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-brand hover:bg-brand/90"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>

@@ -170,7 +170,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
 
   if (reports.length === 0) {
     return (
-      <Card className="border-0 rounded-3xl bg-card p-12">
+      <Card className="border bg-background rounded-3xl p-12">
         <div className="text-center">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-50 flex items-center justify-center">
             <Check className="w-10 h-10 text-green-600" />
@@ -187,10 +187,10 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
   }
 
   return (
-    <div className="grid lg:grid-cols-[1fr_550px] gap-6">
+    <div className="grid lg:grid-cols-[1fr_550px] gap-6 flex-1 overflow-hidden">
       {/* Reports List */}
       <div>
-        <Card className="border-0 rounded-3xl bg-card overflow-hidden">
+        <Card className="border bg-background rounded-3xl overflow-hidden">
           <div className="divide-y divide-border">
             {reports.map((report) => (
               <div
@@ -271,7 +271,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
       {/* Details Panel */}
       <div className="lg:sticky lg:top-6 lg:self-start">
         {selectedReport ? (
-          <Card className="border-0 rounded-3xl bg-card p-6">
+          <Card className="border bg-background rounded-3xl p-6">
             {/* Header */}
             <div className="flex items-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
@@ -572,7 +572,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
             )}
           </Card>
         ) : (
-          <Card className="border-0 rounded-3xl bg-card p-12">
+          <Card className="border bg-background rounded-3xl p-12">
             <div className="text-center">
               <Flag className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">

@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
+import { Check } from 'lucide-react'
 
 interface Synonym {
   id: string
@@ -283,53 +284,48 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
   return (
     <div className="space-y-6">
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-border">
+      <div className="relative flex gap-2 border-b-2 border-border">
         <button
           onClick={() => setActiveTab('terms')}
-          className={`px-6 py-3 font-medium transition-colors relative ${
+          className={`px-6 py-4 font-semibold transition-colors duration-200 relative ${
             activeTab === 'terms'
-              ? 'text-[#C44E35]'
+              ? 'text-brand/90'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Terminy wyszukiwania
-          {activeTab === 'terms' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-          )}
         </button>
         <button
           onClick={() => setActiveTab('categories')}
-          className={`px-6 py-3 font-medium transition-colors relative ${
+          className={`px-6 py-4 font-semibold transition-colors duration-200 relative ${
             activeTab === 'categories'
-              ? 'text-[#C44E35]'
+              ? 'text-brand/90'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Kategorie
-          {activeTab === 'categories' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
-          )}
         </button>
+        {/* Animated indicator bar */}
+        <div
+          className="absolute bottom-0 h-0.5 bg-brand transition-all duration-300 ease-out"
+          style={{
+            left: activeTab === 'terms' ? '0px' : '220px',
+            width: activeTab === 'terms' ? '220px' : '120px',
+          }}
+        />
       </div>
 
       {activeTab === 'terms' && (
         <>
       {/* AI Synonym Generator */}
-      <Card className="border border-[#C44E35]/20 rounded-3xl bg-card">
+      <Card className="border border-brand/20 rounded-3xl bg-background">
         <CardHeader>
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
-                <svg className="w-5 h-5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-              </div>
-              <div>
-                <CardTitle className="text-xl">Generator synonimów AI</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1 mb-2">Wykorzystuje GPT-5 nano do inteligentnego generowania synonimów</p>
-              </div>
+            <div>
+              <CardTitle className="text-xl">Generator synonimów AI</CardTitle>
+              <p className="text-sm text-muted-foreground mt-1 mb-2">Wykorzystuje GPT-5 nano do inteligentnego generowania synonimów</p>
             </div>
-            <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
+            <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
               GPT-5 nano
             </Badge>
           </div>
@@ -339,7 +335,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             <Button
               variant={generationMode === 'trending' ? 'default' : 'outline'}
               onClick={() => setGenerationMode('trending')}
-              className={generationMode === 'trending' ? 'rounded-full bg-[#C44E35] hover:bg-[#B33D2A]' : 'rounded-full'}
+              className={generationMode === 'trending' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -349,7 +345,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             <Button
               variant={generationMode === 'popular' ? 'default' : 'outline'}
               onClick={() => setGenerationMode('popular')}
-              className={generationMode === 'popular' ? 'rounded-full bg-[#C44E35] hover:bg-[#B33D2A]' : 'rounded-full'}
+              className={generationMode === 'popular' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
@@ -359,7 +355,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             <Button
               variant={generationMode === 'custom' ? 'default' : 'outline'}
               onClick={() => setGenerationMode('custom')}
-              className={generationMode === 'custom' ? 'rounded-full bg-[#C44E35] hover:bg-[#B33D2A]' : 'rounded-full'}
+              className={generationMode === 'custom' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
             >
               <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -384,7 +380,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
           <Button
             onClick={handleGenerateAI}
             disabled={isGenerating || (generationMode === 'custom' && !customTerm.trim())}
-            className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A]"
+            className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
           >
             {isGenerating ? (
               <>
@@ -405,7 +401,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
 
       {/* AI Suggestions Panel */}
       {showAIPanel && aiSuggestions.length > 0 && (
-        <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-card">
+        <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-background">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Propozycje AI ({aiSuggestions.length})</CardTitle>
@@ -472,7 +468,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       )}
 
       {/* Add New Synonym Manually */}
-      <Card className="border-0 rounded-3xl bg-card shadow-sm overflow-hidden">
+      <Card className="border bg-background rounded-3xl overflow-hidden">
         <CardContent className="p-6">
           <h2 className="text-2xl font-bold text-foreground mb-1">Dodaj synonym ręcznie</h2>
           <p className="text-sm text-muted-foreground mb-6">Wprowadź termin główny i jego synonim</p>
@@ -501,7 +497,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
           <Button
             onClick={handleAdd}
             disabled={isLoading || !newTerm.trim() || !newSynonym.trim()}
-            className="mt-4 rounded-full bg-[#C44E35] hover:bg-[#B33D2A]"
+            className="mt-4 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
           >
             Dodaj synonim
           </Button>
@@ -509,7 +505,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       </Card>
 
       {/* Existing Synonyms */}
-      <Card className="border-0 rounded-3xl bg-card shadow-sm overflow-hidden">
+      <Card className="border bg-background rounded-3xl overflow-hidden">
         <CardContent className="p-6">
           <h2 className="text-2xl font-bold text-foreground mb-1">Istniejące synonimy ({synonyms.length})</h2>
           <p className="text-sm text-muted-foreground mb-6">Lista wszystkich aktywnych synonimów terminów</p>
@@ -578,10 +574,10 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                           }
                         }}
                         disabled={expandingTerm === term}
-                        className="text-xs text-[#C44E35] hover:text-[#B33D2A] font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[#C44E35]/5 transition-colors disabled:opacity-50"
+                        className="text-xs text-brand hover:text-[#B33D2A] font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-brand/5 transition-colors disabled:opacity-50"
                       >
                         {expandingTerm === term ? (
-                          <div className="w-3 h-3 border border-[#C44E35]/20 border-t-[#C44E35] rounded-full animate-spin" />
+                          <div className="w-3 h-3 border border-brand/20 border-t-[brand] rounded-full animate-spin" />
                         ) : (
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -614,7 +610,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                   {hasMore && (
                     <button
                       onClick={() => toggleExpanded(term)}
-                      className="mt-3 text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium flex items-center gap-1"
+                      className="mt-3 text-sm text-brand hover:text-[#B33D2A] font-medium flex items-center gap-1"
                     >
                       {isExpanded ? (
                         <>
@@ -703,9 +699,17 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             })}
 
             {synonyms.length === 0 && (
-              <p className="text-muted-foreground text-center py-8">
-                Brak synonimów. Dodaj pierwszy powyżej!
-              </p>
+              <div className="text-center py-12">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
+                  <Check className="w-10 h-10 text-muted-foreground" />
+                </div>
+                <h2 className="text-2xl font-bold text-foreground mb-2">
+                  Brak synonimów
+                </h2>
+                <p className="text-muted-foreground">
+                  Dodaj pierwszy synonim powyżej!
+                </p>
+              </div>
             )}
           </div>
         </CardContent>
@@ -716,21 +720,14 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       {activeTab === 'categories' && (
         <div className="space-y-6">
           {/* AI Category Synonym Generator */}
-          <Card className="border border-[#C44E35]/20 rounded-3xl bg-card">
+          <Card className="border border-brand/20 rounded-3xl bg-background">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#C44E35]/10 flex items-center justify-center">
-                    <svg className="w-5 h-5 text-[#C44E35]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <CardTitle className="text-xl">Generator synonimów kategorii AI</CardTitle>
-                    <p className="text-sm text-muted-foreground mt-1 mb-2">Automatycznie generuj synonimy dla wszystkich kategorii</p>
-                  </div>
+                <div>
+                  <CardTitle className="text-xl">Generator synonimów kategorii AI</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1 mb-2">Automatycznie generuj synonimy dla wszystkich kategorii</p>
                 </div>
-                <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
+                <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
                   GPT-5 nano
                 </Badge>
               </div>
@@ -739,7 +736,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
               <Button
                 onClick={handleGenerateCategoryAI}
                 disabled={isGeneratingCategories || initialCategories.length === 0}
-                className="w-full rounded-full bg-[#C44E35] hover:bg-[#B33D2A]"
+                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
               >
                 {isGeneratingCategories ? (
                   <>
@@ -760,7 +757,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
 
           {/* AI Category Suggestions Panel */}
           {showCategoryAIPanel && categoryAiSuggestions.length > 0 && (
-            <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-card">
+            <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-background">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Propozycje AI dla kategorii ({categoryAiSuggestions.length})</CardTitle>
@@ -826,7 +823,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             </Card>
           )}
 
-          <Card className="border-0 rounded-3xl bg-card shadow-sm overflow-hidden">
+          <Card className="border bg-background rounded-3xl overflow-hidden">
             <CardContent className="p-6">
               <h2 className="text-2xl font-bold text-foreground mb-1">Synonimy kategorii ({initialCategories.length})</h2>
               <p className="text-sm text-muted-foreground mb-6">
@@ -892,10 +889,10 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                             }
                           }}
                           disabled={expandingCategory === category.id}
-                          className="text-xs text-[#C44E35] hover:text-[#B33D2A] font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-[#C44E35]/5 transition-colors disabled:opacity-50"
+                          className="text-xs text-brand hover:text-[#B33D2A] font-medium flex items-center gap-1 px-2 py-1 rounded-lg hover:bg-brand/5 transition-colors disabled:opacity-50"
                         >
                           {expandingCategory === category.id ? (
-                            <div className="w-3 h-3 border border-[#C44E35]/20 border-t-[#C44E35] rounded-full animate-spin" />
+                            <div className="w-3 h-3 border border-brand/20 border-t-[brand] rounded-full animate-spin" />
                           ) : (
                             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
@@ -1044,7 +1041,7 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
                           })
                         }
                       }}
-                      className="text-sm text-[#C44E35] hover:text-[#B33D2A] font-medium flex items-center gap-1"
+                      className="text-sm text-brand hover:text-[#B33D2A] font-medium flex items-center gap-1"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />

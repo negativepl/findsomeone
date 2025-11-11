@@ -365,39 +365,39 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
           onClick={() => setActiveTab('search')}
           className={`px-6 py-3 font-medium transition-colors relative ${
             activeTab === 'search'
-              ? 'text-[#C44E35]'
+              ? 'text-brand'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Terminy wyszukiwania
           {activeTab === 'search' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand" />
           )}
         </button>
         <button
           onClick={() => setActiveTab('categories')}
           className={`px-6 py-3 font-medium transition-colors relative ${
             activeTab === 'categories'
-              ? 'text-[#C44E35]'
+              ? 'text-brand'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Synonimy kategorii
           {activeTab === 'categories' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand" />
           )}
         </button>
         <button
           onClick={() => setActiveTab('seo')}
           className={`px-6 py-3 font-medium transition-colors relative ${
             activeTab === 'seo'
-              ? 'text-[#C44E35]'
+              ? 'text-brand'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           Opisy SEO
           {activeTab === 'seo' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C44E35]" />
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand" />
           )}
         </button>
       </div>
@@ -405,14 +405,14 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'search' && (
         <>
       {/* Synonym Generation Settings */}
-      <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
+      <Card className="border bg-background rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-1">Generowanie synonimów</h2>
               <p className="text-sm text-muted-foreground">Konfiguracja promptu i modelu AI dla terminów wyszukiwania</p>
             </div>
-            <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
+            <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
               {synonymModel}
             </Badge>
           </div>
@@ -505,7 +505,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A]"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>
@@ -518,14 +518,14 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'categories' && (
         <>
       {/* Category Synonym Generation Settings */}
-      <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
+      <Card className="border bg-background rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-1">Synonimy kategorii</h2>
               <p className="text-sm text-muted-foreground">Konfiguracja promptu i modelu AI dla kategorii usług</p>
             </div>
-            <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
+            <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
               {categorySynonymModel}
             </Badge>
           </div>
@@ -618,7 +618,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A]"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>
@@ -631,19 +631,19 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'seo' && (
         <>
       {/* SEO Description Generation Settings */}
-      <Card className="border border-border rounded-3xl bg-card shadow-sm overflow-hidden">
+      <Card className="border bg-background rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-foreground mb-1">Generowanie opisów SEO</h2>
               <p className="text-sm text-muted-foreground">Automatyczne tworzenie opisów dla kategorii i podkategorii</p>
             </div>
-            <Badge variant="outline" className="rounded-full border-[#C44E35]/20 bg-[#C44E35]/5 text-[#C44E35]">
+            <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
               {seoModel}
             </Badge>
           </div>
           {/* Bulk Generate Button */}
-          <div className="p-6 rounded-2xl bg-[#C44E35]/5 border border-[#C44E35]/20">
+          <div className="p-6 rounded-2xl bg-brand/5 border border-brand/20">
             <div className="flex items-start justify-between gap-6">
               <div className="flex-1">
                 <h4 className="font-bold text-lg text-foreground mb-2">Generuj wszystkie opisy</h4>
@@ -654,7 +654,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
 
                 {/* Progress Bar */}
                 {generationProgress && (
-                  <div className="mb-4 p-4 rounded-xl bg-white border border-[#C44E35]/20">
+                  <div className="mb-4 p-4 rounded-xl bg-white border border-brand/20">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium text-foreground">
                         {generationProgress.current} / {generationProgress.total}
@@ -663,7 +663,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
                     </div>
                     <div className="w-full bg-muted rounded-full h-2.5 mb-2">
                       <div
-                        className="bg-[#C44E35] h-2.5 rounded-full transition-all duration-300"
+                        className="bg-brand h-2.5 rounded-full transition-all duration-300"
                         style={{ width: `${(generationProgress.current / generationProgress.total) * 100}%` }}
                       ></div>
                     </div>
@@ -683,7 +683,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               <Button
                 onClick={handleGenerateDescriptions}
                 disabled={isGenerating}
-                className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white font-semibold ml-4"
+                className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold ml-4"
               >
                 {isGenerating ? (
                   <>
@@ -796,7 +796,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A]"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>

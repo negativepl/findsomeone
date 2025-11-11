@@ -111,7 +111,6 @@ export function EditSubcategoryDialog({ category, onClose, onUpdated }: EditSubc
                 onChange={(e) => handleNameChange(e.target.value)}
                 placeholder="np. Narzędzia budowlane"
                 required
-                className="rounded-xl"
               />
             </div>
 
@@ -123,7 +122,6 @@ export function EditSubcategoryDialog({ category, onClose, onUpdated }: EditSubc
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 placeholder="narzedzia-budowlane"
                 required
-                className="rounded-xl"
               />
               <p className="text-xs text-muted-foreground">
                 Slug jest generowany automatycznie, ale możesz go edytować
@@ -138,24 +136,23 @@ export function EditSubcategoryDialog({ category, onClose, onUpdated }: EditSubc
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Krótki opis podkategorii..."
                 rows={4}
-                className="rounded-xl"
               />
             </div>
           </div>
 
-          <DialogFooter className="mt-0 pt-6 px-6 pb-6 border-t-2 border-border rounded-b-3xl">
+          <DialogFooter className="mt-0 pt-6 px-6 pb-6 border-t">
             <Button
               type="button"
               variant="outline"
               onClick={onClose}
-              className="w-full sm:w-auto rounded-full border border-border hover:border-border hover:bg-muted"
+              className="w-full sm:w-auto rounded-full"
               disabled={loading}
             >
               Anuluj
             </Button>
             <Button
               type="submit"
-              className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 font-semibold"
+              className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
               disabled={loading}
             >
               {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}

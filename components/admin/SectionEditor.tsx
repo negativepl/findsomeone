@@ -148,7 +148,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                             )}
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-2xl font-bold text-[#C44E35]">
+                            <span className="text-2xl font-bold text-brand">
                               {editedSection.config[field.name] !== undefined ? editedSection.config[field.name] : field.default || 0}
                             </span>
                           </div>
@@ -219,14 +219,14 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                                 onClick={() => handleConfigChange(field.name, option.value)}
                                 className={`flex flex-row items-center gap-2 px-4 py-3 rounded-xl border transition-all ${
                                   isSelected
-                                    ? 'border-[#C44E35] bg-[#C44E35]/5'
+                                    ? 'border-brand bg-brand/5'
                                     : 'border-border hover:border-border hover:bg-muted'
                                 }`}
                               >
-                                <div className={isSelected ? 'text-[#C44E35]' : 'text-muted-foreground'}>
+                                <div className={isSelected ? 'text-brand' : 'text-muted-foreground'}>
                                   {getIcon()}
                                 </div>
-                                <span className={`text-sm font-medium whitespace-nowrap ${isSelected ? 'text-[#C44E35]' : 'text-black'}`}>
+                                <span className={`text-sm font-medium whitespace-nowrap ${isSelected ? 'text-brand' : 'text-foreground'}`}>
                                   {option.label}
                                 </span>
                               </button>
@@ -510,7 +510,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
             </Button>
             <Button
               onClick={handleSave}
-              className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white shadow-sm"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold shadow-sm"
             >
               Zapisz zmiany
             </Button>
@@ -523,7 +523,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
   // Modal mode (legacy - for AddSectionDialog if needed)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-card rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
+      <div className="bg-background rounded-3xl max-w-3xl w-full max-h-[90vh] overflow-y-auto p-8">
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="text-3xl font-bold text-foreground mb-1">Edytuj sekcję</h2>
@@ -545,7 +545,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
 
         <div className="mt-8 flex justify-end gap-3 pt-6 border-t">
           <Button onClick={onClose} variant="outline" className="">Anuluj</Button>
-          <Button onClick={handleSave} className="rounded-full bg-[#C44E35] hover:bg-[#B33D2A] text-white">
+          <Button onClick={handleSave} className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold">
             Zapisz zmiany
           </Button>
         </div>
