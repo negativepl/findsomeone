@@ -18,6 +18,8 @@ interface Category {
 
 interface SearchFiltersProps {
   categories: Category[] | null
+  isMobileMenuOpen?: boolean
+  setIsMobileMenuOpen?: (open: boolean) => void
 }
 
 // Recursive category tree renderer
@@ -107,15 +109,20 @@ function CategoryTree({
   )
 }
 
-export function SearchFilters({ categories }: SearchFiltersProps) {
+export function SearchFilters({ categories, isMobileMenuOpen: externalIsMobileMenuOpen, setIsMobileMenuOpen: externalSetIsMobileMenuOpen }: SearchFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
   const [hoveredSubcategory, setHoveredSubcategory] = useState<string | null>(null)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [internalIsMobileMenuOpen, setInternalIsMobileMenuOpen] = useState(false)
   const [mobileViewingCategory, setMobileViewingCategory] = useState<string | null>(null)
+
+  // Use external state if provided, otherwise use internal state
+  const isMobileMenuOpen = externalIsMobileMenuOpen ?? internalIsMobileMenuOpen
+  const setIsMobileMenuOpen = externalSetIsMobileMenuOpen ?? setInternalIsMobileMenuOpen
   const [mobileViewingSubcategory, setMobileViewingSubcategory] = useState<string | null>(null)
+  const [mobileCategoryStack, setMobileCategoryStack] = useState<string[]>([])
   const [dropdownPosition, setDropdownPosition] = useState<{ [key: string]: { position: 'top' | 'bottom', maxHeight?: number } }>({})
   const categoryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({})
   const subcategoryRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
@@ -132,6 +139,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     setIsMobileMenuOpen(false)
     setMobileViewingCategory(null)
     setMobileViewingSubcategory(null)
+    setMobileCategoryStack([])
   }, [searchParams])
 
   // Prevent body scroll when mobile menu is open
@@ -228,18 +236,25 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
   const hasActiveFilters = currentCategory || currentSearch || currentCity
 
   const MobileMenuContent = () => {
-    // If viewing a specific subcategory's sub-subcategories (third level)
-    if (mobileViewingSubcategory) {
-      const subcategory = categories?.find(cat => cat.id === mobileViewingSubcategory)
-      if (!subcategory) return null
+    // Get current viewing category from stack
+    const currentViewingId = mobileCategoryStack.length > 0
+      ? mobileCategoryStack[mobileCategoryStack.length - 1]
+      : null
 
-      const subSubcategories = getSubcategories(subcategory.id)
+    // If we're viewing a subcategory
+    if (currentViewingId) {
+      const viewingCategory = categories?.find(cat => cat.id === currentViewingId)
+      if (!viewingCategory) return null
+
+      const subcategories = getSubcategories(viewingCategory.id)
 
       return (
         <div className="space-y-3">
           {/* Back button */}
           <button
-            onClick={() => setMobileViewingSubcategory(null)}
+            onClick={() => {
+              setMobileCategoryStack(prev => prev.slice(0, -1))
+            }}
             className="flex items-center gap-2 text-foreground hover:text-brand transition-colors mb-4"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -248,106 +263,56 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
             <span className="font-medium">Powrót</span>
           </button>
 
-          {/* Subcategory header */}
+          {/* Current category header - clickable to select */}
           <div className="mb-4">
             <button
-              onClick={() => updateFilter('category', subcategory.name.toLowerCase())}
+              onClick={() => updateFilter('category', viewingCategory.name.toLowerCase())}
               data-navigate="true"
               className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-card border border-border hover:bg-muted transition-colors"
             >
-              <span className="font-bold text-lg">{subcategory.name}</span>
-            </button>
-          </div>
-
-          {/* Sub-subcategories */}
-          <div className="space-y-2">
-            {subSubcategories.map((subSubcategory) => {
-              const isSelected = currentCategory.toLowerCase() === subSubcategory.name.toLowerCase()
-              return (
-                <button
-                  key={subSubcategory.id}
-                  onClick={() => updateFilter('category', subSubcategory.name.toLowerCase())}
-                  data-navigate="true"
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
-                    isSelected
-                      ? 'bg-brand text-white'
-                      : 'bg-card text-foreground border border-border hover:bg-muted'
-                  }`}
-                >
-                  <span className="font-medium">{subSubcategory.name}</span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      )
-    }
-
-    // If viewing a specific category's subcategories
-    if (mobileViewingCategory) {
-      const category = mainCategories.find(cat => cat.id === mobileViewingCategory)
-      if (!category) return null
-
-      const subcategories = getSubcategories(category.id)
-
-      return (
-        <div className="space-y-3">
-          {/* Back button */}
-          <button
-            onClick={() => setMobileViewingCategory(null)}
-            className="flex items-center gap-2 text-foreground hover:text-brand transition-colors mb-4"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span className="font-medium">Powrót</span>
-          </button>
-
-          {/* Category header */}
-          <div className="mb-4">
-            <button
-              onClick={() => updateFilter('category', category.name.toLowerCase())}
-              data-navigate="true"
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-2xl bg-card border border-border hover:bg-muted transition-colors"
-            >
-              <CategoryIcon iconName={category.icon} className="w-6 h-6 text-muted-foreground" />
-              <span className="font-bold text-lg">{category.name}</span>
+              {viewingCategory.icon && (
+                <CategoryIcon iconName={viewingCategory.icon} className="w-6 h-6 text-muted-foreground" />
+              )}
+              <span className="font-bold text-lg">{viewingCategory.name}</span>
             </button>
           </div>
 
           {/* Subcategories */}
           <div className="space-y-2">
-            {subcategories.map((subcategory) => {
-              const isSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
-              const subSubcategories = getSubcategories(subcategory.id)
-              const hasSubSubcategories = subSubcategories.length > 0
+            {subcategories.length > 0 ? (
+              subcategories.map((subcategory) => {
+                const isSelected = currentCategory.toLowerCase() === subcategory.name.toLowerCase()
+                const hasChildren = getSubcategories(subcategory.id).length > 0
 
-              return (
-                <button
-                  key={subcategory.id}
-                  onClick={() => {
-                    if (hasSubSubcategories) {
-                      setMobileViewingSubcategory(subcategory.id)
-                    } else {
-                      updateFilter('category', subcategory.name.toLowerCase())
-                    }
-                  }}
-                  {...(!hasSubSubcategories && { 'data-navigate': 'true' })}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
-                    isSelected
-                      ? 'bg-brand text-white'
-                      : 'bg-card text-foreground border border-border hover:bg-muted'
-                  }`}
-                >
-                  <span className="font-medium flex-1">{subcategory.name}</span>
-                  {hasSubSubcategories && (
-                    <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  )}
-                </button>
-              )
-            })}
+                return (
+                  <button
+                    key={subcategory.id}
+                    onClick={() => {
+                      if (hasChildren) {
+                        setMobileCategoryStack(prev => [...prev, subcategory.id])
+                      } else {
+                        updateFilter('category', subcategory.name.toLowerCase())
+                      }
+                    }}
+                    {...(!hasChildren && { 'data-navigate': 'true' })}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-colors ${
+                      isSelected
+                        ? 'bg-brand text-white'
+                        : 'bg-card text-foreground border border-border hover:bg-muted'
+                    }`}
+                  >
+                    <span className="font-medium flex-1">{subcategory.name}</span>
+                    {hasChildren && (
+                      <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
+                  </button>
+                )
+              })
+            ) : (
+              <p className="text-sm text-muted-foreground text-center py-4">Brak podkategorii</p>
+            )}
           </div>
         </div>
       )
@@ -356,7 +321,6 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
     // Main categories view
     return (
       <div className="space-y-3">
-        {/* Main categories */}
         <div className="space-y-2">
           {mainCategories.map((mainCategory) => {
             const subcategories = getSubcategories(mainCategory.id)
@@ -368,7 +332,7 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
                 key={mainCategory.id}
                 onClick={() => {
                   if (hasSubcategories) {
-                    setMobileViewingCategory(mainCategory.id)
+                    setMobileCategoryStack([mainCategory.id])
                   } else {
                     updateFilter('category', mainCategory.name.toLowerCase())
                   }
@@ -397,32 +361,28 @@ export function SearchFilters({ categories }: SearchFiltersProps) {
 
   return (
     <>
-      {/* Mobile: Floating filter button */}
-      <div className="lg:hidden fixed bottom-24 left-4 z-40">
-        <Button
-          onClick={() => setIsMobileMenuOpen(true)}
-          className="rounded-full bg-brand hover:bg-brand/90 text-white shadow-lg w-14 h-14 p-0"
-          aria-label="Otwórz filtry"
-        >
-          <Filter className="w-6 h-6" />
-        </Button>
-      </div>
-
-      {/* Mobile: Overlay */}
+      {/* Mobile/Tablet: Overlay */}
       {isMobileMenuOpen && (
         <div
-          className="lg:hidden fixed inset-0 bg-black/50 z-50 transition-opacity"
+          className="lg:hidden fixed inset-0 bg-background/95 z-50 transition-opacity"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
 
-      {/* Mobile: Slide-out menu */}
+      {/* Mobile/Tablet: Slide-out menu */}
       <div
-        className={`lg:hidden fixed top-0 left-0 h-full w-80 max-w-[85vw] bg-background z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto ${
+        className={`lg:hidden fixed top-0 h-full w-80 max-w-[85vw] bg-background border-r border-border z-50 transform transition-transform duration-300 ease-in-out overflow-y-auto pb-20 ${
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        style={{
+          left: 'env(safe-area-inset-left)',
+          paddingTop: 'calc(64px + env(safe-area-inset-top))',
+          paddingBottom: 'calc(96px + env(safe-area-inset-bottom))',
+          paddingLeft: 'env(safe-area-inset-left)',
+          paddingRight: 'env(safe-area-inset-right)'
+        }}
       >
-        <div className="p-6 space-y-4">
+        <div className="px-6 py-4 space-y-4">
           {/* Header */}
           <div className="flex items-center justify-between">
             <h3 className="text-lg font-bold text-foreground">Kategorie</h3>

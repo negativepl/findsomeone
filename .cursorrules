@@ -1,0 +1,58 @@
+# Reguły projektu FindSomeone dla Claude/Cursor
+
+## Dokumentacja projektu
+Pełna dokumentacja projektu znajduje się w pliku `.clauderc` w głównym katalogu.
+Przed rozpoczęciem pracy nad projektem, przeczytaj ten plik aby zrozumieć:
+- Architekturę aplikacji
+- Stos technologiczny
+- Strukturę bazy danych
+- Konwencje kodowania
+- Best practices
+
+## Kluczowe zasady
+
+### Stack technologiczny
+- Next.js 16 (App Router, Server Components)
+- React 19 z TypeScript
+- Supabase (PostgreSQL + Auth + Realtime)
+- Tailwind CSS 4 + shadcn/ui
+- OpenAI API dla funkcji AI
+
+### Konwencje kodowania
+- **Server Components** jako domyślne
+- **'use client'** tylko gdy absolutnie potrzebne
+- Server Actions w `lib/actions/` z `'use server'`
+- Walidacja Zod w każdym Server Action
+- Typy z `lib/types/database.ts`
+- Stylowanie tylko przez Tailwind CSS (unikaj CSS modules)
+
+### Język
+- Zawsze odpowiadaj po **polsku**
+- Kód w angielskim (zmienne, funkcje, komentarze)
+- Dokumentacja w polskim
+
+### Bezpieczeństwo
+- Zawsze sprawdzaj RLS policies przy zmianach w bazie
+- Waliduj dane server-side
+- Rate limiting na publicznych endpointach
+- Nigdy nie expose'uj kluczy API w client code
+
+### Performance
+- Preferuj Server Components
+- Dynamic imports dla ciężkich komponentów
+- React Query do cache'owania
+- HNSW index dla wektorów (już skonfigurowany)
+
+## Struktura projektu
+- `app/` - Next.js 16 App Router
+- `components/` - Komponenty React
+- `lib/actions/` - Server Actions
+- `lib/supabase/` - Klienty Supabase
+- `supabase/migrations/` - Migracje bazy danych
+
+## Przed wprowadzeniem zmian
+1. Sprawdź istniejący kod w podobnych miejscach
+2. Upewnij się, że rozumiesz flow danych (RLS, Server Actions)
+3. Testuj lokalnie przed commitem
+4. Zaktualizuj dokumentację jeśli potrzeba
+

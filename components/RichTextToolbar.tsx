@@ -1,16 +1,51 @@
 'use client'
 
+import { useRef, useState, useEffect } from 'react'
+
 interface RichTextToolbarProps {
   editor: any
 }
 
 export function RichTextToolbar({ editor }: RichTextToolbarProps) {
-  if (!editor || !editor.view || !editor.can) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const [showLeftGradient, setShowLeftGradient] = useState(false)
+  const [showRightGradient, setShowRightGradient] = useState(false)
+
+  const handleScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current
+      setShowLeftGradient(scrollLeft > 0)
+      setShowRightGradient(scrollLeft < scrollWidth - clientWidth - 1)
+    }
+  }
+
+  useEffect(() => {
+    handleScroll()
+    const element = scrollRef.current
+    if (element) {
+      element.addEventListener('scroll', handleScroll)
+      window.addEventListener('resize', handleScroll)
+      return () => {
+        element.removeEventListener('scroll', handleScroll)
+        window.removeEventListener('resize', handleScroll)
+      }
+    }
+  }, [])
+
+  if (!editor || !editor.view || !editor.can || !editor.isActive) {
+    return null
+  }
+
+  // Additional safety check
+  try {
+    editor.can().chain().focus().toggleBold().run()
+  } catch {
     return null
   }
 
   return (
-    <div className="bg-card border-b border-border pt-3 pb-2 px-2 flex items-center gap-1 overflow-x-auto scrollbar-hide snap-x snap-mandatory overscroll-x-contain">
+    <div className="bg-card border-b border-border pt-3 pb-2 relative">
+      <div ref={scrollRef} className="px-2 flex items-center gap-1 overflow-x-auto scrollbar-hide snap-x snap-mandatory overscroll-x-contain">
       <style jsx global>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
@@ -26,7 +61,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         disabled={!editor.can().chain().focus().toggleBold().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors border ${
           editor.isActive('bold')
-            ? 'bg-foreground text-background border-foreground'
+            ? 'bg-muted border-border text-foreground'
             : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
@@ -38,7 +73,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         disabled={!editor.can().chain().focus().toggleItalic().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm italic font-medium transition-colors border ${
           editor.isActive('italic')
-            ? 'bg-foreground text-background border-foreground'
+            ? 'bg-muted border-border text-foreground'
             : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
@@ -50,7 +85,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         disabled={!editor.can().chain().focus().toggleStrike().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm line-through font-medium transition-colors border ${
           editor.isActive('strike')
-            ? 'bg-foreground text-background border-foreground'
+            ? 'bg-muted border-border text-foreground'
             : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
@@ -64,7 +99,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors border ${
           editor.isActive('heading', { level: 2 })
-            ? 'bg-foreground text-background border-foreground'
+            ? 'bg-muted border-border text-foreground'
             : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
@@ -75,7 +110,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm font-semibold transition-colors border ${
           editor.isActive('heading', { level: 3 })
-            ? 'bg-foreground text-background border-foreground'
+            ? 'bg-muted border-border text-foreground'
             : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
@@ -89,7 +124,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm transition-colors whitespace-nowrap border ${
           editor.isActive('bulletList')
-            ? 'bg-foreground text-background border-foreground'
+            ? 'bg-muted border-border text-foreground'
             : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
@@ -100,7 +135,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm transition-colors whitespace-nowrap border ${
           editor.isActive('orderedList')
-            ? 'bg-foreground text-background border-foreground'
+            ? 'bg-muted border-border text-foreground'
             : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
@@ -114,7 +149,7 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-sm transition-colors whitespace-nowrap border ${
           editor.isActive('blockquote')
-            ? 'bg-foreground text-background border-foreground'
+            ? 'bg-muted border-border text-foreground'
             : 'bg-card hover:bg-muted text-foreground border-border'
         }`}
       >
@@ -130,6 +165,15 @@ export function RichTextToolbar({ editor }: RichTextToolbarProps) {
       >
         ─ Linia
       </button>
+      </div>
+
+      {/* Gradient overlays */}
+      <div className={`absolute left-0 top-0 bottom-0 w-8 bg-gradient-to-r from-card via-card/60 to-transparent pointer-events-none transition-opacity duration-300 ${
+        showLeftGradient ? 'opacity-100' : 'opacity-0'
+      }`} />
+      <div className={`absolute right-0 top-0 bottom-0 w-8 bg-gradient-to-l from-card via-card/60 to-transparent pointer-events-none transition-opacity duration-300 ${
+        showRightGradient ? 'opacity-100' : 'opacity-0'
+      }`} />
     </div>
   )
 }

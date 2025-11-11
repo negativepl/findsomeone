@@ -18,7 +18,7 @@ export default async function NewPostPage() {
   }
 
   return (
-    <div className="h-screen bg-background md:min-h-screen md:h-auto overflow-hidden md:overflow-visible">
+    <div className="min-h-screen bg-background">
       <NavbarWithHide user={user} showAddButton={false} />
       <NewPostPageClient user={user} />
       <div className="hidden md:block">

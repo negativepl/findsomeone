@@ -239,7 +239,7 @@ export function AIAssistant() {
       {/* Chat Panel - Mobile: Fixed, Desktop: Absolute */}
         {isOpen && (
           <div
-              className="fixed top-0 left-0 right-0 bottom-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-card md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col md:border md:border-border"
+              className="fixed inset-0 md:absolute md:top-full md:right-0 md:left-auto md:bottom-auto md:mt-2 md:w-[400px] md:h-[500px] bg-card md:rounded-3xl shadow-2xl z-[9999] md:z-50 flex flex-col md:border md:border-border"
               onClick={(e) => e.stopPropagation()}
             >
             {/* Header */}
@@ -320,7 +320,7 @@ export function AIAssistant() {
               <div
                 ref={messagesContainerRef}
                 onScroll={handleScroll}
-                className="h-full overflow-y-auto p-4 space-y-4 scrollbar-hide"
+                className="h-full overflow-y-auto p-4 space-y-4 scrollbar-hide overscroll-contain"
                 style={{ touchAction: 'auto', WebkitOverflowScrolling: 'touch' }}
               >
               <AnimatePresence mode="wait">
@@ -563,7 +563,7 @@ export function AIAssistant() {
             </div>
 
             {/* Input - Fixed at bottom on mobile */}
-            <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:pb-4 bg-card border-t border-border md:rounded-b-3xl">
+            <div className="p-4 pb-safe md:pb-4 bg-card border-t border-border md:rounded-b-3xl">
               <div className="flex gap-2 items-center">
                 <input
                   type="text"

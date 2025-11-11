@@ -3,12 +3,11 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { SearchFilters } from '@/components/SearchFilters'
-import { FiltersPlaceholder } from '@/components/FiltersPlaceholder'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { ChevronRight } from 'lucide-react'
 import { PostsListWrapper } from '@/app/posts/PostsListWrapper'
+import { CategoryPageClient } from './CategoryPageClient'
 import {
   Select,
   SelectContent,
@@ -285,19 +284,8 @@ export default async function CategoryPage({
           )}
         </div>
 
-        {/* Full Width Filters Placeholder */}
-        <div className="w-full mb-6 p-4 bg-card rounded-xl border border-border">
-          <FiltersPlaceholder fullWidth />
-        </div>
-
-        {/* Two Column Layout: Sidebar + Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
-          {/* Left Sidebar - Categories */}
-          <aside className="lg:sticky lg:top-24 lg:self-start z-40">
-            <SearchFilters categories={categories} />
-          </aside>
-
-          {/* Right Content - Posts */}
+        {/* Client component wrapper for filters and layout */}
+        <CategoryPageClient categories={categories}>
           <div className="space-y-6">
             {posts && posts.length > 0 ? (
               <PostsListWrapper
@@ -335,7 +323,7 @@ export default async function CategoryPage({
               </div>
             )}
           </div>
-        </div>
+        </CategoryPageClient>
       </main>
 
       <Footer />

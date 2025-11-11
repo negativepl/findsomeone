@@ -143,20 +143,20 @@ export function ReportMessageDialog({ messageId, onReport }: ReportMessageDialog
                 <div className="border-t border-border" />
               </div>
 
-              <DialogFooter className="gap-3 p-4 md:p-6">
+              <DialogFooter className="flex-row gap-3 p-4 md:p-6">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => setOpen(false)}
                     disabled={isSubmitting}
-                    className="rounded-full border border-border hover:bg-muted bg-card text-foreground"
+                    className="flex-1 rounded-full border border-border hover:bg-muted bg-card text-foreground"
                   >
                     Anuluj
                   </Button>
                   <Button
                     type="submit"
                     disabled={isSubmitting || !reason}
-                    className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
+                    className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
                   >
                     {isSubmitting ? 'Wysyłanie...' : 'Zgłoś'}
                   </Button>

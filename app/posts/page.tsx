@@ -3,10 +3,9 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { Footer } from '@/components/Footer'
-import { SearchFilters } from '@/components/SearchFilters'
 import { PostsFilters } from '@/components/PostsFilters'
-import { FiltersPlaceholder } from '@/components/FiltersPlaceholder'
 import { PostsListWrapper } from './PostsListWrapper'
+import { PostsPageClient } from './PostsPageClient'
 import { StructuredData } from '@/components/StructuredData'
 import { Metadata } from 'next'
 
@@ -375,19 +374,8 @@ export default async function PostsPage({
           </p>
         </div>
 
-        {/* Full Width Filters Placeholder */}
-        <div className="w-full mb-6 p-4 bg-card rounded-xl border border-border">
-          <FiltersPlaceholder fullWidth />
-        </div>
-
-        {/* Two Column Layout: Sidebar + Main Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6">
-          {/* Left Sidebar - Filters */}
-          <aside className="lg:sticky lg:top-24 lg:self-start z-40">
-            <SearchFilters categories={categories} />
-          </aside>
-
-          {/* Right Content - Posts */}
+        {/* Client component wrapper for filters and layout */}
+        <PostsPageClient categories={categories}>
           <div className="space-y-6">
             {/* Posts Grid/List with filters */}
             {posts && posts.length > 0 ? (
@@ -445,7 +433,7 @@ export default async function PostsPage({
               </div>
             )}
           </div>
-        </div>
+        </PostsPageClient>
       </main>
 
       <Footer />

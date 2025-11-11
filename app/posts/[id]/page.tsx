@@ -368,6 +368,54 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-8">
           {/* Left Column - Post Details */}
           <div className="lg:col-span-2 space-y-4 md:space-y-6">
+            {/* Title Card - Tablet Only (md) */}
+            <Card className="hidden md:block lg:hidden border border-border rounded-2xl md:rounded-3xl bg-card shadow-sm">
+              <CardContent className="p-4 md:p-6 space-y-3">
+                {/* Date and Favorite Button */}
+                <div className="flex items-center justify-between gap-4">
+                  <div className="text-sm text-muted-foreground">
+                    Dodano {new Date(post.created_at).toLocaleDateString('pl-PL', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric'
+                    })}
+                  </div>
+                  <FavoriteButton
+                    postId={post.id}
+                    initialIsFavorite={isFavorite}
+                    showLabel={false}
+                  />
+                </div>
+
+                {/* Title */}
+                <div>
+                  <p className="text-2xl md:text-3xl font-bold text-foreground leading-tight">{post.title}</p>
+                </div>
+
+                {/* Budget */}
+                {post.price ? (
+                  <div className="pt-3 border-t border-border">
+                    <div className="flex items-baseline gap-2 flex-wrap">
+                      <span className="text-3xl font-bold text-foreground">
+                        {post.price} zł{post.price_negotiable ? '*' : ''}
+                      </span>
+                      <span className="text-base text-muted-foreground">
+                        {post.price_negotiable
+                          ? '/ do negocjacji'
+                          : post.price_type === 'hourly'
+                          ? '/ za godzinę'
+                          : '/ stała cena'}
+                      </span>
+                    </div>
+                  </div>
+                ) : post.price_type === 'free' ? (
+                  <div className="pt-3 border-t border-border">
+                    <span className="text-2xl font-bold text-green-600">Darmowe</span>
+                  </div>
+                ) : null}
+              </CardContent>
+            </Card>
+
             {/* Main Card */}
             <Card className="border border-border rounded-2xl md:rounded-3xl bg-card shadow-sm">
               <CardContent className="p-0">
@@ -389,7 +437,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 )}
 
                 {/* Date and Price - Mobile Only */}
-                <div className="lg:hidden px-4 pt-4 pb-2 space-y-2">
+                <div className="md:hidden px-4 pt-4 pb-2 space-y-2">
                   <div className="text-sm text-muted-foreground">
                     Dodano {new Date(post.created_at).toLocaleDateString('pl-PL', {
                       day: 'numeric',
@@ -536,7 +584,59 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 </div>
               )}
               <CardContent className="p-4 md:p-6">
-                <div className="flex items-start gap-3 md:gap-4 mb-4 md:mb-6">
+                {/* Desktop lg only - Vertical Layout */}
+                <div className="hidden lg:flex xl:hidden lg:flex-col lg:items-center lg:text-center lg:space-y-3 mb-4 md:mb-6">
+                  {/* Avatar with online status */}
+                  <div className="relative">
+                    {post.profiles?.avatar_url ? (
+                      <Image
+                        src={post.profiles.avatar_url}
+                        alt={post.profiles.full_name || 'User'}
+                        width={80}
+                        height={80}
+                        className="rounded-full"
+                      />
+                    ) : (
+                      <div className="w-20 h-20 rounded-full bg-black/10 flex items-center justify-center">
+                        <span className="text-3xl font-semibold text-foreground">
+                          {post.profiles?.full_name?.charAt(0) || 'U'}
+                        </span>
+                      </div>
+                    )}
+                    {/* Online Status Indicator */}
+                    <div
+                      className={`absolute bottom-0 right-0 w-4 h-4 border-2 border-card rounded-full ${
+                        isOnline ? 'bg-green-500' : 'bg-gray-400'
+                      }`}
+                      title={isOnline ? 'Online' : 'Offline'}
+                    />
+                  </div>
+
+                  {/* Name */}
+                  <h2 className="text-xl font-bold text-foreground">
+                    {post.profiles?.full_name || 'Anonymous'}
+                  </h2>
+
+                  {/* Rating */}
+                  <div className="flex justify-center">
+                    <RatingDisplay
+                      userId={post.user_id}
+                      rating={post.profiles?.rating || 0}
+                      reviewCount={post.profiles?.total_reviews || 0}
+                      clickable={post.profiles?.show_profile_link !== false}
+                    />
+                  </div>
+
+                  {/* Badge */}
+                  <div>
+                    {post.profiles?.is_ai_bot && <UserBadge type="ai_bot" />}
+                    {!post.profiles?.is_ai_bot && post.profiles?.is_company && <UserBadge type="company" />}
+                    {!post.profiles?.is_ai_bot && !post.profiles?.is_company && post.profiles?.verified && <UserBadge type="verified" />}
+                  </div>
+                </div>
+
+                {/* Mobile/Tablet/xl+ - Horizontal Layout */}
+                <div className="flex xl:flex lg:hidden items-start gap-3 md:gap-4 mb-4 md:mb-6">
                   <div className="relative flex-shrink-0">
                     {post.profiles?.avatar_url ? (
                       <Image

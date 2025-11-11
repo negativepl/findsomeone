@@ -102,16 +102,7 @@ export function HeroSection({ user }: HeroSectionProps) {
               Przeglądaj ogłoszenia
             </button>
           </Link>
-          {/* Mobile link */}
-          <Link href={user ? "/dashboard/my-posts/create" : "/signup"} className="flex-1 md:hidden">
-            <Button
-              className="w-full text-sm px-4 py-3 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 transition-all h-[44px]"
-            >
-              Dodaj ogłoszenie
-            </Button>
-          </Link>
-          {/* Desktop link */}
-          <Link href={user ? "/dashboard/my-posts/new" : "/signup"} className="hidden md:flex md:flex-none md:w-auto">
+          <Link href={user ? "/dashboard/my-posts/new" : "/signup"} className="flex-1 md:flex-none md:w-auto">
             <Button
               className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 transition-all h-[44px] md:h-[56px] md:min-w-[200px]"
             >

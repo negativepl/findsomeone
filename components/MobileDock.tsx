@@ -43,7 +43,7 @@ const getDockItems = (isLoggedIn: boolean) => {
       },
       {
         title: 'Dodaj',
-        href: '/dashboard/my-posts/create',
+        href: '/dashboard/my-posts/new',
         icon: <img src="/icons/plus.svg" alt="" className="w-5 h-5" />,
         isSpecial: true,
       },
@@ -602,7 +602,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                   {/* User info or Menu title */}
                   {isLoggedIn && user ? (
                     <>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
                         {/* Avatar */}
                         {profile?.avatar_url ? (
                           <Image
@@ -610,17 +610,17 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                             alt=""
                             width={48}
                             height={48}
-                            className="w-12 h-12 rounded-full object-cover"
+                            className="w-12 h-12 rounded-full object-cover flex-shrink-0"
                           />
                         ) : (
-                          <div className="w-12 h-12 rounded-full bg-brand text-brand-foreground flex items-center justify-center font-bold text-lg" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
+                          <div className="w-12 h-12 rounded-full bg-brand text-brand-foreground flex items-center justify-center font-bold text-lg flex-shrink-0" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.3)' }}>
                             {getInitials()}
                           </div>
                         )}
                         {/* User info */}
-                        <div className="flex flex-col">
-                          <Drawer.Title className="font-semibold text-foreground">{getUserName()}</Drawer.Title>
-                          <p className="text-sm text-muted-foreground truncate max-w-[180px]">{user.email}</p>
+                        <div className="flex flex-col min-w-0 flex-1">
+                          <Drawer.Title className="font-semibold text-foreground truncate">{getUserName()}</Drawer.Title>
+                          <p className="text-sm text-muted-foreground truncate">{user.email}</p>
                         </div>
                       </div>
                     </>
@@ -633,10 +633,11 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                       triggerHaptic()
                       setMenuOpen(false)
                     }}
-                    className="text-muted-foreground hover:text-foreground transition-colors duration-300 p-2 -mr-2 rounded-full hover:bg-muted"
+                    className="p-2 hover:bg-muted rounded-full transition-colors duration-300 text-foreground"
+                    aria-label="Zamknij menu"
                   >
-                    <svg className="w-5 h-5" viewBox="0 0 20 20" stroke="currentColor" fill="none">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15L15 5M5 5L15 15" />
+                    <svg className="w-6 h-6" viewBox="0 0 24 24" stroke="currentColor" fill="none" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M18 6L6 18M6 6l12 12" />
                     </svg>
                   </button>
                 </div>

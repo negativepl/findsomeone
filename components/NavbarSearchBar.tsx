@@ -645,7 +645,7 @@ export function NavbarSearchBar() {
             {!searchQuery && (
               <div className="absolute inset-0 pointer-events-none flex items-center text-sm text-muted-foreground">
                 <span className="mr-1">Szukaj</span>
-                <div className="relative h-5 flex items-center overflow-visible">
+                <div className="relative h-5 hidden lg:flex items-center overflow-visible">
                   {ROTATING_TEXTS.map((text, index) => (
                     <span
                       key={text}
@@ -900,7 +900,7 @@ export function NavbarSearchBar() {
             .location-label-text {
               display: none;
             }
-            @media (min-width: 1280px) {
+            @media (min-width: 1536px) {
               .location-label-text {
                 display: inline !important;
               }

@@ -73,7 +73,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
 
           {/* Favorite Button - Top Right (Mobile Only) */}
           {favoriteButton && (
-            <div className="lg:hidden absolute top-4 right-4 z-20 scale-125">
+            <div className="md:hidden absolute top-4 right-4 z-20 scale-125">
               {favoriteButton}
             </div>
           )}
