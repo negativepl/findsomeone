@@ -12,6 +12,7 @@ import { ViewCounter } from './ViewCounter'
 import { SendMessageModal } from '@/components/SendMessageModal'
 import { ReviewModalWrapper } from './ReviewModalWrapper'
 import { PhoneNumber } from './PhoneNumber'
+import { sanitizeHtml } from '@/lib/sanitize'
 
 export default async function PostDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -206,7 +207,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   <h3 className="text-lg font-semibold text-black mb-3">Opis</h3>
                   <div
                     className="prose prose-sm max-w-none text-black/70 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: post.description }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.description) }}
                   />
                 </div>
 

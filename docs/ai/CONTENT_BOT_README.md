@@ -43,7 +43,7 @@ The necessary migrations for Content Bot are included in the main migration file
 
 **For existing installations:** Check if bot account exists:
 ```sql
-SELECT * FROM profiles WHERE email = 'contentbot@findsomeone.app';
+SELECT * FROM profiles WHERE email = 'contentbot@example.com';
 ```
 
 If not, apply the AI-related migrations from `supabase/migrations/` or see `/supabase/MIGRATIONS_README.md` for guidance.
@@ -152,7 +152,7 @@ All migrations are included in the consolidated migrations (see `/supabase/MIGRA
 ### Bot Account
 
 - **User ID**: `00000000-0000-0000-0000-000000000002`
-- **Email**: `contentbot@findsomeone.app`
+- **Email**: `contentbot@example.com`
 - **Full Name**: "FindSomeone Bot"
 - **Verified**: `true`
 - All AI posts belong to this account

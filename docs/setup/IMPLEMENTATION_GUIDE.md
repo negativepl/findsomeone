@@ -105,7 +105,7 @@ In Supabase Dashboard → Database → Webhooks/Cron:
 
 ### 4. **Add Expiration UI to Desktop Version**
 
-In file `/Users/marcinbaszewski/findsomeone/app/dashboard/my-posts/MyListingsClient.tsx`:
+In file `app/dashboard/my-posts/MyListingsClient.tsx`:
 
 **Desktop List View** (around line 676):
 Add before `<Clock>` element:

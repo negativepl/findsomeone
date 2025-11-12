@@ -19,7 +19,7 @@ Ten folder zawiera wszystkie szablony email używane przez platformę FindSomeon
 Przejdź do: https://supabase.com/dashboard
 
 ### 2. Wybierz swój projekt
-Wybierz projekt: `muotqfczovjxckzucnhh`
+Wybierz projekt: `your-supabase-project`
 
 ### 3. Przejdź do Email Templates
 **Authentication** → **Email Templates**
@@ -58,14 +58,14 @@ W **Authentication** → **URL Configuration** ustaw:
 
 #### Site URL
 ```
-https://findsomeone.app
+https://example.com
 ```
 
 #### Redirect URLs
 Dodaj następujące URL (każdy w osobnej linii):
 ```
-https://findsomeone.app/auth/callback
-https://findsomeone.app/auth/reset-password
+https://example.com/auth/callback
+https://example.com/auth/reset-password
 http://localhost:3000/auth/callback
 http://localhost:3000/auth/reset-password
 ```
@@ -74,7 +74,7 @@ http://localhost:3000/auth/reset-password
 
 Supabase udostępnia następujące zmienne do użycia w szablonach:
 
-- `{{ .SiteURL }}` - URL główny aplikacji (np. https://findsomeone.app)
+- `{{ .SiteURL }}` - URL główny aplikacji (np. https://example.com)
 - `{{ .TokenHash }}` - Hash tokenu weryfikacyjnego
 - `{{ .Token }}` - Token weryfikacyjny (niezhashowany)
 - `{{ .Email }}` - Adres email użytkownika
@@ -124,7 +124,7 @@ Po wgraniu szablonów, przetestuj:
 
 Upewnij się, że:
 - ✅ Email przychodzi
-- ✅ Link prowadzi do Twojej domeny (findsomeone.app)
+- ✅ Link prowadzi do Twojej domeny (example.com)
 - ✅ Po kliknięciu w link, akcja się wykonuje
 
 ## 🎨 Dostosowywanie szablonów
@@ -147,7 +147,7 @@ Aby zmienić szablony:
 
 ## 🔍 Troubleshooting
 
-### Problem: Link prowadzi do supabase.co zamiast findsomeone.app
+### Problem: Link prowadzi do supabase.co zamiast example.com
 **Rozwiązanie**: Sprawdź czy używasz `{{ .SiteURL }}` zamiast `{{ .ConfirmationURL }}`
 
 ### Problem: Link wygasa lub nie działa

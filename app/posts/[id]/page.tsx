@@ -24,6 +24,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs'
 import { Metadata } from 'next'
 import { AI_BOT_USER_ID } from '@/lib/constants'
 import { UserBadge, type BadgeType } from '@/components/ui/user-badge'
+import { sanitizeHtml } from '@/lib/sanitize'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -478,7 +479,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   <h2 className="text-xl md:text-2xl font-bold text-foreground mb-3 md:mb-4">Opis</h2>
                   <div
                     className="prose prose-base max-w-none text-muted-foreground leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: post.description }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.description) }}
                   />
                 </div>
 

@@ -28,6 +28,11 @@ export default function SignupPage() {
       return
     }
 
+    if (password.length < 8) {
+      setError('Hasło musi mieć minimum 8 znaków')
+      return
+    }
+
     setLoading(true)
     setError(null)
 
@@ -223,14 +228,14 @@ export default function SignupPage() {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="Minimum 6 znaków"
+                  placeholder="Minimum 8 znaków"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
+                  minLength={8}
                   className="rounded-2xl h-12"
                 />
-                <p className="text-xs text-muted-foreground">Hasło musi zawierać minimum 6 znaków</p>
+                <p className="text-xs text-muted-foreground">Hasło musi zawierać minimum 8 znaków</p>
               </div>
 
               <div className="flex items-start space-x-2">

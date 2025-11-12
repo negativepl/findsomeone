@@ -47,3 +47,7 @@ next-env.d.ts
 **/public/sw.js.map
 **/public/workbox-*.js.map
 **/public/worker-*.js.map
+
+# Security reports - internal use only, should not be committed
+SECURITY_IMPROVEMENTS.md
+SECURITY_AUDIT_FILES.md

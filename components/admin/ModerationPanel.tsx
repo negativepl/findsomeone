@@ -9,6 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Check } from 'lucide-react'
 import { AnimatedTabs } from '@/components/AnimatedTabs'
+import { sanitizeHtml } from '@/lib/sanitize'
 
 interface Post {
   id: string
@@ -283,7 +284,7 @@ export function ModerationPanel({
                         <div className="text-sm font-semibold text-foreground mb-2">Opis:</div>
                         <div
                           className="text-sm text-foreground prose prose-sm max-w-none"
-                          dangerouslySetInnerHTML={{ __html: post.description }}
+                          dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.description) }}
                         />
                       </div>
 
