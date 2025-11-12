@@ -41,7 +41,7 @@ async function setupDatabase() {
       // Execute each statement
       const { error } = await supabase.rpc('exec_sql', {
         sql: statement + ';'
-      }).throwOnError()
+      })
 
       if (error) {
         // Many statements will fail because objects already exist - that's OK
@@ -94,9 +94,6 @@ async function main() {
 
   console.log('\n📝 Now generating embeddings...')
   console.log('   (This is handled by generate-site-embeddings.ts)\n')
-
-  // Import and run the embeddings generation
-  const { default: generateEmbeddings } = await import('./generate-site-embeddings')
 
   console.log('\n✨ Setup complete!')
 }

@@ -11,7 +11,6 @@ export interface Post {
   city: string
   district: string | null
   price: number | null
-  price: number | null
   price_type: 'hourly' | 'fixed' | 'negotiable' | null
   images: string[] | null
   status: string
@@ -33,7 +32,7 @@ interface PostsFilters {
   search?: string
   city?: string
   category?: string
-  
+  type?: string
   userId?: string
   status?: string
 }
@@ -85,7 +84,6 @@ export function usePosts(filters: PostsFilters = {}) {
           type: result.type,
           city: result.city,
           district: result.district,
-          price: result.price,
           price: result.price,
           price_type: result.price_type,
           images: result.images,

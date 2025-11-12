@@ -115,7 +115,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 onValueChange={(value) => {
                   setFormData(prev => ({
                     ...prev,
-                    category: value
+                    category: value as 'general' | 'support' | 'moderation' | 'complaints' | 'gdpr'
                   }))
                 }}
                 disabled={loading}
@@ -237,7 +237,7 @@ export function ContactForm({ userEmail }: ContactFormProps) {
                 onValueChange={(value) => {
                   setFormData(prev => ({
                     ...prev,
-                    category: value
+                    category: value as 'general' | 'support' | 'moderation' | 'complaints' | 'gdpr'
                   }))
                 }}
                 disabled={loading}

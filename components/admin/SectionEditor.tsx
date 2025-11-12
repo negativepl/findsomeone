@@ -39,11 +39,11 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
   }
 
   const handleSave = () => {
-    // Clean up undefined values - convert to null for proper database storage
+    // Clean up null values - convert to undefined for proper type compatibility
     const cleanedSection = {
       ...editedSection,
-      background_color: editedSection.background_color || null,
-      text_color: editedSection.text_color || null,
+      background_color: editedSection.background_color || undefined,
+      text_color: editedSection.text_color || undefined,
     }
     onSave(cleanedSection)
   }
@@ -408,7 +408,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                     <button
                       type="button"
                       onClick={() =>
-                        setEditedSection({ ...editedSection, background_color: null })
+                        setEditedSection({ ...editedSection, background_color: undefined })
                       }
                       className="text-xs text-muted-foreground hover:text-foreground underline"
                     >
@@ -452,7 +452,7 @@ export function SectionEditor({ section, categories, onSave, onClose, inline = f
                     <button
                       type="button"
                       onClick={() =>
-                        setEditedSection({ ...editedSection, text_color: null })
+                        setEditedSection({ ...editedSection, text_color: undefined })
                       }
                       className="text-xs text-muted-foreground hover:text-foreground underline"
                     >

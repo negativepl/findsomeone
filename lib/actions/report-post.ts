@@ -59,6 +59,4 @@ export async function reportPost(
     console.error('Error creating post report:', insertError)
     throw new Error('Nie udało się wysłać zgłoszenia')
   }
-
-  return { success: true }
 }

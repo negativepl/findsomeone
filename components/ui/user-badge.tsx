@@ -111,7 +111,7 @@ export function UserBadge({ type, className = '' }: UserBadgeProps) {
           <div className="flex justify-center mb-4">
             <div className={`rounded-full p-4 text-foreground ${config.bgColor}`}>
               <div className="w-12 h-12 flex items-center justify-center">
-                {React.cloneElement(config.icon as React.ReactElement, {
+                {React.cloneElement(config.icon as React.ReactElement<any>, {
                   className: 'w-12 h-12'
                 })}
               </div>

@@ -12,7 +12,7 @@ interface TypingState {
 export function useTypingIndicator(conversationId: string, otherUserId: string) {
   const [isOtherUserTyping, setIsOtherUserTyping] = useState(false)
   const supabase = createClient()
-  const typingTimeoutRef = useRef<NodeJS.Timeout>()
+  const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Listen to other user typing
   useEffect(() => {

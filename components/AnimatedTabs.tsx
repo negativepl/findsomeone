@@ -45,7 +45,7 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', sho
       {tabs.map((tab) => (
         <button
           key={tab.id}
-          ref={(el) => (tabsRef.current[tab.id] = el)}
+          ref={(el) => { tabsRef.current[tab.id] = el }}
           onClick={() => onTabChange(tab.id)}
           data-navigate={showLoader ? "true" : undefined}
           data-no-loader={!showLoader ? "true" : undefined}

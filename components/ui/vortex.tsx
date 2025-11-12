@@ -42,14 +42,14 @@ export function Vortex({
     }
 
     class Particle {
-      x: number
-      y: number
-      radius: number
-      speed: number
-      angle: number
-      angleSpeed: number
-      hue: number
-      opacity: number
+      x!: number
+      y!: number
+      radius!: number
+      speed!: number
+      angle!: number
+      angleSpeed!: number
+      hue!: number
+      opacity!: number
 
       constructor() {
         this.reset()

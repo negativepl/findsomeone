@@ -99,7 +99,7 @@ export function NewPostClient() {
   const [isLoadingMobileCities, setIsLoadingMobileCities] = useState(false)
   const mobileCityInputRef = useRef<HTMLInputElement>(null)
   const mobileCityDropdownRef = useRef<HTMLDivElement>(null)
-  const mobileCityDebounceTimerRef = useRef<NodeJS.Timeout>()
+  const mobileCityDebounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Mobile: Subcategories for summary display
   const [subcategories, setSubcategories] = useState<Category[]>([])
@@ -650,13 +650,13 @@ export function NewPostClient() {
           if (targetCategory) {
             // Build the full path from root to this category
             const path: Array<{ id: string; name: string; slug: string }> = []
-            let currentCat = targetCategory
+            let currentCat: { id: any; name: any; slug: any; parent_id: any } | undefined = targetCategory
 
             while (currentCat) {
               path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
-              currentCat = (currentCat.parent_id
-                ? allCats.find(cat => cat.id === currentCat.parent_id)
-                : null) || null
+              currentCat = currentCat.parent_id
+                ? allCats.find(cat => cat.id === currentCat?.parent_id)
+                : undefined
             }
 
             setSelectedCategoryId(targetCategory.id)

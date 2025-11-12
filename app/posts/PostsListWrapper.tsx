@@ -15,6 +15,8 @@ interface Post {
   price_type: 'hourly' | 'fixed' | 'free' | null
   price_negotiable: boolean | null
   images: string[] | null
+  created_at: string
+  is_ai_generated?: boolean
   profiles: {
     full_name: string | null
     avatar_url: string | null

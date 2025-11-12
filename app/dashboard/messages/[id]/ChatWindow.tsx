@@ -98,12 +98,19 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
               .single()
 
             if (newMessage) {
+              // Transform the message to match our Message type
+              // Supabase returns sender as array, we need it as object
+              const transformedMessage: Message = {
+                ...newMessage,
+                sender: Array.isArray(newMessage.sender) ? newMessage.sender[0] : newMessage.sender
+              } as Message
+
               setMessages((prev) => {
                 // Prevent duplicates
-                if (prev.some(m => m.id === newMessage.id)) {
+                if (prev.some(m => m.id === transformedMessage.id)) {
                   return prev
                 }
-                return [...prev, newMessage as Message]
+                return [...prev, transformedMessage]
               })
 
               // Mark as read if we're the receiver
@@ -227,12 +234,19 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
         }
 
         setError(errorMessage)
-        setLoading(false)
+        setIsSending(false)
         return
       }
 
       if (data) {
-        setMessages((prev) => [...prev, data as Message])
+        // Transform the message to match our Message type
+        // Supabase returns sender as array, we need it as object
+        const transformedMessage: Message = {
+          ...data,
+          sender: Array.isArray(data.sender) ? data.sender[0] : data.sender
+        } as Message
+
+        setMessages((prev) => [...prev, transformedMessage])
         setCurrentMessage('')
         setError(null)
       }

@@ -19,7 +19,6 @@ interface Post {
   city: string
   district: string | null
   price: number | null
-  price: number | null
   moderation_status: string
   moderation_score: number | null
   moderation_reason: string | null

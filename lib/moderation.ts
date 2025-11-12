@@ -16,7 +16,6 @@ interface PostData {
   category?: string
   city?: string
   price?: number
-  price?: number
 }
 
 // Basic validation rules (anti-spam)

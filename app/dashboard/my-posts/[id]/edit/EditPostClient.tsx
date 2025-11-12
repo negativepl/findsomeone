@@ -106,7 +106,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
   const [isLoadingMobileCities, setIsLoadingMobileCities] = useState(false)
   const mobileCityInputRef = useRef<HTMLInputElement>(null)
   const mobileCityDropdownRef = useRef<HTMLDivElement>(null)
-  const mobileCityDebounceTimerRef = useRef<NodeJS.Timeout>()
+  const mobileCityDebounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Mobile: Subcategories for summary display
   const [subcategories, setSubcategories] = useState<Category[]>([])

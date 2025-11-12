@@ -1,18 +1,20 @@
 'use client'
 
-import { useStepContext } from '@/app/dashboard/my-posts/new/NewPostClient'
+// TODO: This component needs to be refactored to receive props instead of using context
+// import { useStepContext } from '@/app/dashboard/my-posts/new/NewPostClient'
 
 export function NewPostNavbar() {
-  const stepContext = useStepContext()
+  // const stepContext = useStepContext()
+  // if (!stepContext) return null
+  // const { currentStep, totalSteps, stepTitle} = stepContext
 
-  if (!stepContext) return null
+  // Temporarily disabled until context is properly set up
+  return null
 
-  const { currentStep, totalSteps, stepTitle } = stepContext
-
-  return (
-    <div className="md:hidden">
-      <h1 className="text-base font-semibold text-black">{stepTitle}</h1>
-      <p className="text-xs text-black/60">Krok {currentStep}/{totalSteps}</p>
-    </div>
-  )
+  // return (
+  //   <div className="md:hidden">
+  //     <h1 className="text-base font-semibold text-black">{stepTitle}</h1>
+  //     <p className="text-xs text-black/60">Krok {currentStep}/{totalSteps}</p>
+  //   </div>
+  // )
 }

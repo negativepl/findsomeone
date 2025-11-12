@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import type { ReactElement } from 'react'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { CategoryIcon } from '@/lib/category-icons'
@@ -34,8 +35,8 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
 
   // Calculate which row each category is in and insert expanded panel after each row
   const renderDesktopGrid = () => {
-    const rows: JSX.Element[][] = []
-    let currentRow: JSX.Element[] = []
+    const rows: ReactElement[][] = []
+    let currentRow: ReactElement[] = []
 
     categories.forEach((cat, index) => {
       currentRow.push(

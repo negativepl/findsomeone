@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Button } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { ScrollArrows } from '@/components/ScrollArrows'
 import { PostCard } from '@/components/PostCard'
 import { createClient } from '@/lib/supabase/server'

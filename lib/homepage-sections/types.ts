@@ -233,6 +233,7 @@ export interface SectionTypeMetadata {
     default?: any
     placeholder?: string
     description?: string
+    rows?: number
   }[]
 }
 

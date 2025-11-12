@@ -22,7 +22,7 @@ export function MegaMenu() {
   const [categories, setCategories] = useState<Category[]>([])
   const [hoveredPath, setHoveredPath] = useState<string[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
-  const closeTimeoutRef = useRef<NodeJS.Timeout>()
+  const closeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     const fetchCategories = async () => {

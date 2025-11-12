@@ -58,8 +58,8 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
   const searchInputRef = useRef<HTMLInputElement>(null)
   const cityInputRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
-  const debounceTimerRef = useRef<NodeJS.Timeout>()
-  const cityDebounceTimerRef = useRef<NodeJS.Timeout>()
+  const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const cityDebounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Load recent searches from localStorage
   useEffect(() => {

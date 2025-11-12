@@ -23,6 +23,8 @@ interface Category {
   description: string | null
   icon: string | null
   parent_id: string | null
+  created_at: string
+  display_order?: number
 }
 
 interface EditSubcategoryDialogProps {

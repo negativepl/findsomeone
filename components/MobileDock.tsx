@@ -667,7 +667,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         href={item.href}
                         onClick={() => {
                           triggerHaptic()
-                          if (item.lordicon && iconRefsRef.current[index]) {
+                          if ('lordicon' in item && item.lordicon && iconRefsRef.current[index]) {
                             iconRefsRef.current[index]?.trigger()
                           }
                         }}
@@ -679,13 +679,12 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                         )}
                       >
                         <div className="transition-colors duration-300">
-                          {item.lordicon ? (
+                          {'lordicon' in item && item.lordicon ? (
                             <div className={isActive ? "[&_svg]:text-foreground" : "[&_svg]:text-foreground group-hover:[&_svg]:text-white"}>
                               <LordIcon
                                 ref={(el) => { iconRefsRef.current[index] = el }}
-                                src={item.lordicon}
+                                src={(item as any).lordicon}
                                 size={24}
-                                trigger="hover"
                               />
                             </div>
                           ) : (

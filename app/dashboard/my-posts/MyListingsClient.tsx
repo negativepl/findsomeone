@@ -403,6 +403,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
           allCount={getTabCount('all')}
           activeCount={getTabCount('active')}
           rejectedCount={getTabCount('rejected')}
+          closedCount={getTabCount('closed')}
           completedCount={getTabCount('completed')}
           onTabChange={(tab) => setActiveTab(tab)}
         />

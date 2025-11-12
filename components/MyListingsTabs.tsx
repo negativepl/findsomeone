@@ -3,12 +3,13 @@
 import { AnimatedTabs } from './AnimatedTabs'
 
 interface MyListingsTabsProps {
-  activeTab: 'all' | 'active' | 'rejected' | 'completed'
+  activeTab: 'all' | 'active' | 'rejected' | 'closed' | 'completed'
   allCount: number
   activeCount: number
   rejectedCount: number
+  closedCount: number
   completedCount: number
-  onTabChange: (tab: 'all' | 'active' | 'rejected' | 'completed') => void
+  onTabChange: (tab: 'all' | 'active' | 'rejected' | 'closed' | 'completed') => void
 }
 
 export function MyListingsTabs({
@@ -16,6 +17,7 @@ export function MyListingsTabs({
   allCount,
   activeCount,
   rejectedCount,
+  closedCount,
   completedCount,
   onTabChange,
 }: MyListingsTabsProps) {
@@ -23,6 +25,7 @@ export function MyListingsTabs({
     { id: 'all', label: 'Wszystkie', count: allCount },
     { id: 'active', label: 'Aktywne', count: activeCount },
     { id: 'rejected', label: 'Odrzucone', count: rejectedCount },
+    { id: 'closed', label: 'Nieaktywne', count: closedCount },
     { id: 'completed', label: 'Zakończone', count: completedCount },
   ]
 
@@ -30,7 +33,7 @@ export function MyListingsTabs({
     <AnimatedTabs
       tabs={tabs}
       activeTab={activeTab}
-      onTabChange={onTabChange}
+      onTabChange={(tabId) => onTabChange(tabId as 'all' | 'active' | 'rejected' | 'closed' | 'completed')}
       className="overflow-x-auto scrollbar-hide"
     />
   )

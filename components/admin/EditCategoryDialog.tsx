@@ -31,6 +31,8 @@ interface Category {
   description: string | null
   icon: string | null
   parent_id: string | null
+  created_at: string
+  display_order?: number
 }
 
 interface EditCategoryDialogProps {
@@ -56,7 +58,7 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
       const supabase = createClient()
       const { data } = await supabase
         .from('categories')
-        .select('id, name')
+        .select('id, name, slug, description, icon, parent_id, created_at, display_order')
         .is('parent_id', null)
         .neq('id', category.id)
         .order('display_order')

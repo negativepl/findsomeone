@@ -16,8 +16,8 @@ export function StepLottieIcon({ step, animationPath, svgPath, className = 'w-8 
   const [animationData, setAnimationData] = useState<any>(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [showLottie, setShowLottie] = useState(false)
-  const intervalRef = useRef<NodeJS.Timeout>()
-  const initialDelayRef = useRef<NodeJS.Timeout>()
+  const intervalRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const initialDelayRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     // Load animation on mount

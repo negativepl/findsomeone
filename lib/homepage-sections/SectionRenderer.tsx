@@ -23,7 +23,7 @@ interface SectionRendererProps {
 
 export function SectionRenderer({ section, userFavorites, userId, preloadedPostsData }: SectionRendererProps) {
   // Check visibility based on device
-  const visibilityClasses = []
+  const visibilityClasses: string[] = []
   if (!section.visible_on_mobile) visibilityClasses.push('hidden md:block')
   if (!section.visible_on_desktop) visibilityClasses.push('block md:hidden')
 

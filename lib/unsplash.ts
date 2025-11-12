@@ -178,7 +178,6 @@ function mapCategoryToSearchTerm(categoryName: string): string {
     'Catering': 'catering food party',
     'Dekoracje eventowe': 'event decoration flowers',
     'Animacje dla dzieci': 'children entertainment party',
-    'Fotografia eventowa': 'event photography party',
   }
 
   return categoryMap[categoryName] || categoryName

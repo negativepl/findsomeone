@@ -60,7 +60,7 @@ export function useUpdatePresence() {
   useEffect(() => {
     const supabase = createClient()
 
-    const updatePresence = async (status: 'online' | 'offline') => {
+    const updatePresence = async (status: 'online' | 'offline' | 'away') => {
       await supabase.rpc('update_user_presence', {
         user_status: status
       })

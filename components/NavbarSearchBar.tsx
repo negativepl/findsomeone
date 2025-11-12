@@ -53,13 +53,13 @@ export function NavbarSearchBar() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
-  const debounceTimerRef = useRef<NodeJS.Timeout>()
+  const debounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const [cachedTrending, setCachedTrending] = useState<SearchResult['trending']>([])
   const hasFetchedTrendingRef = useRef(false)
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
-  const locationOpenTimeoutRef = useRef<NodeJS.Timeout>()
-  const locationCloseTimeoutRef = useRef<NodeJS.Timeout>()
+  const locationOpenTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
+  const locationCloseTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Animated placeholder state
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
@@ -73,7 +73,7 @@ export function NavbarSearchBar() {
   const [isDetectingLocation, setIsDetectingLocation] = useState(false)
   const cityDropdownRef = useRef<HTMLDivElement>(null)
   const cityInputRef = useRef<HTMLInputElement>(null)
-  const cityDebounceTimerRef = useRef<NodeJS.Timeout>()
+  const cityDebounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const isUserTypingRef = useRef(false)
 
   // Sync with URL params (only on /posts page)

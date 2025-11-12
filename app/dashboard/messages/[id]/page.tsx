@@ -78,6 +78,13 @@ export default async function ConversationPage({
     .eq('sender_id', otherUserId)
     .eq('read', false)
 
+  // Transform messages to match Message type
+  // Supabase returns sender as array, we need it as object
+  const transformedMessages: Message[] = (messages || []).map((msg: any) => ({
+    ...msg,
+    sender: Array.isArray(msg.sender) ? msg.sender[0] : msg.sender
+  }))
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <NavbarWithHide
@@ -134,7 +141,7 @@ export default async function ConversationPage({
 
       {/* Chat Window */}
       <ChatWindow
-        messages={messages as Message[]}
+        messages={transformedMessages}
         currentUserId={user.id}
         otherUser={otherUser}
       />

@@ -28,7 +28,7 @@ export const PRICING = {
 
 // Calculate cost for a completion
 export function calculateCost(
-  model: keyof typeof MODELS,
+  model: typeof MODELS[keyof typeof MODELS],
   inputTokens: number,
   outputTokens: number
 ): number {
