@@ -37,8 +37,6 @@ self.addEventListener('push', function (event) {
 })
 
 self.addEventListener('notificationclick', function (event) {
-  console.log('[Service Worker] Notification clicked:', event)
-
   event.notification.close()
 
   // Navigate to the URL when notification is clicked
@@ -61,5 +59,3 @@ self.addEventListener('notificationclick', function (event) {
     })
   )
 })
-
-console.log('[Service Worker] Push notification handler loaded')
