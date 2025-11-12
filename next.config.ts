@@ -29,9 +29,8 @@ const nextConfig: NextConfig = {
     },
   },
   typescript: {
-    // Enable TypeScript error checking during build for better security
-    // Temporarily allow errors on Vercel until all type issues are resolved
-    ignoreBuildErrors: process.env.VERCEL === '1',
+    // TypeScript error checking is now enabled for all builds
+    ignoreBuildErrors: false,
   },
   async headers() {
     const isDev = process.env.NODE_ENV === 'development'
