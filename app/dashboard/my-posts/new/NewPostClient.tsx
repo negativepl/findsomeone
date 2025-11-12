@@ -525,6 +525,31 @@ export function NewPostClient() {
       return
     }
 
+    // Check if page is served over HTTPS (required for geolocation)
+    if (typeof window !== 'undefined' && window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+      toast.error('Geolokalizacja wymaga HTTPS', {
+        description: 'Ta funkcja działa tylko na bezpiecznych stronach (HTTPS)'
+      })
+      return
+    }
+
+    // Check permissions if Permissions API is available
+    if ('permissions' in navigator) {
+      try {
+        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' as PermissionName })
+
+        if (permissionStatus.state === 'denied') {
+          toast.error('Brak uprawnień do lokalizacji', {
+            description: 'Zezwól na dostęp do lokalizacji w ustawieniach przeglądarki'
+          })
+          return
+        }
+      } catch (err) {
+        // Permissions API not fully supported, continue anyway
+        console.log('Permissions API not available:', err)
+      }
+    }
+
     setDetectingLocation(true)
 
     navigator.geolocation.getCurrentPosition(
@@ -579,19 +604,34 @@ export function NewPostClient() {
           setDetectingLocation(false)
         }
       },
-      (error) => {
-        console.error('Geolocation error:', error)
-        let errorMessage = 'Nie udało się pobrać lokalizacji'
+      (error: GeolocationPositionError) => {
+        console.error('Geolocation error:', {
+          code: error.code,
+          message: error.message,
+          PERMISSION_DENIED: error.PERMISSION_DENIED,
+          POSITION_UNAVAILABLE: error.POSITION_UNAVAILABLE,
+          TIMEOUT: error.TIMEOUT
+        })
 
-        if (error.code === error.PERMISSION_DENIED) {
-          errorMessage = 'Musisz zezwolić na dostęp do lokalizacji'
-        } else if (error.code === error.POSITION_UNAVAILABLE) {
-          errorMessage = 'Lokalizacja niedostępna'
-        } else if (error.code === error.TIMEOUT) {
-          errorMessage = 'Przekroczono limit czasu'
+        let errorMessage = 'Nie udało się pobrać lokalizacji'
+        let errorTitle = 'Błąd lokalizacji'
+
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorTitle = 'Brak uprawnień'
+            errorMessage = 'Musisz zezwolić na dostęp do lokalizacji w przeglądarce'
+            break
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = 'Lokalizacja jest obecnie niedostępna'
+            break
+          case error.TIMEOUT:
+            errorMessage = 'Przekroczono limit czasu. Spróbuj ponownie'
+            break
+          default:
+            errorMessage = error.message || 'Nieznany błąd lokalizacji'
         }
 
-        toast.error('Błąd lokalizacji', {
+        toast.error(errorTitle, {
           description: errorMessage
         })
         setDetectingLocation(false)
