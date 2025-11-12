@@ -72,7 +72,7 @@ export function ReportPostDialog({ postId, onReport }: ReportPostDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border hover:bg-muted bg-card text-foreground transition-colors text-sm font-medium px-4 py-2">
+      <DialogTrigger className="inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-muted hover:bg-accent text-foreground transition-colors text-sm font-medium px-4 py-2">
         <Flag className="w-4 h-4" />
         <span>Zgłoś</span>
       </DialogTrigger>
@@ -151,7 +151,7 @@ export function ReportPostDialog({ postId, onReport }: ReportPostDialogProps) {
                     variant="outline"
                     onClick={() => setOpen(false)}
                     disabled={isSubmitting}
-                    className="flex-1 rounded-full border border-border hover:bg-muted bg-card text-foreground"
+                    className="flex-1 rounded-full border border-border bg-muted hover:bg-accent text-foreground"
                   >
                     Anuluj
                   </Button>

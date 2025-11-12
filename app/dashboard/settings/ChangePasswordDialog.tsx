@@ -36,7 +36,7 @@ export function ChangePasswordDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="rounded-full border border-border hover:bg-muted bg-card text-foreground">
+        <Button variant="outline" className="rounded-full border border-border hover:bg-accent bg-muted text-foreground">
           Zmień
         </Button>
       </DialogTrigger>
@@ -103,7 +103,7 @@ export function ChangePasswordDialog() {
               onClick={() => setOpen(false)}
               disabled={loading}
               variant="outline"
-              className="flex-1 rounded-full border border-border hover:bg-muted bg-card text-foreground"
+              className="flex-1 rounded-full border border-border hover:bg-accent bg-muted text-foreground"
             >
               Anuluj
             </Button>

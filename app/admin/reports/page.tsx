@@ -29,12 +29,12 @@ export default async function AdminReportsPage() {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
           {error ? (
-            <div className="bg-red-50 border border-red-200 rounded-xl p-6">
-              <h3 className="text-lg font-semibold text-red-900 mb-2">Błąd ładowania zgłoszeń</h3>
-              <p className="text-red-800">{error.message || 'Nieznany błąd'}</p>
-              <pre className="mt-2 text-xs text-red-700 overflow-auto">{JSON.stringify(error, null, 2)}</pre>
+            <div className="bg-destructive/10 border border-destructive/30 rounded-xl p-6">
+              <h3 className="text-lg font-semibold text-destructive mb-2">Błąd ładowania zgłoszeń</h3>
+              <p className="text-destructive/80">{error.message || 'Nieznany błąd'}</p>
+              <pre className="mt-2 text-xs text-destructive/70 overflow-auto">{JSON.stringify(error, null, 2)}</pre>
             </div>
           ) : (
             <ReportsList initialReports={reports || []} />

@@ -84,14 +84,14 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Chat Assistant Settings */}
-      <Card className="border bg-card rounded-3xl overflow-hidden flex-1 flex flex-col">
+      <Card className="border bg-muted rounded-3xl overflow-hidden flex-1 flex flex-col">
         <CardContent className="space-y-6 p-6 flex-1 overflow-y-auto">
           <div>
             <h2 className="text-xl font-bold text-foreground mb-1">Konfiguracja asystenta</h2>
             <p className="text-sm text-muted-foreground mb-6">Ustawienia AI chatbota dla użytkowników (GPT-4o mini)</p>
           </div>
           {/* Enable/Disable */}
-          <div className="flex items-center justify-between p-4 rounded-2xl bg-muted">
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-accent">
             <div>
               <h4 className="font-semibold text-foreground">Status asystenta</h4>
               <p className="text-sm text-muted-foreground">Włącz lub wyłącz chatbota na stronie</p>
@@ -120,7 +120,7 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
           </div>
 
           {/* Require city toggle */}
-          <div className="flex items-center justify-between p-4 rounded-2xl bg-muted">
+          <div className="flex items-center justify-between p-4 rounded-2xl bg-accent">
             <div>
               <h4 className="font-semibold text-foreground">Wymagaj miasta</h4>
               <p className="text-sm text-muted-foreground">Czy asystent powinien pytać o miasto jeśli nie podano?</p>

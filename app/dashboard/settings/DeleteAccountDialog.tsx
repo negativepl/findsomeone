@@ -41,16 +41,15 @@ export function DeleteAccountDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="outline"
-          className="rounded-full border border-red-500/30 bg-red-500/10 text-red-600 dark:text-red-400 hover:bg-red-500/20 hover:border-red-500/50 whitespace-nowrap"
+          className="rounded-full border-2 border-destructive/40 bg-destructive/5 text-destructive hover:bg-destructive/15 hover:border-destructive/60 transition-all whitespace-nowrap font-semibold"
         >
           Usuń konto
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
         <DialogHeader className="p-4 md:p-6">
-          <DialogTitle className="text-2xl font-bold text-red-600">Usuń konto</DialogTitle>
-          <DialogDescription className="text-base text-red-700">
+          <DialogTitle className="text-2xl font-bold text-destructive">Usuń konto</DialogTitle>
+          <DialogDescription className="text-base text-destructive">
             ⚠️ Ta akcja jest nieodwracalna. Wszystkie twoje dane zostaną permanentnie usunięte.
           </DialogDescription>
         </DialogHeader>
@@ -66,12 +65,12 @@ export function DeleteAccountDialog() {
                 type="password"
                 required
                 disabled={loading}
-                className="rounded-2xl border border-red-200 h-12 focus:border-red-400"
+                className="rounded-2xl border border-destructive/20 h-12 focus:border-destructive"
               />
             </div>
             <div className="space-y-3">
               <Label htmlFor="confirmation" className="text-base font-semibold text-foreground">
-                Wpisz <span className="font-bold text-red-600">USUŃ KONTO</span> aby potwierdzić
+                Wpisz <span className="font-bold text-destructive">USUŃ KONTO</span> aby potwierdzić
               </Label>
               <Input
                 id="confirmation"
@@ -80,14 +79,14 @@ export function DeleteAccountDialog() {
                 required
                 placeholder="USUŃ KONTO"
                 disabled={loading}
-                className="rounded-2xl border border-red-200 h-12 focus:border-red-400"
+                className="rounded-2xl border border-destructive/20 h-12 focus:border-destructive"
               />
-              <p className="text-xs text-red-600">To działanie jest nieodwracalne!</p>
+              <p className="text-xs text-destructive">To działanie jest nieodwracalne!</p>
             </div>
           </div>
 
           <div className="px-4 md:px-6">
-            <div className="border-t border-red-500/20" />
+            <div className="border-t border-destructive/20" />
           </div>
 
           <DialogFooter className="gap-3 p-4 md:p-6 flex-row">
@@ -96,14 +95,14 @@ export function DeleteAccountDialog() {
               variant="outline"
               onClick={() => setOpen(false)}
               disabled={loading}
-              className="flex-1 rounded-full border border-border hover:bg-muted bg-card text-foreground"
+              className="flex-1 rounded-full border border-border hover:bg-accent bg-muted text-foreground"
             >
               Anuluj
             </Button>
             <Button
               type="submit"
               disabled={loading}
-              className="flex-1 rounded-full bg-red-600 hover:bg-red-700 text-white border-0"
+              className="flex-1 rounded-full bg-destructive hover:bg-destructive/90 text-destructive-foreground border-0"
             >
               {loading ? 'Usuwam...' : 'Usuń konto'}
             </Button>

@@ -85,7 +85,7 @@ function SortableSectionComponent({
     <div
       ref={setNodeRef}
       style={style}
-      className={`rounded-3xl overflow-hidden ${
+      className={`rounded-3xl overflow-hidden border border-border ${
         section.is_active
           ? 'bg-card shadow-sm'
           : 'bg-muted'
@@ -125,7 +125,7 @@ function SortableSectionComponent({
         <div className="ml-auto flex items-center gap-2">
           <button
             onClick={handleToggleActive}
-            className="p-2 rounded-lg bg-card border border-border hover:bg-muted transition-colors"
+            className="p-2 rounded-lg bg-accent border border-border hover:bg-accent/80 transition-colors"
             title={section.is_active ? 'Dezaktywuj' : 'Aktywuj'}
           >
             {section.is_active ? (
@@ -142,7 +142,7 @@ function SortableSectionComponent({
 
           <button
             onClick={handleEdit}
-            className="p-2 rounded-lg bg-card border border-border hover:bg-muted transition-colors"
+            className="p-2 rounded-lg bg-accent border border-border hover:bg-accent/80 transition-colors"
             title="Edytuj"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -152,7 +152,7 @@ function SortableSectionComponent({
 
           <button
             onClick={handleDelete}
-            className="p-2 rounded-lg bg-card border border-border hover:border-red-300 text-red-600 hover:bg-red-50 transition-colors"
+            className="p-2 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive hover:bg-destructive/20 transition-colors"
             title="Usuń"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

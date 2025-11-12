@@ -45,38 +45,53 @@ function formatViewsByDay(viewsData: { created_at: string }[]) {
 
 // Helper function to format views data by week (last 30 days grouped into 7 sections)
 function formatViewsByMonth(viewsData: { created_at: string }[]) {
-  const data = []
+  const result = []
   const today = new Date()
+  today.setHours(23, 59, 59, 999)
+
   const daysPerSection = Math.floor(30 / 7) // ~4 days per section
+  const totalSections = 7
 
-  for (let i = 0; i < 7; i++) {
-    const startDay = 30 - ((i + 1) * daysPerSection)
-    const endDay = 30 - (i * daysPerSection)
+  // Iteruj od najstarszych do najnowszych
+  for (let i = totalSections - 1; i >= 0; i--) {
+    // Oblicz zakres dla tej sekcji
+    const daysAgo = i * daysPerSection
+    const daysAgoEnd = (i + 1) * daysPerSection
 
-    const startDate = new Date(today)
-    startDate.setDate(startDate.getDate() - endDay)
-    startDate.setHours(0, 0, 0, 0)
+    // Jeśli to ostatnia sekcja, uwzględnij pozostałe dni
+    const actualDaysAgoEnd = (i === totalSections - 1) ? 30 : daysAgoEnd
 
     const endDate = new Date(today)
-    endDate.setDate(endDate.getDate() - startDay)
-    endDate.setHours(0, 0, 0, 0)
+    endDate.setDate(endDate.getDate() - daysAgo)
+    endDate.setHours(23, 59, 59, 999)
 
-    // Count views in this section
-    const viewsCount = viewsData.filter(view => {
+    const startDate = new Date(today)
+    startDate.setDate(startDate.getDate() - actualDaysAgoEnd)
+    startDate.setHours(0, 0, 0, 0)
+
+    const count = viewsData.filter(view => {
       const viewDate = new Date(view.created_at)
-      return viewDate >= startDate && viewDate < endDate
+      return viewDate >= startDate && viewDate <= endDate
     }).length
 
-    // Format label to show date range
-    const label = `${startDate.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })}`
+    // Dla ostatniej sekcji (najbliższej dzisiaj) użyj daty końcowej jako labela
+    const label = i === 0
+      ? `${endDate.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })}`
+      : `${startDate.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })}`
 
-    data.push({
+    // Dodaj zakres dat dla tooltipa
+    const startLabel = startDate.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })
+    const endLabel = endDate.toLocaleDateString('pl-PL', { day: 'numeric', month: 'short' })
+    const dateRange = `${startLabel} - ${endLabel}`
+
+    result.push({
       date: label,
-      value: viewsCount
+      value: count,
+      dateRange: dateRange
     })
   }
 
-  return data
+  return result
 }
 
 export default async function DashboardPage() {
@@ -344,17 +359,17 @@ export default async function DashboardPage() {
                   </Button>
                 </Link>
                 <Link href="/posts">
-                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-sm bg-card text-foreground">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-accent h-12 text-sm bg-muted text-foreground">
                     Przeglądaj ogłoszenia
                   </Button>
                 </Link>
                 <Link href="/dashboard/profile">
-                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-sm bg-card text-foreground">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-accent h-12 text-sm bg-muted text-foreground">
                     Edytuj profil
                   </Button>
                 </Link>
                 <Link href="/dashboard/settings">
-                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-12 text-sm bg-card text-foreground">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-accent h-12 text-sm bg-muted text-foreground">
                     Ustawienia
                   </Button>
                 </Link>
@@ -485,17 +500,17 @@ export default async function DashboardPage() {
                   </Button>
                 </Link>
                 <Link href="/posts">
-                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-14 text-base bg-card text-foreground">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-accent h-14 text-base bg-muted text-foreground">
                     Przeglądaj ogłoszenia
                   </Button>
                 </Link>
                 <Link href="/dashboard/profile">
-                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-14 text-base bg-card text-foreground">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-accent h-14 text-base bg-muted text-foreground">
                     Edytuj profil
                   </Button>
                 </Link>
                 <Link href="/dashboard/settings">
-                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-muted h-14 text-base bg-card text-foreground">
+                  <Button variant="outline" className="w-full rounded-full border border-border hover:bg-accent h-14 text-base bg-muted text-foreground">
                     Ustawienia
                   </Button>
                 </Link>
@@ -508,7 +523,7 @@ export default async function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Views Chart */}
               <Card className="border border-border rounded-3xl bg-card">
-                <CardContent className="pt-6">
+                <CardContent className="pt-6 h-[450px]">
                   <ViewsChartWrapper
                     weeklyData={viewsChartData}
                     monthlyData={monthlyViewsChartData}

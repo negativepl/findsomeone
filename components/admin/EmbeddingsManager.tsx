@@ -44,7 +44,7 @@ export function EmbeddingsManager() {
   }
 
   return (
-    <Card className="border bg-card rounded-3xl flex-1 flex flex-col overflow-hidden">
+    <Card className="border bg-muted rounded-3xl flex-1 flex flex-col overflow-hidden">
       <div className="p-6">
         <h3 className="text-xl font-bold text-foreground mb-1">
           Semantic Search (AI Embeddings)
@@ -56,19 +56,19 @@ export function EmbeddingsManager() {
 
         {/* Info Cards */}
         <div className="grid md:grid-cols-3 gap-4">
-          <Card className="p-4 bg-muted border rounded-2xl">
+          <Card className="p-4 bg-accent border rounded-2xl">
             <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Model</h4>
             <p className="text-lg font-bold text-foreground">text-embedding-3-small</p>
             <p className="text-xs text-muted-foreground mt-1">1536 wymiarów, $0.02/1M tokenów</p>
           </Card>
 
-          <Card className="p-4 bg-muted border rounded-2xl">
+          <Card className="p-4 bg-accent border rounded-2xl">
             <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Funkcje</h4>
             <p className="text-lg font-bold text-foreground">Semantyczne wyszukiwanie</p>
             <p className="text-xs text-muted-foreground mt-1">Znajduje podobne znaczenia</p>
           </Card>
 
-          <Card className="p-4 bg-muted border rounded-2xl">
+          <Card className="p-4 bg-accent border rounded-2xl">
             <h4 className="font-semibold text-sm mb-2 text-muted-foreground">Koszt</h4>
             <p className="text-lg font-bold text-foreground">~$0.01-0.05</p>
             <p className="text-xs text-muted-foreground mt-1">za 100 postów</p>
@@ -103,7 +103,7 @@ export function EmbeddingsManager() {
       {/* Results */}
       {result && (
         <div className="px-6 pb-6">
-          <Card className="p-4 bg-muted/50 border rounded-2xl">
+          <Card className="p-4 bg-accent border rounded-2xl">
             <div className="flex items-center gap-2 mb-3">
               <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -132,7 +132,7 @@ export function EmbeddingsManager() {
       {/* Error */}
       {error && (
         <div className="px-6 pb-6">
-          <Card className="p-4 bg-muted/50 border rounded-2xl">
+          <Card className="p-4 bg-accent border rounded-2xl">
             <div className="flex items-center gap-2 mb-2">
               <svg className="w-5 h-5 text-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

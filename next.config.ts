@@ -69,7 +69,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https: http:",
               "font-src 'self' data: https://fonts.gstatic.com",
-              "connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com wss://*.supabase.co",
+              "connect-src 'self' https://*.supabase.co https://va.vercel-scripts.com wss://*.supabase.co https://nominatim.openstreetmap.org",
               "media-src 'self' https://*.supabase.co",
               "object-src 'none'",
               "base-uri 'self'",

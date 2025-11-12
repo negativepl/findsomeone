@@ -108,15 +108,15 @@ export default async function SettingsPage() {
           {/* Danger Zone */}
           <div>
             <div className="mb-4">
-              <h2 className="text-xl font-bold text-red-600 mb-1">Strefa zagrożenia</h2>
-              <p className="text-sm text-red-600 dark:text-red-400">
+              <h2 className="text-xl font-bold text-destructive mb-1">Strefa zagrożenia</h2>
+              <p className="text-sm text-destructive">
                 Nieodwracalne akcje - zachowaj ostrożność
               </p>
             </div>
-            <div className="flex flex-col gap-4 p-5 rounded-2xl bg-red-500/10 border border-red-500/20">
+            <div className="flex flex-col gap-4 p-5 rounded-2xl bg-destructive/10 border border-destructive/20">
               <div className="flex-1">
-                <p className="text-base font-semibold text-red-600 dark:text-red-400 mb-2">Usuń konto</p>
-                <p className="text-sm text-red-600 dark:text-red-400">
+                <p className="text-base font-semibold text-destructive mb-2">Usuń konto</p>
+                <p className="text-sm text-destructive">
                   Permanentnie usuń swoje konto i wszystkie dane. Ta akcja jest nieodwracalna.
                 </p>
               </div>
@@ -137,14 +137,14 @@ export default async function SettingsPage() {
             </CardHeader>
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
+                <div className="flex items-center justify-between p-5 rounded-2xl bg-muted">
                   <div className="flex-1">
                     <p className="text-base font-semibold text-foreground mb-1">Email</p>
                     <p className="text-sm text-muted-foreground">{user.email}</p>
                   </div>
                   <ChangeEmailDialog />
                 </div>
-                <div className="flex items-center justify-between p-5 rounded-2xl bg-background">
+                <div className="flex items-center justify-between p-5 rounded-2xl bg-muted">
                   <div className="flex-1">
                     <p className="text-base font-semibold text-foreground mb-1">Hasło</p>
                     <p className="text-sm text-muted-foreground">••••••••</p>
@@ -192,16 +192,16 @@ export default async function SettingsPage() {
           {/* Danger Zone */}
           <Card className="border border-border rounded-3xl bg-card shadow-sm mt-2">
             <CardHeader>
-              <CardTitle className="text-3xl font-bold text-red-600">Strefa zagrożenia</CardTitle>
-              <CardDescription className="text-base text-red-600 dark:text-red-400">
+              <CardTitle className="text-3xl font-bold text-destructive">Strefa zagrożenia</CardTitle>
+              <CardDescription className="text-base text-destructive">
                 Nieodwracalne akcje - zachowaj ostrożność
               </CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-red-500/10 border border-red-500/20">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-destructive/10 border border-destructive/20">
                 <div className="flex-1">
-                  <p className="text-lg font-semibold text-red-600 dark:text-red-400 mb-2">Usuń konto</p>
-                  <p className="text-sm text-red-600 dark:text-red-400">
+                  <p className="text-lg font-semibold text-destructive mb-2">Usuń konto</p>
+                  <p className="text-sm text-destructive">
                     Permanentnie usuń swoje konto i wszystkie dane. Ta akcja jest nieodwracalna.
                   </p>
                 </div>

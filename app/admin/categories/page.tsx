@@ -59,7 +59,7 @@ export default function CategoriesAdminPage() {
             />
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
           {isLoading ? (
             <div className="flex-1 flex items-center justify-center">
               <div className="text-muted-foreground">Ładowanie kategorii...</div>
@@ -68,7 +68,7 @@ export default function CategoriesAdminPage() {
             <>
               {/* Search Bar */}
               <div className="mb-6 flex-shrink-0">
-                <Card className="border bg-card">
+                <Card className="border bg-muted">
                   <CardContent className="p-4">
                     <div className="relative">
                       <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -77,7 +77,7 @@ export default function CategoriesAdminPage() {
                         placeholder="Szukaj kategorii..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-12 pr-10 h-12 text-base border border-input focus:border-ring bg-background"
+                        className="pl-12 pr-10 h-12 text-base border border-input focus:border-ring bg-accent"
                       />
                       {searchQuery && (
                         <button
@@ -93,7 +93,7 @@ export default function CategoriesAdminPage() {
               </div>
 
               {/* Categories List */}
-              <Card className="border bg-card flex-1 flex flex-col overflow-hidden">
+              <Card className="border bg-muted flex-1 flex flex-col overflow-hidden">
                 <CardContent className="p-6 flex-1 overflow-auto">
                   <CategoryList
                     categories={categories}

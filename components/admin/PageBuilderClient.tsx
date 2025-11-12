@@ -145,7 +145,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
     return (
       <div className="space-y-6">
         {/* Header with back button */}
-        <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
+        <div className="bg-muted border border-border rounded-3xl shadow-sm overflow-hidden">
           <div className="px-6 py-5 border-b border-border bg-gradient-to-r from-brand/5 to-transparent">
             <button
               onClick={() => setEditingSection(null)}
@@ -163,7 +163,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
                   {SECTION_TYPES[editingSection.type]?.label || editingSection.type}
                 </p>
               </div>
-              <div className="px-4 py-2 bg-background rounded-full border border-border">
+              <div className="px-4 py-2 bg-accent rounded-full border border-border">
                 <span className="text-sm font-medium text-brand">
                   {SECTION_TYPES[editingSection.type]?.label}
                 </span>
@@ -173,7 +173,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
         </div>
 
         {/* Edit form */}
-        <div className="bg-card border border-border rounded-3xl p-8 shadow-sm">
+        <div className="bg-muted border border-border rounded-3xl p-8 shadow-sm">
           <SectionEditor
             section={editingSection}
             categories={categories}
@@ -189,7 +189,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-muted border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -235,7 +235,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
       </div>
 
       {/* Sections list with drag & drop */}
-      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-muted border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="p-6">
           <h2 className="text-xl font-bold text-foreground mb-1">Sekcje strony głównej</h2>
           <p className="text-sm text-muted-foreground mb-6">Przeciągnij sekcje aby zmienić kolejność</p>
@@ -256,7 +256,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
               const metadata = SECTION_TYPES[section.type]
               const title = section.title || metadata?.label || section.type
               return (
-                <div key={section.id} className="border rounded-2xl p-6 border-border bg-background">
+                <div key={section.id} className="border rounded-2xl p-6 border-border bg-accent">
                   <div className="text-lg font-bold text-foreground">{title}</div>
                 </div>
               )

@@ -77,7 +77,7 @@ function SortableCategory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl bg-background border hover:bg-accent/30 flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
+      className={`group relative rounded-xl bg-accent border hover:bg-accent/50 flex items-center gap-4 p-4 cursor-pointer ${isDragging ? '' : 'transition-all'}`}
       onClick={onClick}
     >
       {/* Drag Handle */}
@@ -179,7 +179,7 @@ function SortableSubcategory({
     <div
       ref={setNodeRef}
       style={style}
-      className={`group relative rounded-xl bg-background border hover:bg-accent/30 flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
+      className={`group relative rounded-xl bg-accent border hover:bg-accent/50 flex items-center gap-4 p-4 ${hasChildren ? 'cursor-pointer' : ''} ${isDragging ? '' : 'transition-all'}`}
       onClick={hasChildren ? onClick : undefined}
     >
       {/* Drag Handle */}
@@ -454,7 +454,7 @@ export function CategoryList({ categories: initialCategories, onCategoriesRefres
                 return (
                   <div
                     key={cat.id}
-                    className="group relative rounded-xl bg-background border hover:bg-accent/30 flex items-center gap-4 p-4 transition-all"
+                    className="group relative rounded-xl bg-accent border hover:bg-accent/50 flex items-center gap-4 p-4 transition-all"
                   >
                     {cat.icon && (
                       <div className="w-12 h-12 rounded-lg bg-muted group-hover:bg-muted flex items-center justify-center shrink-0 transition-colors">

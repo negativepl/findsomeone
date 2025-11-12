@@ -216,7 +216,7 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 w-64 bg-background border border-border z-50 transition-transform duration-300 lg:rounded-xl lg:m-2 ${
+        className={`fixed top-0 left-0 bottom-0 w-64 bg-card border border-border z-50 transition-transform duration-300 lg:rounded-xl lg:m-2 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >

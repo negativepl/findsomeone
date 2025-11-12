@@ -135,12 +135,12 @@ export function ContentBotSettings({ onSaved }: ContentBotSettingsProps) {
   if (isLoading) {
     return (
       <>
-        <div className="border bg-background rounded-3xl overflow-hidden">
+        <div className="border bg-muted rounded-3xl overflow-hidden">
           <div className="px-6 py-6 flex items-center justify-center h-64">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
         </div>
-        <div className="border bg-background rounded-3xl overflow-hidden">
+        <div className="border bg-muted rounded-3xl overflow-hidden">
           <div className="px-6 py-6 flex items-center justify-center h-64">
             <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
           </div>
@@ -152,7 +152,7 @@ export function ContentBotSettings({ onSaved }: ContentBotSettingsProps) {
   return (
     <>
       {/* Podstawowe - Left Card */}
-      <div className="border bg-background rounded-3xl overflow-hidden flex flex-col max-h-[calc(100vh-12rem)]">
+      <div className="border bg-muted rounded-3xl overflow-hidden flex flex-col max-h-[calc(100vh-12rem)]">
         <div className="px-6 py-6 flex-1 overflow-y-auto">
           <div className="mb-6 flex items-center justify-between">
             <div>
@@ -164,7 +164,7 @@ export function ContentBotSettings({ onSaved }: ContentBotSettingsProps) {
               disabled={isSaving}
               variant="outline"
               size="sm"
-              className="rounded-full text-xs border-border hover:bg-muted gap-2"
+              className="rounded-full text-xs border-border hover:bg-accent gap-2"
             >
               {isSaving ? (
                 <>
@@ -272,7 +272,7 @@ export function ContentBotSettings({ onSaved }: ContentBotSettingsProps) {
       </div>
 
       {/* Prompty - Right Card */}
-      <div className="border bg-background rounded-3xl overflow-hidden flex flex-col max-h-[calc(100vh-12rem)]">
+      <div className="border bg-muted rounded-3xl overflow-hidden flex flex-col max-h-[calc(100vh-12rem)]">
         <div className="px-6 py-6 flex-1 overflow-y-auto">
           <div className="mb-6 flex items-center justify-between">
             <div>
@@ -284,7 +284,7 @@ export function ContentBotSettings({ onSaved }: ContentBotSettingsProps) {
               disabled={isSaving}
               variant="outline"
               size="sm"
-              className="rounded-full text-xs border-border hover:bg-muted gap-2"
+              className="rounded-full text-xs border-border hover:bg-accent gap-2"
             >
               {isSaving ? (
                 <>

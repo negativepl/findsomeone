@@ -58,8 +58,6 @@ export function NavbarSearchBar() {
   const hasFetchedTrendingRef = useRef(false)
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
   const [recentSearches, setRecentSearches] = useState<string[]>([])
-  const locationOpenTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
-  const locationCloseTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   // Animated placeholder state
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
@@ -462,64 +460,16 @@ export function NavbarSearchBar() {
       if (cityDebounceTimerRef.current) {
         clearTimeout(cityDebounceTimerRef.current)
       }
-      if (locationOpenTimeoutRef.current) {
-        clearTimeout(locationOpenTimeoutRef.current)
-      }
-      if (locationCloseTimeoutRef.current) {
-        clearTimeout(locationCloseTimeoutRef.current)
-      }
     }
   }, [])
 
-  // Handle location button hover
-  const handleLocationButtonMouseEnter = () => {
-    // Clear any pending close timeout
-    if (locationCloseTimeoutRef.current) {
-      clearTimeout(locationCloseTimeoutRef.current)
-      locationCloseTimeoutRef.current = undefined
-    }
-
-    // Open menu on hover with slight delay
+  // Handle location button click
+  const toggleLocationDropdown = () => {
+    setIsCityDropdownOpen(!isCityDropdownOpen)
     if (!isCityDropdownOpen) {
-      locationOpenTimeoutRef.current = setTimeout(() => {
-        setIsCityDropdownOpen(true)
-        handleCityFocus()
-        setIsOpen(false) // Close autocomplete
-      }, 150) // Small delay to prevent accidental opens
+      handleCityFocus()
+      setIsOpen(false) // Close autocomplete
     }
-  }
-
-  const handleLocationButtonMouseLeave = () => {
-    // Cancel opening if hovering stopped before timeout completed
-    if (locationOpenTimeoutRef.current) {
-      clearTimeout(locationOpenTimeoutRef.current)
-      locationOpenTimeoutRef.current = undefined
-    }
-
-    // Start close timer if menu is open
-    if (isCityDropdownOpen) {
-      locationCloseTimeoutRef.current = setTimeout(() => {
-        setIsCityDropdownOpen(false)
-      }, 300) // Delay to allow moving to menu
-    }
-  }
-
-  const handleLocationMenuMouseEnter = () => {
-    // Cancel closing if mouse enters the menu
-    if (locationCloseTimeoutRef.current) {
-      clearTimeout(locationCloseTimeoutRef.current)
-      locationCloseTimeoutRef.current = undefined
-    }
-  }
-
-  const handleLocationMenuMouseLeave = () => {
-    // Set a delay before closing
-    if (locationCloseTimeoutRef.current) {
-      clearTimeout(locationCloseTimeoutRef.current)
-    }
-    locationCloseTimeoutRef.current = setTimeout(() => {
-      setIsCityDropdownOpen(false)
-    }, 300) // Delay to allow returning to button
   }
 
   // Keyboard navigation
@@ -885,8 +835,7 @@ export function NavbarSearchBar() {
       <div ref={cityDropdownRef} className="relative">
         <button
           type="button"
-          onMouseEnter={handleLocationButtonMouseEnter}
-          onMouseLeave={handleLocationButtonMouseLeave}
+          onClick={toggleLocationDropdown}
           className="flex items-center gap-2 bg-muted hover:bg-accent hover:border-foreground/20 rounded-full h-10 transition-all flex-shrink-0 px-4 border border-border"
           aria-expanded={isCityDropdownOpen}
         >
@@ -937,8 +886,6 @@ export function NavbarSearchBar() {
         {/* City Dropdown */}
         {isCityDropdownOpen && (
           <Card
-            onMouseEnter={handleLocationMenuMouseEnter}
-            onMouseLeave={handleLocationMenuMouseLeave}
             className="absolute top-full right-0 mt-2 w-80 border border-border rounded-2xl bg-card shadow-lg max-h-[400px] z-50 flex flex-col overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200"
           >
             <div className="p-3 border-b border-border">

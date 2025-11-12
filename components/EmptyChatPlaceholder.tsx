@@ -28,11 +28,11 @@ export function EmptyChatPlaceholder({ userName, onQuickMessageSelect }: EmptyCh
         </svg>
       </div>
 
-      <h3 className="text-xl font-semibold text-black mb-2">
+      <h3 className="text-xl font-semibold text-foreground mb-2">
         Rozpocznij rozmowę
       </h3>
 
-      <p className="text-black/60 text-center max-w-sm">
+      <p className="text-muted-foreground text-center max-w-sm">
         {userName
           ? `To początek Twojej rozmowy z ${userName}. Wyślij pierwszą wiadomość!`
           : 'To początek Twojej rozmowy. Wyślij pierwszą wiadomość!'}
@@ -43,9 +43,9 @@ export function EmptyChatPlaceholder({ userName, onQuickMessageSelect }: EmptyCh
           <button
             key={index}
             onClick={() => onQuickMessageSelect?.(message)}
-            className="bg-white border border-black/10 rounded-2xl p-4 hover:border-brand/30 hover:bg-brand/5 transition-all cursor-pointer text-left"
+            className="bg-muted border border-border rounded-2xl p-4 hover:border-brand/30 hover:bg-accent transition-all cursor-pointer text-left"
           >
-            <p className="text-sm text-black/70">{message}</p>
+            <p className="text-sm text-muted-foreground">{message}</p>
           </button>
         ))}
       </div>

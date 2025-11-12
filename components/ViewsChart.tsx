@@ -5,8 +5,8 @@ import { SimpleLineChart } from './SimpleLineChart'
 import { Button } from './ui/button'
 
 interface ViewsChartProps {
-  weeklyData?: { date: string; value: number }[]
-  monthlyData?: { date: string; value: number }[]
+  weeklyData?: { date: string; value: number; dateRange?: string }[]
+  monthlyData?: { date: string; value: number; dateRange?: string }[]
   totalWeeklyViews?: number
   totalMonthlyViews?: number
 }
@@ -36,7 +36,7 @@ export function ViewsChart({
           variant="outline"
           size="sm"
           onClick={handleViewChange}
-          className={`rounded-full border border-border hover:bg-muted bg-card text-foreground ml-auto transition-all duration-300 ${
+          className={`rounded-full border border-border hover:bg-accent bg-muted text-foreground ml-auto transition-all duration-300 ${
             isAnimating ? 'scale-95 opacity-70' : 'scale-100 opacity-100 hover:scale-105'
           }`}
         >

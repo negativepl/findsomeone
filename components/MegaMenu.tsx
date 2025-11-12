@@ -22,7 +22,6 @@ export function MegaMenu() {
   const [categories, setCategories] = useState<Category[]>([])
   const [hoveredPath, setHoveredPath] = useState<string[]>([])
   const containerRef = useRef<HTMLDivElement>(null)
-  const closeTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -63,27 +62,27 @@ export function MegaMenu() {
     fetchCategories()
   }, [])
 
-  const handleMouseEnter = () => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current)
-    }
-    setIsOpen(true)
+  const toggleMenu = () => {
+    setIsOpen(!isOpen)
   }
 
-  const handleMouseLeave = () => {
-    closeTimeoutRef.current = setTimeout(() => {
-      setIsOpen(false)
-      setHoveredPath([])
-    }, 200)
-  }
-
+  // Close menu when clicking outside
   useEffect(() => {
-    return () => {
-      if (closeTimeoutRef.current) {
-        clearTimeout(closeTimeoutRef.current)
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+        setHoveredPath([])
       }
     }
-  }, [])
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isOpen])
 
   const handleCategoryHover = (categoryId: string, level: number) => {
     setHoveredPath(prev => [...prev.slice(0, level), categoryId])
@@ -144,10 +143,9 @@ export function MegaMenu() {
     <div
       className="relative"
       ref={containerRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       <button
+        onClick={toggleMenu}
         className="flex items-center justify-center h-10 w-10 rounded-full bg-brand hover:bg-brand/90 transition-colors"
         aria-label="Menu kategorii"
         aria-expanded={isOpen}

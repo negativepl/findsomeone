@@ -350,7 +350,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full rounded-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 h-12 text-base font-semibold"
+                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-12 text-base font-semibold"
                 disabled={loading}
               >
                 {loading ? 'Logowanie...' : 'Zaloguj się'}
@@ -368,8 +368,7 @@ export default function LoginPage() {
 
             <Button
               type="button"
-              variant="outline"
-              className="w-full rounded-full h-12"
+              className="w-full rounded-full h-12 border border-border bg-muted hover:bg-accent text-foreground"
               onClick={handleGoogleLogin}
             >
               <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">

@@ -375,7 +375,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'search' && (
         <>
       {/* Synonym Generation Settings */}
-      <Card className="border bg-card rounded-3xl overflow-hidden">
+      <Card className="border bg-muted rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -490,7 +490,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'categories' && (
         <>
       {/* Category Synonym Generation Settings */}
-      <Card className="border bg-card rounded-3xl overflow-hidden">
+      <Card className="border bg-muted rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -605,7 +605,7 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'seo' && (
         <>
       {/* SEO Description Generation Settings */}
-      <Card className="border bg-card rounded-3xl overflow-hidden">
+      <Card className="border bg-muted rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>

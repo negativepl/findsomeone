@@ -118,7 +118,6 @@ function MenuItemWithIcon({ href, icon, iconLight, iconDark, fallbackIcon, child
 export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const router = useRouter()
 
   // Preload LordIcon animations on mount
@@ -187,38 +186,10 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
     router.refresh()
   }
 
-  const handleMouseEnter = () => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current)
-      closeTimeoutRef.current = null
-    }
-    setIsOpen(true)
-  }
-
-  const handleMouseLeave = () => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current)
-    }
-    closeTimeoutRef.current = setTimeout(() => {
-      setIsOpen(false)
-    }, 200) // 200ms delay before closing
-  }
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (closeTimeoutRef.current) {
-        clearTimeout(closeTimeoutRef.current)
-      }
-    }
-  }, [])
-
   return (
     <div
       ref={menuRef}
       className="relative"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       <button
         onClick={() => setIsOpen(!isOpen)}

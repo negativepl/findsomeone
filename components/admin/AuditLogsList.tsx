@@ -28,7 +28,7 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
 
   if (logs.length === 0) {
     return (
-      <Card className="border bg-background flex-1 flex items-center justify-center">
+      <Card className="border bg-muted flex-1 flex items-center justify-center">
         <div className="text-center py-12">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
             <Check className="w-10 h-10 text-muted-foreground" />
@@ -53,14 +53,14 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
             {logs.map((log) => (
               <div
                 key={log.log_id}
-                className="p-6 hover:bg-muted transition-colors cursor-pointer"
+                className="p-6 hover:bg-accent transition-colors cursor-pointer"
                 onClick={() => setSelectedLog(log)}
               >
                 <div className="flex items-start gap-4">
                   {/* Icon */}
                   <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                      <Eye className="w-6 h-6 text-blue-600" />
+                    <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center">
+                      <Eye className="w-6 h-6 text-foreground" />
                     </div>
                   </div>
 
@@ -87,11 +87,11 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
                     </div>
 
                     {/* Reason */}
-                    <div className="bg-blue-50 rounded-2xl p-3 mb-2">
-                      <p className="text-sm font-semibold text-blue-900 mb-1">
+                    <div className="bg-accent rounded-2xl p-3 mb-2">
+                      <p className="text-sm font-semibold text-foreground mb-1">
                         Powód dostępu:
                       </p>
-                      <p className="text-sm text-blue-700">
+                      <p className="text-sm text-muted-foreground">
                         {log.reason}
                       </p>
                     </div>
@@ -103,7 +103,7 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
                         <strong>{log.message_sender_name}</strong> → <strong>{log.message_receiver_name}</strong>
                       </span>
                       {log.report_id && (
-                        <span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-semibold">
+                        <span className="ml-2 px-2 py-0.5 bg-destructive/10 text-destructive rounded-full text-xs font-semibold">
                           Ze zgłoszenia
                         </span>
                       )}
@@ -121,8 +121,8 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
         {selectedLog ? (
           <Card className="border border-border rounded-3xl bg-background p-6">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                <Shield className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 rounded-full bg-accent flex items-center justify-center">
+                <Shield className="w-6 h-6 text-foreground" />
               </div>
               <div>
                 <h2 className="text-xl font-bold text-foreground">
@@ -167,8 +167,8 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
                   <AlertCircle className="w-4 h-4" />
                   Powód dostępu
                 </label>
-                <div className="bg-blue-50 rounded-2xl p-4 mt-1">
-                  <p className="text-blue-900">{selectedLog.reason}</p>
+                <div className="bg-accent rounded-2xl p-4 mt-1">
+                  <p className="text-foreground">{selectedLog.reason}</p>
                 </div>
               </div>
 
@@ -194,9 +194,9 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
                     <AlertCircle className="w-4 h-4" />
                     Typ dostępu
                   </label>
-                  <div className="px-3 py-2 bg-red-50 rounded-2xl inline-flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4 text-red-600" />
-                    <span className="text-red-700 font-semibold text-sm">
+                  <div className="px-3 py-2 bg-destructive/10 rounded-2xl inline-flex items-center gap-2">
+                    <AlertCircle className="w-4 h-4 text-destructive" />
+                    <span className="text-destructive font-semibold text-sm">
                       Dostęp ze zgłoszenia użytkownika
                     </span>
                   </div>
@@ -206,14 +206,14 @@ export function AuditLogsList({ initialLogs }: AuditLogsListProps) {
 
             {/* RODO Info */}
             <div className="mt-6 pt-6 border-t border-border">
-              <div className="bg-amber-50 rounded-2xl p-4">
+              <div className="bg-accent rounded-2xl p-4">
                 <div className="flex items-start gap-3">
-                  <Shield className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+                  <Shield className="w-5 h-5 text-foreground flex-shrink-0 mt-0.5" />
                   <div>
-                    <p className="text-sm font-semibold text-amber-900 mb-1">
+                    <p className="text-sm font-semibold text-foreground mb-1">
                       Informacja RODO
                     </p>
-                    <p className="text-xs text-amber-800">
+                    <p className="text-xs text-muted-foreground">
                       Ten log jest przechowywany przez 2 lata zgodnie z wymogami RODO.
                       Użytkownicy mają prawo zażądać informacji o dostępach do swoich wiadomości.
                     </p>

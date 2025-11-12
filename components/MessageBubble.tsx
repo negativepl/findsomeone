@@ -76,7 +76,7 @@ export function MessageBubble({
           className={`rounded-2xl px-4 py-3 ${
             isOwn
               ? 'bg-brand text-brand-foreground rounded-tr-sm'
-              : 'bg-card text-foreground border border-border rounded-tl-sm'
+              : 'bg-muted text-foreground border border-border rounded-tl-sm'
           }`}
         >
           <p className="text-sm leading-relaxed break-words">{content}</p>

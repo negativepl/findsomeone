@@ -27,7 +27,7 @@ export default async function ChatAssistantPage() {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
           <ChatAssistantManager initialSettings={settings} />
         </CardContent>
       </Card>

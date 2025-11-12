@@ -53,7 +53,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
 
   if (users.length === 0) {
     return (
-      <Card className="border bg-card flex-1 flex items-center justify-center">
+      <Card className="border bg-muted flex-1 flex items-center justify-center">
         <div className="text-center py-12">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
             <Check className="w-10 h-10 text-muted-foreground" />
@@ -73,12 +73,12 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
     <div className="grid lg:grid-cols-[1fr_400px] gap-6 flex-1 overflow-hidden">
       {/* Users List */}
       <div>
-        <Card className="border bg-card rounded-3xl overflow-hidden">
+        <Card className="border bg-muted rounded-3xl overflow-hidden">
           <div className="divide-y divide-border">
             {users.map((user) => (
               <div
                 key={user.id}
-                className="p-6 hover:bg-muted transition-colors cursor-pointer"
+                className="p-6 hover:bg-accent transition-colors cursor-pointer"
                 onClick={() => setSelectedUser(user)}
               >
                 <div className="flex items-start gap-4">
@@ -139,7 +139,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
       {/* Details Panel */}
       <div className="lg:sticky lg:top-6 lg:self-start">
         {selectedUser ? (
-          <Card className="border bg-card rounded-3xl p-6">
+          <Card className="border bg-muted rounded-3xl p-6">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
                 <Ban className="w-6 h-6 text-red-600" />
@@ -233,7 +233,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
                     <textarea
                       value={unbanReason}
                       onChange={(e) => setUnbanReason(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl border border-input bg-background text-foreground focus:outline-none focus:border-ring resize-none"
+                      className="w-full px-4 py-3 rounded-2xl border border-input bg-muted text-foreground focus:outline-none focus:border-ring resize-none"
                       rows={3}
                       placeholder="Np. Apelacja przyjęta, zakończenie okresu kary, błędny ban..."
                       disabled={isProcessing}
@@ -250,7 +250,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
                         setUnbanReason('')
                       }}
                       disabled={isProcessing}
-                      className="flex-1 px-6 py-3 rounded-full border border-border hover:bg-muted transition-colors font-semibold text-foreground"
+                      className="flex-1 px-6 py-3 rounded-full border border-border hover:bg-accent transition-colors font-semibold text-foreground"
                     >
                       Anuluj
                     </button>
@@ -267,7 +267,7 @@ export function BannedUsersList({ initialUsers }: BannedUsersListProps) {
             )}
           </Card>
         ) : (
-          <Card className="border bg-card rounded-3xl p-12">
+          <Card className="border bg-muted rounded-3xl p-12">
             <div className="text-center">
               <Ban className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">

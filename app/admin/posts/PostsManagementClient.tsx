@@ -526,7 +526,7 @@ export function PostsManagementClient() {
       {/* Search & Filters */}
       <div className="mb-6 space-y-4 flex-shrink-0">
         {/* Search Bar - Full Width */}
-        <Card className="border bg-card">
+        <Card className="border bg-muted">
           <CardContent className="p-4">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -534,7 +534,7 @@ export function PostsManagementClient() {
                 placeholder="Szukaj po tytule, opisie, kategorii, użytkowniku, mieście..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-10 h-12 text-base border border-input focus:border-ring bg-background"
+                className="pl-12 pr-10 h-12 text-base border border-input focus:border-ring bg-muted"
               />
               {searchQuery && (
                 <button
@@ -549,7 +549,7 @@ export function PostsManagementClient() {
         </Card>
 
         {/* Filters & Actions */}
-        <Card className="border bg-card">
+        <Card className="border bg-muted">
           <CardContent className="p-4">
             <div className="flex flex-col gap-4">
               {/* Row 1: Filters */}
@@ -558,7 +558,7 @@ export function PostsManagementClient() {
 
                 <div className="flex flex-wrap items-center gap-2 flex-1">
                   <Select value={statusFilter} onValueChange={setStatusFilter}>
-                    <SelectTrigger className="h-9 w-[180px] border border-input text-sm bg-background hover:border-border transition-colors">
+                    <SelectTrigger className="h-9 w-[180px] border border-input text-sm bg-muted hover:bg-accent transition-colors">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -571,7 +571,7 @@ export function PostsManagementClient() {
                   </Select>
 
                   <Select value={aiFilter} onValueChange={setAiFilter}>
-                    <SelectTrigger className="h-9 w-[180px] border border-input text-sm bg-background hover:border-border transition-colors">
+                    <SelectTrigger className="h-9 w-[180px] border border-input text-sm bg-muted hover:bg-accent transition-colors">
                       <SelectValue placeholder="Źródło" />
                     </SelectTrigger>
                     <SelectContent>
@@ -587,7 +587,7 @@ export function PostsManagementClient() {
                         variant="outline"
                         role="combobox"
                         aria-expanded={openCityPopover}
-                        className="h-9 w-[180px] justify-between border border-input text-sm bg-background hover:border-border transition-colors font-normal"
+                        className="h-9 w-[180px] justify-between border border-input text-sm bg-muted hover:bg-accent transition-colors font-normal"
                       >
                         {cityFilter === 'all' ? 'Miasto' : cityFilter}
                         <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -632,7 +632,7 @@ export function PostsManagementClient() {
                       value={dateFrom}
                       onChange={(e) => setDateFrom(e.target.value)}
                       placeholder="Od"
-                      className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors [color-scheme:light] dark:[color-scheme:dark]"
+                      className="h-9 w-[160px] border border-input text-sm bg-muted hover:bg-accent transition-colors [color-scheme:light] dark:[color-scheme:dark]"
                     />
                     <span className="text-muted-foreground">-</span>
                     <Input
@@ -640,7 +640,7 @@ export function PostsManagementClient() {
                       value={dateTo}
                       onChange={(e) => setDateTo(e.target.value)}
                       placeholder="Do"
-                      className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors [color-scheme:light] dark:[color-scheme:dark]"
+                      className="h-9 w-[160px] border border-input text-sm bg-muted hover:bg-accent transition-colors [color-scheme:light] dark:[color-scheme:dark]"
                     />
                   </div>
                 </div>
@@ -672,7 +672,7 @@ export function PostsManagementClient() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-muted-foreground whitespace-nowrap">Na stronę:</span>
                   <Select value={postsPerPage.toString()} onValueChange={(val) => setPostsPerPage(Number(val))}>
-                    <SelectTrigger className="h-9 w-[90px] border border-input text-sm bg-background hover:border-border transition-colors">
+                    <SelectTrigger className="h-9 w-[90px] border border-input text-sm bg-muted hover:bg-accent transition-colors">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -707,7 +707,7 @@ export function PostsManagementClient() {
                 <Button
                   variant="outline"
                   onClick={() => setShowBulkCategorySelector(true)}
-                  className="h-10 gap-2 bg-background border border-input hover:bg-accent hover:border-border"
+                  className="h-10 gap-2 bg-muted border border-input hover:bg-accent hover:border-border"
                 >
                   <FolderTree className="h-4 w-4" />
                   Przenieś
@@ -715,7 +715,7 @@ export function PostsManagementClient() {
 
                 <div className="flex items-center gap-2">
                   <Select value={bulkStatusValue} onValueChange={setBulkStatusValue}>
-                    <SelectTrigger className="w-[140px] !h-10 bg-background border border-input">
+                    <SelectTrigger className="w-[140px] !h-10 bg-muted border border-input">
                       <SelectValue placeholder="Status" />
                     </SelectTrigger>
                     <SelectContent>
@@ -742,7 +742,7 @@ export function PostsManagementClient() {
                 <Button
                   variant="outline"
                   onClick={handleBulkDelete}
-                  className="h-10 px-4 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 bg-background"
+                  className="h-10 px-4 text-red-600 hover:text-red-700 hover:bg-red-50 border border-red-200 bg-muted"
                 >
                   Usuń
                 </Button>
@@ -766,7 +766,7 @@ export function PostsManagementClient() {
       )}
 
       {/* Posts table */}
-      <Card className="border bg-card flex-1 flex flex-col overflow-hidden">
+      <Card className="border bg-muted flex-1 flex flex-col overflow-hidden">
         <CardContent className="p-0 flex-1 overflow-auto">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -800,7 +800,7 @@ export function PostsManagementClient() {
                         <DropdownMenuItem onClick={selectAllFiltered} className="py-2.5 cursor-pointer">
                           <div className="mr-3 h-4 w-4 flex-shrink-0 flex items-center justify-center relative">
                             <CheckSquare className="h-3.5 w-3.5 absolute -left-0.5 -top-0.5 opacity-40" />
-                            <div className="absolute left-0.5 top-0.5 bg-background">
+                            <div className="absolute left-0.5 top-0.5 bg-muted">
                               <CheckSquare className="h-3.5 w-3.5" />
                             </div>
                           </div>
@@ -922,7 +922,7 @@ export function PostsManagementClient() {
                           <Button
                             variant="ghost"
                             size="sm"
-                            className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all"
+                            className="h-9 w-9 p-0 rounded-lg bg-accent border border-border hover:bg-accent/80 flex items-center justify-center transition-all"
                             title="Zobacz ogłoszenie"
                           >
                             <ExternalLink className="h-4 w-4 text-foreground" />
@@ -932,7 +932,7 @@ export function PostsManagementClient() {
                           variant="ghost"
                           size="sm"
                           onClick={() => openEditModal(post)}
-                          className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all"
+                          className="h-9 w-9 p-0 rounded-lg bg-accent border border-border hover:bg-accent/80 flex items-center justify-center transition-all"
                           title="Edytuj"
                         >
                           <Edit2 className="h-4 w-4 text-foreground" />

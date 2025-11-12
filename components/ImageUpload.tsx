@@ -69,7 +69,7 @@ function SortableThumbnail({
       style={style}
       {...attributes}
       {...listeners}
-      className="relative group rounded-2xl bg-card border border-border h-40 w-40 md:h-32 md:w-32 cursor-grab active:cursor-grabbing"
+      className="relative group rounded-2xl bg-muted border border-border h-40 w-40 md:h-32 md:w-32 cursor-grab active:cursor-grabbing"
     >
       <div className="absolute inset-0 rounded-2xl overflow-hidden">
         <Image
@@ -80,7 +80,7 @@ function SortableThumbnail({
           style={{ transform: `rotate(${imageRotations[imageUrl] || 0}deg)` }}
         />
         {index === 0 && (
-          <div className="absolute bottom-0 left-0 right-0 bg-muted0 backdrop-blur-sm text-white text-[11px] font-bold py-1 px-1 text-center">
+          <div className="absolute bottom-0 left-0 right-0 bg-brand backdrop-blur-sm text-white text-[11px] font-bold py-1 px-1 text-center">
             MINIATURKA
           </div>
         )}
@@ -93,7 +93,7 @@ function SortableThumbnail({
             e.stopPropagation()
             onRotate(imageUrl)
           }}
-          className="absolute top-1 left-1 p-1 bg-card text-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 z-20 shadow-md"
+          className="absolute top-1 left-1 p-1 bg-muted text-foreground rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-100 z-20 shadow-md"
           aria-label={`Obróć zdjęcie ${index + 1}`}
         >
           <RotateCw className="w-3 h-3" aria-hidden="true" />
@@ -295,7 +295,7 @@ export function ImageUpload({
             <label
               key={`empty-${index}`}
               htmlFor="image-upload"
-              className="rounded-2xl border border-dashed border-border hover:border-border bg-card hover:bg-muted cursor-pointer transition-colors flex items-center justify-center h-40 w-40 md:h-32 md:w-32"
+              className="rounded-2xl border border-dashed border-border hover:border-border bg-muted hover:bg-accent cursor-pointer transition-colors flex items-center justify-center h-40 w-40 md:h-32 md:w-32"
               aria-label={`Dodaj zdjęcie ${images.length + index + 1}`}
             >
               {uploading && index === 0 ? (

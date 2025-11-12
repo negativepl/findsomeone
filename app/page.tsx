@@ -62,6 +62,7 @@ export default async function Home() {
         `)
         .eq('status', 'active')
         .eq('is_deleted', false)
+        .eq('moderation_status', 'approved')
         .limit(limit)
 
       // Apply sorting

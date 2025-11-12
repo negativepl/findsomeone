@@ -161,7 +161,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
   return (
     <div className="space-y-6 flex-1 flex flex-col overflow-hidden">
       {/* Search */}
-      <Card className="border bg-card flex-shrink-0">
+      <Card className="border bg-muted flex-shrink-0">
         <CardContent className="p-4">
           <div className="relative">
             <svg
@@ -177,7 +177,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
               placeholder="Szukaj użytkownika po nazwie, email lub ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 pr-10 h-12 text-base border border-input focus:border-ring bg-background"
+              className="pl-12 pr-10 h-12 text-base border border-input focus:border-ring bg-muted"
             />
             {searchQuery && (
               <button
@@ -194,7 +194,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
       </Card>
 
       {/* Users Table */}
-      <Card className="border bg-card flex-1 flex flex-col overflow-hidden">
+      <Card className="border bg-muted flex-1 flex flex-col overflow-hidden">
         <CardContent className="p-0 flex-1 overflow-auto">
           <div className="overflow-x-auto h-full">
             <table className="w-full">
@@ -312,7 +312,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               size="sm"
                               onClick={() => unbanUser(user.id)}
                               disabled={loading === user.id}
-                              className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted transition-all"
+                              className="h-9 w-9 p-0 rounded-lg bg-accent border border-border hover:bg-accent/80 transition-all"
                               title="Odbanuj"
                             >
                               <Shield className="h-4 w-4 text-foreground" />
@@ -323,7 +323,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                               size="sm"
                               onClick={() => openBanDialog(user)}
                               disabled={loading === user.id}
-                              className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted transition-all"
+                              className="h-9 w-9 p-0 rounded-lg bg-accent border border-border hover:bg-accent/80 transition-all"
                               title="Zbanuj"
                             >
                               <Ban className="h-4 w-4 text-foreground" />
@@ -334,7 +334,7 @@ export function UsersManager({ initialUsers }: UsersManagerProps) {
                             size="sm"
                             onClick={() => deleteUser(user.id)}
                             disabled={loading === user.id}
-                            className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted transition-all"
+                            className="h-9 w-9 p-0 rounded-lg bg-accent border border-border hover:bg-accent/80 transition-all"
                             title="Usuń"
                           >
                             <Trash2 className="h-4 w-4 text-foreground" />

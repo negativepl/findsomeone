@@ -115,7 +115,7 @@ export default async function CategoryPage({
   const { data: postCounts } = await supabase
     .from('posts')
     .select('category_id')
-    .eq('status', 'active')
+    .eq('status', 'active').eq('moderation_status', 'approved')
 
   // Create a map of category_id -> count
   const countMap = new Map<string, number>()
@@ -184,7 +184,7 @@ export default async function CategoryPage({
   const { count: totalCount } = await supabase
     .from('posts')
     .select('*', { count: 'exact', head: true })
-    .eq('status', 'active')
+    .eq('status', 'active').eq('moderation_status', 'approved')
     .in('category_id', allCategoryIds)
 
   // Fetch posts
@@ -203,7 +203,7 @@ export default async function CategoryPage({
         slug
       )
     `)
-    .eq('status', 'active')
+    .eq('status', 'active').eq('moderation_status', 'approved')
     .in('category_id', allCategoryIds)
 
   // Apply sorting

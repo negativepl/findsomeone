@@ -3,7 +3,7 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 interface SimpleLineChartProps {
-  data: { date: string; value: number }[]
+  data: { date: string; value: number; dateRange?: string }[]
   label: string
   color?: string
   totalValue?: number // Optional: use this instead of calculating from data

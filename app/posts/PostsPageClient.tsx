@@ -64,7 +64,7 @@ export function PostsPageClient({ categories, children }: PostsPageClientProps) 
         onCategoriesClick={() => setIsCategoriesOpen(true)}
       />
 
-      {/* Filters Drawer - controlled by MobileFiltersMenu */}
+      {/* Filters Drawer - controlled by MobileFiltersMenu (mobile/tablet only) */}
       <FiltersPlaceholder
         fullWidth
         isFiltersOpen={isFiltersOpen}
@@ -78,6 +78,38 @@ export function PostsPageClient({ categories, children }: PostsPageClientProps) 
           isMobileMenuOpen={isCategoriesOpen}
           setIsMobileMenuOpen={setIsCategoriesOpen}
         />
+      </div>
+
+      {/* Full Width Filters Placeholder - Desktop */}
+      <div className="hidden lg:block w-full mb-6 p-4 bg-card rounded-2xl border border-border">
+        <div className="space-y-4 opacity-30 pointer-events-none relative">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-foreground">Filtry</h3>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {['Cena', 'Ocena', 'Odległość', 'Dostępność', 'Doświadczenie', 'Warunki', 'Gwarancja'].map((filter) => (
+              <div key={filter} className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-foreground">{filter}</label>
+                <button
+                  disabled
+                  className="w-full flex items-center justify-between gap-2 px-4 py-2.5 rounded-xl bg-muted/50 border border-border/50 text-muted-foreground cursor-not-allowed text-sm"
+                >
+                  <span>Wybierz...</span>
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="bg-background/95 px-6 py-3 rounded-lg border border-border shadow-sm">
+              <p className="text-sm font-medium text-muted-foreground text-center">
+                Funkcjonalność filtrów jest w trakcie budowania
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Two Column Layout: Sidebar + Main Content */}

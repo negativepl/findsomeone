@@ -223,7 +223,7 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
         } else if (errorStr.includes('check_conversation_spam') || errorStr.includes('spam')) {
           errorMessage = '⚠️ Wysyłasz zbyt wiele wiadomości do tej osoby. Maksymalnie 3 wiadomości w ciągu 5 minut.'
         } else if (errorStr.includes('check_message_min_length') || errorStr.includes('min_length')) {
-          errorMessage = '📏 Wiadomość jest zbyt krótka (minimum 10 znaków).'
+          errorMessage = '📏 Wiadomość jest zbyt krótka (minimum 1 znak).'
         } else if (errorStr.includes('check_message_max_length') || errorStr.includes('max_length')) {
           errorMessage = '📏 Wiadomość jest zbyt długa (maksimum 2000 znaków).'
         } else if (errorStr.includes('check_not_self_message') || errorStr.includes('self')) {
@@ -304,7 +304,7 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
         <div className="container mx-auto px-4 md:px-6">
           <div className="max-w-4xl mx-auto">
             {error && (
-              <div className="p-3 mb-2 bg-red-50 border border-red-200 rounded-2xl text-sm text-red-700">
+              <div className="p-3 mb-2 bg-destructive/10 border border-destructive/30 rounded-2xl text-sm text-destructive">
                 {error}
               </div>
             )}

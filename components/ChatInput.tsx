@@ -11,7 +11,7 @@ interface ChatInputProps {
   onChange?: (value: string) => void
 }
 
-const MIN_MESSAGE_LENGTH = 10
+const MIN_MESSAGE_LENGTH = 1
 const MAX_MESSAGE_LENGTH = 2000
 
 export function ChatInput({
@@ -89,7 +89,7 @@ export function ChatInput({
     <form onSubmit={handleSubmit} className="relative">
       <div className="py-4 space-y-2">
         <div className="flex items-center gap-3">
-          <div className="flex-1 relative flex items-center rounded-2xl border border-border bg-background focus-within:ring-2 focus-within:ring-brand/20 focus-within:border-brand disabled:bg-muted h-[44px] px-4">
+          <div className="flex-1 relative flex items-center rounded-2xl border border-border bg-muted hover:bg-accent focus-within:ring-2 focus-within:ring-brand/20 focus-within:border-brand disabled:bg-muted h-[44px] px-4">
             <textarea
               value={message}
               onChange={(e) => handleChange(e.target.value)}
@@ -105,7 +105,7 @@ export function ChatInput({
               }}
             />
             {/* Character count and warning on the right */}
-            <div className="absolute right-4 flex items-center gap-2 text-xs pointer-events-none bg-background pl-2">
+            <div className="absolute right-4 flex items-center gap-2 text-xs pointer-events-none bg-muted pl-2">
               {showWarning && (
                 <span className="text-brand">
                   Wpisz minimum {MIN_MESSAGE_LENGTH} znaków

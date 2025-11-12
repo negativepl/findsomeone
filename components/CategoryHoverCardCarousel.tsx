@@ -51,7 +51,7 @@ export function CategoryHoverCardCarousel({ categories, sectionId }: CategoryHov
                   delay: index * 0.05,
                   ease: [0.16, 1, 0.3, 1]
                 }}
-                className="relative h-full rounded-2xl border border-border bg-card p-6"
+                className="relative h-full rounded-2xl border border-border bg-muted hover:bg-accent transition-colors p-6"
               >
                 {/* Content */}
                 <div className="relative z-10 flex flex-col items-center justify-center text-center min-h-[140px]">

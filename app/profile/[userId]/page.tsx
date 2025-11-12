@@ -53,7 +53,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
     .from('posts')
     .select('*', { count: 'exact', head: true })
     .eq('user_id', userId)
-    .eq('status', 'active')
+    .eq('status', 'active').eq('moderation_status', 'approved')
     .eq('is_deleted', false)
 
   // Fetch user's active posts (limited to 6 for display)
@@ -66,7 +66,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
       )
     `)
     .eq('user_id', userId)
-    .eq('status', 'active')
+    .eq('status', 'active').eq('moderation_status', 'approved')
     .eq('is_deleted', false)
     .order('created_at', { ascending: false })
     .limit(6)

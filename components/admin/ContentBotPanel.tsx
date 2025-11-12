@@ -349,7 +349,7 @@ export default function ContentBotPanel() {
       <TabsContent value="generate" className="flex-1 overflow-y-auto">
         <div className="space-y-6">
         {/* Stats Card */}
-        <div className="border bg-card rounded-3xl overflow-hidden flex-shrink-0">
+        <div className="border bg-muted rounded-3xl overflow-hidden flex-shrink-0">
           <div className="px-6 py-6">
             <div className="mb-4">
               <h2 className="text-xl font-bold text-foreground mb-1">Statystyki</h2>
@@ -405,28 +405,28 @@ export default function ContentBotPanel() {
 
         {/* Generation Stats */}
         {generationStats && !isGenerating && (
-          <div className="bg-green-50 rounded-xl border border-green-200 p-6">
-            <h3 className="text-lg font-semibold text-green-900 mb-2">Generowanie zakończone!</h3>
+          <div className="bg-accent rounded-xl border border-border p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-2">Generowanie zakończone!</h3>
             <div className="space-y-1 text-sm">
-              <p className="text-green-800">
+              <p className="text-foreground">
                 ✓ Wygenerowano: <span className="font-semibold">{generationStats.generated}</span> ogłoszeń
               </p>
               {generationStats.failed > 0 && (
-                <p className="text-red-600">
+                <p className="text-destructive">
                   ✗ Błędy: <span className="font-semibold">{generationStats.failed}</span>
                 </p>
               )}
             </div>
 
             {generationStats.errors.length > 0 && (
-              <div className="mt-4 p-3 bg-red-50 rounded-lg">
+              <div className="mt-4 p-3 bg-destructive/10 rounded-lg">
                 <p className="text-xs font-medium text-red-900 mb-2">Szczegóły błędów:</p>
-                <ul className="text-xs text-red-800 space-y-1">
+                <ul className="text-xs text-destructive/80 space-y-1">
                   {generationStats.errors.slice(0, 5).map((error, index) => (
                     <li key={index} className="truncate">• {error}</li>
                   ))}
                   {generationStats.errors.length > 5 && (
-                    <li className="text-red-600">... i {generationStats.errors.length - 5} więcej</li>
+                    <li className="text-destructive">... i {generationStats.errors.length - 5} więcej</li>
                   )}
                 </ul>
               </div>
@@ -435,7 +435,7 @@ export default function ContentBotPanel() {
         )}
 
         {/* Category Selection */}
-      <div className="border bg-card rounded-3xl overflow-hidden flex-shrink-0">
+      <div className="border bg-muted rounded-3xl overflow-hidden flex-shrink-0">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -452,7 +452,7 @@ export default function ContentBotPanel() {
                 size="sm"
                 onClick={selectAll}
                 disabled={isLoadingCategories}
-                className="rounded-full text-xs border-border hover:bg-muted"
+                className="rounded-full text-xs border-border hover:bg-accent"
               >
                 Zaznacz wszystkie
               </Button>
@@ -461,7 +461,7 @@ export default function ContentBotPanel() {
                 size="sm"
                 onClick={deselectAll}
                 disabled={isLoadingCategories}
-                className="rounded-full text-xs border-border hover:bg-muted"
+                className="rounded-full text-xs border-border hover:bg-accent"
               >
                 Odznacz wszystkie
               </Button>
@@ -477,7 +477,7 @@ export default function ContentBotPanel() {
             {categories.map((category) => (
               <div key={category.id} className="border border-border rounded-lg">
                 {/* Parent Category */}
-                <div className="flex items-center gap-3 p-3 hover:bg-muted transition-colors">
+                <div className="flex items-center gap-3 p-3 hover:bg-accent transition-colors">
                   <Checkbox
                     checked={selectedCategories.has(category.id)}
                     onCheckedChange={() => toggleCategory(category.id)}
@@ -500,13 +500,13 @@ export default function ContentBotPanel() {
                       <span className="text-foreground font-semibold">{category.totalPosts}</span>
                       <span className="text-muted-foreground ml-1">razem</span>
                     </div>
-                    <div className="px-2.5 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full">
-                      <span className="text-purple-600 font-semibold">{category.aiPosts}</span>
-                      <span className="text-purple-600 ml-1">AI</span>
+                    <div className="px-2.5 py-1.5 bg-accent border border-border rounded-full">
+                      <span className="text-foreground font-semibold">{category.aiPosts}</span>
+                      <span className="text-foreground ml-1">AI</span>
                     </div>
-                    <div className="px-2.5 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full">
-                      <span className="text-green-600 font-semibold">{category.humanPosts}</span>
-                      <span className="text-green-600 ml-1">ludzie</span>
+                    <div className="px-2.5 py-1.5 bg-accent border border-border rounded-full">
+                      <span className="text-foreground font-semibold">{category.humanPosts}</span>
+                      <span className="text-foreground ml-1">ludzie</span>
                     </div>
                   </div>
                 </div>
@@ -517,7 +517,7 @@ export default function ContentBotPanel() {
                     {category.subcategories.map((subcategory) => (
                       <div key={subcategory.id}>
                         {/* Level 2 Category */}
-                        <div className="flex items-center gap-3 p-3 pl-8 hover:bg-muted transition-colors">
+                        <div className="flex items-center gap-3 p-3 pl-8 hover:bg-accent transition-colors">
                           <Checkbox
                             checked={selectedCategories.has(subcategory.id)}
                             onCheckedChange={() => toggleCategory(subcategory.id)}
@@ -540,13 +540,13 @@ export default function ContentBotPanel() {
                               <span className="text-foreground font-semibold">{subcategory.totalPosts}</span>
                               <span className="text-muted-foreground ml-1">razem</span>
                             </div>
-                            <div className="px-2.5 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full">
-                              <span className="text-purple-600 font-semibold">{subcategory.aiPosts}</span>
-                              <span className="text-purple-600 ml-1">AI</span>
+                            <div className="px-2.5 py-1.5 bg-accent border border-border rounded-full">
+                              <span className="text-foreground font-semibold">{subcategory.aiPosts}</span>
+                              <span className="text-foreground ml-1">AI</span>
                             </div>
-                            <div className="px-2.5 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full">
-                              <span className="text-green-600 font-semibold">{subcategory.humanPosts}</span>
-                              <span className="text-green-600 ml-1">ludzie</span>
+                            <div className="px-2.5 py-1.5 bg-accent border border-border rounded-full">
+                              <span className="text-foreground font-semibold">{subcategory.humanPosts}</span>
+                              <span className="text-foreground ml-1">ludzie</span>
                             </div>
                           </div>
                         </div>
@@ -557,7 +557,7 @@ export default function ContentBotPanel() {
                             {subcategory.subcategories.map((subcat3) => (
                               <div
                                 key={subcat3.id}
-                                className="flex items-center gap-3 p-3 pl-16 hover:bg-muted transition-colors"
+                                className="flex items-center gap-3 p-3 pl-16 hover:bg-accent transition-colors"
                               >
                                 <Checkbox
                                   checked={selectedCategories.has(subcat3.id)}
@@ -569,13 +569,13 @@ export default function ContentBotPanel() {
                                     <span className="text-foreground font-semibold">{subcat3.totalPosts}</span>
                                     <span className="text-muted-foreground ml-1">razem</span>
                                   </div>
-                                  <div className="px-2.5 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full">
-                                    <span className="text-purple-600 font-semibold">{subcat3.aiPosts}</span>
-                                    <span className="text-purple-600 ml-1">AI</span>
+                                  <div className="px-2.5 py-1.5 bg-accent border border-border rounded-full">
+                                    <span className="text-foreground font-semibold">{subcat3.aiPosts}</span>
+                                    <span className="text-foreground ml-1">AI</span>
                                   </div>
-                                  <div className="px-2.5 py-1.5 bg-green-500/10 border border-green-500/30 rounded-full">
-                                    <span className="text-green-600 font-semibold">{subcat3.humanPosts}</span>
-                                    <span className="text-green-600 ml-1">ludzie</span>
+                                  <div className="px-2.5 py-1.5 bg-accent border border-border rounded-full">
+                                    <span className="text-foreground font-semibold">{subcat3.humanPosts}</span>
+                                    <span className="text-foreground ml-1">ludzie</span>
                                   </div>
                                 </div>
                               </div>
@@ -621,7 +621,7 @@ export default function ContentBotPanel() {
                   onClick={handleDeleteByCategory}
                   disabled={isGenerating || isDeleting}
                   variant="outline"
-                  className="rounded-full border-border hover:bg-muted font-semibold gap-1"
+                  className="rounded-full border-border hover:bg-accent font-semibold gap-1"
                 >
                   {isDeleting ? (
                     <>
@@ -641,7 +641,7 @@ export default function ContentBotPanel() {
                 onClick={handleDeleteAll}
                 disabled={isGenerating || isDeleting || aiPostsCount === 0}
                 variant="outline"
-                className="rounded-full border-border hover:bg-muted font-semibold gap-1"
+                className="rounded-full border-border hover:bg-accent font-semibold gap-1"
               >
                 {isDeleting ? (
                   <>

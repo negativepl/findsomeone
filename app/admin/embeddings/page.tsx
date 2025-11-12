@@ -41,10 +41,10 @@ export default async function EmbeddingsPage() {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <Card className="border bg-card">
+            <Card className="border bg-muted">
               <div className="p-6">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Wszystkie posty</p>
                 <div className="flex items-baseline gap-2">
@@ -53,7 +53,7 @@ export default async function EmbeddingsPage() {
               </div>
             </Card>
 
-            <Card className="border bg-card">
+            <Card className="border bg-muted">
               <div className="p-6">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Z embeddingami</p>
                 <div className="flex items-baseline gap-2">
@@ -62,7 +62,7 @@ export default async function EmbeddingsPage() {
               </div>
             </Card>
 
-            <Card className="border bg-card">
+            <Card className="border bg-muted">
               <div className="p-6">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Bez embeddingów</p>
                 <div className="flex items-baseline gap-2">
@@ -71,7 +71,7 @@ export default async function EmbeddingsPage() {
               </div>
             </Card>
 
-            <Card className="border bg-card">
+            <Card className="border bg-muted">
               <div className="p-6">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Pokrycie</p>
                 <div className="flex items-baseline gap-2">

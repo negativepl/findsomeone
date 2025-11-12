@@ -74,7 +74,7 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('bold')
               ? 'bg-foreground text-background'
-              : 'bg-card hover:bg-muted text-foreground'
+              : 'bg-muted hover:bg-accent text-foreground'
           }`}
         >
           B
@@ -86,7 +86,7 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm italic font-medium transition-colors ${
             editor.isActive('italic')
               ? 'bg-foreground text-background'
-              : 'bg-card hover:bg-muted text-foreground'
+              : 'bg-muted hover:bg-accent text-foreground'
           }`}
         >
           I
@@ -98,13 +98,13 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm line-through font-medium transition-colors ${
             editor.isActive('strike')
               ? 'bg-foreground text-background'
-              : 'bg-card hover:bg-muted text-foreground'
+              : 'bg-muted hover:bg-accent text-foreground'
           }`}
         >
           S
         </button>
 
-        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
+        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-border mx-0.5 md:mx-1" />
 
         <button
           type="button"
@@ -112,7 +112,7 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('heading', { level: 2 })
               ? 'bg-foreground text-background'
-              : 'bg-card hover:bg-muted text-foreground'
+              : 'bg-muted hover:bg-accent text-foreground'
           }`}
         >
           H2
@@ -123,13 +123,13 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-colors ${
             editor.isActive('heading', { level: 3 })
               ? 'bg-foreground text-background'
-              : 'bg-card hover:bg-muted text-foreground'
+              : 'bg-muted hover:bg-accent text-foreground'
           }`}
         >
           H3
         </button>
 
-        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
+        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-border mx-0.5 md:mx-1" />
 
         <button
           type="button"
@@ -137,7 +137,7 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('bulletList')
               ? 'bg-foreground text-background'
-              : 'bg-card hover:bg-muted text-foreground'
+              : 'bg-muted hover:bg-accent text-foreground'
           }`}
         >
           • Lista
@@ -148,13 +148,13 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('orderedList')
               ? 'bg-foreground text-background'
-              : 'bg-card hover:bg-muted text-foreground'
+              : 'bg-muted hover:bg-accent text-foreground'
           }`}
         >
           1. Lista
         </button>
 
-        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
+        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-border mx-0.5 md:mx-1" />
 
         <button
           type="button"
@@ -162,18 +162,18 @@ export function RichTextEditor({ content, onChange, placeholder, className, hide
           className={`flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm transition-colors whitespace-nowrap ${
             editor.isActive('blockquote')
               ? 'bg-foreground text-background'
-              : 'bg-card hover:bg-muted text-foreground'
+              : 'bg-muted hover:bg-accent text-foreground'
           }`}
         >
           " Cytat
         </button>
 
-        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-black/10 mx-0.5 md:mx-1" />
+        <div className="flex-shrink-0 w-px h-4 md:h-6 bg-border mx-0.5 md:mx-1" />
 
         <button
           type="button"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          className="flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm bg-card hover:bg-muted text-foreground transition-colors whitespace-nowrap"
+          className="flex-shrink-0 px-1.5 md:px-3 py-0.5 md:py-1.5 rounded-lg text-xs md:text-sm bg-muted hover:bg-accent text-foreground transition-colors whitespace-nowrap"
         >
           ─ Linia
         </button>

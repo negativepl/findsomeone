@@ -2,8 +2,8 @@
 
 Complete design system documentation for the FindSomeone project. This guide defines all visual design tokens, patterns, and guidelines used throughout the application.
 
-**Last Updated:** November 8, 2025
-**Version:** 1.0.0
+**Last Updated:** February 12, 2025
+**Version:** 1.1.0
 
 ---
 
@@ -107,6 +107,52 @@ Perfectly balanced dark theme with higher saturation for better visibility.
 ```
 
 ### Color Hierarchy
+
+#### Visual Elevation (Material Design Principle)
+
+In dark mode, lighter colors represent higher elevation. In light mode, darker backgrounds create subtle depth.
+
+**Admin Panel Structure:**
+
+```
+Page (bg-background)
+  └─ Main Card (bg-card)              // Highest elevation container
+      ├─ CardHeader (inherits)         // No additional bg
+      └─ CardContent (inherits)        // No additional bg
+          ├─ Stats/Info Cards (bg-muted)     // Internal cards
+          │   └─ Interactive Elements (bg-accent)  // Buttons, badges inside cards
+          ├─ Tables (bg-muted)
+          │   └─ Action Buttons (bg-accent)
+          └─ Category Items (bg-accent)      // When inside bg-muted containers
+```
+
+**Hierarchy Examples:**
+
+```tsx
+// ✅ CORRECT - Proper elevation hierarchy
+<div className="bg-background">
+  <Card className="bg-card">
+    <CardContent>
+      <Card className="bg-muted">
+        <div className="bg-accent">Item</div>
+      </Card>
+    </CardContent>
+  </Card>
+</div>
+
+// ❌ INCORRECT - Same color for nested elements
+<div className="bg-background">
+  <Card className="bg-card">
+    <CardContent className="bg-background"> {/* Wrong! */}
+      <Card className="bg-card"> {/* Wrong! */}
+        ...
+      </Card>
+    </CardContent>
+  </Card>
+</div>
+```
+
+#### Text Hierarchy
 
 1. **Primary Text**: `text-foreground`
 2. **Secondary Text**: `text-muted-foreground`
@@ -451,7 +497,7 @@ We use minimal, subtle shadows for depth.
 ### Buttons
 
 ```tsx
-// Primary
+// Primary (Brand)
 <Button className="bg-brand text-brand-foreground hover:bg-brand/90">
   Primary Action
 </Button>
@@ -466,16 +512,27 @@ We use minimal, subtle shadows for depth.
   Cancel
 </Button>
 
-// Destructive
+// Destructive (Updated Style)
 <Button variant="destructive">
-  Delete
+  Delete {/* Uses bg-destructive/10 with red text and icon */}
 </Button>
 
 // Ghost
 <Button variant="ghost">
   Ghost
 </Button>
+
+// Action buttons in tables/cards (use bg-accent)
+<button className="p-2 rounded-lg bg-accent border border-border hover:bg-accent/80">
+  <Edit className="w-4 h-4" />
+</button>
 ```
+
+**Button Color Rules:**
+- Primary actions: `bg-brand` or `bg-primary`
+- In `bg-muted` containers: Use `bg-accent` for action buttons
+- Destructive: Always use `variant="destructive"` (light bg with red text)
+- Never use `bg-card` or `bg-background` for buttons
 
 ### Inputs
 
@@ -526,6 +583,30 @@ We use minimal, subtle shadows for depth.
 2. **Test in both themes** - Ensure components work in light and dark mode
 3. **Use opacity sparingly** - Prefer semantic variables over opacity variations
 4. **Brand color** - Use `text-brand` or `bg-brand` for brand elements
+5. **Respect elevation hierarchy** - Use `background` → `card` → `muted` → `accent` progression
+6. **Never skip hierarchy levels** - Each nested container should be one level higher
+
+### Admin Panel Color Guidelines
+
+**Main Structure:**
+- Page wrapper: `bg-background` (lowest elevation)
+- Main admin card: `bg-card` (main container)
+- CardContent: No additional `bg-*` class (inherits from card)
+
+**Internal Elements:**
+- Stats cards, tables: `bg-muted`
+- Buttons inside tables/cards: `bg-accent` (higher than muted)
+- Action buttons: `bg-accent hover:bg-accent/80`
+- Category items in lists: `bg-accent` (when container is `bg-muted`)
+
+**Interactive States:**
+- Hover: `hover:bg-accent` (standard items) or `hover:bg-accent/80` (already accent items)
+- Active/Selected: `bg-brand text-brand-foreground`
+
+**Destructive Actions:**
+- Buttons: `bg-destructive/10 border border-destructive/30 text-destructive hover:bg-destructive/20`
+- Messages/Alerts: `bg-destructive/10 text-destructive`
+- Never use hardcoded red colors (red-50, red-600, etc.)
 
 ### Dark Mode Checklist
 

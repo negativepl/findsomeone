@@ -30,7 +30,7 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
       className="flex-shrink-0 snap-center"
       style={{ width: '280px' }}
     >
-      <Card className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col">
+      <Card className="border border-border rounded-3xl bg-muted hover:bg-accent transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col">
         {/* Image */}
         {post.images && post.images.length > 0 && (
           <div className="relative w-full h-40 bg-muted">
@@ -55,7 +55,7 @@ export function PostCard({ post, isFavorite, priority = false }: PostCardProps) 
         <CardHeader className="pb-3 pt-4">
           {post.categories && (
             <div className="mb-2">
-              <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
+              <Badge variant="outline" className="rounded-full border-border bg-accent text-muted-foreground text-xs">
                 {post.categories.name}
               </Badge>
             </div>

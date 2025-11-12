@@ -468,7 +468,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 {/* Badges Section - Above Description */}
                 {post.categories && (
                   <div className="px-4 md:px-8 pt-2 md:pt-0 pb-3 md:pb-4">
-                    <Badge variant="outline" className="rounded-full border-border text-muted-foreground px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm">
+                    <Badge variant="outline" className="rounded-full border-border bg-muted text-muted-foreground px-3 md:px-4 py-1 md:py-1.5 text-xs md:text-sm">
                       {post.categories.name}
                     </Badge>
                   </div>
@@ -741,7 +741,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                   </div>
                 ) : !user ? (
                   <Link href="/login">
-                    <Button className="w-full rounded-full bg-card hover:bg-accent text-foreground border border-border py-5 md:py-6 text-base md:text-lg">
+                    <Button className="w-full rounded-full bg-muted hover:bg-accent text-foreground border border-border py-5 md:py-6 text-base md:text-lg">
                       Zaloguj się aby skontaktować
                     </Button>
                   </Link>
@@ -778,7 +778,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-140px)]">
                       {otherPosts.map((otherPost: any) => (
                         <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
-                          <div className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                          <div className="border border-border rounded-3xl bg-muted hover:bg-accent transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
                             {/* Image */}
                             {otherPost.images && otherPost.images.length > 0 && (
                               <div className="relative w-full h-40 bg-muted">
@@ -795,7 +795,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                             <div className="p-4 flex flex-col flex-1">
                               {otherPost.categories && (
                                 <div className="mb-2">
-                                  <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
+                                  <Badge variant="outline" className="rounded-full border-border bg-accent text-muted-foreground text-xs">
                                     {otherPost.categories.name}
                                   </Badge>
                                 </div>
@@ -831,7 +831,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
                       {otherPosts.map((otherPost: any) => (
                         <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
-                          <div className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                          <div className="border border-border rounded-3xl bg-muted hover:bg-accent transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
                             {/* Image */}
                             {otherPost.images && otherPost.images.length > 0 && (
                               <div className="relative w-full h-40 bg-muted">
@@ -848,7 +848,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                             <div className="p-4 flex flex-col flex-1">
                               {otherPost.categories && (
                                 <div className="mb-2">
-                                  <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
+                                  <Badge variant="outline" className="rounded-full border-border bg-accent text-muted-foreground text-xs">
                                     {otherPost.categories.name}
                                   </Badge>
                                 </div>
@@ -896,7 +896,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
               <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-[calc(50%-140px)]">
                 {similarPosts.map((similarPost: any) => (
                   <Link key={similarPost.id} href={`/posts/${similarPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
-                    <div className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                    <div className="border border-border rounded-3xl bg-muted hover:bg-accent transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
                       {/* Image */}
                       {similarPost.images && similarPost.images.length > 0 && (
                         <div className="relative w-full h-40 bg-muted">
@@ -913,7 +913,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                       <div className="p-4 flex flex-col flex-1">
                         {similarPost.categories && (
                           <div className="mb-2">
-                            <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
+                            <Badge variant="outline" className="rounded-full border-border bg-accent text-muted-foreground text-xs">
                               {similarPost.categories.name}
                             </Badge>
                           </div>
@@ -949,7 +949,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-4">
               {similarPosts.map((similarPost: any) => (
                 <Link key={similarPost.id} href={`/posts/${similarPost.id}`}>
-                  <div className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
+                  <div className="border border-border rounded-3xl bg-muted hover:bg-accent transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
                     {/* Image */}
                     {similarPost.images && similarPost.images.length > 0 && (
                       <div className="relative w-full h-40 bg-muted">

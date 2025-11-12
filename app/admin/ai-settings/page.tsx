@@ -27,7 +27,7 @@ export default async function AISettingsPage() {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
           <AISettingsManager initialSettings={settings} />
         </CardContent>
       </Card>

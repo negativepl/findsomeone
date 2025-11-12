@@ -17,7 +17,7 @@ export default function PostsManagementPage() {
             <p className="text-sm text-muted-foreground mt-0.5">Przeglądaj, edytuj i zarządzaj wszystkimi ogłoszeniami użytkowników</p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
           <PostsManagementClient />
         </CardContent>
       </Card>

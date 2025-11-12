@@ -38,7 +38,6 @@ export function usePushNotifications(user: User | null): UsePushNotificationsRet
       // Check if service worker is registered first
       const registration = await navigator.serviceWorker.getRegistration()
       if (!registration) {
-        console.log('No service worker registered')
         return
       }
 
@@ -129,7 +128,6 @@ export function usePushNotifications(user: User | null): UsePushNotificationsRet
     try {
       const registration = await navigator.serviceWorker.getRegistration()
       if (!registration) {
-        console.log('No service worker registered')
         setIsLoading(false)
         return
       }

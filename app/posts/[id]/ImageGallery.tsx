@@ -86,7 +86,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
                   e.stopPropagation()
                   goToPrevious()
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-card/90 hover:bg-card rounded-full p-2 shadow-lg transition-all z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-card/90 hover:bg-muted rounded-full p-2 shadow-lg transition-all z-10"
                 aria-label="Poprzednie zdjęcie"
               >
                 <ChevronLeft className="w-6 h-6 text-foreground" />
@@ -96,7 +96,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
                   e.stopPropagation()
                   goToNext()
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-card/90 hover:bg-card rounded-full p-2 shadow-lg transition-all z-10"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-card/90 hover:bg-muted rounded-full p-2 shadow-lg transition-all z-10"
                 aria-label="Następne zdjęcie"
               >
                 <ChevronRight className="w-6 h-6 text-foreground" />
@@ -144,7 +144,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
           {/* Close Button */}
           <button
             onClick={closeLightbox}
-            className="absolute top-4 right-4 bg-card/10 hover:bg-card/20 rounded-full p-2 transition-all z-10"
+            className="absolute top-4 right-4 bg-card/10 hover:bg-muted/20 rounded-full p-2 transition-all z-10"
             aria-label="Zamknij"
           >
             <X className="w-6 h-6 text-white" />
@@ -178,7 +178,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
                   e.stopPropagation()
                   goToPrevious()
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 bg-card/10 hover:bg-card/20 rounded-full p-3 transition-all z-10"
+                className="absolute left-4 top-1/2 -translate-y-1/2 bg-card/10 hover:bg-muted/20 rounded-full p-3 transition-all z-10"
                 aria-label="Poprzednie zdjęcie"
               >
                 <ChevronLeft className="w-8 h-8 text-white" />
@@ -188,7 +188,7 @@ export function ImageGallery({ images, title, favoriteButton }: ImageGalleryProp
                   e.stopPropagation()
                   goToNext()
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 bg-card/10 hover:bg-card/20 rounded-full p-3 transition-all z-10"
+                className="absolute right-4 top-1/2 -translate-y-1/2 bg-card/10 hover:bg-muted/20 rounded-full p-3 transition-all z-10"
                 aria-label="Następne zdjęcie"
               >
                 <ChevronRight className="w-8 h-8 text-white" />

@@ -28,7 +28,7 @@ export function FavoriteButtonWrapper({
 
   if (withContainer) {
     return (
-      <div className="bg-card/80 backdrop-blur-md rounded-full p-2 hover:bg-card transition-all border border-border shadow-sm">
+      <div className="bg-card/80 backdrop-blur-md rounded-full p-2 hover:bg-muted transition-all border border-border shadow-sm">
         {button}
       </div>
     )

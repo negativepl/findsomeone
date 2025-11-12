@@ -796,7 +796,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   variant="outline"
                   onClick={handleSuggestCategory}
                   disabled={suggestingCategory || (!formData.title && !formData.description)}
-                  className="rounded-full border border-border hover:bg-muted h-10 px-4 text-sm bg-card text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-full border border-border hover:bg-muted h-10 px-4 text-sm bg-muted text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {suggestingCategory ? (
                     <>
@@ -880,7 +880,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   variant="outline"
                   onClick={handleDetectLocation}
                   disabled={detectingLocation}
-                  className="rounded-full border border-border hover:bg-muted h-10 px-4 text-sm bg-card text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-full border border-border hover:bg-muted h-10 px-4 text-sm bg-muted text-foreground disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <MapPin className="w-4 h-4 mr-2" />
                   {detectingLocation ? 'Wykrywam...' : 'Wykryj lokalizację'}
@@ -1023,7 +1023,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full md:w-auto rounded-full border border-border hover:bg-muted bg-card text-foreground h-11 px-6 text-sm"
+                    className="w-full md:w-auto rounded-full border border-border bg-muted hover:bg-accent text-foreground h-11 px-6 text-sm"
                   >
                     Anuluj
                   </Button>
@@ -1055,7 +1055,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
         </div>
 
         {/* Header */}
-        <header className="fixed left-0 right-0 bg-card border-b border-border z-40 shadow-sm rounded-b-3xl" style={{ top: 'calc(1px + env(safe-area-inset-top))' }}>
+        <header className="fixed left-0 right-0 bg-muted border-b border-border z-40 shadow-sm rounded-b-3xl" style={{ top: 'calc(1px + env(safe-area-inset-top))' }}>
           <div className="flex items-center justify-between h-16 px-4">
             <h1
               className={`text-xl font-bold text-foreground transition-all duration-200 ${
@@ -1106,7 +1106,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   required
                   maxLength={80}
-                  className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card"
+                  className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-muted"
                 />
               </div>
             </div>
@@ -1138,7 +1138,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 type="button"
                 onClick={handleSuggestCategory}
                 disabled={suggestingCategory || (!formData.title && !formData.description)}
-                className="w-full rounded-full bg-card border border-border hover:border-brand hover:bg-brand/5 text-foreground h-12 text-sm font-semibold transition-colors"
+                className="w-full rounded-full bg-muted border border-border hover:border-brand hover:bg-brand/5 text-foreground h-12 text-sm font-semibold transition-colors"
               >
                 {suggestingCategory ? (
                   <>
@@ -1163,7 +1163,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   className={`w-full rounded-2xl border transition-all p-4 text-left ${
                     categoryPath.length > 0
                       ? 'border-brand/30 bg-brand/5'
-                      : 'border-border bg-card hover:bg-muted'
+                      : 'border-border bg-muted hover:bg-accent'
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
@@ -1210,7 +1210,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 type="button"
                 onClick={detectLocation}
                 disabled={detectingLocation}
-                className="w-full rounded-full bg-card border border-border hover:border-brand hover:bg-brand/5 text-foreground h-12 text-sm font-semibold transition-colors"
+                className="w-full rounded-full bg-muted border border-border hover:border-brand hover:bg-brand/5 text-foreground h-12 text-sm font-semibold transition-colors"
               >
                 {detectingLocation ? (
                   <>
@@ -1246,7 +1246,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                         fetchCities('')
                       }
                     }}
-                    className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card pr-10"
+                    className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-muted pr-10"
                   />
                   {isLoadingMobileCities && (
                     <Loader2 className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-foreground/40" />
@@ -1254,7 +1254,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 </div>
 
                 {isMobileCityDropdownOpen && mobileCities.length > 0 && (
-                  <div ref={mobileCityDropdownRef} className="absolute z-10 w-full mt-1 bg-card border border-border rounded-2xl shadow-lg max-h-64 overflow-y-auto">
+                  <div ref={mobileCityDropdownRef} className="absolute z-10 w-full mt-1 bg-muted border border-border rounded-2xl shadow-lg max-h-64 overflow-y-auto">
                     {mobileCities.some(c => c.popular) && (
                       <div className="p-2">
                         <p className="text-xs font-semibold text-foreground/40 px-3 py-2">POPULARNE</p>
@@ -1307,7 +1307,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   placeholder="np. Śródmieście"
                   value={formData.district}
                   onChange={(e) => setFormData({ ...formData, district: e.target.value })}
-                  className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card"
+                  className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-muted"
                 />
               </div>
             </div>
@@ -1325,7 +1325,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                     formData.priceType === 'fixed'
                       ? 'border-brand bg-brand/5'
-                      : 'border-border bg-card hover:border-black/20'
+                      : 'border-border bg-muted hover:bg-accent'
                   }`}
                 >
                   <div className="flex-1">
@@ -1340,7 +1340,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                     formData.priceType === 'hourly'
                       ? 'border-brand bg-brand/5'
-                      : 'border-border bg-card hover:border-black/20'
+                      : 'border-border bg-muted hover:bg-accent'
                   }`}
                 >
                   <div className="flex-1">
@@ -1355,7 +1355,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                   className={`w-full flex items-start p-4 rounded-2xl border cursor-pointer transition-all text-left ${
                     formData.priceType === 'free'
                       ? 'border-brand bg-brand/5'
-                      : 'border-border bg-card hover:border-black/20'
+                      : 'border-border bg-muted hover:bg-accent'
                   }`}
                 >
                   <div className="flex-1">
@@ -1395,7 +1395,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                           setFormData({ ...formData, price: formattedValue })
                         }
                       }}
-                      className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-card pr-12"
+                      className="rounded-2xl border border-border h-12 focus:border-brand text-base bg-muted pr-12"
                     />
                     <span className="absolute right-4 top-1/2 -translate-y-1/2 text-base text-muted-foreground font-medium">
                       PLN
@@ -1411,7 +1411,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                     className={`w-full flex items-center justify-between gap-3 px-4 h-12 rounded-2xl border transition-all ${
                       formData.priceNegotiable
                         ? 'border-brand bg-brand/5 text-brand'
-                        : 'border-border bg-card text-foreground/70'
+                        : 'border-border bg-muted text-foreground/70'
                     }`}
                   >
                     <label htmlFor="priceNegotiable" className="text-sm font-medium cursor-pointer flex-1">
@@ -1455,7 +1455,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 </p>
               </div>
 
-              <div className="bg-card rounded-2xl border border-border p-4">
+              <div className="bg-muted rounded-2xl border border-border p-4">
                 <h2 className="text-xl font-bold text-foreground mb-1">{formData.title}</h2>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Tag className="w-4 h-4" />
@@ -1465,7 +1465,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 </div>
               </div>
 
-              <div className="bg-card rounded-2xl border border-border p-4">
+              <div className="bg-muted rounded-2xl border border-border p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <FileText className="w-5 h-5 text-muted-foreground" />
                   <h3 className="font-semibold text-foreground">Opis</h3>
@@ -1477,7 +1477,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
               </div>
 
               {images.length > 0 && (
-                <div className="bg-card rounded-2xl border border-border p-4">
+                <div className="bg-muted rounded-2xl border border-border p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <ImageIcon className="w-5 h-5 text-muted-foreground" />
                     <h3 className="font-semibold text-foreground">Zdjęcia ({images.length})</h3>
@@ -1503,7 +1503,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 </div>
               )}
 
-              <div className="bg-card rounded-2xl border border-border p-4">
+              <div className="bg-muted rounded-2xl border border-border p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <MapPin className="w-5 h-5 text-muted-foreground" />
                   <h3 className="font-semibold text-foreground">Lokalizacja</h3>
@@ -1514,7 +1514,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
                 </p>
               </div>
 
-              <div className="bg-card rounded-2xl border border-border p-4">
+              <div className="bg-muted rounded-2xl border border-border p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <DollarSign className="w-5 h-5 text-muted-foreground" />
                   <h3 className="font-semibold text-foreground">Cena</h3>
@@ -1526,7 +1526,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
         </main>
 
         {/* Footer */}
-        <footer className="fixed bottom-0 left-0 right-0 bg-card border-t border-border z-40 rounded-t-3xl shadow-lg pb-safe">
+        <footer className="fixed bottom-0 left-0 right-0 bg-muted border-t border-border z-40 rounded-t-3xl shadow-lg pb-safe">
           <div className="flex gap-3 w-full px-4 py-4">
             {currentStep === 1 ? (
               <button
@@ -1591,7 +1591,7 @@ export function EditPostClient({ post }: EditPostClientProps) {
     {/* Moderation Modal - Shared between mobile and desktop */}
       {showModerationModal && (
         <div className="fixed inset-0 bg-background/95 flex items-center justify-center z-50 p-4">
-          <div className="bg-card border border-border rounded-3xl p-8 max-w-md w-full">
+          <div className="bg-muted border border-border rounded-3xl p-8 max-w-md w-full">
             {moderationInProgress ? (
               <div className="text-center">
                 <div className="w-20 h-20 bg-brand/10 rounded-full flex items-center justify-center mx-auto mb-6">

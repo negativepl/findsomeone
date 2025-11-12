@@ -45,7 +45,7 @@ export default async function ModerationPage() {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
           <ModerationPanel
             flaggedCount={flaggedCount || 0}
             checkingCount={checkingCount || 0}
