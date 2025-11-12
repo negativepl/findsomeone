@@ -526,7 +526,7 @@ export function PostsManagementClient() {
       {/* Search & Filters */}
       <div className="mb-6 space-y-4 flex-shrink-0">
         {/* Search Bar - Full Width */}
-        <Card className="border bg-background">
+        <Card className="border bg-card">
           <CardContent className="p-4">
             <div className="relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -534,7 +534,7 @@ export function PostsManagementClient() {
                 placeholder="Szukaj po tytule, opisie, kategorii, użytkowniku, mieście..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-10 h-12 text-base border border-input focus:border-[#C44E35]/40 bg-background"
+                className="pl-12 pr-10 h-12 text-base border border-input focus:border-ring bg-background"
               />
               {searchQuery && (
                 <button
@@ -549,105 +549,126 @@ export function PostsManagementClient() {
         </Card>
 
         {/* Filters & Actions */}
-        <Card className="border bg-background">
+        <Card className="border bg-card">
           <CardContent className="p-4">
-            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
-              {/* Filters */}
-              <div className="flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-semibold text-muted-foreground whitespace-nowrap">Filtry:</span>
-                </div>
+            <div className="flex flex-col gap-4">
+              {/* Row 1: Filters */}
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <span className="text-sm font-semibold text-muted-foreground whitespace-nowrap">Filtry:</span>
 
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
-                  <SelectTrigger className="h-9 min-w-[180px] border border-input text-sm bg-background hover:border-border transition-colors">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Wszystkie statusy</SelectItem>
-                    <SelectItem value="active">Aktywne</SelectItem>
-                    <SelectItem value="pending">Oczekujące</SelectItem>
-                    <SelectItem value="expired">Wygasłe</SelectItem>
-                    <SelectItem value="archived">Zarchiwizowane</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="flex flex-wrap items-center gap-2 flex-1">
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="h-9 w-[180px] border border-input text-sm bg-background hover:border-border transition-colors">
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Wszystkie statusy</SelectItem>
+                      <SelectItem value="active">Aktywne</SelectItem>
+                      <SelectItem value="pending">Oczekujące</SelectItem>
+                      <SelectItem value="expired">Wygasłe</SelectItem>
+                      <SelectItem value="archived">Zarchiwizowane</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                <Select value={aiFilter} onValueChange={setAiFilter}>
-                  <SelectTrigger className="h-9 min-w-[170px] border border-input text-sm bg-background hover:border-border transition-colors">
-                    <SelectValue placeholder="Źródło" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Wszystkie źródła</SelectItem>
-                    <SelectItem value="human">Użytkownicy</SelectItem>
-                    <SelectItem value="ai">AI</SelectItem>
-                  </SelectContent>
-                </Select>
+                  <Select value={aiFilter} onValueChange={setAiFilter}>
+                    <SelectTrigger className="h-9 w-[180px] border border-input text-sm bg-background hover:border-border transition-colors">
+                      <SelectValue placeholder="Źródło" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Wszystkie źródła</SelectItem>
+                      <SelectItem value="human">Użytkownicy</SelectItem>
+                      <SelectItem value="ai">AI</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                <Popover open={openCityPopover} onOpenChange={setOpenCityPopover}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={openCityPopover}
-                      className="h-9 min-w-[170px] justify-between border border-input text-sm bg-background hover:border-border transition-colors font-normal"
-                    >
-                      {cityFilter === 'all' ? 'Miasto' : cityFilter}
-                      <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[250px] p-0" align="start">
-                    <Command>
-                      <CommandInput placeholder="Szukaj miasta..." className="h-9" />
-                      <CommandList>
-                        <CommandEmpty>Nie znaleziono miasta.</CommandEmpty>
-                        <CommandGroup>
-                          <CommandItem
-                            value="all"
-                            onSelect={() => {
-                              setCityFilter('all')
-                              setOpenCityPopover(false)
-                            }}
-                          >
-                            Wszystkie miasta
-                          </CommandItem>
-                          {uniqueCities.map((city) => (
+                  <Popover open={openCityPopover} onOpenChange={setOpenCityPopover}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={openCityPopover}
+                        className="h-9 w-[180px] justify-between border border-input text-sm bg-background hover:border-border transition-colors font-normal"
+                      >
+                        {cityFilter === 'all' ? 'Miasto' : cityFilter}
+                        <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[250px] p-0" align="start">
+                      <Command>
+                        <CommandInput placeholder="Szukaj miasta..." className="h-9" />
+                        <CommandList>
+                          <CommandEmpty>Nie znaleziono miasta.</CommandEmpty>
+                          <CommandGroup>
                             <CommandItem
-                              key={city}
-                              value={city}
-                              onSelect={(currentValue) => {
-                                setCityFilter(currentValue)
+                              value="all"
+                              onSelect={() => {
+                                setCityFilter('all')
                                 setOpenCityPopover(false)
                               }}
                             >
-                              {city}
+                              Wszystkie miasta
                             </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
+                            {uniqueCities.map((city) => (
+                              <CommandItem
+                                key={city}
+                                value={city}
+                                onSelect={(currentValue) => {
+                                  setCityFilter(currentValue)
+                                  setOpenCityPopover(false)
+                                }}
+                              >
+                                {city}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
 
-                <div className="h-6 w-px bg-border" />
-
-                <Input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  placeholder="Od"
-                  className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors [color-scheme:light] dark:[color-scheme:dark]"
-                />
-
-                <Input
-                  type="date"
-                  value={dateTo}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  placeholder="Do"
-                  className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors [color-scheme:light] dark:[color-scheme:dark]"
-                />
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="date"
+                      value={dateFrom}
+                      onChange={(e) => setDateFrom(e.target.value)}
+                      placeholder="Od"
+                      className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors [color-scheme:light] dark:[color-scheme:dark]"
+                    />
+                    <span className="text-muted-foreground">-</span>
+                    <Input
+                      type="date"
+                      value={dateTo}
+                      onChange={(e) => setDateTo(e.target.value)}
+                      placeholder="Do"
+                      className="h-9 w-[160px] border border-input text-sm bg-background hover:border-border transition-colors [color-scheme:light] dark:[color-scheme:dark]"
+                    />
+                  </div>
+                </div>
               </div>
 
-              {/* Actions & Stats */}
-              <div className="flex items-center gap-3">
+              {/* Row 2: Actions & Pagination */}
+              <div className="flex items-center justify-between gap-3 border-t pt-3">
+                <div className="flex items-center gap-2">
+                  {(dateFrom || dateTo || statusFilter !== 'all' || aiFilter !== 'all' || cityFilter !== 'all' || searchQuery) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSearchQuery('')
+                        setStatusFilter('all')
+                        setAiFilter('all')
+                        setCityFilter('all')
+                        setDateFrom('')
+                        setDateTo('')
+                      }}
+                      className="h-9 px-3 rounded-full border-border hover:bg-muted text-sm gap-2"
+                    >
+                      <X className="h-4 w-4" />
+                      Wyczyść filtry
+                    </Button>
+                  )}
+                </div>
+
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-semibold text-muted-foreground whitespace-nowrap">Na stronę:</span>
                   <Select value={postsPerPage.toString()} onValueChange={(val) => setPostsPerPage(Number(val))}>
@@ -662,24 +683,6 @@ export function PostsManagementClient() {
                     </SelectContent>
                   </Select>
                 </div>
-
-                {(dateFrom || dateTo || statusFilter !== 'all' || aiFilter !== 'all' || cityFilter !== 'all' || searchQuery) && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => {
-                      setSearchQuery('')
-                      setStatusFilter('all')
-                      setAiFilter('all')
-                      setCityFilter('all')
-                      setDateFrom('')
-                      setDateTo('')
-                    }}
-                    className="h-9 px-3 hover:bg-red-50 hover:text-red-600 transition-colors"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                )}
               </div>
             </div>
           </CardContent>
@@ -763,7 +766,7 @@ export function PostsManagementClient() {
       )}
 
       {/* Posts table */}
-      <Card className="border bg-background flex-1 flex flex-col overflow-hidden">
+      <Card className="border bg-card flex-1 flex flex-col overflow-hidden">
         <CardContent className="p-0 flex-1 overflow-auto">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -935,13 +938,13 @@ export function PostsManagementClient() {
                           <Edit2 className="h-4 w-4 text-foreground" />
                         </Button>
                         <Button
-                          variant="ghost"
+                          variant="destructive"
                           size="sm"
                           onClick={() => handleDelete(post.id)}
-                          className="h-9 w-9 p-0 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all"
+                          className="h-9 w-9 p-0 rounded-lg flex items-center justify-center transition-all"
                           title="Usuń"
                         >
-                          <Trash2 className="h-4 w-4 text-foreground" />
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </td>

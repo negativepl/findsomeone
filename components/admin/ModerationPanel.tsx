@@ -40,7 +40,6 @@ interface Post {
 interface ModerationPanelProps {
   flaggedCount: number
   checkingCount: number
-  pendingCount: number
   rejectedCount: number
   appealsCount: number
 }
@@ -50,7 +49,6 @@ const ITEMS_PER_PAGE = 10
 export function ModerationPanel({
   flaggedCount,
   checkingCount,
-  pendingCount,
   rejectedCount,
   appealsCount
 }: ModerationPanelProps) {
@@ -177,16 +175,6 @@ export function ModerationPanel({
       ),
     },
     {
-      id: 'pending',
-      label: 'Oczekujące',
-      count: pendingCount,
-      icon: (
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-        </svg>
-      ),
-    },
-    {
       id: 'rejected',
       label: 'Odrzucone',
       count: rejectedCount,
@@ -204,16 +192,14 @@ export function ModerationPanel({
 
       {/* Posts List */}
       {loading ? (
-        <Card className="border bg-background rounded-3xl">
-          <CardContent className="py-20 text-center">
-            <div className="flex items-center justify-center gap-3">
-              <div className="w-6 h-6 border border-brand border-t-transparent rounded-full animate-spin" />
-              <span className="text-muted-foreground">Ładowanie...</span>
-            </div>
-          </CardContent>
+        <Card className="border bg-card rounded-3xl flex-1 flex items-center justify-center">
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-6 h-6 border border-brand border-t-transparent rounded-full animate-spin" />
+            <span className="text-muted-foreground">Ładowanie...</span>
+          </div>
         </Card>
       ) : posts.length === 0 ? (
-        <Card className="border bg-background flex-1 flex items-center justify-center">
+        <Card className="border bg-card rounded-3xl flex-1 flex items-center justify-center">
           <div className="text-center py-12">
             <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
               <Check className="w-10 h-10 text-muted-foreground" />
@@ -228,7 +214,7 @@ export function ModerationPanel({
         </Card>
       ) : (
         <>
-          <Card className="border bg-background rounded-3xl overflow-hidden flex-1 flex flex-col">
+          <Card className="border bg-card rounded-3xl overflow-hidden flex-1 flex flex-col">
             <div className="divide-y divide-border">
               {currentPosts.map((post) => (
                 <div key={post.id} className="p-6">
@@ -337,7 +323,7 @@ export function ModerationPanel({
                               onChange={(e) =>
                                 setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
                               }
-                              className="rounded-2xl border-input bg-background text-foreground"
+                              className="rounded-2xl border border-input bg-background text-foreground focus:border-ring"
                               rows={2}
                             />
                           </div>
@@ -374,7 +360,7 @@ export function ModerationPanel({
                               onChange={(e) =>
                                 setRejectReasons({ ...rejectReasons, [post.id]: e.target.value })
                               }
-                              className="rounded-2xl border-input bg-background text-foreground"
+                              className="rounded-2xl border border-input bg-background text-foreground focus:border-ring"
                               rows={2}
                             />
                           </div>

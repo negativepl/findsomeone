@@ -193,7 +193,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
 
   if (reports.length === 0) {
     return (
-      <Card className="border bg-background flex-1 flex items-center justify-center">
+      <Card className="border bg-card flex-1 flex items-center justify-center">
         <div className="text-center py-12">
           <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-muted flex items-center justify-center">
             <Check className="w-10 h-10 text-muted-foreground" />
@@ -213,7 +213,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
     <div className="grid lg:grid-cols-[1fr_550px] gap-6">
       {/* Reports List */}
       <div>
-        <Card className="border bg-background rounded-3xl overflow-hidden">
+        <Card className="border bg-card rounded-3xl overflow-hidden">
           <div className="divide-y divide-border">
             {reports.map((report) => (
               <div
@@ -314,7 +314,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
       {/* Details Panel */}
       <div className="lg:sticky lg:top-6 lg:self-start">
         {selectedReport ? (
-          <Card className="border bg-background rounded-3xl overflow-hidden">
+          <Card className="border bg-card rounded-3xl overflow-hidden">
             {/* Header */}
             <div className="px-6 py-5 border-b border-border">
               <div className="flex items-center justify-between gap-4 mb-2">
@@ -378,7 +378,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
                 <textarea
                   value={actionNotes}
                   onChange={(e) => setActionNotes(e.target.value)}
-                  className="w-full px-4 py-3 rounded-2xl border border-input focus:outline-none focus:ring-2 focus:ring-brand resize-none bg-background text-foreground"
+                  className="w-full px-4 py-3 rounded-2xl border border-input focus:outline-none focus:border-ring resize-none bg-background text-foreground"
                   rows={3}
                   placeholder="Dodaj notatki do zgłoszenia..."
                   disabled={isProcessing}
@@ -482,7 +482,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
                     <textarea
                       value={banReason}
                       onChange={(e) => setBanReason(e.target.value)}
-                      className="w-full px-4 py-3 rounded-2xl border border-input focus:outline-none focus:ring-2 focus:ring-brand resize-none bg-background text-foreground"
+                      className="w-full px-4 py-3 rounded-2xl border border-input focus:outline-none focus:border-ring resize-none bg-background text-foreground"
                       rows={3}
                       placeholder="Np. Wielokrotne naruszanie regulaminu, spam, molestowanie..."
                       disabled={isProcessing}
@@ -516,7 +516,7 @@ export function ReportsList({ initialReports }: ReportsListProps) {
             )}
           </Card>
         ) : (
-          <Card className="border bg-background rounded-3xl p-12">
+          <Card className="border bg-card rounded-3xl p-12">
             <div className="text-center">
               <Eye className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
               <p className="text-muted-foreground">

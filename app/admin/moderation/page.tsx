@@ -16,10 +16,6 @@ export default async function ModerationPage() {
     .select('*', { count: 'exact', head: true })
     .eq('moderation_status', 'flagged')
 
-  const { count: pendingCount } = await supabase
-    .from('posts')
-    .select('*', { count: 'exact', head: true })
-    .eq('moderation_status', 'pending')
 
   const { count: checkingCount } = await supabase
     .from('posts')
@@ -40,8 +36,8 @@ export default async function ModerationPage() {
 
   return (
     <div className="w-full h-full p-2 flex flex-col">
-      <Card className="rounded-3xl border p-0 gap-0 flex-1 flex flex-col overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-8 py-4 border-b">
+      <Card className="rounded-xl border p-0 gap-0 flex-1 flex flex-col overflow-hidden bg-card">
+        <CardHeader className="h-20 flex flex-row items-center justify-between space-y-0 px-8 border-b flex-shrink-0">
           <div>
             <CardTitle className="text-base font-bold">Moderacja ogłoszeń</CardTitle>
             <p className="text-sm text-muted-foreground mt-0.5">
@@ -49,11 +45,10 @@ export default async function ModerationPage() {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
           <ModerationPanel
             flaggedCount={flaggedCount || 0}
             checkingCount={checkingCount || 0}
-            pendingCount={pendingCount || 0}
             rejectedCount={rejectedCount || 0}
             appealsCount={appealsCount || 0}
           />

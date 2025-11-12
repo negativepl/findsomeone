@@ -7,9 +7,10 @@ interface SimpleLineChartProps {
   label: string
   color?: string
   totalValue?: number // Optional: use this instead of calculating from data
+  tooltipSuffix?: string // Optional: custom suffix for tooltip (e.g., "użytkowników", "ogłoszeń")
 }
 
-export function SimpleLineChart({ data, label, color = '#f27361', totalValue }: SimpleLineChartProps) {
+export function SimpleLineChart({ data, label, color = '#f27361', totalValue, tooltipSuffix = 'wyświetleń' }: SimpleLineChartProps) {
   // Use provided totalValue or calculate from data
   const displayValue = totalValue ?? (data?.reduce((sum, item) => sum + item.value, 0) || 0)
 
@@ -23,13 +24,13 @@ export function SimpleLineChart({ data, label, color = '#f27361', totalValue }: 
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4 animate-in fade-in slide-in-from-top-2 duration-500">
+      <div className="flex items-center justify-between mb-3 flex-shrink-0 animate-in fade-in slide-in-from-top-2 duration-500">
         <span className="text-sm text-muted-foreground animate-in fade-in slide-in-from-left-3 duration-700">{label}</span>
         <span className="text-2xl font-bold text-foreground animate-in fade-in slide-in-from-right-3 zoom-in-50 duration-700">
           {displayValue.toLocaleString('pl-PL')}
         </span>
       </div>
-      <div className="flex-1 min-h-[300px]">
+      <div className="flex-1 min-h-0">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
             data={data || []}
@@ -70,10 +71,10 @@ export function SimpleLineChart({ data, label, color = '#f27361', totalValue }: 
                     }}
                   >
                     <p style={{ color: 'hsl(var(--foreground))', margin: 0, marginBottom: '4px', fontWeight: 500 }}>
-                      {payload[0].payload.date}
+                      {payload[0].payload.dateRange || payload[0].payload.date}
                     </p>
                     <p style={{ color: 'hsl(var(--foreground))', margin: 0 }}>
-                      {payload[0].value} wyświetleń
+                      {payload[0].value} {tooltipSuffix}
                     </p>
                   </div>
                 )

@@ -33,8 +33,8 @@ export default async function AdminSynonymsPage() {
 
   return (
     <div className="w-full h-full p-2 flex flex-col">
-      <Card className="rounded-3xl border p-0 gap-0 flex-1 flex flex-col overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-8 py-4 border-b">
+      <Card className="rounded-xl border bg-card p-0 gap-0 flex-1 flex flex-col overflow-hidden">
+        <CardHeader className="h-20 flex flex-row items-center justify-between space-y-0 px-8 border-b flex-shrink-0">
           <div>
             <CardTitle className="text-base font-bold">Zarządzanie synonimami</CardTitle>
             <p className="text-sm text-muted-foreground mt-0.5">
@@ -42,7 +42,7 @@ export default async function AdminSynonymsPage() {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
           <SynonymsManager
             initialSynonyms={synonyms || []}
             initialCategories={categories || []}

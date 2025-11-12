@@ -32,8 +32,8 @@ export default async function EmbeddingsPage() {
 
   return (
     <div className="w-full h-full p-2 flex flex-col">
-      <Card className="rounded-3xl border p-0 gap-0 flex-1 flex flex-col overflow-hidden">
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 px-8 py-4 border-b">
+      <Card className="rounded-xl border bg-card p-0 gap-0 flex-1 flex flex-col overflow-hidden">
+        <CardHeader className="h-20 flex flex-row items-center justify-between space-y-0 px-8 border-b flex-shrink-0">
           <div>
             <CardTitle className="text-base font-bold">Wyszukiwanie semantyczne AI</CardTitle>
             <p className="text-sm text-muted-foreground mt-0.5">
@@ -41,10 +41,10 @@ export default async function EmbeddingsPage() {
             </p>
           </div>
         </CardHeader>
-        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col">
+        <CardContent className="p-8 flex-1 overflow-y-auto flex flex-col bg-background">
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <Card className="border bg-background">
+            <Card className="border bg-card">
               <div className="p-6">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Wszystkie posty</p>
                 <div className="flex items-baseline gap-2">
@@ -53,7 +53,7 @@ export default async function EmbeddingsPage() {
               </div>
             </Card>
 
-            <Card className="border bg-background">
+            <Card className="border bg-card">
               <div className="p-6">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Z embeddingami</p>
                 <div className="flex items-baseline gap-2">
@@ -62,7 +62,7 @@ export default async function EmbeddingsPage() {
               </div>
             </Card>
 
-            <Card className="border bg-background">
+            <Card className="border bg-card">
               <div className="p-6">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Bez embeddingów</p>
                 <div className="flex items-baseline gap-2">
@@ -71,7 +71,7 @@ export default async function EmbeddingsPage() {
               </div>
             </Card>
 
-            <Card className="border bg-background">
+            <Card className="border bg-card">
               <div className="p-6">
                 <p className="text-sm font-medium text-muted-foreground mb-2">Pokrycie</p>
                 <div className="flex items-baseline gap-2">

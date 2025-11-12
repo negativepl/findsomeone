@@ -65,17 +65,17 @@ export function DeleteCategoryDialog({ category, onClose, onDeleted }: DeleteCat
             {' '}Ta operacja jest nieodwracalna. Ogłoszenia przypisane do tej kategorii nie będą miały przypisanej kategorii.
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <div className="mt-8 pt-6 border-t-2 border-black/5">
+        <div className="mt-8 pt-6 border-t border-border">
           <AlertDialogFooter className="gap-2 sm:gap-2">
             <AlertDialogCancel
-              className="rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5"
+              className="rounded-full border-border hover:bg-muted"
               disabled={loading}
             >
               Anuluj
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="rounded-full bg-red-600 hover:bg-red-700 text-white border-0"
+              className="rounded-full bg-destructive hover:bg-destructive/90 text-destructive-foreground border-0"
               disabled={loading}
             >
               {loading ? 'Usuwanie...' : 'Usuń kategorię'}

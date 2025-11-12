@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
-import { Loader2, Sparkles, Trash2, RefreshCw, ChevronDown, ChevronRight } from 'lucide-react'
+import { Loader2, Sparkles, Trash2, RefreshCw, ChevronDown, ChevronRight, Settings, Zap } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ContentBotSettings } from './ContentBotSettings'
 
 interface GenerationProgress {
   current: number
@@ -332,43 +334,112 @@ export default function ContentBotPanel() {
   }
 
   return (
-    <div className="space-y-6 flex-1 overflow-y-auto">
-      {/* Stats Card */}
-      <div className="border bg-background rounded-3xl overflow-hidden flex-shrink-0">
-        <div className="px-6 py-6">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-2xl font-bold text-foreground mb-1">Statystyki</h2>
+    <Tabs defaultValue="generate" className="flex-1 flex flex-col overflow-hidden">
+      <TabsList className="mb-4 w-fit">
+        <TabsTrigger value="generate" className="flex items-center gap-2">
+          <Zap className="w-4 h-4" />
+          Generowanie
+        </TabsTrigger>
+        <TabsTrigger value="settings" className="flex items-center gap-2">
+          <Settings className="w-4 h-4" />
+          Ustawienia
+        </TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="generate" className="flex-1 overflow-y-auto">
+        <div className="space-y-6">
+        {/* Stats Card */}
+        <div className="border bg-card rounded-3xl overflow-hidden flex-shrink-0">
+          <div className="px-6 py-6">
+            <div className="mb-4">
+              <h2 className="text-xl font-bold text-foreground mb-1">Statystyki</h2>
               <p className="text-sm text-muted-foreground">Ogłoszenia wygenerowane przez AI</p>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => {
-                fetchAiPostsCount()
-                fetchCategories()
-              }}
-              disabled={isLoadingCount || isLoadingCategories}
-              className="rounded-full hover:bg-muted"
-            >
-              <RefreshCw className={`h-4 w-4 ${isLoadingCount || isLoadingCategories ? 'animate-spin' : ''}`} />
-            </Button>
-          </div>
 
-
-          <div className="text-5xl font-bold text-brand mb-2">
-            {isLoadingCount ? '...' : aiPostsCount.toLocaleString()}
+            <div className="text-5xl font-bold text-brand mb-2">
+              {isLoadingCount ? '...' : aiPostsCount.toLocaleString()}
+            </div>
+            <p className="text-sm text-muted-foreground">aktywnych ogłoszeń AI</p>
           </div>
-          <p className="text-sm text-muted-foreground">aktywnych ogłoszeń AI</p>
         </div>
-      </div>
 
-      {/* Category Selection */}
-      <div className="border bg-background rounded-3xl overflow-hidden flex-shrink-0">
+        {/* Generation Progress */}
+        {generationProgress && (
+          <div className="rounded-3xl overflow-hidden border bg-card border-brand/30 flex-shrink-0">
+            <div className="p-6 space-y-3">
+              <div className="flex items-center gap-3 mb-4">
+                <Loader2 className="h-6 w-6 animate-spin text-brand" />
+                <div>
+                  <h3 className="text-xl font-bold text-foreground">Generowanie w toku...</h3>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-medium text-foreground">
+                  Postów: {generationProgress.current} / {generationProgress.total}
+                </span>
+                <span className="text-muted-foreground">
+                  {Math.round((generationProgress.current / generationProgress.total) * 100)}%
+                </span>
+              </div>
+
+              <div className="w-full bg-muted rounded-full h-3">
+                <div
+                  className="bg-brand h-3 rounded-full transition-all duration-300"
+                  style={{ width: `${(generationProgress.current / generationProgress.total) * 100}%` }}
+                ></div>
+              </div>
+
+              {generationProgress.categoryName && (
+                <div className="pt-2 border-t border-border">
+                  <p className="text-sm text-muted-foreground">
+                    <span className="font-medium text-foreground">{generationProgress.categoryName}</span>
+                    {' '}- {generationProgress.postType}
+                    {' '}({generationProgress.postNumber}/{generationProgress.totalForCategory})
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Generation Stats */}
+        {generationStats && !isGenerating && (
+          <div className="bg-green-50 rounded-xl border border-green-200 p-6">
+            <h3 className="text-lg font-semibold text-green-900 mb-2">Generowanie zakończone!</h3>
+            <div className="space-y-1 text-sm">
+              <p className="text-green-800">
+                ✓ Wygenerowano: <span className="font-semibold">{generationStats.generated}</span> ogłoszeń
+              </p>
+              {generationStats.failed > 0 && (
+                <p className="text-red-600">
+                  ✗ Błędy: <span className="font-semibold">{generationStats.failed}</span>
+                </p>
+              )}
+            </div>
+
+            {generationStats.errors.length > 0 && (
+              <div className="mt-4 p-3 bg-red-50 rounded-lg">
+                <p className="text-xs font-medium text-red-900 mb-2">Szczegóły błędów:</p>
+                <ul className="text-xs text-red-800 space-y-1">
+                  {generationStats.errors.slice(0, 5).map((error, index) => (
+                    <li key={index} className="truncate">• {error}</li>
+                  ))}
+                  {generationStats.errors.length > 5 && (
+                    <li className="text-red-600">... i {generationStats.errors.length - 5} więcej</li>
+                  )}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Category Selection */}
+      <div className="border bg-card rounded-3xl overflow-hidden flex-shrink-0">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-1">Wybierz kategorie</h2>
+              <h2 className="text-xl font-bold text-foreground mb-1">Wybierz kategorie</h2>
               <p className="text-sm text-muted-foreground">
                 {selectedCategories.size === 0
                   ? 'Brak wyboru = wszystkie kategorie'
@@ -520,152 +591,85 @@ export default function ContentBotPanel() {
           </div>
           )}
         </div>
-      </div>
 
-      {/* Generation Progress */}
-      {generationProgress && (
-        <div className="rounded-3xl overflow-hidden border bg-background border-brand/30 flex-shrink-0">
-          <div className="p-6 space-y-3">
-            <div className="flex items-center gap-3 mb-4">
-              <Loader2 className="h-6 w-6 animate-spin text-brand" />
-              <div>
-                <h3 className="text-2xl font-bold text-foreground">Generowanie w toku...</h3>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-medium text-foreground">
-                Postów: {generationProgress.current} / {generationProgress.total}
-              </span>
-              <span className="text-muted-foreground">
-                {Math.round((generationProgress.current / generationProgress.total) * 100)}%
-              </span>
-            </div>
-
-            <div className="w-full bg-muted rounded-full h-3">
-              <div
-                className="bg-brand h-3 rounded-full transition-all duration-300"
-                style={{ width: `${(generationProgress.current / generationProgress.total) * 100}%` }}
-              ></div>
-            </div>
-
-            {generationProgress.categoryName && (
-              <div className="pt-2 border-t border-border">
-                <p className="text-sm text-muted-foreground">
-                  <span className="font-medium text-foreground">{generationProgress.categoryName}</span>
-                  {' '}- {generationProgress.postType}
-                  {' '}({generationProgress.postNumber}/{generationProgress.totalForCategory})
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Generation Stats */}
-      {generationStats && !isGenerating && (
-        <div className="bg-green-50 rounded-xl border border-green-200 p-6">
-          <h3 className="text-lg font-semibold text-green-900 mb-2">Generowanie zakończone!</h3>
-          <div className="space-y-1 text-sm">
-            <p className="text-green-800">
-              ✓ Wygenerowano: <span className="font-semibold">{generationStats.generated}</span> ogłoszeń
-            </p>
-            {generationStats.failed > 0 && (
-              <p className="text-red-600">
-                ✗ Błędy: <span className="font-semibold">{generationStats.failed}</span>
-              </p>
-            )}
-          </div>
-
-          {generationStats.errors.length > 0 && (
-            <div className="mt-4 p-3 bg-red-50 rounded-lg">
-              <p className="text-xs font-medium text-red-900 mb-2">Szczegóły błędów:</p>
-              <ul className="text-xs text-red-800 space-y-1">
-                {generationStats.errors.slice(0, 5).map((error, index) => (
-                  <li key={index} className="truncate">• {error}</li>
-                ))}
-                {generationStats.errors.length > 5 && (
-                  <li className="text-red-600">... i {generationStats.errors.length - 5} więcej</li>
-                )}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* Action Buttons */}
-      <div className="border bg-background rounded-3xl overflow-hidden flex-shrink-0">
-        <div className="p-6">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-foreground mb-1">Akcje</h2>
-            <p className="text-sm text-muted-foreground">Generuj lub usuń ogłoszenia AI</p>
-          </div>
-
-        <div className="flex flex-col gap-3">
-          <Button
-            onClick={handleGenerate}
-            disabled={isGenerating || isDeleting}
-            className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold py-6"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Generowanie...
-              </>
-            ) : (
-              <>
-                <Sparkles className="mr-2 h-5 w-5" />
-                {selectedCategories.size === 0
-                  ? 'Wygeneruj dla wszystkich kategorii'
-                  : `Wygeneruj dla ${selectedCategories.size} wybranych`}
-              </>
-            )}
-          </Button>
-
-          <div className="flex gap-3">
-            {selectedCategories.size > 0 && (
+        {/* Action Buttons Footer */}
+        <div className="px-6 pb-6 pt-6">
+          <div className="border-t border-border pt-6">
+            <div className="flex gap-3">
               <Button
-                onClick={handleDeleteByCategory}
+                onClick={handleGenerate}
                 disabled={isGenerating || isDeleting}
+                className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold gap-1"
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                    Generowanie...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="mr-1 h-4 w-4" />
+                    {selectedCategories.size === 0
+                      ? 'Wygeneruj wszystkie'
+                      : `Wygeneruj (${selectedCategories.size})`}
+                  </>
+                )}
+              </Button>
+
+              {selectedCategories.size > 0 && (
+                <Button
+                  onClick={handleDeleteByCategory}
+                  disabled={isGenerating || isDeleting}
+                  variant="outline"
+                  className="rounded-full border-border hover:bg-muted font-semibold gap-1"
+                >
+                  {isDeleting ? (
+                    <>
+                      <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+                      Usuwanie...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 className="mr-1 h-4 w-4" />
+                      Usuń ({selectedCategories.size})
+                    </>
+                  )}
+                </Button>
+              )}
+
+              <Button
+                onClick={handleDeleteAll}
+                disabled={isGenerating || isDeleting || aiPostsCount === 0}
                 variant="outline"
-                className="flex-1 rounded-full border-border hover:bg-muted font-semibold py-6"
+                className="rounded-full border-border hover:bg-muted font-semibold gap-1"
               >
                 {isDeleting ? (
                   <>
-                    <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                    <Loader2 className="mr-1 h-4 w-4 animate-spin" />
                     Usuwanie...
                   </>
                 ) : (
                   <>
-                    <Trash2 className="mr-2 h-5 w-5" />
-                    Usuń z {selectedCategories.size} wybranych
+                    <Trash2 className="mr-1 h-4 w-4" />
+                    Usuń wszystkie ({aiPostsCount})
                   </>
                 )}
               </Button>
-            )}
-
-            <Button
-              onClick={handleDeleteAll}
-              disabled={isGenerating || isDeleting || aiPostsCount === 0}
-              variant="outline"
-              className="flex-1 rounded-full border-border hover:bg-muted font-semibold py-6"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Usuwanie...
-                </>
-              ) : (
-                <>
-                  <Trash2 className="mr-2 h-5 w-5" />
-                  Usuń wszystkie ({aiPostsCount})
-                </>
-              )}
-            </Button>
+            </div>
           </div>
         </div>
-        </div>
       </div>
-    </div>
+        </div>
+      </TabsContent>
+
+      <TabsContent value="settings" className="flex-1 overflow-y-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+          <ContentBotSettings onSaved={() => {
+            fetchAiPostsCount()
+            fetchCategories()
+          }} />
+        </div>
+      </TabsContent>
+    </Tabs>
   )
 }

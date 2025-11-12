@@ -145,7 +145,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
     return (
       <div className="space-y-6">
         {/* Header with back button */}
-        <div className="bg-background border border-border rounded-3xl shadow-sm overflow-hidden">
+        <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
           <div className="px-6 py-5 border-b border-border bg-gradient-to-r from-brand/5 to-transparent">
             <button
               onClick={() => setEditingSection(null)}
@@ -158,7 +158,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
             </button>
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-foreground mb-1">Edytuj sekcję</h2>
+                <h2 className="text-xl font-bold text-foreground mb-1">Edytuj sekcję</h2>
                 <p className="text-sm text-muted-foreground">
                   {SECTION_TYPES[editingSection.type]?.label || editingSection.type}
                 </p>
@@ -173,7 +173,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
         </div>
 
         {/* Edit form */}
-        <div className="bg-background border border-border rounded-3xl p-8 shadow-sm">
+        <div className="bg-card border border-border rounded-3xl p-8 shadow-sm">
           <SectionEditor
             section={editingSection}
             categories={categories}
@@ -189,11 +189,11 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-background border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="px-6 py-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="text-2xl font-bold text-foreground mb-1">Page Builder</h1>
+              <h1 className="text-xl font-bold text-foreground mb-1">Page Builder</h1>
               <p className="text-sm text-muted-foreground">Zarządzaj sekcjami na stronie głównej</p>
             </div>
             <div className="px-4 py-2 bg-muted rounded-full">
@@ -207,9 +207,9 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
         <div className="flex items-center justify-between">
           <Button
             onClick={() => setIsAddDialogOpen(true)}
-            className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold shadow-sm"
+            className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold shadow-sm gap-1"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             Dodaj sekcję
@@ -235,9 +235,9 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
       </div>
 
       {/* Sections list with drag & drop */}
-      <div className="bg-background border border-border rounded-3xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-3xl shadow-sm overflow-hidden">
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-foreground mb-1">Sekcje strony głównej</h2>
+          <h2 className="text-xl font-bold text-foreground mb-1">Sekcje strony głównej</h2>
           <p className="text-sm text-muted-foreground mb-6">Przeciągnij sekcje aby zmienić kolejność</p>
 
         {sections.length === 0 ? (
@@ -245,7 +245,7 @@ export function PageBuilderClient({ initialSections, categories }: PageBuilderCl
             <p className="mb-4">Nie masz jeszcze żadnych sekcji</p>
             <Button
               onClick={() => setIsAddDialogOpen(true)}
-              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold gap-1"
             >
               Dodaj pierwszą sekcję
             </Button>

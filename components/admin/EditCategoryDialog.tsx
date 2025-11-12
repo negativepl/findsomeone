@@ -188,20 +188,20 @@ export function EditCategoryDialog({ category, onClose, onUpdated }: EditCategor
           </div>
 
           <div className="px-6 pb-6">
-            <div className="mt-8 pt-6 border-t-2 border-black/5">
+            <div className="mt-8 pt-6 border-t border-border">
               <DialogFooter className="gap-2 sm:gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={onClose}
-                  className="w-full sm:w-auto rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5"
+                  className="w-full sm:w-auto rounded-full border-border hover:bg-muted"
                   disabled={loading}
                 >
                   Anuluj
                 </Button>
                 <Button
                   type="submit"
-                  className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-white border-0 font-semibold"
+                  className="w-full sm:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
                   disabled={loading}
                 >
                   {loading ? 'Zapisywanie...' : 'Zapisz zmiany'}

@@ -84,10 +84,10 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
   return (
     <div className="flex-1 flex flex-col overflow-hidden">
       {/* Chat Assistant Settings */}
-      <Card className="border bg-background rounded-3xl overflow-hidden flex-1 flex flex-col">
+      <Card className="border bg-card rounded-3xl overflow-hidden flex-1 flex flex-col">
         <CardContent className="space-y-6 p-6 flex-1 overflow-y-auto">
           <div>
-            <h2 className="text-2xl font-bold text-foreground mb-1">Konfiguracja asystenta</h2>
+            <h2 className="text-xl font-bold text-foreground mb-1">Konfiguracja asystenta</h2>
             <p className="text-sm text-muted-foreground mb-6">Ustawienia AI chatbota dla użytkowników (GPT-4o mini)</p>
           </div>
           {/* Enable/Disable */}
@@ -178,18 +178,20 @@ export function ChatAssistantManager({ initialSettings }: ChatAssistantManagerPr
               Główny prompt określający zachowanie asystenta. Możesz użyć zmiennej <code className="bg-muted px-1 rounded">{'{CATEGORIES}'}</code> która zostanie automatycznie zastąpiona listą kategorii z bazy danych.
             </p>
           </div>
+        </CardContent>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-border flex-shrink-0">
+        {/* Actions */}
+        <div className="px-6 pb-6 pt-6">
+          <div className="border-t border-border pt-6 flex justify-end">
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold gap-1"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>
           </div>
-        </CardContent>
+        </div>
       </Card>
     </div>
   )

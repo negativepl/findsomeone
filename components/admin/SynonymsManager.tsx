@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Check } from 'lucide-react'
+import { Check, Hash, FolderTree, Plus } from 'lucide-react'
 
 interface Synonym {
   id: string
@@ -47,6 +47,18 @@ interface SynonymsManagerProps {
 
 export function SynonymsManager({ initialSynonyms, initialCategories }: SynonymsManagerProps) {
   const [activeTab, setActiveTab] = useState<'terms' | 'categories'>('terms')
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 })
+  const tabsRef = useRef<{ [key: string]: HTMLButtonElement | null }>({})
+
+  useEffect(() => {
+    const currentTab = tabsRef.current[activeTab]
+    if (currentTab) {
+      setIndicatorStyle({
+        left: currentTab.offsetLeft,
+        width: currentTab.offsetWidth,
+      })
+    }
+  }, [activeTab])
   const [synonyms, setSynonyms] = useState<Synonym[]>(initialSynonyms)
   const [newTerm, setNewTerm] = useState('')
   const [newSynonym, setNewSynonym] = useState('')
@@ -286,31 +298,35 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       {/* Tabs */}
       <div className="relative flex gap-2 border-b-2 border-border">
         <button
+          ref={(el) => { tabsRef.current['terms'] = el }}
           onClick={() => setActiveTab('terms')}
-          className={`px-6 py-4 font-semibold transition-colors duration-200 relative ${
+          className={`flex items-center gap-2 px-6 py-4 font-semibold transition-colors duration-200 relative ${
             activeTab === 'terms'
               ? 'text-brand/90'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
+          <Hash className="w-5 h-5" />
           Terminy wyszukiwania
         </button>
         <button
+          ref={(el) => { tabsRef.current['categories'] = el }}
           onClick={() => setActiveTab('categories')}
-          className={`px-6 py-4 font-semibold transition-colors duration-200 relative ${
+          className={`flex items-center gap-2 px-6 py-4 font-semibold transition-colors duration-200 relative ${
             activeTab === 'categories'
               ? 'text-brand/90'
               : 'text-muted-foreground hover:text-foreground'
           }`}
         >
+          <FolderTree className="w-5 h-5" />
           Kategorie
         </button>
         {/* Animated indicator bar */}
         <div
           className="absolute bottom-0 h-0.5 bg-brand transition-all duration-300 ease-out"
           style={{
-            left: activeTab === 'terms' ? '0px' : '220px',
-            width: activeTab === 'terms' ? '220px' : '120px',
+            left: `${indicatorStyle.left}px`,
+            width: `${indicatorStyle.width}px`,
           }}
         />
       </div>
@@ -318,90 +334,94 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       {activeTab === 'terms' && (
         <>
       {/* AI Synonym Generator */}
-      <Card className="border border-brand/20 rounded-3xl bg-background">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="text-xl">Generator synonimów AI</CardTitle>
-              <p className="text-sm text-muted-foreground mt-1 mb-2">Wykorzystuje GPT-5 nano do inteligentnego generowania synonimów</p>
-            </div>
-            <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
-              GPT-5 nano
-            </Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex flex-wrap gap-3">
-            <Button
-              variant={generationMode === 'trending' ? 'default' : 'outline'}
-              onClick={() => setGenerationMode('trending')}
-              className={generationMode === 'trending' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
-              Trendy (7 dni)
-            </Button>
-            <Button
-              variant={generationMode === 'popular' ? 'default' : 'outline'}
-              onClick={() => setGenerationMode('popular')}
-              className={generationMode === 'popular' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
-              </svg>
-              Popularne (30 dni)
-            </Button>
-            <Button
-              variant={generationMode === 'custom' ? 'default' : 'outline'}
-              onClick={() => setGenerationMode('custom')}
-              className={generationMode === 'custom' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
-            >
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-              </svg>
-              Własny termin
-            </Button>
-          </div>
+      <Card className="border bg-card rounded-3xl overflow-hidden">
+        <CardContent className="p-6">
+          <h2 className="text-xl font-bold text-foreground mb-1">Generator synonimów AI</h2>
+          <p className="text-sm text-muted-foreground mb-6">Automatyczne generowanie synonimów z danych platformy</p>
 
-          {generationMode === 'custom' && (
+          <div className="space-y-4">
             <div>
-              <Label htmlFor="customTerm">Własny termin do analizy</Label>
-              <Input
-                id="customTerm"
-                value={customTerm}
-                onChange={(e) => setCustomTerm(e.target.value)}
-                placeholder="np. sprzątanie mieszkań"
-                className="mt-2"
-              />
+              <Label className="text-sm font-medium text-foreground">Wybierz źródło</Label>
+              <div className="flex flex-wrap gap-2 mt-2">
+                <Button
+                  variant={generationMode === 'trending' ? 'default' : 'outline'}
+                  onClick={() => setGenerationMode('trending')}
+                  size="sm"
+                  className={generationMode === 'trending' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
+                >
+                  <svg className="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                  Trendy (7 dni)
+                </Button>
+                <Button
+                  variant={generationMode === 'popular' ? 'default' : 'outline'}
+                  onClick={() => setGenerationMode('popular')}
+                  size="sm"
+                  className={generationMode === 'popular' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
+                >
+                  <svg className="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                  </svg>
+                  Popularne (30 dni)
+                </Button>
+                <Button
+                  variant={generationMode === 'custom' ? 'default' : 'outline'}
+                  onClick={() => setGenerationMode('custom')}
+                  size="sm"
+                  className={generationMode === 'custom' ? 'rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0' : 'rounded-full'}
+                >
+                  <svg className="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                  </svg>
+                  Własny termin
+                </Button>
+              </div>
             </div>
-          )}
 
-          <Button
-            onClick={handleGenerateAI}
-            disabled={isGenerating || (generationMode === 'custom' && !customTerm.trim())}
-            className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
-          >
-            {isGenerating ? (
-              <>
-                <div className="w-4 h-4 border border-white/20 border-t-white rounded-full animate-spin mr-2" />
-                Generowanie synonimów...
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                </svg>
-                Wygeneruj synonimy
-              </>
+            {generationMode === 'custom' && (
+              <div>
+                <Label htmlFor="customTerm">Własny termin do analizy</Label>
+                <Input
+                  id="customTerm"
+                  value={customTerm}
+                  onChange={(e) => setCustomTerm(e.target.value)}
+                  placeholder="np. sprzątanie mieszkań"
+                  className="mt-2"
+                />
+              </div>
             )}
-          </Button>
+          </div>
         </CardContent>
+
+        <div className="px-6 pb-6 pt-6">
+          <div className="border-t border-border pt-6 flex justify-end">
+            <Button
+              onClick={handleGenerateAI}
+              disabled={isGenerating || (generationMode === 'custom' && !customTerm.trim())}
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 gap-1"
+            >
+              {isGenerating ? (
+                <>
+                  <div className="w-4 h-4 border border-white/20 border-t-white rounded-full animate-spin mr-1" />
+                  Generowanie synonimów...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                  </svg>
+                  Wygeneruj synonimy
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
       </Card>
 
       {/* AI Suggestions Panel */}
       {showAIPanel && aiSuggestions.length > 0 && (
-        <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-background">
+        <Card data-ai-panel className="border bg-card">
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Propozycje AI ({aiSuggestions.length})</CardTitle>
@@ -468,9 +488,9 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       )}
 
       {/* Add New Synonym Manually */}
-      <Card className="border bg-background rounded-3xl overflow-hidden">
+      <Card className="border bg-card rounded-3xl overflow-hidden">
         <CardContent className="p-6">
-          <h2 className="text-2xl font-bold text-foreground mb-1">Dodaj synonym ręcznie</h2>
+          <h2 className="text-xl font-bold text-foreground mb-1">Dodaj synonym ręcznie</h2>
           <p className="text-sm text-muted-foreground mb-6">Wprowadź termin główny i jego synonim</p>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
@@ -494,20 +514,26 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
               />
             </div>
           </div>
-          <Button
-            onClick={handleAdd}
-            disabled={isLoading || !newTerm.trim() || !newSynonym.trim()}
-            className="mt-4 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
-          >
-            Dodaj synonim
-          </Button>
         </CardContent>
+
+        <div className="px-6 pb-6 pt-6">
+          <div className="border-t border-border pt-6 flex justify-end">
+            <Button
+              onClick={handleAdd}
+              disabled={isLoading || !newTerm.trim() || !newSynonym.trim()}
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 gap-1"
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Dodaj synonim
+            </Button>
+          </div>
+        </div>
       </Card>
 
       {/* Existing Synonyms */}
-      <Card className="border bg-background rounded-3xl overflow-hidden">
+      <Card className="border bg-card rounded-3xl overflow-hidden">
         <CardContent className="p-6">
-          <h2 className="text-2xl font-bold text-foreground mb-1">Istniejące synonimy ({synonyms.length})</h2>
+          <h2 className="text-xl font-bold text-foreground mb-1">Istniejące synonimy ({synonyms.length})</h2>
           <p className="text-sm text-muted-foreground mb-6">Lista wszystkich aktywnych synonimów terminów</p>
           <div className="space-y-3">
             {Object.entries(groupedSynonyms).map(([term, syns]) => {
@@ -720,44 +746,40 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
       {activeTab === 'categories' && (
         <div className="space-y-6">
           {/* AI Category Synonym Generator */}
-          <Card className="border border-brand/20 rounded-3xl bg-background">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-xl">Generator synonimów kategorii AI</CardTitle>
-                  <p className="text-sm text-muted-foreground mt-1 mb-2">Automatycznie generuj synonimy dla wszystkich kategorii</p>
-                </div>
-                <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
-                  GPT-5 nano
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <Button
-                onClick={handleGenerateCategoryAI}
-                disabled={isGeneratingCategories || initialCategories.length === 0}
-                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
-              >
-                {isGeneratingCategories ? (
-                  <>
-                    <div className="w-4 h-4 border border-white/20 border-t-white rounded-full animate-spin mr-2" />
-                    Generowanie synonimów dla kategorii...
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-                    </svg>
-                    Wygeneruj synonimy dla wszystkich kategorii
-                  </>
-                )}
-              </Button>
+          <Card className="border bg-card rounded-3xl overflow-hidden">
+            <CardContent className="p-6">
+              <h2 className="text-xl font-bold text-foreground mb-1">Generator synonimów kategorii AI</h2>
+              <p className="text-sm text-muted-foreground mb-0">Automatycznie generuj synonimy dla wszystkich kategorii</p>
             </CardContent>
+
+            <div className="px-6 pb-6 pt-6">
+              <div className="border-t border-border pt-6 flex justify-end">
+                <Button
+                  onClick={handleGenerateCategoryAI}
+                  disabled={isGeneratingCategories || initialCategories.length === 0}
+                  className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 gap-1"
+                >
+                  {isGeneratingCategories ? (
+                    <>
+                      <div className="w-4 h-4 border border-white/20 border-t-white rounded-full animate-spin mr-1" />
+                      Generowanie...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                      </svg>
+                      Wygeneruj synonimy
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
           </Card>
 
           {/* AI Category Suggestions Panel */}
           {showCategoryAIPanel && categoryAiSuggestions.length > 0 && (
-            <Card data-ai-panel className="border border-green-500/20 rounded-3xl bg-background">
+            <Card data-ai-panel className="border bg-card">
               <CardHeader>
                 <div className="flex items-center justify-between">
                   <CardTitle>Propozycje AI dla kategorii ({categoryAiSuggestions.length})</CardTitle>
@@ -823,9 +845,9 @@ export function SynonymsManager({ initialSynonyms, initialCategories }: Synonyms
             </Card>
           )}
 
-          <Card className="border bg-background rounded-3xl overflow-hidden">
+          <Card className="border bg-card rounded-3xl overflow-hidden">
             <CardContent className="p-6">
-              <h2 className="text-2xl font-bold text-foreground mb-1">Synonimy kategorii ({initialCategories.length})</h2>
+              <h2 className="text-xl font-bold text-foreground mb-1">Synonimy kategorii ({initialCategories.length})</h2>
               <p className="text-sm text-muted-foreground mb-6">
                 Dodaj synonimy do kategorii aby użytkownicy łatwiej je znajdowali. Np. dla kategorii "Hydraulik" dodaj: "instalator", "monter"
               </p>

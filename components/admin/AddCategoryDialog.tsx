@@ -25,7 +25,7 @@ import {
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import { IconPicker } from './IconPicker'
-import { Zap } from 'lucide-react'
+import { Zap, Plus } from 'lucide-react'
 
 interface Category {
   id: string
@@ -173,7 +173,8 @@ export function AddCategoryDialog({ parentId, onCategoryAdded }: AddCategoryDial
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 px-8">
+        <Button className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 px-8 gap-2">
+          <Plus className="w-4 h-4" />
           Dodaj kategorię
         </Button>
       </DialogTrigger>

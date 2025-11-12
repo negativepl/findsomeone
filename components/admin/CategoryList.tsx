@@ -6,7 +6,7 @@ import { EditCategoryDialog } from './EditCategoryDialog'
 import { EditSubcategoryDialog } from './EditSubcategoryDialog'
 import { DeleteCategoryDialog } from './DeleteCategoryDialog'
 import { CategoryIcon } from '@/lib/category-icons'
-import { ChevronRight, ChevronLeft, GripVertical } from 'lucide-react'
+import { ChevronRight, ChevronLeft, GripVertical, Pencil, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import {
   DndContext,
@@ -126,17 +126,20 @@ function SortableCategory({
         <Button
           variant="outline"
           size="sm"
-          onClick={onDelete}
-          className="rounded-full border border-border hover:border-border hover:bg-muted text-xs px-4"
+          onClick={onEdit}
+          className="rounded-full text-sm border-border hover:bg-muted gap-2"
         >
-          Usuń
+          <Pencil className="w-4 h-4" />
+          Edytuj
         </Button>
         <Button
+          variant="destructive"
           size="sm"
-          onClick={onEdit}
-          className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold text-xs px-4"
+          onClick={onDelete}
+          className="rounded-full text-sm gap-2"
         >
-          Edytuj
+          <Trash2 className="w-4 h-4" />
+          Usuń
         </Button>
       </div>
     </div>
@@ -219,17 +222,20 @@ function SortableSubcategory({
         <Button
           variant="outline"
           size="sm"
-          onClick={onDelete}
-          className="rounded-full border border-border hover:border-border hover:bg-muted text-xs px-4"
+          onClick={onEdit}
+          className="rounded-full text-sm border-border hover:bg-muted gap-2"
         >
-          Usuń
+          <Pencil className="w-4 h-4" />
+          Edytuj
         </Button>
         <Button
+          variant="destructive"
           size="sm"
-          onClick={onEdit}
-          className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold text-xs px-4"
+          onClick={onDelete}
+          className="rounded-full text-sm gap-2"
         >
-          Edytuj
+          <Trash2 className="w-4 h-4" />
+          Usuń
         </Button>
       </div>
     </div>

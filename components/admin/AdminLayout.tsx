@@ -216,13 +216,13 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 bottom-0 w-64 bg-background border border-border z-50 transition-transform duration-300 lg:rounded-3xl lg:m-2 ${
+        className={`fixed top-0 left-0 bottom-0 w-64 bg-background border border-border z-50 transition-transform duration-300 lg:rounded-xl lg:m-2 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         <div className="flex flex-col h-full">
           {/* Logo/Header */}
-          <div className="h-16 border-b border-border flex items-center px-6">
+          <div className="h-20 border-b border-border flex items-center px-6">
             <Link href="/admin" className="flex items-center gap-2.5 group">
               <Logo className="w-9 h-9 flex-shrink-0" />
               <div className="flex flex-col -space-y-0.5">
@@ -263,6 +263,7 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
                         : 'text-muted-foreground hover:bg-accent hover:text-foreground'
                     }`}
                   >
+                    {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
                     <span className="text-sm font-medium flex-1">{item.label}</span>
                     {badgeCount && (
                       <span
@@ -314,7 +315,7 @@ export function AdminLayout({ children, user, profile, stats }: AdminLayoutProps
       </aside>
 
       {/* Main Content */}
-      <main className="lg:pl-[272px] pt-16 lg:pt-0 w-full h-screen flex flex-col">
+      <main className="lg:pl-[264px] pt-16 lg:pt-0 w-full h-screen flex flex-col">
         {children}
       </main>
     </div>

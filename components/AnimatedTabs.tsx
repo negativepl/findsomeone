@@ -61,7 +61,7 @@ export function AnimatedTabs({ tabs, activeTab, onTabChange, className = '', sho
             <span
               className={`px-1.5 md:px-2.5 py-0.5 md:py-1 rounded-full text-xs font-bold transition-all duration-200 ${
                 activeTab === tab.id
-                  ? 'bg-brand text-white'
+                  ? 'bg-brand text-brand-foreground'
                   : 'bg-muted text-muted-foreground'
               }`}
             >

@@ -123,6 +123,10 @@ export async function POST(request: Request) {
                 .replace('{categoryName}', category.name)
                 .replace('{categoryType}', categoryType)
                 .replace('{city}', city)
+                .replace('{titleMinLength}', aiSettings.content_bot_title_min_length?.toString() || '30')
+                .replace('{titleMaxLength}', aiSettings.content_bot_title_max_length?.toString() || '60')
+                .replace('{descMinLength}', aiSettings.content_bot_description_min_length?.toString() || '150')
+                .replace('{descMaxLength}', aiSettings.content_bot_description_max_length?.toString() || '300')
 
               // Generate post content with GPT-5 Nano
               const completion = await openai.chat.completions.create({

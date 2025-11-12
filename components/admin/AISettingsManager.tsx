@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { MODELS } from '@/lib/ai-models'
+import { AnimatedTabs } from '@/components/AnimatedTabs'
+import { Hash, FolderTree, FileText } from 'lucide-react'
 
 interface AISettings {
   id: string
@@ -360,56 +362,24 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
   return (
     <div className="space-y-6">
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-border">
-        <button
-          onClick={() => setActiveTab('search')}
-          className={`px-6 py-3 font-medium transition-colors relative ${
-            activeTab === 'search'
-              ? 'text-brand'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Terminy wyszukiwania
-          {activeTab === 'search' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand" />
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('categories')}
-          className={`px-6 py-3 font-medium transition-colors relative ${
-            activeTab === 'categories'
-              ? 'text-brand'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Synonimy kategorii
-          {activeTab === 'categories' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand" />
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('seo')}
-          className={`px-6 py-3 font-medium transition-colors relative ${
-            activeTab === 'seo'
-              ? 'text-brand'
-              : 'text-muted-foreground hover:text-foreground'
-          }`}
-        >
-          Opisy SEO
-          {activeTab === 'seo' && (
-            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-brand" />
-          )}
-        </button>
-      </div>
+      <AnimatedTabs
+        tabs={[
+          { id: 'search', label: 'Terminy wyszukiwania', icon: <Hash className="w-5 h-5" /> },
+          { id: 'categories', label: 'Synonimy kategorii', icon: <FolderTree className="w-5 h-5" /> },
+          { id: 'seo', label: 'Opisy SEO', icon: <FileText className="w-5 h-5" /> },
+        ]}
+        activeTab={activeTab}
+        onTabChange={(tabId) => setActiveTab(tabId as 'search' | 'categories' | 'seo')}
+      />
 
       {activeTab === 'search' && (
         <>
       {/* Synonym Generation Settings */}
-      <Card className="border bg-background rounded-3xl overflow-hidden">
+      <Card className="border bg-card rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-1">Generowanie synonimów</h2>
+              <h2 className="text-xl font-bold text-foreground mb-1">Generowanie synonimów</h2>
               <p className="text-sm text-muted-foreground">Konfiguracja promptu i modelu AI dla terminów wyszukiwania</p>
             </div>
             <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
@@ -491,9 +461,11 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               Użyj <code className="bg-muted px-1 rounded">{'{terms}'}</code> jako placeholder dla terminów
             </p>
           </div>
+        </CardContent>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-border">
+        {/* Actions */}
+        <div className="px-6 pb-6 pt-6">
+          <div className="border-t border-border pt-6 flex justify-end gap-3">
             <Button
               onClick={handleReset}
               disabled={isLoading}
@@ -505,12 +477,12 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold gap-1"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>
           </div>
-        </CardContent>
+        </div>
       </Card>
         </>
       )}
@@ -518,11 +490,11 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'categories' && (
         <>
       {/* Category Synonym Generation Settings */}
-      <Card className="border bg-background rounded-3xl overflow-hidden">
+      <Card className="border bg-card rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-1">Synonimy kategorii</h2>
+              <h2 className="text-xl font-bold text-foreground mb-1">Synonimy kategorii</h2>
               <p className="text-sm text-muted-foreground">Konfiguracja promptu i modelu AI dla kategorii usług</p>
             </div>
             <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
@@ -604,9 +576,11 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               Użyj <code className="bg-muted px-1 rounded">{'{categories}'}</code> jako placeholder dla listy kategorii
             </p>
           </div>
+        </CardContent>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-border">
+        {/* Actions */}
+        <div className="px-6 pb-6 pt-6">
+          <div className="border-t border-border pt-6 flex justify-end gap-3">
             <Button
               onClick={handleReset}
               disabled={isLoading}
@@ -618,12 +592,12 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold gap-1"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>
           </div>
-        </CardContent>
+        </div>
       </Card>
         </>
       )}
@@ -631,11 +605,11 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
       {activeTab === 'seo' && (
         <>
       {/* SEO Description Generation Settings */}
-      <Card className="border bg-background rounded-3xl overflow-hidden">
+      <Card className="border bg-card rounded-3xl overflow-hidden">
         <CardContent className="space-y-6 p-6">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-foreground mb-1">Generowanie opisów SEO</h2>
+              <h2 className="text-xl font-bold text-foreground mb-1">Generowanie opisów SEO</h2>
               <p className="text-sm text-muted-foreground">Automatyczne tworzenie opisów dla kategorii i podkategorii</p>
             </div>
             <Badge variant="outline" className="rounded-full border-brand/20 bg-brand/5 text-brand">
@@ -779,12 +753,14 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
               className="mt-2 font-mono text-sm"
             />
             <p className="text-xs text-muted-foreground mt-1">
-              Użyj <code className="bg-muted px-1 rounded">{'{categoryName}'}</code> i <code className="bg-black/5 px-1 rounded">{'{categoryType}'}</code> jako placeholders
+              Użyj <code className="bg-muted px-1 rounded">{'{categoryName}'}</code> i <code className="bg-muted px-1 rounded">{'{categoryType}'}</code> jako placeholders
             </p>
           </div>
+        </CardContent>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t border-border">
+        {/* Actions */}
+        <div className="px-6 pb-6 pt-6">
+          <div className="border-t border-border pt-6 flex justify-end gap-3">
             <Button
               onClick={handleReset}
               disabled={isLoading}
@@ -796,12 +772,12 @@ export function AISettingsManager({ initialSettings }: AISettingsManagerProps) {
             <Button
               onClick={handleSave}
               disabled={isSaving}
-              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold"
+              className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 font-semibold gap-1"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz ustawienia'}
             </Button>
           </div>
-        </CardContent>
+        </div>
       </Card>
         </>
       )}

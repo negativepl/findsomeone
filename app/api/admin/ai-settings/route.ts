@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
     if (error) throw error
 
-    return NextResponse.json({ settings: data })
+    return NextResponse.json({ success: true, settings: data })
   } catch (error) {
     console.error('Failed to fetch AI settings:', error)
     return NextResponse.json({
@@ -81,7 +81,12 @@ export async function PUT(request: NextRequest) {
       content_bot_prompt,
       content_bot_model,
       content_bot_posts_per_category,
-      content_bot_offering_ratio
+      content_bot_offering_ratio,
+      content_bot_description_min_length,
+      content_bot_description_max_length,
+      content_bot_title_min_length,
+      content_bot_title_max_length,
+      content_bot_images_count
     } = body
 
     const { data, error } = await supabase
@@ -117,7 +122,12 @@ export async function PUT(request: NextRequest) {
         content_bot_prompt,
         content_bot_model,
         content_bot_posts_per_category,
-        content_bot_offering_ratio
+        content_bot_offering_ratio,
+        content_bot_description_min_length,
+        content_bot_description_max_length,
+        content_bot_title_min_length,
+        content_bot_title_max_length,
+        content_bot_images_count
       })
       .eq('id', '00000000-0000-0000-0000-000000000001')
       .select()
