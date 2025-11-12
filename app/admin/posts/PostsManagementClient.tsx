@@ -176,7 +176,7 @@ export function PostsManagementClient() {
 
         while (currentCat) {
           path.unshift(currentCat.name)
-          currentCat = currentCat.parent_id ? categoriesMap.get(currentCat.parent_id) : null
+          currentCat = currentCat.parent_id ? categoriesMap.get(currentCat.parent_id) : undefined
         }
 
         return path.join(' > ')
@@ -344,9 +344,9 @@ export function PostsManagementClient() {
 
         while (currentCat) {
           path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
-          currentCat = (currentCat.parent_id
-            ? allCats.find(cat => cat.id === currentCat.parent_id)
-            : null) || null
+          currentCat = currentCat.parent_id
+            ? allCats.find(cat => cat.id === currentCat?.parent_id)
+            : undefined
         }
 
         setCategoryPath(path)

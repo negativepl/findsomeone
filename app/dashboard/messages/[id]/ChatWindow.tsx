@@ -44,7 +44,7 @@ export function ChatWindow({ messages: initialMessages, currentUserId, otherUser
   // Typing indicator
   const conversationId = [currentUserId, otherUser.id].sort().join('-')
   const { isOtherUserTyping, sendTypingStatus } = useTypingIndicator(conversationId, otherUser.id)
-  const typingTimeoutRef = useRef<NodeJS.Timeout>()
+  const typingTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })

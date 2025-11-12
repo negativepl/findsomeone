@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient()
 
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user || !(await isAdmin(user.id))) {
+    if (!user || !(await isAdmin())) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 

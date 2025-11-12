@@ -261,7 +261,7 @@ Wiadomość została wysłana z formularza kontaktowego na stronie findsomeone.a
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Nieprawidłowe dane', details: error.errors },
+        { error: 'Nieprawidłowe dane', details: error.issues },
         { status: 400 }
       )
     }
