@@ -1,7 +1,7 @@
 {
-  "name": "FindSomeone - Znajdź pomoc w okolicy",
+  "name": "FindSomeone - Znajdź ogłoszenia w okolicy",
   "short_name": "FindSomeone",
-  "description": "Platforma łącząca ludzi w okolicy. Znajdź pomoc lub pomóż innym.",
+  "description": "Platforma łącząca ludzi w okolicy. Znajdź ogłoszenia lub dodaj własne.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FAF8F3",

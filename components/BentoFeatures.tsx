@@ -13,24 +13,30 @@ export function BentoFeatures() {
   }
   return (
     <section className="container mx-auto px-6 py-8 md:py-16">
-      <div className="text-center mb-8 md:mb-12">
+      <motion.div
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="text-center mb-8 md:mb-12"
+      >
         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-3">
           Dlaczego FindSomeone?
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           Prosta, bezpieczna platforma do lokalnej wymiany pomocy i usług
         </p>
-      </div>
+      </motion.div>
 
       {/* Bento Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-6 md:auto-rows-auto md:items-start">
 
         {/* Position 1 (Top Left): Całkowicie darmowe - TALL */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className="group relative overflow-hidden md:bg-gradient-to-br md:from-card md:to-card/50 md:border md:border-border md:rounded-3xl md:p-8 md:hover:border-brand/40 md:transition-all md:duration-300 md:min-h-[500px]"
         >
           <div className="relative z-10">
@@ -256,10 +262,10 @@ export function BentoFeatures() {
 
         {/* Position 2 (Top Right): Przemyślany design - SHORT */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
           className="group relative overflow-hidden md:bg-gradient-to-br md:from-card md:to-card/50 md:border md:border-border md:rounded-3xl md:p-8 md:hover:border-brand/40 md:transition-all md:duration-300 md:min-h-[380px] xl:min-h-[392px] 2xl:min-h-[380px]"
         >
           <div className="relative z-10 h-full flex flex-col">
@@ -653,10 +659,10 @@ export function BentoFeatures() {
 
         {/* Position 3 (Bottom Left): Bezpieczny kontakt - SHORT */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
           className="group relative overflow-hidden md:bg-gradient-to-br md:from-card md:to-card/50 md:border md:border-border md:rounded-3xl md:p-8 md:hover:border-brand/40 md:transition-all md:duration-300 md:min-h-[380px]"
         >
           <div className="relative z-10 h-full flex flex-col">
@@ -712,10 +718,10 @@ export function BentoFeatures() {
 
         {/* Position 4 (Bottom Right): Czat AI - TALL */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
           className="group relative overflow-hidden md:bg-gradient-to-br md:from-card md:to-card/50 md:border md:border-border md:rounded-3xl md:p-8 md:hover:border-brand/40 md:transition-all md:duration-300 md:min-h-[500px] md:-mt-[120px]"
         >
           <div className="relative z-10 h-full flex flex-col">

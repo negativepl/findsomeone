@@ -109,7 +109,7 @@ export default async function Home() {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'FindSomeone',
-    description: 'Platforma łącząca ludzi w Twoim mieście. Lokalna pomoc - zakupy, remont, sprzątanie. Znajdź pomocnika lub oferuj swoją pomoc innym za darmo.',
+    description: 'Platforma łącząca ludzi w Twoim mieście. Lokalne ogłoszenia - kupno, sprzedaż, wynajem, usługi. Znajdź to czego szukasz lub dodaj własne ogłoszenie za darmo.',
     url: baseUrl,
     potentialAction: {
       '@type': 'SearchAction',
@@ -127,7 +127,7 @@ export default async function Home() {
     name: 'FindSomeone',
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
-    description: 'Darmowa platforma lokalnej pomocy łącząca ludzi w mieście. Pomoc przy zakupach, remoncie, sprzątaniu i inne drobne usługi.',
+    description: 'Darmowa platforma lokalnych ogłoszeń łącząca ludzi w mieście. Kupno, sprzedaż, wynajem, usługi i inne ogłoszenia drobne.',
     areaServed: {
       '@type': 'Country',
       name: 'Polska',
@@ -137,6 +137,78 @@ export default async function Home() {
       contactType: 'customer service',
       availableLanguage: 'Polish',
     },
+  }
+
+  // FAQ JSON-LD for AI search engines (Perplexity, ChatGPT, etc.)
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: 'Co to jest FindSomeone?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'FindSomeone to darmowa platforma lokalnych ogłoszeń łącząca ludzi w Twoim mieście. Możesz sprzedawać, kupować, wynajmować rzeczy, oferować usługi lub znajdować to czego szukasz - wszystko lokalnie i za darmo.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Jak dodać ogłoszenie na FindSomeone?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Aby dodać ogłoszenie, zarejestruj się lub zaloguj, kliknij "Dodaj ogłoszenie", wybierz kategorię, wypełnij formularz z opisem, dodaj zdjęcia i opublikuj. Wszystko jest całkowicie darmowe bez żadnych limitów.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Czy FindSomeone jest darmowe?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Tak, FindSomeone jest w 100% darmowe. Możesz dodawać nieograniczoną liczbę ogłoszeń bez żadnych opłat, ukrytych kosztów czy limitów czasowych.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Jakie kategorie ogłoszeń są dostępne?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'FindSomeone oferuje szeroki wybór kategorii: sprzedaż i kupno rzeczy, wynajem mieszkań i nieruchomości, usługi fachowców (budowlane, remontowe, sprzątanie), praca i zlecenia, pomoc sąsiedzka, ogłoszenia drobne i wiele innych lokalnych kategorii.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Jak skontaktować się z osobą z ogłoszenia?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Możesz wysłać wiadomość przez wbudowany system czatu na FindSomeone, co chroni Twoją prywatność. Po uzgodnieniu szczegółów możesz wymienić się numerami telefonów bezpośrednio.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Gdzie działa FindSomeone?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'FindSomeone działa w całej Polsce. Możesz przeglądać i dodawać ogłoszenia w swojej okolicy - platforma automatycznie sortuje ogłoszenia według odległości od Ciebie, pokazując najbliższe oferty.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Czy mogę używać FindSomeone jako aplikacji mobilnej?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'Tak! FindSomeone działa jako Progressive Web App (PWA). Możesz zainstalować ją na swoim telefonie jak zwykłą aplikację i korzystać offline. Działa na iOS i Android.'
+        }
+      },
+      {
+        '@type': 'Question',
+        name: 'Jak FindSomeone różni się od OLX czy innych platform?',
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: 'FindSomeone to w 100% darmowa platforma bez opłat za promowanie ogłoszeń, bez limitów i reklam. Skupiamy się na lokalnych społecznościach, prostym interfejsie i bezpieczeństwie użytkowników. Dodatkowo oferujemy AI czat pomocniczy i zaawansowane wyszukiwanie lokalne.'
+        }
+      }
+    ]
   }
 
   return (
@@ -151,6 +223,11 @@ export default async function Home() {
         id="json-ld-organization"
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <Script
+        id="json-ld-faq"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
       <div className="min-h-screen bg-background">

@@ -40,7 +40,7 @@ export function StructuredData({ type, breadcrumbs, serviceName, serviceDescript
         '@context': 'https://schema.org',
         '@type': 'Service',
         name: serviceName || 'Usługi lokalne',
-        description: serviceDescription || 'Lokalne usługi i pomoc',
+        description: serviceDescription || 'Lokalne usługi i ogłoszenia',
         provider: {
           '@type': 'Organization',
           name: 'FindSomeone',
@@ -62,7 +62,7 @@ export function StructuredData({ type, breadcrumbs, serviceName, serviceDescript
         '@context': 'https://schema.org',
         '@type': 'LocalBusiness',
         name: 'FindSomeone',
-        description: 'Darmowa platforma lokalnej pomocy łącząca ludzi w mieście',
+        description: 'Darmowa platforma lokalnych ogłoszeń łącząca ludzi w mieście',
         url: baseUrl,
         telephone: '',
         priceRange: '$$',

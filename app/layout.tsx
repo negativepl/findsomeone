@@ -34,11 +34,11 @@ const lora = Lora({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'),
   title: {
-    default: "FindSomeone - Znajdź pomoc w okolicy",
+    default: "FindSomeone - Znajdź ogłoszenia w okolicy",
     template: "%s | FindSomeone"
   },
-  description: "Lokalna platforma ogłoszeń łącząca ludzi w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub szukaj pomocy. Wszelkie ogłoszenia w okolicy - za darmo.",
-  keywords: ["lokalne ogłoszenia", "sprzedaż w okolicy", "kupno rzeczy", "wynajem", "usługi w mieście", "pomoc w okolicy", "ogłoszenia drobne", "OLX alternatywa", "lokalna platforma", "FindSomeone", "aplikacja PWA", "ogłoszenia za darmo"],
+  description: "Lokalna platforma ogłoszeń łącząca ludzi w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub znajdź to czego szukasz. Wszelkie ogłoszenia w okolicy - za darmo.",
+  keywords: ["lokalne ogłoszenia", "sprzedaż w okolicy", "kupno rzeczy", "wynajem", "usługi w mieście", "ogłoszenia w okolicy", "ogłoszenia drobne", "OLX alternatywa", "lokalna platforma", "FindSomeone", "aplikacja PWA", "ogłoszenia za darmo"],
   authors: [{ name: "FindSomeone" }],
   creator: "FindSomeone",
   publisher: "FindSomeone",
@@ -58,13 +58,13 @@ export const metadata: Metadata = {
     locale: 'pl_PL',
     url: '/',
     siteName: 'FindSomeone',
-    title: 'FindSomeone - Znajdź pomoc w okolicy',
-    description: 'Lokalna platforma ogłoszeń łącząca ludzi w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub szukaj pomocy - wszelkie ogłoszenia w okolicy za darmo.',
+    title: 'FindSomeone - Znajdź ogłoszenia w okolicy',
+    description: 'Lokalna platforma ogłoszeń łącząca ludzi w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub znajdź to czego szukasz - wszelkie ogłoszenia w okolicy za darmo.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FindSomeone - Znajdź pomoc w okolicy',
-    description: 'Lokalne ogłoszenia w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub szukaj pomocy. Darmowa platforma.',
+    title: 'FindSomeone - Znajdź ogłoszenia w okolicy',
+    description: 'Lokalne ogłoszenia w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub znajdź to czego szukasz. Darmowa platforma.',
   },
   manifest: '/manifest.json',
   appleWebApp: {

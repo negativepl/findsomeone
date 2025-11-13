@@ -11,7 +11,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ user }: HeroSectionProps) {
-  const headingText = "Znajdź pomoc w okolicy"
+  const headingText = "Znajdź ogłoszenia w okolicy"
 
   return (
     <section className="relative overflow-hidden">
