@@ -60,8 +60,8 @@ const nextConfig: NextConfig = {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains',
           }] : []),
-          // Content Security Policy
-          {
+          // Content Security Policy - only in production
+          ...(!isDev ? [{
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
@@ -77,7 +77,7 @@ const nextConfig: NextConfig = {
               "frame-ancestors 'none'",
               "upgrade-insecure-requests",
             ].join('; '),
-          },
+          }] : []),
           // W development wyłącz cache
           ...(isDev ? [{
             key: 'Cache-Control',

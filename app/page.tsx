@@ -5,7 +5,7 @@ import { Footer } from '@/components/Footer'
 import { SectionRenderer } from '@/lib/homepage-sections/SectionRenderer'
 import { createClient } from '@/lib/supabase/server'
 import { HeroSection } from '@/components/HeroSection'
-import { FeaturesSection } from '@/components/FeaturesSection'
+import { BentoFeatures } from '@/components/BentoFeatures'
 import { CTASection } from '@/components/CTASection'
 import { AnimatedSection } from '@/components/AnimatedSection'
 
@@ -163,7 +163,7 @@ export default async function Home() {
         {/* Features Section - Only show for non-authenticated users */}
         {!user && (
           <AnimatedSection>
-            <FeaturesSection />
+            <BentoFeatures />
           </AnimatedSection>
         )}
 

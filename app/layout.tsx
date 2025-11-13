@@ -96,8 +96,8 @@ export default async function RootLayout({
       <head>
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="theme-color" content="#FAF8F3" media="(prefers-color-scheme: light)" />
-        <meta name="theme-color" content="#2E2E2E" media="(prefers-color-scheme: dark)" />
+        <meta name="theme-color" content="#FBF9F6" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#302E2C" media="(prefers-color-scheme: dark)" />
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -111,11 +111,26 @@ export default async function RootLayout({
                     document.documentElement.classList.add('dark');
                   }
 
-                  // Update theme-color meta tag
-                  var themeColorMeta = document.querySelector('meta[name="theme-color"]');
-                  if (themeColorMeta) {
-                    themeColorMeta.setAttribute('content', isDark ? '#2E2E2E' : '#FAF8F3');
+                  // Update theme-color meta tag dynamically from CSS variable
+                  function updateThemeColor() {
+                    var themeColorMeta = document.querySelector('meta[name="theme-color"]');
+                    if (themeColorMeta) {
+                      // Get computed card color from CSS variable
+                      var cardColor = getComputedStyle(document.documentElement).getPropertyValue('--card').trim();
+                      if (cardColor && cardColor.startsWith('oklch')) {
+                        // For Safari, use static hex colors that match our card background
+                        themeColorMeta.setAttribute('content', isDark ? '#302E2C' : '#FBF9F6');
+                      }
+                    }
                   }
+
+                  // Update immediately and when theme changes
+                  updateThemeColor();
+
+                  // Listen for theme changes
+                  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function() {
+                    updateThemeColor();
+                  });
                 } catch (e) {}
               })();
             `,

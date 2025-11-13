@@ -148,7 +148,7 @@ export async function POST(request: NextRequest) {
       return {
         id: post.id,
         title: post.title,
-        description: post.description?.substring(0, 150) + (post.description?.length > 150 ? '...' : ''),
+        description: post.description?.substring(0, 500) + (post.description?.length > 500 ? '...' : ''),
         price: post.price_type === 'free'
           ? 'Za darmo'
           : price > 0

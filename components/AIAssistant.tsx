@@ -56,6 +56,7 @@ export function AIAssistant() {
   const [settings, setSettings] = useState<ChatSettings | null>(null)
   const [isLoadingSettings, setIsLoadingSettings] = useState(true)
   const [isPinned, setIsPinned] = useState(false)
+  const [lastPosts, setLastPosts] = useState<Post[]>([]) // Track last search results for context
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const messagesContainerRef = useRef<HTMLDivElement>(null)
   const [mounted, setMounted] = useState(false)
@@ -123,6 +124,17 @@ export function AIAssistant() {
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return
 
+    // Client-side validation: max 250 characters
+    const MAX_MESSAGE_LENGTH = 250
+    if (input.length > MAX_MESSAGE_LENGTH) {
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: `Wiadomość jest zbyt długa. Maksymalna długość to ${MAX_MESSAGE_LENGTH} znaków. Twoja wiadomość ma ${input.length} znaków.`,
+        id: `error-${Date.now()}`
+      }])
+      return
+    }
+
     const userMessage: Message = {
       role: 'user',
       content: input,
@@ -133,15 +145,31 @@ export function AIAssistant() {
     setIsLoading(true)
 
     try {
+      // Debug: log what we're sending
+      console.log('[AI Assistant] Sending request:', {
+        messageCount: messages.length + 1,
+        hasLastPosts: lastPosts.length > 0,
+        lastPostsCount: lastPosts.length
+      })
+
       const response = await fetch('/api/ai-chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [...messages, userMessage].map(({ role, content }) => ({ role, content }))
+          messages: [...messages, userMessage].map(({ role, content }) => ({ role, content })),
+          lastPosts: lastPosts.length > 0 ? lastPosts : undefined // Send context of last search results
         })
       })
 
-      if (!response.ok) throw new Error('Failed to get response')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        console.error('API Error:', {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData
+        })
+        throw new Error(errorData.error || `Server error: ${response.status}`)
+      }
 
       const data = await response.json()
       const assistantMessage: Message = {
@@ -152,11 +180,17 @@ export function AIAssistant() {
         suggestions: data.suggestions || undefined
       }
       setMessages(prev => [...prev, assistantMessage])
+
+      // Update lastPosts context if we got new search results
+      if (data.posts && data.posts.length > 0) {
+        setLastPosts(data.posts)
+      }
     } catch (error) {
       console.error('Error:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: 'Przepraszam, wystąpił błąd. Spróbuj ponownie.',
+        content: `Przepraszam, wystąpił błąd: ${errorMessage}. Spróbuj ponownie.`,
         id: `error-${Date.now()}`
       }])
     } finally {
@@ -565,14 +599,22 @@ export function AIAssistant() {
             {/* Input - Fixed at bottom on mobile */}
             <div className="p-4 pb-safe md:pb-4 bg-card border-t border-border md:rounded-b-3xl">
               <div className="flex gap-2 items-center">
-                <input
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Napisz wiadomość..."
-                  className="flex-1 px-4 py-3 rounded-full bg-muted/80 text-foreground placeholder:text-muted-foreground border border-border/50 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent text-base md:text-sm transition-all"
-                />
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    placeholder="Napisz wiadomość..."
+                    maxLength={250}
+                    className={`w-full px-4 py-3 rounded-full bg-muted/80 text-foreground placeholder:text-muted-foreground border border-border/50 focus:outline-none focus:ring-2 focus:ring-brand focus:border-transparent text-base md:text-sm transition-all ${input.length >= 225 ? 'pr-[72px]' : ''}`}
+                  />
+                  {input.length >= 225 && (
+                    <div className={`absolute right-4 top-1/2 -translate-y-1/2 text-[11px] font-medium tabular-nums ${input.length > 240 ? 'text-destructive' : 'text-muted-foreground/60'}`}>
+                      {input.length}/250
+                    </div>
+                  )}
+                </div>
                 <button
                   onClick={handleSendMessage}
                   disabled={!input.trim() || isLoading}

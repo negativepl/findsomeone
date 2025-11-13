@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'motion/react'
 import { Button } from '@/components/ui/button'
+import { InteractiveHeroBackground } from '@/components/InteractiveHeroBackground'
 import type { User } from '@supabase/supabase-js'
 
 interface HeroSectionProps {
@@ -14,14 +15,9 @@ export function HeroSection({ user }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Gradient overlay - only in hero section */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 120% 60% at 50% 0%, hsl(var(--brand) / 0.15) 0%, hsl(var(--brand) / 0.08) 30%, transparent 70%)',
-        }}
-      />
-      
+      {/* Interactive animated background */}
+      <InteractiveHeroBackground />
+
       <div className="container relative mx-auto px-6 py-16 sm:py-18 md:py-24 lg:px-16 xl:px-20">
         <div className="relative z-10 pt-16 lg:min-h-[300px] flex flex-col items-center justify-center sm:mx-auto md:w-3/4 lg:mx-0 lg:w-full gap-4 lg:gap-8">
         <h1 className="text-4xl md:text-7xl font-bold text-foreground leading-tight text-center">
@@ -73,7 +69,7 @@ export function HeroSection({ user }: HeroSectionProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.3, delay: 0.4 }}
-            className="text-base md:text-xl text-muted-foreground leading-relaxed"
+            className="text-base md:text-xl text-foreground/70 leading-relaxed"
           >
             Sprzedaż, kupno, wynajem. Poszukiwanie fachowców i oferowanie usług.
             Lokalne ogłoszenia drobne i wsparcie sąsiedzkie. Wszystko w jednym miejscu, w Twojej okolicy.

@@ -142,11 +142,11 @@ export function SendMessageModal({
 
   // Default trigger based on variant
   const defaultTrigger = variant === 'mobile-dock' ? (
-    <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 h-11 text-sm font-semibold gap-0">
+    <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold gap-0">
       Wiadomość
     </Button>
   ) : (
-    <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border-0 py-6 text-lg">
+    <Button className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 py-6 text-lg">
       Wyślij wiadomość
     </Button>
   )
@@ -220,7 +220,7 @@ export function SendMessageModal({
                 </Button>
                 <Button
                   type="submit"
-                  className="rounded-full bg-brand hover:bg-brand/90 text-white border-0"
+                  className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
                   disabled={loading || !isValid}
                 >
                   {loading ? 'Wysyłanie...' : 'Wyślij wiadomość'}

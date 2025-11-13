@@ -46,13 +46,47 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { messages } = await request.json() as { messages: Message[] }
+    const { messages, lastPosts } = await request.json() as { messages: Message[], lastPosts?: any[] }
+
+    // Debug: log what we received
+    console.log('[AI Chat API] Received request:', {
+      messageCount: messages?.length || 0,
+      hasLastPosts: !!lastPosts,
+      lastPostsCount: lastPosts?.length || 0
+    })
 
     if (!messages || messages.length === 0) {
       return NextResponse.json(
         { error: 'No messages provided' },
         { status: 400 }
       )
+    }
+
+    // Security: Limit message length (max 250 characters per message)
+    const MAX_MESSAGE_LENGTH = 250
+    for (const msg of messages) {
+      if (msg.content.length > MAX_MESSAGE_LENGTH) {
+        return NextResponse.json(
+          { error: `Message too long. Maximum ${MAX_MESSAGE_LENGTH} characters allowed.` },
+          { status: 400 }
+        )
+      }
+    }
+
+    // Security: Limit conversation history (last 10 messages only)
+    const MAX_HISTORY_LENGTH = 10
+    const limitedMessages = messages.slice(-MAX_HISTORY_LENGTH)
+
+    // Security: Check for spam (same message repeated)
+    if (limitedMessages.length >= 3) {
+      const lastThree = limitedMessages.slice(-3)
+      const allSame = lastThree.every(msg => msg.content === lastThree[0].content)
+      if (allSame) {
+        return NextResponse.json(
+          { error: 'Please avoid sending the same message repeatedly.' },
+          { status: 429 }
+        )
+      }
     }
 
     // Get last user message for intent detection
@@ -107,6 +141,25 @@ export async function POST(request: NextRequest) {
     let systemPrompt = aiSettings.chat_assistant_system_prompt
     systemPrompt = systemPrompt.replace('{CATEGORIES}', categoryList)
 
+    // Add context of last search results if available
+    if (lastPosts && lastPosts.length > 0) {
+      const postsContext = lastPosts.map((post, index) =>
+        `Ogłoszenie ${index + 1}:\n` +
+        `- Tytuł: ${post.title}\n` +
+        `- Opis: ${post.description}\n` +
+        `- Cena: ${post.price}\n` +
+        `- Miasto: ${post.city}\n` +
+        `- Kategoria: ${post.categoryName || 'Brak'}\n` +
+        `- Autor: ${post.authorName}\n` +
+        `- Link: https://findsomeone.pl${post.url}`
+      ).join('\n\n')
+
+      systemPrompt += `\n\n**KONTEKST - Ostatnie wyniki wyszukiwania:**\n\n${postsContext}\n\n` +
+        `Jeśli użytkownik pyta o ogłoszenia (np. "opisz to ogłoszenie", "opowiedz o pierwszym"), możesz używać informacji z powyższego kontekstu. ` +
+        `Odnoś się do nich naturalnie, np. "To ogłoszenie dotyczy..." lub "Autor oferuje...". ` +
+        `WAŻNE: Nie wymyślaj informacji - używaj tylko tego co jest w kontekście!`
+    }
+
     // Call OpenAI API
     // Note: GPT-5 nano doesn't support max_tokens, max_completion_tokens or temperature
     const aiModel = aiSettings?.chat_assistant_model || 'gpt-5-nano'
@@ -114,7 +167,7 @@ export async function POST(request: NextRequest) {
       model: aiModel,
       messages: [
         { role: 'system', content: systemPrompt },
-        ...messages
+        ...limitedMessages
       ],
     })
 

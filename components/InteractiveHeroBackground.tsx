@@ -5,15 +5,21 @@ import { useEffect, useRef, useState } from 'react'
 export function InteractiveHeroBackground() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [isInitialized, setIsInitialized] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
   const [particles, setParticles] = useState<Array<{ x: number; y: number; id: number; opacity: number }>>([])
   const particleIdRef = useRef(0)
 
-  // Set initial position to center on mount
+  // Set initial position to center on mount and trigger fade-in
   useEffect(() => {
     setMousePosition({
       x: window.innerWidth / 2,
       y: window.innerHeight / 2
     })
+    // Delay the fade-in slightly to sync with hero section
+    const timer = setTimeout(() => {
+      setIsVisible(true)
+    }, 100)
+    return () => clearTimeout(timer)
   }, [])
 
   // Track mouse position
@@ -58,7 +64,7 @@ export function InteractiveHeroBackground() {
   return (
     <>
       {/* Background gradient orbs - absolute full width */}
-      <div className="absolute inset-0 left-0 right-0 -top-20 bottom-0 w-full h-[calc(100%+5rem)] pointer-events-none overflow-hidden">
+      <div className={`absolute inset-0 left-0 right-0 -top-20 bottom-0 w-full h-[calc(100%+5rem)] pointer-events-none overflow-hidden transition-opacity duration-1000 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
         <div className="absolute top-40 left-1/4 w-[800px] h-[800px] bg-brand/20 rounded-full blur-[150px] animate-pulse" />
         <div className="absolute bottom-0 right-1/4 w-[700px] h-[700px] bg-brand/15 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '1s' }} />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand/10 rounded-full blur-[150px] animate-pulse" style={{ animationDelay: '2s' }} />
