@@ -74,20 +74,20 @@ export function NavbarSearchBar() {
   const cityDebounceTimerRef = useRef<NodeJS.Timeout | undefined>(undefined)
   const isUserTypingRef = useRef(false)
 
-  // Sync with URL params (only on /posts page)
+  // Sync with URL params (only on /results page)
   useEffect(() => {
     const cityParam = searchParams.get('city')
     const searchParam = searchParams.get('search')
 
-    // Only show city on /posts page from URL params
-    if (pathname === '/posts') {
+    // Only show city on /results page from URL params
+    if (pathname === '/results') {
       if (cityParam && cityParam !== selectedCity) {
         setSelectedCity(cityParam)
       } else if (!cityParam && selectedCity) {
         setSelectedCity('')
       }
     } else {
-      // Clear city when not on /posts page
+      // Clear city when not on /results page
       if (selectedCity) {
         setSelectedCity('')
       }
@@ -209,8 +209,8 @@ export function NavbarSearchBar() {
     setIsOpen(false)
     setResults({ suggestions: [], trending: [] })
 
-    // Update URL if on /posts page
-    if (pathname === '/posts') {
+    // Update URL if on /results page
+    if (pathname === '/results') {
       const params = new URLSearchParams(searchParams.toString())
       params.delete('search')
       const queryString = params.toString()
@@ -239,7 +239,7 @@ export function NavbarSearchBar() {
     setCityQuery('')
     setIsCityDropdownOpen(false)
 
-    // Always navigate to /posts with selected city
+    // Always navigate to /results with selected city
     const params = new URLSearchParams()
 
     // Preserve search query if exists
@@ -248,7 +248,7 @@ export function NavbarSearchBar() {
     }
 
     params.set('city', cityName)
-    router.push(`/posts?${params.toString()}`)
+    router.push(`/results?${params.toString()}`)
   }
 
   // Handle city focus - load popular cities
@@ -264,8 +264,8 @@ export function NavbarSearchBar() {
     setSelectedCity('')
     setIsCityDropdownOpen(false)
 
-    // If on /posts page, remove city from URL
-    if (pathname === '/posts') {
+    // If on /results page, remove city from URL
+    if (pathname === '/results') {
       const params = new URLSearchParams(searchParams.toString())
       params.delete('city')
       const queryString = params.toString()
@@ -404,7 +404,7 @@ export function NavbarSearchBar() {
       params.set('city', selectedCity)
     }
 
-    router.push(`/posts${params.toString() ? `?${params.toString()}` : ''}`)
+    router.push(`/results${params.toString() ? `?${params.toString()}` : ''}`)
   }
 
   // Handle suggestion click (used in multiple places)
@@ -420,7 +420,7 @@ export function NavbarSearchBar() {
       params.set('city', selectedCity)
     }
 
-    router.push(`/posts?${params.toString()}`)
+    router.push(`/results?${params.toString()}`)
   }
 
   // Click outside to close
@@ -621,7 +621,7 @@ export function NavbarSearchBar() {
             <button
               type="button"
               onClick={(e) => clearSearch(e)}
-              {...(pathname === '/posts' && { 'data-navigate': 'true' })}
+              {...(pathname === '/results' && { 'data-navigate': 'true' })}
               className="p-1 hover:bg-muted rounded-full transition-colors flex-shrink-0 -ml-3 mr-3"
               aria-label="Wyczyść wyszukiwanie"
             >
@@ -700,7 +700,7 @@ export function NavbarSearchBar() {
                       isUserTypingRef.current = false
                       setSearchQuery(results.queryCorrection!.corrected)
                       setIsOpen(false)
-                      router.push(`/posts?search=${encodeURIComponent(results.queryCorrection!.corrected)}`)
+                      router.push(`/results?search=${encodeURIComponent(results.queryCorrection!.corrected)}`)
                     }}
                     data-navigate="true"
                     className="text-sm font-semibold text-brand hover:text-brand/90 hover:underline transition-colors"

@@ -252,7 +252,7 @@ export default async function MessagesPage() {
                 <p className="text-muted-foreground mb-6">
                   Nie masz jeszcze żadnych rozmów. Skontaktuj się z kimś przez ogłoszenie!
                 </p>
-                <Link href="/posts" className="block">
+                <Link href="/search" className="block">
                   <button className="w-full rounded-full bg-brand hover:bg-brand/90 text-white border border-border px-8 py-3 font-semibold transition-colors">
                     Przeglądaj ogłoszenia
                   </button>

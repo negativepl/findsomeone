@@ -358,7 +358,7 @@ export default async function DashboardPage() {
                     Dodaj ogłoszenie
                   </Button>
                 </Link>
-                <Link href="/posts">
+                <Link href="/search">
                   <Button variant="outline" className="w-full rounded-full border border-border hover:bg-accent h-12 text-sm bg-muted text-foreground">
                     Przeglądaj ogłoszenia
                   </Button>
@@ -499,7 +499,7 @@ export default async function DashboardPage() {
                     Dodaj ogłoszenie
                   </Button>
                 </Link>
-                <Link href="/posts">
+                <Link href="/search">
                   <Button variant="outline" className="w-full rounded-full border border-border hover:bg-accent h-14 text-base bg-muted text-foreground">
                     Przeglądaj ogłoszenia
                   </Button>

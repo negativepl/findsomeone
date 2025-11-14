@@ -50,7 +50,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
       <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
       {posts && posts.length > 0 ? (
         posts.map((post) => (
-          <Link key={post.id} href={`/posts/${post.id}`} className="block h-full">
+          <Link key={post.id} href={`/search/${post.id}`} className="block h-full">
             <Card className="border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden gap-0 py-0 cursor-pointer h-full flex flex-col relative">
               {/* Image */}
               {post.images && post.images.length > 0 && (
@@ -178,7 +178,7 @@ export function FavoritesClient({ userId }: FavoritesClientProps) {
             <p className="text-muted-foreground mb-6">
               Kliknij serduszko na ogłoszeniu, aby dodać je do ulubionych
             </p>
-            <Link href="/posts">
+            <Link href="/search">
               <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border-0 px-8">
                 Przeglądaj ogłoszenia
               </Button>

@@ -25,6 +25,8 @@ import { Metadata } from 'next'
 import { AI_BOT_USER_ID } from '@/lib/constants'
 import { UserBadge, type BadgeType } from '@/components/ui/user-badge'
 import { sanitizeHtml } from '@/lib/sanitize'
+import { OtherPostsCarousel } from './OtherPostsCarousel'
+import { SimilarPostsCarousel } from './SimilarPostsCarousel'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -519,8 +521,8 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
             {/* Similar Posts from Same Category */}
             {similarPosts && similarPosts.length > 0 && (
               <Card className="border border-border rounded-3xl bg-card shadow-sm mt-6 md:mt-8">
-                <CardContent className="p-6">
-                  <h2 className="text-xl md:text-2xl font-bold text-foreground mb-4 md:mb-6">
+                <CardContent className="p-4 md:p-6">
+                  <h2 className="text-base md:text-lg font-bold text-foreground mb-3 md:mb-4">
                     Podobne ogłoszenia
                   </h2>
 
@@ -571,51 +573,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     </div>
                   </div>
 
-                  {/* Desktop: Horizontal Carousel */}
-                  <div className="hidden md:block -mx-6">
-                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
-                      {similarPosts.map((similarPost: any) => (
-                        <Link key={similarPost.id} href={`/posts/${similarPost.id}`} className="snap-start flex-shrink-0" style={{ width: '280px' }}>
-                          <div className="border border-border rounded-3xl bg-muted hover:bg-accent transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
-                            {similarPost.images && similarPost.images.length > 0 && (
-                              <div className="relative w-full h-40 bg-muted">
-                                <Image
-                                  src={similarPost.images[0]}
-                                  alt={similarPost.title}
-                                  fill
-                                  sizes="280px"
-                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                />
-                              </div>
-                            )}
-                            <div className="p-4 flex flex-col flex-1">
-                              {similarPost.categories && (
-                                <div className="mb-2">
-                                  <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
-                                    {similarPost.categories.name}
-                                  </Badge>
-                                </div>
-                              )}
-                              <h3 className="text-base font-bold text-foreground mb-3">{similarPost.title}</h3>
-                              <div className="flex items-center justify-between gap-2 mt-auto">
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
-                                  <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                  </svg>
-                                  <span className="truncate">{similarPost.city}</span>
-                                </div>
-                                {similarPost.price && (
-                                  <p className="text-sm font-bold text-foreground whitespace-nowrap">
-                                    {similarPost.price} zł
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
+                  {/* Desktop: Horizontal Carousel with arrows */}
+                  <div className="hidden md:block">
+                    <SimilarPostsCarousel
+                      posts={similarPosts}
+                      containerId={`similar-posts-${post.id}`}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -931,57 +894,12 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                     </div>
                   </div>
 
-                  {/* Desktop: Horizontal Carousel */}
-                  <div className="hidden md:block -mx-6">
-                    <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 px-6">
-                      {otherPosts.map((otherPost: any) => (
-                        <Link key={otherPost.id} href={`/posts/${otherPost.id}`} className="snap-center flex-shrink-0" style={{ width: '280px' }}>
-                          <div className="border border-border rounded-3xl bg-muted hover:bg-accent transition-all group overflow-hidden cursor-pointer h-full flex flex-col shadow-sm">
-                            {/* Image */}
-                            {otherPost.images && otherPost.images.length > 0 && (
-                              <div className="relative w-full h-40 bg-muted">
-                                <Image
-                                  src={otherPost.images[0]}
-                                  alt={otherPost.title}
-                                  fill
-                                  sizes="280px"
-                                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                                />
-                              </div>
-                            )}
-
-                            <div className="p-4 flex flex-col flex-1">
-                              {otherPost.categories && (
-                                <div className="mb-2">
-                                  <Badge variant="outline" className="rounded-full border-border bg-accent text-muted-foreground text-xs">
-                                    {otherPost.categories.name}
-                                  </Badge>
-                                </div>
-                              )}
-                              <h3 className="text-base font-bold text-foreground mb-3">{otherPost.title}</h3>
-
-                              <div className="flex items-center justify-between gap-2 mt-auto">
-                                {/* Location - Left */}
-                                <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-0">
-                                  <svg className="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                  </svg>
-                                  <span className="truncate">{otherPost.city}</span>
-                                </div>
-
-                                {/* Price - Right */}
-                                {otherPost.price && (
-                                  <p className="text-sm font-bold text-foreground whitespace-nowrap">
-                                    {otherPost.price} zł
-                                  </p>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        </Link>
-                      ))}
-                    </div>
+                  {/* Desktop: Horizontal Carousel with arrows */}
+                  <div className="hidden md:block">
+                    <OtherPostsCarousel
+                      posts={otherPosts}
+                      containerId={`other-posts-${post.id}`}
+                    />
                   </div>
                 </CardContent>
               </Card>

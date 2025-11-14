@@ -13,7 +13,7 @@ import { User } from '@supabase/supabase-js'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import Image from 'next/image'
-import { LottieIcon } from '@/components/LottieIcon'
+import { Camera, Image as ImageIcon } from 'lucide-react'
 
 interface Profile {
   id: string
@@ -337,12 +337,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                     </svg>
                   ) : (
-                    <LottieIcon
-                      animationPath="/animations/camera.json"
-                      fallbackSvg={<img src="/icons/camera.svg" alt="Camera" className="w-full h-full" />}
-                      className="w-5 h-5 text-brand-foreground"
-                      isHovered={isAvatarHovered}
-                    />
+                    <Camera className="w-5 h-5 text-brand-foreground" />
                   )}
                 </label>
                 <input
@@ -529,12 +524,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                           </svg>
                         ) : (
-                          <LottieIcon
-                            animationPath="/animations/photo.json"
-                            fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
-                            className="w-5 h-5 text-brand"
-                            isHovered={isBannerHovered}
-                          />
+                          <ImageIcon className="w-5 h-5 text-brand" />
                         )}
                       </div>
                       <p className="text-white text-xs mt-2 font-semibold">Zmień banner</p>
@@ -556,12 +546,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       </svg>
                     ) : (
                       <>
-                        <LottieIcon
-                          animationPath="/animations/photo.json"
-                          fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
-                          className="w-8 h-8 mb-2 text-muted-foreground"
-                          isHovered={isBannerHovered}
-                        />
+                        <ImageIcon className="w-8 h-8 mb-2 text-muted-foreground" />
                         <p className="mb-1 text-sm text-muted-foreground font-semibold">Kliknij aby dodać banner</p>
                         <p className="text-xs text-muted-foreground">1488×496px, Max. 5MB</p>
                       </>
@@ -720,12 +705,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                       </svg>
                     ) : (
-                      <LottieIcon
-                        animationPath="/animations/camera.json"
-                        fallbackSvg={<img src="/icons/camera.svg" alt="Camera" className="w-full h-full" />}
-                        className="w-5 h-5 text-brand-foreground"
-                        isHovered={isAvatarHovered}
-                      />
+                      <Camera className="w-5 h-5 text-brand-foreground" />
                     )}
                   </label>
                   <input
@@ -930,12 +910,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                             </svg>
                           ) : (
-                            <LottieIcon
-                              animationPath="/animations/photo.json"
-                              fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
-                              className="w-6 h-6 text-brand"
-                              isHovered={isBannerHovered}
-                            />
+                            <ImageIcon className="w-6 h-6 text-brand" />
                           )}
                         </div>
                         <p className="text-white text-sm mt-2 font-semibold text-center">Zmień banner</p>
@@ -957,12 +932,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                         </svg>
                       ) : (
                         <>
-                          <LottieIcon
-                            animationPath="/animations/photo.json"
-                            fallbackSvg={<img src="/icons/photo.svg" alt="Photo" className="w-full h-full" />}
-                            className="w-10 h-10 mb-3 text-muted-foreground"
-                            isHovered={isBannerHovered}
-                          />
+                          <ImageIcon className="w-10 h-10 mb-3 text-muted-foreground" />
                           <p className="mb-2 text-sm text-muted-foreground">
                             <span className="font-semibold">Kliknij aby dodać banner</span>
                           </p>

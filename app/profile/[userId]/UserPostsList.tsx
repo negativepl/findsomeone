@@ -59,7 +59,7 @@ export function UserPostsList({ userId, initialPosts, totalCount }: UserPostsLis
             {posts.map((post) => (
               <Link
                 key={post.id}
-                href={`/posts/${post.id}`}
+                href={`/search/${post.id}`}
                 className="block bg-card border border-border rounded-3xl shadow-sm p-5 hover:bg-muted transition-all"
               >
                 {post.categories && (

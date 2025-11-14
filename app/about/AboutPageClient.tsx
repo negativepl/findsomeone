@@ -273,7 +273,7 @@ export function AboutPageClient() {
                   Dołącz teraz
                 </button>
               </a>
-              <a href="/posts">
+              <a href="/search">
                 <button className="px-8 md:px-10 py-4 md:py-5 rounded-full bg-white text-black font-semibold text-base md:text-lg min-w-[180px] md:min-w-[200px]">
                   Zobacz ogłoszenia
                 </button>
@@ -500,7 +500,7 @@ export function AboutPageClient() {
                   Utwórz konto
                 </button>
               </a>
-              <a href="/posts">
+              <a href="/search">
                 <button className="px-8 md:px-12 py-4 md:py-6 rounded-full bg-white border border-brand text-brand font-semibold text-base md:text-xl min-w-[200px] md:min-w-[240px] hover:bg-brand/10 transition-colors">
                   Przeglądaj ogłoszenia
                 </button>

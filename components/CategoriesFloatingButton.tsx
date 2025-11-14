@@ -330,7 +330,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                             {hoveredCat.subcategories.map((sub) => (
                               <Link
                                 key={sub.id}
-                                href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
+                                href={`/search?category=${encodeURIComponent(sub.name.toLowerCase())}`}
                                 className="block px-4 py-2.5 rounded-xl hover:bg-muted transition-all text-sm font-medium text-muted-foreground hover:text-foreground"
                                 onClick={() => setIsOpen(false)}
                               >
@@ -338,7 +338,7 @@ export function CategoriesFloatingButton({ categories }: CategoriesFloatingButto
                               </Link>
                             ))}
                             <Link
-                              href={`/posts?category=${encodeURIComponent(hoveredCat.name.toLowerCase())}`}
+                              href={`/search?category=${encodeURIComponent(hoveredCat.name.toLowerCase())}`}
                               className="block px-4 py-2.5 rounded-xl text-sm font-bold text-brand hover:bg-brand/5 transition-all mt-3"
                               onClick={() => setIsOpen(false)}
                             >

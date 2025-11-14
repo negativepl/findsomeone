@@ -132,7 +132,7 @@ export function PostsList({ initialPosts, totalCount, userFavorites, searchParam
           const isImageLoaded = !post.images || post.images.length === 0 || loadedImages.has(post.id)
 
           return (
-          <Link key={post.id} href={`/posts/${post.id}`} className="block h-full" style={{ opacity: isImageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}>
+          <Link key={post.id} href={`/search/${post.id}`} className="block h-full" style={{ opacity: isImageLoaded ? 1 : 0, transition: 'opacity 0.3s' }}>
             <Card className={`border border-border rounded-3xl bg-card hover:bg-muted transition-all group overflow-hidden gap-0 py-0 cursor-pointer relative ${
               viewMode === 'list' ? 'flex flex-col' : 'flex flex-col h-full'
             }`}>

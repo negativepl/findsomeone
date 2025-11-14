@@ -46,7 +46,7 @@ export default function NotFound() {
               </Button>
             </Link>
 
-            <Link href="/posts">
+            <Link href="/search">
               <Button
                 variant="outline"
                 className="rounded-full border border-brand bg-card text-brand hover:bg-accent hover:text-brand px-8 py-6 text-lg font-semibold transition-colors w-full sm:w-auto"

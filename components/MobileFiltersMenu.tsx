@@ -41,7 +41,7 @@ export function MobileFiltersMenu({ onFiltersClick }: MobileFiltersMenuProps) {
   return (
     <>
       {/* Floating button for filters - on mobile and tablet (md) screens */}
-      <div className="lg:hidden fixed right-4 z-[10000]" style={{ bottom: '100px' }}>
+      <div className="lg:hidden fixed right-4 z-[10000] bottom-[100px] md:bottom-4">
         <Button
           onClick={onFiltersClick}
           className="rounded-full bg-brand hover:bg-brand/90 text-brand-foreground shadow-lg w-12 h-12 p-0"

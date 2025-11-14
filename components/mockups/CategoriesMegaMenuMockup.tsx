@@ -162,7 +162,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                                   {hoveredCat.subcategories.map((sub) => (
                                     <Link
                                       key={sub.id}
-                                      href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
+                                      href={`/search?category=${encodeURIComponent(sub.name.toLowerCase())}`}
                                       className="block px-4 py-2.5 rounded-xl hover:bg-[#FAF8F3] transition-all text-sm font-medium text-black/80 hover:text-black"
                                       onClick={() => setIsOpen(false)}
                                     >
@@ -170,7 +170,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                                     </Link>
                                   ))}
                                   <Link
-                                    href={`/posts?category=${encodeURIComponent(hoveredCat.name.toLowerCase())}`}
+                                    href={`/search?category=${encodeURIComponent(hoveredCat.name.toLowerCase())}`}
                                     className="block px-4 py-2.5 rounded-xl text-sm font-bold text-brand hover:bg-brand/5 transition-all mt-3"
                                     onClick={() => setIsOpen(false)}
                                   >
@@ -247,7 +247,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                         {cat.subcategories.map((sub) => (
                           <Link
                             key={sub.id}
-                            href={`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`}
+                            href={`/search?category=${encodeURIComponent(sub.name.toLowerCase())}`}
                             className="block px-4 py-2.5 rounded-xl hover:bg-white transition-all text-sm font-medium text-black/80"
                             onClick={() => setIsOpen(false)}
                           >
@@ -255,7 +255,7 @@ export function CategoriesMegaMenuMockup({ categories }: CategoriesMegaMenuMocku
                           </Link>
                         ))}
                         <Link
-                          href={`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`}
+                          href={`/search?category=${encodeURIComponent(cat.name.toLowerCase())}`}
                           className="block px-4 py-2.5 rounded-xl text-sm font-bold text-brand hover:bg-white transition-all"
                           onClick={() => setIsOpen(false)}
                         >

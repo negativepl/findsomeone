@@ -342,7 +342,7 @@ export default async function AboutPage() {
                     Dodaj ogłoszenie
                   </Link>
                   <Link
-                    href="/posts"
+                    href="/search"
                     className="inline-flex items-center justify-center px-10 py-5 rounded-full bg-card hover:bg-accent border-2 border-border text-foreground font-semibold transition-all hover:scale-105 text-lg"
                   >
                     Przeglądaj ogłoszenia

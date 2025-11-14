@@ -37,7 +37,7 @@ export function CategoryHoverCardCarousel({ categories, sectionId }: CategoryHov
           {categories.map((category: any, index: number) => (
             <Link
               key={category.id}
-              href={`/posts?category=${category.slug}`}
+              href={`/search?category=${category.slug}`}
               className="flex-shrink-0 snap-center relative group"
               style={{ width: '280px' }}
               onMouseEnter={() => setHoveredId(category.id)}

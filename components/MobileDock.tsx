@@ -337,7 +337,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
 
                 {/* All categories button */}
                 <Link
-                  href="/posts"
+                  href="/results"
                   onClick={() => {
                     triggerHaptic()
                     setCategoriesOpen(false)
@@ -364,7 +364,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                             setCategoriesOpen(false)
                           } else {
                             // Navigate directly to category
-                            router.push(`/posts?category=${encodeURIComponent(cat.name.toLowerCase())}`)
+                            router.push(`/results?category=${encodeURIComponent(cat.name.toLowerCase())}`)
                             setCategoriesOpen(false)
                           }
                         }}
@@ -438,7 +438,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 {selectedCategory && (
                   <div className="mb-4">
                     <Link
-                      href={`/posts?category=${encodeURIComponent(selectedCategory.name.toLowerCase())}`}
+                      href={`/results?category=${encodeURIComponent(selectedCategory.name.toLowerCase())}`}
                       onClick={() => {
                         triggerHaptic()
                         setSelectedCategory(null)
@@ -469,7 +469,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                               // Don't close selectedCategory yet - we'll handle it in the drawer
                             } else {
                               // Navigate directly
-                              router.push(`/posts?category=${encodeURIComponent(sub.name.toLowerCase())}`)
+                              router.push(`/results?category=${encodeURIComponent(sub.name.toLowerCase())}`)
                               setSelectedCategory(null)
                               setCategoriesOpen(false)
                             }
@@ -543,7 +543,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                 {selectedSubcategory && (
                   <div className="mb-4">
                     <Link
-                      href={`/posts?category=${encodeURIComponent(selectedSubcategory.name.toLowerCase())}`}
+                      href={`/results?category=${encodeURIComponent(selectedSubcategory.name.toLowerCase())}`}
                       onClick={() => {
                         triggerHaptic()
                         setSelectedSubcategory(null)
@@ -563,7 +563,7 @@ export function MobileDock({ user, profile, isAdmin = false, categories = [] }: 
                     {selectedSubcategory.subcategories.map((subsub) => (
                       <Link
                         key={subsub.id}
-                        href={`/posts?category=${encodeURIComponent(subsub.name.toLowerCase())}`}
+                        href={`/results?category=${encodeURIComponent(subsub.name.toLowerCase())}`}
                         onClick={() => {
                           triggerHaptic()
                           setSelectedSubcategory(null)

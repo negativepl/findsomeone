@@ -210,7 +210,7 @@ export default async function Home() {
         </p>
 
           <div className="flex flex-col md:flex-row gap-4 md:gap-6 justify-center items-stretch md:items-center w-full md:w-auto px-4 md:px-0">
-            <Link href="/posts" className="w-full md:w-auto">
+            <Link href="/search" className="w-full md:w-auto">
               <Button size="lg" variant="outline" className="w-full md:w-auto text-lg px-12 py-8 rounded-full border border-black/10 hover:border-black/30 hover:bg-black/5 transition-all min-h-[56px] md:min-w-[200px]">
                 Przeglądaj ogłoszenia
               </Button>
@@ -285,7 +285,7 @@ export default async function Home() {
             {popularCategories.map((category: any) => (
               <Link
                 key={category.id}
-                href={`/posts?category=${category.slug}`}
+                href={`/search?category=${category.slug}`}
                 className="group"
               >
                 <Card className="border-0 rounded-3xl bg-white hover:bg-[#F5F1E8] transition-all cursor-pointer h-full">
@@ -396,7 +396,7 @@ export default async function Home() {
                 <p className="text-lg text-black/60">Świeżo dodane przez użytkowników</p>
               </div>
               <div className="hidden md:block">
-                <Link href="/posts">
+                <Link href="/search">
                   <Button className="rounded-full bg-brand hover:bg-brand/90 text-white border-0">
                     Zobacz wszystkie
                   </Button>

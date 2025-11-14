@@ -60,7 +60,7 @@ export async function SeekingHelpSection({ section, userFavorites }: SeekingHelp
           </div>
           {showButton && (
             <div className="hidden md:block">
-              <Link href="/posts">
+              <Link href="/search">
                 <button className="rounded-full border border-border hover:bg-accent text-foreground px-6 py-3 font-medium transition-colors bg-muted">
                   Zobacz wszystkie
                 </button>

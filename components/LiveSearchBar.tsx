@@ -248,7 +248,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
     if (searchQuery) params.set('search', searchQuery)
     if (cityQuery) params.set('city', cityQuery)
 
-    router.push(`/posts${params.toString() ? `?${params}` : ''}`)
+    router.push(`/results${params.toString() ? `?${params}` : ''}`)
   }
 
   // Click outside to close
@@ -443,7 +443,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             const params = new URLSearchParams()
                             params.set('search', item.text)
                             if (cityQuery) params.set('city', cityQuery)
-                            router.push(`/posts?${params}`)
+                            router.push(`/results?${params}`)
                           }}
                           data-navigate="true"
                           className="w-full text-left px-3 py-3 hover:bg-gradient-to-r hover:from-brand/5 hover:to-brand/90/5 rounded-xl transition-all flex items-center gap-3 group border border-transparent hover:border-brand/10"
@@ -545,7 +545,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             const params = new URLSearchParams()
                             params.set('search', item.text)
                             if (cityQuery) params.set('city', cityQuery)
-                            router.push(`/posts?${params}`)
+                            router.push(`/results?${params}`)
                           }}
                           data-navigate="true"
                           className="w-full text-left px-3 py-3 hover:bg-brand/5 rounded-xl transition-all flex items-center gap-3 group"
@@ -601,7 +601,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             const params = new URLSearchParams()
                             params.set('search', item.text)
                             if (cityQuery) params.set('city', cityQuery)
-                            router.push(`/posts?${params}`)
+                            router.push(`/results?${params}`)
                           }}
                           data-navigate="true"
                           className="w-full text-left px-3 py-3 hover:bg-black/5 rounded-xl transition-all flex items-center gap-3 group"
@@ -694,7 +694,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                             const params = new URLSearchParams()
                             params.set('search', suggestion.text)
                             if (cityQuery) params.set('city', cityQuery)
-                            router.push(`/posts?${params}`)
+                            router.push(`/results?${params}`)
                           }}
                           data-navigate="true"
                           className={`w-full text-left px-3 py-3 rounded-xl transition-all flex items-center gap-3 group ${
@@ -741,7 +741,7 @@ export function LiveSearchBar({ initialSearch = '', initialCity = '' }: LiveSear
                 {searchQuery && searchQuery.length >= 2 && (
                   <div className="p-4 bg-white">
                     <Link
-                      href={`/posts?search=${encodeURIComponent(searchQuery)}${cityQuery ? `&city=${encodeURIComponent(cityQuery)}` : ''}`}
+                      href={`/results?search=${encodeURIComponent(searchQuery)}${cityQuery ? `&city=${encodeURIComponent(cityQuery)}` : ''}`}
                       onClick={() => {
                         saveRecentSearch(searchQuery)
                         setIsOpen(false)
