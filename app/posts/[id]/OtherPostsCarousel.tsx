@@ -14,7 +14,9 @@ interface OtherPost {
   images: string[] | null
   categories?: {
     name: string
-  }
+  } | {
+    name: string
+  }[] | null
 }
 
 interface OtherPostsCarouselProps {
@@ -96,7 +98,7 @@ export function OtherPostsCarousel({ posts, containerId }: OtherPostsCarouselPro
                 {otherPost.categories && (
                   <div className="mb-2">
                     <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
-                      {otherPost.categories.name}
+                      {Array.isArray(otherPost.categories) ? otherPost.categories[0]?.name : otherPost.categories.name}
                     </Badge>
                   </div>
                 )}

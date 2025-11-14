@@ -14,7 +14,9 @@ interface SimilarPost {
   images: string[] | null
   categories?: {
     name: string
-  }
+  } | {
+    name: string
+  }[] | null
 }
 
 interface SimilarPostsCarouselProps {
@@ -96,7 +98,7 @@ export function SimilarPostsCarousel({ posts, containerId }: SimilarPostsCarouse
                 {similarPost.categories && (
                   <div className="mb-2">
                     <Badge variant="outline" className="rounded-full border-border text-muted-foreground text-xs">
-                      {similarPost.categories.name}
+                      {Array.isArray(similarPost.categories) ? similarPost.categories[0]?.name : similarPost.categories.name}
                     </Badge>
                   </div>
                 )}
