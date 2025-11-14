@@ -282,15 +282,15 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
   return (
     <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8">
       {/* Header - Desktop only */}
-      <div className="mb-8 hidden md:block">
+      <div className="mb-8 hidden lg:block">
         <h1 className="text-4xl font-bold text-foreground mb-3">Mój profil</h1>
         <p className="text-lg text-muted-foreground">
           Zarządzaj swoimi danymi i informacjami kontaktowymi
         </p>
       </div>
 
-      {/* Mobile: single column flat design */}
-      <div className="md:hidden space-y-6">
+      {/* Mobile & Tablet: single column flat design */}
+      <div className="lg:hidden space-y-6">
         {/* Avatar Section */}
         <Card className="border border-border rounded-2xl bg-card shadow-sm">
           <CardContent className="p-5 text-center">
@@ -656,7 +656,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
       </div>
 
       {/* Desktop: 2-column layout */}
-      <div className="hidden md:grid grid-cols-3 gap-6">
+      <div className="hidden lg:grid grid-cols-3 gap-6">
         {/* Left sidebar - Profile Summary */}
         <div className="col-span-1">
           <Card className="border border-border rounded-3xl bg-card sticky top-24 overflow-visible">
