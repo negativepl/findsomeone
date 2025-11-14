@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { NavbarWithHide } from '@/components/NavbarWithHide'
 import { AnimatedSection } from '@/components/AnimatedSection'
 import { AnimatedHeroText } from '@/components/AnimatedHeroText'
-import { InteractiveHeroBackground } from '@/components/InteractiveHeroBackground'
+import { FullInteractiveBackground } from '@/components/FullInteractiveBackground'
 import { SpotlightCard } from '@/components/SpotlightCard'
 import { ScrollProgressIndicator } from '@/components/ScrollProgressIndicator'
 import { Metadata } from 'next'
@@ -33,7 +33,7 @@ export default async function AboutPage() {
         {/* Hero Section */}
         <section className="relative min-h-screen flex items-center">
           {/* Interactive Background with mouse tracking */}
-          <InteractiveHeroBackground />
+          <FullInteractiveBackground />
 
           <div className="container mx-auto px-6 py-32 md:py-48 relative z-10">
             <AnimatedSection className="w-full">

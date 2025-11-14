@@ -514,4 +514,40 @@ body.beta-banner-visible header::before {
   }
 }
 
+/* =============================================
+   Theme Transition Animation
+   ============================================= */
+
+/* CSS Variables for dynamic transition position */
+:root {
+  --theme-transition-x: 50%;
+  --theme-transition-y: 0%;
+  --theme-transition-r: 100vmax;
+}
+
+/* Smooth theme transition using View Transitions API */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 999;
+  animation: theme-transition-reveal 1.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes theme-transition-reveal {
+  0% {
+    clip-path: circle(0px at var(--theme-transition-x) var(--theme-transition-y));
+  }
+  100% {
+    clip-path: circle(var(--theme-transition-r) at var(--theme-transition-x) var(--theme-transition-y));
+  }
+}
+
 

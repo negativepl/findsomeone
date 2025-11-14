@@ -93,7 +93,7 @@ export function HeroSection({ user }: HeroSectionProps) {
         >
           <Link href="/posts" className="flex-1 md:flex-none md:w-auto">
             <button
-              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full hover:bg-accent transition-all h-[44px] md:h-[56px] md:min-w-[200px] text-foreground font-semibold inline-flex items-center justify-center"
+              className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full hover:bg-accent/25 hover:backdrop-blur-sm transition-all h-[44px] md:h-[56px] md:min-w-[200px] text-foreground font-semibold inline-flex items-center justify-center"
             >
               Przeglądaj ogłoszenia
             </button>

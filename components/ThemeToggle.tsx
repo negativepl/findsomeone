@@ -8,6 +8,7 @@ export function ThemeToggle() {
   const { theme, setTheme } = useTheme()
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -42,9 +43,30 @@ export function ThemeToggle() {
     }
   }
 
+  const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
+    // Pobierz pozycję przycisku toggle zamiast pozycji kliknięcia
+    if (buttonRef.current) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      const x = rect.left + rect.width / 2
+      const y = rect.top + rect.height / 2
+
+      // Stwórz syntetyczny event z pozycją przycisku
+      const syntheticEvent = {
+        clientX: x,
+        clientY: y,
+      } as React.MouseEvent
+
+      setTheme(newTheme, syntheticEvent)
+    } else {
+      setTheme(newTheme)
+    }
+    setIsOpen(false)
+  }
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+        ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Wybierz motyw"
         className="flex items-center justify-center w-10 h-10 rounded-full bg-muted hover:bg-accent transition-colors"
@@ -55,10 +77,7 @@ export function ThemeToggle() {
       {isOpen && (
         <div className="absolute bottom-full left-0 md:right-0 md:left-auto mb-2 bg-card border border-border rounded-xl shadow-lg min-w-[160px] p-2 space-y-1">
           <button
-            onClick={() => {
-              setTheme('light')
-              setIsOpen(false)
-            }}
+            onClick={() => handleThemeChange('light')}
             className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors rounded-lg ${
               theme === 'light' ? 'bg-accent text-foreground' : 'text-muted-foreground hover:bg-muted'
             }`}
@@ -68,10 +87,7 @@ export function ThemeToggle() {
           </button>
 
           <button
-            onClick={() => {
-              setTheme('system')
-              setIsOpen(false)
-            }}
+            onClick={() => handleThemeChange('system')}
             className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors rounded-lg ${
               theme === 'system' ? 'bg-accent text-foreground' : 'text-muted-foreground hover:bg-muted'
             }`}
@@ -81,10 +97,7 @@ export function ThemeToggle() {
           </button>
 
           <button
-            onClick={() => {
-              setTheme('dark')
-              setIsOpen(false)
-            }}
+            onClick={() => handleThemeChange('dark')}
             className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors rounded-lg ${
               theme === 'dark' ? 'bg-accent text-foreground' : 'text-muted-foreground hover:bg-muted'
             }`}

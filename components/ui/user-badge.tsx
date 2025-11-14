@@ -23,8 +23,8 @@ interface BadgeConfig {
 const BADGE_CONFIGS: Record<BadgeType, BadgeConfig> = {
   verified: {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 430 430" className="w-6 h-6">
-        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="12">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 430 430" className="w-6 h-6 text-white drop-shadow-md">
+        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="14">
           <path d="m145 222.22 45.14 45.14S252.8 204.49 297.15 160"/>
           <path d="M214.999 395c187.993-90.473 169.188-227.796 169.188-310.678C329.964 76.515 214.999 35 214.999 35S100.035 76.515 45.812 84.312c0 82.892-18.806 220.215 169.187 310.688"/>
         </g>
@@ -32,13 +32,13 @@ const BADGE_CONFIGS: Record<BadgeType, BadgeConfig> = {
     ),
     label: 'Użytkownik zweryfikowany',
     description: 'Ten użytkownik przeszedł proces weryfikacji tożsamości. Oznacza to, że jego dane osobowe zostały potwierdzone przez nasz zespół, co zwiększa bezpieczeństwo i wiarygodność transakcji.',
-    bgColor: 'bg-amber-300/70 dark:bg-amber-700/6 border-2 border-amber-200 dark:border-amber-800/60 backdrop-blur-sm',
-    hoverColor: 'hover:bg-amber-300/80 dark:hover:bg-amber-700/12',
+    bgColor: 'bg-gradient-to-br from-amber-400 to-amber-500 dark:from-amber-600 dark:to-amber-700 border-2 border-amber-600/50 dark:border-amber-500/50 backdrop-blur-lg shadow-lg',
+    hoverColor: 'hover:from-amber-500 hover:to-amber-600 dark:hover:from-amber-700 dark:hover:to-amber-800',
   },
   company: {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 430 430" className="w-6 h-6">
-        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="12">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 430 430" className="w-6 h-6 text-white drop-shadow-md">
+        <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="14">
           <path d="m196.3 374.9-69.1.1v-90.6h69.1zm-34.4-90.4V375"/>
           <path d="m246.5 374.9-168.5.2V55.2l168.5-.2z"/>
           <path d="M134.5 82.3v24.8m26.8-24.8v24.8M188 82.3v24.8m-53.5 24.8v24.8m26.8-24.8v24.8m26.7-24.8v24.8m-53.5 24.8v24.8m26.8-24.8v24.8m26.7-24.8v24.8M134.5 231v24.8m26.8-24.8v24.8M188 231v24.8m26.8-173.5v24.8m0 24.8v24.8m0 24.8v24.8m0 24.7v24.8m-107-173.5v24.8m0 24.8v24.8m0 24.8v24.8m0 24.7v24.8"/>
@@ -49,13 +49,13 @@ const BADGE_CONFIGS: Record<BadgeType, BadgeConfig> = {
     ),
     label: 'Konto firmowe',
     description: 'To konto reprezentuje firmę lub przedsiębiorstwo. Konta firmowe mogą oferować usługi komercyjne i są prowadzone przez zarejestrowane podmioty gospodarcze.',
-    bgColor: 'bg-blue-300/70 dark:bg-blue-700/6 border-2 border-blue-200 dark:border-blue-800/60 backdrop-blur-sm',
-    hoverColor: 'hover:bg-blue-300/80 dark:hover:bg-blue-700/12',
+    bgColor: 'bg-gradient-to-br from-blue-400 to-blue-500 dark:from-blue-600 dark:to-blue-700 border-2 border-blue-600/50 dark:border-blue-500/50 backdrop-blur-lg shadow-lg',
+    hoverColor: 'hover:from-blue-500 hover:to-blue-600 dark:hover:from-blue-700 dark:hover:to-blue-800',
   },
   ai_bot: {
     icon: (
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 430 430" className="w-6 h-6">
-        <g strokeWidth="12">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 430 430" className="w-6 h-6 text-white drop-shadow-md">
+        <g strokeWidth="14">
           <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M330 245h50v35"/>
           <circle cx="15" cy="15" r="15" stroke="currentColor" transform="matrix(0 1 1 0 365 280)"/>
           <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" d="M330 185h50v-35"/>
@@ -78,9 +78,9 @@ const BADGE_CONFIGS: Record<BadgeType, BadgeConfig> = {
       </svg>
     ),
     label: 'Bot AI',
-    description: 'To konto jest zarządzane przez sztuczną inteligencją. Bot automatycznie publikuje i aktualizuje ogłoszenia, aby pomóc w wypełnieniu strony treścią.',
-    bgColor: 'bg-purple-300/70 dark:bg-purple-700/6 border-2 border-purple-200 dark:border-purple-800/60 backdrop-blur-sm',
-    hoverColor: 'hover:bg-purple-300/80 dark:hover:bg-purple-700/12',
+    description: 'To konto jest zarządzane przez sztuczną inteligencję. Bot automatycznie publikuje i aktualizuje ogłoszenia, aby pomóc w wypełnieniu strony treścią.',
+    bgColor: 'bg-gradient-to-br from-purple-400 to-purple-500 dark:from-purple-600 dark:to-purple-700 border-2 border-purple-600/50 dark:border-purple-500/50 backdrop-blur-lg shadow-lg',
+    hoverColor: 'hover:from-purple-500 hover:to-purple-600 dark:hover:from-purple-700 dark:hover:to-purple-800',
   },
 };
 
@@ -98,7 +98,7 @@ export function UserBadge({ type, className = '' }: UserBadgeProps) {
       {/* Badge button */}
       <button
         onClick={() => setIsOpen(true)}
-        className={`rounded-full p-2 cursor-pointer shadow-md transition-colors text-foreground ${config.bgColor} ${config.hoverColor} ${className}`}
+        className={`rounded-full p-2 cursor-pointer shadow-md transition-colors ${config.bgColor} ${config.hoverColor} ${className}`}
         aria-label={`Informacje o ${config.label.toLowerCase()}`}
       >
         {config.icon}
@@ -109,7 +109,7 @@ export function UserBadge({ type, className = '' }: UserBadgeProps) {
         <DialogContent className="sm:max-w-md bg-card rounded-3xl border border-border" showCloseButton={false}>
           {/* Icon */}
           <div className="flex justify-center mb-4">
-            <div className={`rounded-full p-4 text-foreground ${config.bgColor}`}>
+            <div className={`rounded-full p-4 ${config.bgColor}`}>
               <div className="w-12 h-12 flex items-center justify-center">
                 {React.cloneElement(config.icon as React.ReactElement<any>, {
                   className: 'w-12 h-12'
