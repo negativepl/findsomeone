@@ -6,7 +6,7 @@ import { Footer } from '@/components/Footer'
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import { ChevronRight } from 'lucide-react'
-import { PostsListWrapper } from '@/app/posts/PostsListWrapper'
+import { PostsListWrapper } from '@/app/results/PostsListWrapper'
 import { CategoryPageClient } from './CategoryPageClient'
 import {
   Select,
