@@ -1,6 +1,45 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const providerId = searchParams.get('providerId')
+    const date = searchParams.get('date')
+
+    if (!providerId || !date) {
+      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
+    }
+
+    const supabase = await createClient()
+
+    // Get bookings for the provider on the specified date
+    const startOfDay = new Date(date)
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date(date)
+    endOfDay.setHours(23, 59, 59, 999)
+
+    const { data: bookings, error } = await supabase
+      .from('bookings')
+      .select('scheduled_at, status, duration_minutes')
+      .eq('provider_id', providerId)
+      .gte('scheduled_at', startOfDay.toISOString())
+      .lte('scheduled_at', endOfDay.toISOString())
+      .in('status', ['pending', 'confirmed'])
+
+    if (error) {
+      console.error('Error fetching bookings:', error)
+      return NextResponse.json({ error: error.message }, { status: 500 })
+    }
+
+    return NextResponse.json({ bookings: bookings || [] })
+  } catch (error) {
+    console.error('Error in GET /api/bookings:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const supabase = await createClient()

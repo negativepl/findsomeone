@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
@@ -16,12 +16,20 @@ interface BookingCalendarProps {
   isMobilePage?: boolean
 }
 
+interface Booking {
+  scheduled_at: string
+  status: string
+  duration_minutes: number
+}
+
 export function BookingCalendar({ providerId, providerName, postId, postTitle, onClose, isMobilePage = false }: BookingCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
   const [notes, setNotes] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [bookedSlots, setBookedSlots] = useState<Booking[]>([])
+  const [isLoadingBookings, setIsLoadingBookings] = useState(false)
 
   // Get days in month
   const getDaysInMonth = (date: Date) => {
@@ -36,6 +44,33 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
   }
 
   const { daysInMonth, startingDayOfWeek, year, month } = getDaysInMonth(currentDate)
+
+  // Fetch bookings for the selected date
+  useEffect(() => {
+    if (!selectedDate) {
+      setBookedSlots([])
+      return
+    }
+
+    const fetchBookings = async () => {
+      setIsLoadingBookings(true)
+      try {
+        const dateStr = selectedDate.toISOString().split('T')[0]
+        const response = await fetch(`/api/bookings?providerId=${providerId}&date=${dateStr}`)
+
+        if (response.ok) {
+          const data = await response.json()
+          setBookedSlots(data.bookings || [])
+        }
+      } catch (error) {
+        console.error('Error fetching bookings:', error)
+      } finally {
+        setIsLoadingBookings(false)
+      }
+    }
+
+    fetchBookings()
+  }, [selectedDate, providerId])
 
   // Navigate months
   const previousMonth = () => {
@@ -77,6 +112,21 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
   const availableTimeSlots = [
     '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
   ]
+
+  // Check if a time slot is booked
+  const isTimeSlotBooked = (time: string) => {
+    if (!selectedDate) return false
+
+    return bookedSlots.some(booking => {
+      const bookingDate = new Date(booking.scheduled_at)
+      const bookingTime = `${bookingDate.getHours().toString().padStart(2, '0')}:${bookingDate.getMinutes().toString().padStart(2, '0')}`
+
+      // Check if status is confirmed or pending (not cancelled)
+      const isActiveBooking = booking.status === 'confirmed' || booking.status === 'pending'
+
+      return bookingTime === time && isActiveBooking
+    })
+  }
 
   // Handle booking submission
   const handleSubmit = async () => {
@@ -227,23 +277,36 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
           <h3 className="text-lg font-semibold mb-3">
             Dostępne godziny
           </h3>
-          <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
-            {availableTimeSlots.map((time) => (
-              <button
-                key={time}
-                onClick={() => setSelectedTime(time)}
-                className={`
-                  py-2 px-3 rounded-lg border transition-all text-sm font-medium
-                  ${selectedTime === time
-                    ? 'bg-brand text-brand-foreground border-brand scale-105'
-                    : 'text-foreground border-border hover:bg-brand/5 hover:border-brand/30 hover:scale-105'
-                  }
-                `}
-              >
-                {time}
-              </button>
-            ))}
-          </div>
+          {isLoadingBookings ? (
+            <div className="flex items-center justify-center py-8 text-muted-foreground">
+              <p className="text-sm">Ładowanie...</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
+              {availableTimeSlots.map((time) => {
+                const isBooked = isTimeSlotBooked(time)
+                return (
+                  <button
+                    key={time}
+                    onClick={() => !isBooked && setSelectedTime(time)}
+                    disabled={isBooked}
+                    className={`
+                      py-2 px-3 rounded-lg border transition-all text-sm font-medium
+                      ${isBooked
+                        ? 'bg-muted/50 text-muted-foreground border-border cursor-not-allowed opacity-50'
+                        : selectedTime === time
+                          ? 'bg-brand text-brand-foreground border-brand scale-105'
+                          : 'text-foreground border-border hover:bg-brand/5 hover:border-brand/30 hover:scale-105'
+                      }
+                    `}
+                  >
+                    {time}
+                    {isBooked && <span className="block text-xs mt-0.5">Zajęte</span>}
+                  </button>
+                )
+              })}
+            </div>
+          )}
         </div>
         ) : (
           <div className="flex items-center justify-center h-full min-h-[400px] text-muted-foreground border border-dashed border-border rounded-2xl">
