@@ -310,6 +310,9 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
     // Odrzucone posty nie są już "oczekujące"
     if (post.moderation_status === 'rejected') return false
 
+    // Aktywne posty nie są "oczekujące" nawet jeśli mają flagged status
+    if (post.status === 'active') return false
+
     return (post.status === 'pending' ||
             post.moderation_status === 'checking' ||
             post.moderation_status === 'pending' ||

@@ -105,24 +105,25 @@ end;
 $$ language plpgsql security definer;
 
 -- Trigger to log when a new post is created
-create or replace function log_post_created()
-returns trigger as $$
-begin
-  perform log_activity(
-    NEW.user_id,
-    'post_created',
-    NEW.id,
-    jsonb_build_object('post_title', NEW.title)
-  );
-  return NEW;
-end;
-$$ language plpgsql;
+-- DISABLED: Users shouldn't get notifications about their own posts
+-- create or replace function log_post_created()
+-- returns trigger as $$
+-- begin
+--   perform log_activity(
+--     NEW.user_id,
+--     'post_created',
+--     NEW.id,
+--     jsonb_build_object('post_title', NEW.title)
+--   );
+--   return NEW;
+-- end;
+-- $$ language plpgsql;
 
-drop trigger if exists on_post_created on posts;
-create trigger on_post_created
-  after insert on posts
-  for each row
-  execute function log_post_created();
+-- drop trigger if exists on_post_created on posts;
+-- create trigger on_post_created
+--   after insert on posts
+--   for each row
+--   execute function log_post_created();
 
 -- Trigger to log when a message is received
 create or replace function log_message_received()

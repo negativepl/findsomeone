@@ -133,8 +133,10 @@ function basicValidation(post: PostData): { passed: boolean; reasons: string[] }
   }
 
   // Check for very long words (gibberish often has words >30 chars)
+  // Only flag if there are multiple long words or extremely long ones
   const longWords = words.filter(w => w.length > 30)
-  if (longWords.length > 0) {
+  const veryLongWords = words.filter(w => w.length > 50)
+  if (veryLongWords.length > 0 || longWords.length > 2) {
     reasons.push('Wykryto podejrzanie długie słowa (możliwy spam)')
   }
 

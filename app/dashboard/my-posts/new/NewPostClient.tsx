@@ -29,6 +29,7 @@ interface Category {
   name: string
   slug: string
   parent_id?: string | null
+  supports_services?: boolean
 }
 
 export function NewPostClient() {
@@ -48,7 +49,7 @@ export function NewPostClient() {
   const [categories, setCategories] = useState<Category[]>([])
   const [showCategorySelector, setShowCategorySelector] = useState(false)
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('')
-  const [categoryPath, setCategoryPath] = useState<Array<{ id: string; name: string; slug: string }>>([])
+  const [categoryPath, setCategoryPath] = useState<Array<{ id: string; name: string; slug: string; supports_services?: boolean }>>([])
 
   const [showDraftModal, setShowDraftModal] = useState(false)
   const [hasDraft, setHasDraft] = useState(false)
@@ -678,7 +679,7 @@ export function NewPostClient() {
         // Fetch the full category data to build the path
         const { data: allCats } = await supabase
           .from('categories')
-          .select('id, name, slug, parent_id')
+          .select('id, name, slug, parent_id, supports_services')
 
         if (allCats) {
           // Find the suggested category (use most specific level available)
@@ -689,11 +690,16 @@ export function NewPostClient() {
 
           if (targetCategory) {
             // Build the full path from root to this category
-            const path: Array<{ id: string; name: string; slug: string }> = []
-            let currentCat: { id: any; name: any; slug: any; parent_id: any } | undefined = targetCategory
+            const path: Array<{ id: string; name: string; slug: string; supports_services?: boolean }> = []
+            let currentCat: { id: any; name: any; slug: any; parent_id: any; supports_services?: any } | undefined = targetCategory
 
             while (currentCat) {
-              path.unshift({ id: currentCat.id, name: currentCat.name, slug: currentCat.slug })
+              path.unshift({
+                id: currentCat.id,
+                name: currentCat.name,
+                slug: currentCat.slug,
+                supports_services: currentCat.supports_services
+              })
               currentCat = currentCat.parent_id
                 ? allCats.find(cat => cat.id === currentCat?.parent_id)
                 : undefined
@@ -747,6 +753,9 @@ export function NewPostClient() {
       // Process rotated images before creating post
       const processedImages = await processRotatedImages(images, imageRotations)
 
+      // Check if selected category supports services
+      const categorySupportsServices = categoryPath.some(cat => cat.supports_services)
+
       const { data: newPost, error: insertError } = await supabase.from('posts').insert({
         user_id: user.id,
         title: formData.title,
@@ -757,6 +766,7 @@ export function NewPostClient() {
         price: formData.price ? parseFloat(formData.price) : null,
         price_type: formData.priceType,
         price_negotiable: formData.priceNegotiable,
+        is_service: categorySupportsServices, // Auto-set based on category
         images: processedImages.length > 0 ? processedImages : null,
         status: 'pending',
         moderation_status: 'checking',
@@ -1038,6 +1048,29 @@ export function NewPostClient() {
                   </div>
                 </button>
               </div>
+
+              {/* Service category info - only show for categories that support services */}
+              {categoryPath.length > 0 && categoryPath.some(cat => cat.supports_services) && (
+              <div className="space-y-3">
+                <div className="rounded-2xl border border-brand/30 bg-brand/5 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 mt-0.5">
+                      <svg className="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">
+                        Ta kategoria wspiera rezerwacje terminów
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Po opublikowaniu ogłoszenia będziesz mógł włączyć kalendarz rezerwacji, dzięki czemu klienci będą mogli umówić się z Tobą na konkretny termin.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              )}
 
               {/* Images */}
               <div className="space-y-3">
@@ -1384,6 +1417,29 @@ export function NewPostClient() {
                   </div>
                 </button>
               </div>
+
+              {/* Service category info - only show for categories that support services */}
+              {categoryPath.length > 0 && categoryPath.some(cat => cat.supports_services) && (
+              <div className="space-y-2">
+                <div className="rounded-2xl border border-brand/30 bg-brand/5 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex-shrink-0 mt-0.5">
+                      <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-medium text-foreground">
+                        Ta kategoria wspiera rezerwacje terminów
+                      </p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Po opublikowaniu będziesz mógł włączyć kalendarz rezerwacji dla klientów.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              )}
             </div>
           )}
 

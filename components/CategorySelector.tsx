@@ -13,12 +13,14 @@ interface Category {
   slug: string
   parent_id: string | null
   icon?: string
+  supports_services?: boolean
 }
 
 interface CategoryPath {
   id: string
   name: string
   slug: string
+  supports_services?: boolean
 }
 
 interface CategorySelectorProps {
@@ -57,7 +59,7 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
     const loadCategories = async () => {
       const { data } = await supabase
         .from('categories')
-        .select('id, name, slug, parent_id, icon')
+        .select('id, name, slug, parent_id, icon, supports_services')
         .order('display_order')
 
       if (data) {
@@ -93,7 +95,12 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
     if (hasChildren(category.id)) {
       // Navigate into subcategories
       setCurrentParentId(category.id)
-      setBreadcrumbs([...breadcrumbs, { id: category.id, name: category.name, slug: category.slug }])
+      setBreadcrumbs([...breadcrumbs, {
+        id: category.id,
+        name: category.name,
+        slug: category.slug,
+        supports_services: category.supports_services
+      }])
     } else {
       // Select this category (leaf node)
       setSelectedId(category.id)
@@ -136,7 +143,12 @@ export function CategorySelector({ open, onOpenChange, onSelect, selectedCategor
       // Find the selected category in current view
       const selectedCategory = categories.find(c => c.id === selectedId)
       if (selectedCategory) {
-        path.push({ id: selectedCategory.id, name: selectedCategory.name, slug: selectedCategory.slug })
+        path.push({
+          id: selectedCategory.id,
+          name: selectedCategory.name,
+          slug: selectedCategory.slug,
+          supports_services: selectedCategory.supports_services
+        })
       }
 
       onSelect(selectedId, path)
