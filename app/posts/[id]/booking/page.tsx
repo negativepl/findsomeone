@@ -38,6 +38,12 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
     redirect(`/posts/${id}`)
   }
 
+  // Extract provider name from profiles (Supabase returns it as array)
+  const profiles = post.profiles as any
+  const providerName = Array.isArray(profiles)
+    ? profiles[0]?.full_name
+    : profiles?.full_name || 'użytkownika'
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -57,7 +63,7 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
       <div className="container mx-auto px-4 py-6 pb-20">
         <BookingCalendar
           providerId={post.user_id}
-          providerName={Array.isArray(post.profiles) ? post.profiles[0]?.full_name : post.profiles?.full_name || 'użytkownika'}
+          providerName={providerName}
           postId={post.id}
           postTitle={post.title}
           isMobilePage={true}
