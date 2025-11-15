@@ -222,7 +222,7 @@ export function NotificationSettings({
           <p className="text-sm text-muted-foreground/70">Otrzymuj wiadomości na email</p>
         </div>
         <Switch
-          checked={emailNotifications}
+          checked={false}
           onCheckedChange={handleEmailChange}
           disabled={true}
         />
