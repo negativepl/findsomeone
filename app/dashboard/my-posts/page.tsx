@@ -24,7 +24,13 @@ export default async function MyListingsPage() {
     .select(`
       *,
       categories (
-        name
+        name,
+        parent:parent_id (
+          name,
+          parent:parent_id (
+            name
+          )
+        )
       )
     `)
     .eq('user_id', user.id)

@@ -3,18 +3,11 @@
 import { useState, useTransition, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { MyListingsTabs } from '@/components/MyListingsTabs'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { PostListItem } from './PostListItem'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,7 +20,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { deletePost, updatePostStatus, appealRejectedPost } from './actions'
 import { useRouter } from 'next/navigation'
-import { Pencil, PauseCircle, CheckCircle, PlayCircle, Trash2, MapPin, Clock, Eye, Phone, XCircle, CalendarClock, RefreshCw, AlertCircle, MessageSquare, CheckCircle2, ShieldAlert, ShieldCheck, ExternalLink } from 'lucide-react'
+import { AlertCircle, CheckCircle, PauseCircle, PlayCircle, Trash2, X } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
@@ -36,7 +29,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ViewToggle } from '@/components/ViewToggle'
 
 interface Post {
   id: string
@@ -61,6 +53,12 @@ interface Post {
   images: string[] | null
   categories: {
     name: string
+    parent: {
+      name: string
+      parent: {
+        name: string
+      } | null
+    } | null
   } | null
 }
 
@@ -74,25 +72,22 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
   const [activeTab, setActiveTab] = useState<FilterTab>('all')
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [postToDelete, setPostToDelete] = useState<string | null>(null)
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false)
   const [appealDialogOpen, setAppealDialogOpen] = useState(false)
   const [postToAppeal, setPostToAppeal] = useState<string | null>(null)
   const [appealMessage, setAppealMessage] = useState('')
   const [isPending, startTransition] = useTransition()
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list')
   const [sortBy, setSortBy] = useState<string>('newest')
   const [isLoaded, setIsLoaded] = useState(false)
   const [posts, setPosts] = useState<Post[]>(initialPosts)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState(true)
+  const [selectedPosts, setSelectedPosts] = useState<Set<string>>(new Set())
   const observerTarget = useRef<HTMLDivElement>(null)
   const router = useRouter()
 
-  // Load saved view mode and sort from localStorage on mount
+  // Load saved sort from localStorage on mount
   useEffect(() => {
-    const savedViewMode = localStorage.getItem('my-posts-view-mode')
-    if (savedViewMode === 'grid' || savedViewMode === 'list') {
-      setViewMode(savedViewMode)
-    }
     const savedSort = localStorage.getItem('my-posts-sort')
     if (savedSort) {
       setSortBy(savedSort)
@@ -100,16 +95,81 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
     setIsLoaded(true)
   }, [])
 
-  // Save view mode to localStorage when it changes
-  const handleViewChange = (mode: 'grid' | 'list') => {
-    setViewMode(mode)
-    localStorage.setItem('my-posts-view-mode', mode)
-  }
-
   // Save sort to localStorage when it changes
   const handleSortChange = (value: string) => {
     setSortBy(value)
     localStorage.setItem('my-posts-sort', value)
+  }
+
+  // Handle checkbox selection
+  const handleTogglePost = (postId: string) => {
+    setSelectedPosts(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(postId)) {
+        newSet.delete(postId)
+      } else {
+        newSet.add(postId)
+      }
+      return newSet
+    })
+  }
+
+  const handleToggleAll = () => {
+    if (selectedPosts.size === filteredPosts.length) {
+      setSelectedPosts(new Set())
+    } else {
+      setSelectedPosts(new Set(filteredPosts.map(p => p.id)))
+    }
+  }
+
+  const handleBulkDelete = () => {
+    if (selectedPosts.size === 0) return
+    setBulkDeleteDialogOpen(true)
+  }
+
+  const confirmBulkDelete = async () => {
+    startTransition(async () => {
+      for (const postId of selectedPosts) {
+        await deletePost(postId)
+      }
+      setSelectedPosts(new Set())
+      setBulkDeleteDialogOpen(false)
+      router.refresh()
+    })
+  }
+
+  const handleBulkStatusChange = async (newStatus: 'active' | 'closed' | 'completed') => {
+    if (selectedPosts.size === 0) return
+
+    const statusText = newStatus === 'active' ? 'aktywować' : newStatus === 'closed' ? 'dezaktywować' : 'zakończyć'
+    if (!confirm(`Czy na pewno chcesz ${statusText} ${selectedPosts.size} ogłoszeń?`)) {
+      return
+    }
+
+    startTransition(async () => {
+      let successCount = 0
+      let errorCount = 0
+
+      for (const postId of selectedPosts) {
+        const result = await updatePostStatus(postId, newStatus)
+        if (result?.error) {
+          errorCount++
+          console.error(`Failed to update post ${postId}:`, result.error)
+        } else {
+          successCount++
+        }
+      }
+
+      if (successCount > 0) {
+        toast.success(`Zaktualizowano ${successCount} ogłoszeń`)
+      }
+      if (errorCount > 0) {
+        toast.error(`Nie udało się zaktualizować ${errorCount} ogłoszeń`)
+      }
+
+      setSelectedPosts(new Set())
+      router.refresh()
+    })
   }
 
   // Reset posts when initialPosts change (e.g., after delete or status change)
@@ -412,12 +472,8 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
         />
       </div>
 
-      {/* Filters - View Toggle and Sort */}
-      <div className="flex flex-row items-center justify-between gap-2 mb-6">
-        {/* Left side - View toggle */}
-        <ViewToggle view={viewMode} onViewChange={handleViewChange} />
-
-        {/* Right side - Sort */}
+      {/* Sort Select - Desktop & Mobile */}
+      <div className="mb-6 flex justify-end">
         <Select value={sortBy} onValueChange={handleSortChange}>
           <SelectTrigger className="w-auto rounded-xl border-border h-9 bg-card focus:ring-0 focus:ring-offset-0 focus:border-border px-2.5 gap-1 justify-start" aria-label="Sortuj według">
             <span className="text-sm">Sortuj według</span>
@@ -431,936 +487,86 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
         </Select>
       </div>
 
-      {/* Posts List/Grid */}
+      {/* Floating Action Bar - Desktop & Mobile */}
+      <div className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-300 md:bottom-8 bottom-24 ${selectedPosts.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-32 opacity-0 pointer-events-none'}`}>
+        <div className="bg-card border border-border rounded-full shadow-2xl px-4 py-3 flex items-center gap-3">
+          {/* Counter */}
+          <div className="flex items-center justify-center min-w-[32px] h-10 px-3 rounded-full bg-brand/10">
+            <span className="text-sm font-semibold text-brand">{selectedPosts.size}</span>
+          </div>
+
+          <div className="h-8 w-px bg-border" />
+
+          {/* Desktop: Buttons with text, Mobile: Icon only */}
+          <Button
+            variant="outline"
+            onClick={() => handleBulkStatusChange('completed')}
+            disabled={isPending}
+            className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
+          >
+            <CheckCircle className="w-4 h-4" />
+            <span className="hidden md:inline text-xs font-medium">Zakończ</span>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleBulkStatusChange('closed')}
+            disabled={isPending}
+            className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
+          >
+            <PauseCircle className="w-4 h-4" />
+            <span className="hidden md:inline text-xs font-medium">Dezaktywuj</span>
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => handleBulkStatusChange('active')}
+            disabled={isPending}
+            className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
+          >
+            <PlayCircle className="w-4 h-4" />
+            <span className="hidden md:inline text-xs font-medium">Aktywuj</span>
+          </Button>
+
+          <div className="h-8 w-px bg-border" />
+
+          <button
+            onClick={handleBulkDelete}
+            disabled={isPending}
+            className="h-9 rounded-xl bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 gap-2 md:px-3 px-0 md:w-auto w-9 flex items-center justify-center transition-all disabled:opacity-50"
+          >
+            <Trash2 className="w-4 h-4 text-destructive" />
+            <span className="hidden md:inline text-xs font-medium text-destructive">Usuń</span>
+          </button>
+
+          <div className="h-8 w-px bg-border" />
+
+          <Button
+            variant="ghost"
+            onClick={() => setSelectedPosts(new Set())}
+            className="h-10 rounded-full hover:bg-accent gap-2 md:px-4 px-0 md:w-auto w-10"
+          >
+            <X className="w-5 h-5" />
+            <span className="hidden md:inline text-sm">Anuluj</span>
+          </Button>
+        </div>
+      </div>
+
+      {/* Posts List */}
       {filteredPosts && filteredPosts.length > 0 ? (
-        <div className={viewMode === 'list' ? 'space-y-4' : 'grid gap-4 md:gap-6 md:grid-cols-2 lg:grid-cols-3'}>
+        <div className="space-y-4">
           {filteredPosts.map((post: Post) => (
-            <Card key={post.id} className={`border border-border hover:border-foreground/20 rounded-3xl bg-card transition-all group relative ${
-              viewMode === 'list' ? '' : 'flex flex-col h-full'
-            }`}>
-              {/* Clickable overlay for entire card */}
-              <Link
-                href={`/dashboard/my-posts/${post.id}`}
-                className="absolute inset-0 z-0 rounded-3xl"
-                aria-label={`Zobacz ogłoszenie: ${post.title}`}
-              />
-
-              <CardContent className={viewMode === 'list' ? 'p-0 relative z-10' : 'p-0 flex flex-col h-full relative z-10'}>
-                {viewMode === 'list' ? (
-                  /* List view: mobile - vertical layout, desktop - horizontal with image on left (like /posts) */
-                  <>
-                    {/* Mobile layout */}
-                    <div className="md:hidden flex flex-col">
-                      <div className="flex gap-3 p-4 pb-0 items-start">
-                        {/* Image thumbnail */}
-                        {post.images && post.images.length > 0 && (
-                          <div className="relative overflow-hidden bg-muted flex-shrink-0 w-20 h-20 rounded-xl">
-                            <Image
-                              src={post.images[0]}
-                              alt={post.title}
-                              fill
-                              className="object-cover"
-                            />
-                          </div>
-                        )}
-
-                        {/* Content */}
-                        <div className="flex-1 flex flex-col min-w-0">
-                          {/* Title with optional status badge */}
-                          <div className="flex items-start justify-between gap-2 mb-2">
-                            <h3 className="text-base font-bold text-foreground line-clamp-2 flex-1">
-                              {post.title}
-                            </h3>
-                            {post.moderation_status === 'rejected' ? (
-                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-destructive/10 border border-destructive/30 rounded-lg flex-shrink-0">
-                                <XCircle className="w-3 h-3 text-destructive" />
-                                <span className="text-xs font-semibold text-destructive">Odrzucone</span>
-                              </div>
-                            ) : isPendingModeration(post) ? (
-                              <div className="inline-flex items-center gap-1 px-2 py-0.5 bg-muted border border-border rounded-lg flex-shrink-0">
-                                <Clock className="w-3 h-3 text-muted-foreground" />
-                                <span className="text-xs font-semibold text-muted-foreground">Oczekuje</span>
-                              </div>
-                            ) : null}
-                          </div>
-
-                          {/* Rejection reason */}
-                          {post.moderation_status === 'rejected' && post.moderation_reason && (
-                            <div className="mb-2 p-2 bg-destructive/10 border border-destructive/30 rounded-xl">
-                              <p className="text-xs text-destructive">
-                                <span className="font-semibold">Powód:</span> {post.moderation_reason}
-                              </p>
-                            </div>
-                          )}
-
-                          {/* Location and Stats */}
-                          <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="w-3 h-3" />
-                              <span className="truncate">{post.city}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Eye className="w-3 h-3" />
-                              <span>{post.views}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Phone className="w-3 h-3" />
-                              <span>{post.phone_clicks || 0}</span>
-                            </div>
-                            {post.status === 'active' && post.expires_at && (() => {
-                              const expiryInfo = getExpiryText(post.expires_at)
-                              return expiryInfo.text && (
-                                <div className={`flex items-center gap-1 ${expiryInfo.urgent ? 'text-brand font-semibold' : ''}`}>
-                                  <CalendarClock className="w-3 h-3" />
-                                  <span>{expiryInfo.text}</span>
-                                </div>
-                              )
-                            })()}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Footer - full width */}
-                      <div className="pt-3 pb-4 mt-3 border-t-2 border-border px-4">
-                        <div className="flex items-center justify-between gap-2">
-                          {/* Price */}
-                          {post.price ? (
-                            <div className="text-left">
-                              <p className="text-base font-bold text-foreground">
-                                {post.price} zł
-                              </p>
-                              {post.price_type && (
-                                <p className="text-xs text-muted-foreground">
-                                  {post.price_type === 'hourly'
-                                    ? 'za godzinę'
-                                    : post.price_type === 'fixed'
-                                    ? 'cena stała'
-                                    : 'do negocjacji'}
-                                </p>
-                              )}
-                            </div>
-                          ) : (
-                            <div></div>
-                          )}
-
-                        {/* Actions Container */}
-                        <div className="bg-muted/50 rounded-xl p-2 flex items-center gap-1.5">
-                          {post.status === 'active' && post.expires_at && getDaysUntilExpiry(post.expires_at) !== null && getDaysUntilExpiry(post.expires_at)! <= 7 && (
-                            <TooltipProvider delayDuration={500}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={(e) => handleExtendPost(post.id, e)}
-                                    className="h-8 w-8 rounded-lg bg-card border border-brand/30 text-brand hover:bg-brand/10 flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                  >
-                                    <RefreshCw className="w-3 h-3" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent sideOffset={5}>
-                                  <p>Przedłuż o 30 dni</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          )}
-
-                          {post.moderation_status === 'rejected' && !post.appeal_status && (
-                            <TooltipProvider delayDuration={500}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      openAppealDialog(post.id)
-                                    }}
-                                    className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                  >
-                                    <ShieldAlert className="w-3 h-3 text-foreground" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent sideOffset={5}>
-                                  <p>Odwołaj się od decyzji</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          )}
-
-                          {post.appeal_status === 'pending' && (
-                            <TooltipProvider delayDuration={500}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <div className="h-8 px-3 rounded-lg bg-card border border-border text-muted-foreground flex items-center justify-center gap-1.5">
-                                    <Clock className="w-3 h-3" />
-                                    <span className="text-xs font-semibold">W trakcie</span>
-                                  </div>
-                                </TooltipTrigger>
-                                <TooltipContent sideOffset={5}>
-                                  <p>Oczekuje na rozpatrzenie</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          )}
-
-                          <TooltipProvider delayDuration={500}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
-                                  <button className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
-                                    <Pencil className="w-3 h-3 text-foreground" />
-                                  </button>
-                                </Link>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={5}>
-                                <p>Edytuj</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          <TooltipProvider delayDuration={500}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Link href={`/posts/${post.id}`} className="relative z-20" target="_blank">
-                                  <button className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
-                                    <ExternalLink className="w-3 h-3 text-foreground" />
-                                  </button>
-                                </Link>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={5}>
-                                <p>Podgląd</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-
-                          {post.status === 'active' && (
-                            <>
-                              <TooltipProvider delayDuration={500}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      onClick={(e) => {
-                                        e.preventDefault()
-                                        handleStatusChange(post.id, 'closed')
-                                      }}
-                                      className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                      disabled={isPending}
-                                    >
-                                      <PauseCircle className="w-3 h-3 text-foreground" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent sideOffset={5}>
-                                    <p>Dezaktywuj</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              <TooltipProvider delayDuration={500}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      onClick={(e) => {
-                                        e.preventDefault()
-                                        handleStatusChange(post.id, 'completed')
-                                      }}
-                                      className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                      disabled={isPending}
-                                    >
-                                      <CheckCircle className="w-3 h-3 text-foreground" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent sideOffset={5}>
-                                    <p>Zakończ</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </>
-                          )}
-
-                          {post.status === 'closed' && (
-                            <>
-                              <TooltipProvider delayDuration={500}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      onClick={(e) => {
-                                        e.preventDefault()
-                                        handleStatusChange(post.id, 'active')
-                                      }}
-                                      className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                      disabled={isPending}
-                                    >
-                                      <PlayCircle className="w-3 h-3 text-foreground" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent sideOffset={5}>
-                                    <p>Aktywuj</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                              <TooltipProvider delayDuration={500}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      onClick={(e) => {
-                                        e.preventDefault()
-                                        handleStatusChange(post.id, 'completed')
-                                      }}
-                                      className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                      disabled={isPending}
-                                    >
-                                      <CheckCircle className="w-3 h-3 text-foreground" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent sideOffset={5}>
-                                    <p>Zakończ</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </>
-                          )}
-
-                          {post.status === 'completed' && (
-                            <TooltipProvider delayDuration={500}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'active')
-                                    }}
-                                    className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                    disabled={isPending}
-                                  >
-                                    <PlayCircle className="w-3 h-3 text-foreground" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent sideOffset={5}>
-                                  <p>Aktywuj ponownie</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          )}
-
-                          <TooltipProvider>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault()
-                                    openDeleteDialog(post.id)
-                                  }}
-                                  className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                  disabled={isPending}
-                                >
-                                  <Trash2 className="w-3 h-3 text-red-600" />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={5}>
-                                <p>Usuń</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                    {/* Desktop layout */}
-                    <div className="hidden md:flex h-full overflow-hidden rounded-3xl">
-                      {/* Image container - left side, full height */}
-                      {post.images && post.images.length > 0 && (
-                        <div className="relative bg-muted w-64 flex-shrink-0">
-                          <Image
-                            src={post.images[0]}
-                            alt={post.title}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      )}
-
-                      {/* Content container - right side */}
-                      <div className="flex-1 flex flex-col p-6">
-                        {/* Top section */}
-                        <div className="flex items-start justify-between gap-3 mb-3">
-                          <h3 className="text-xl font-bold text-foreground flex-1">
-                            {post.title}
-                          </h3>
-                          {/* Status badge (only important states) */}
-                          {post.moderation_status === 'rejected' ? (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-destructive/10 border border-destructive/30 rounded-lg flex-shrink-0">
-                              <XCircle className="w-4 h-4 text-destructive" />
-                              <span className="text-sm font-semibold text-destructive">Odrzucone</span>
-                            </div>
-                          ) : isPendingModeration(post) ? (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted border border-border rounded-lg flex-shrink-0">
-                              <Clock className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-sm font-semibold text-muted-foreground">Oczekuje</span>
-                            </div>
-                          ) : null}
-                        </div>
-
-                        {/* Rejection reason */}
-                        {post.moderation_status === 'rejected' && post.moderation_reason && (
-                          <div className="mb-3 p-3 bg-destructive/10 border border-destructive/30 rounded-xl">
-                            <p className="text-sm text-destructive">
-                              <span className="font-semibold">Powód odrzucenia:</span> {post.moderation_reason}
-                            </p>
-                          </div>
-                        )}
-
-                        {/* Spacer */}
-                        <div className="flex-1"></div>
-
-                        {/* Bottom section */}
-                        <div className="space-y-3">
-                          {/* Location and Stats */}
-                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <MapPin className="w-4 h-4" />
-                              <span>{post.city}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Eye className="w-4 h-4" />
-                              <span>{post.views}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Phone className="w-4 h-4" />
-                              <span>{post.phone_clicks || 0}</span>
-                            </div>
-                            <div className="flex items-center gap-1.5 ml-auto">
-                              <Clock className="w-4 h-4" />
-                              <span>
-                                {new Date(post.created_at).toLocaleDateString('pl-PL', {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  year: 'numeric'
-                                })},{' '}
-                                {new Date(post.created_at).toLocaleTimeString('pl-PL', {
-                                  hour: '2-digit',
-                                  minute: '2-digit'
-                                })}
-                              </span>
-                            </div>
-                          </div>
-
-                          {/* Border separator */}
-                          <div className="border-t-2 border-border"></div>
-
-                          {/* Price and Actions */}
-                          <div className="flex items-center justify-between gap-4">
-                            {/* Price */}
-                            {post.price && (
-                              <div className="text-left">
-                                <p className="text-xl font-bold text-foreground">
-                                  {post.price} zł
-                                </p>
-                                {post.price_type && (
-                                  <p className="text-sm text-muted-foreground">
-                                    {post.price_type === 'hourly'
-                                      ? 'za godzinę'
-                                      : post.price_type === 'fixed'
-                                      ? 'cena stała'
-                                      : 'do negocjacji'}
-                                  </p>
-                                )}
-                              </div>
-                            )}
-
-                            {/* Actions Container */}
-                            <div className="bg-muted/50 rounded-xl p-2 flex items-center gap-2">
-                              {post.moderation_status === 'rejected' && !post.appeal_status && (
-                                <TooltipProvider delayDuration={500}>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <button
-                                        onClick={(e) => {
-                                          e.preventDefault()
-                                          openAppealDialog(post.id)
-                                        }}
-                                        className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                      >
-                                        <ShieldAlert className="w-4 h-4 text-foreground" />
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent sideOffset={5}>
-                                      <p>Odwołaj się od decyzji</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              )}
-
-                              {post.appeal_status === 'pending' && (
-                                <TooltipProvider delayDuration={500}>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <div className="h-10 px-4 rounded-lg bg-card border border-border text-muted-foreground flex items-center justify-center gap-2">
-                                        <Clock className="w-4 h-4" />
-                                        <span className="text-sm font-semibold">W trakcie</span>
-                                      </div>
-                                    </TooltipTrigger>
-                                    <TooltipContent sideOffset={5}>
-                                      <p>Oczekuje na rozpatrzenie</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              )}
-
-                              <TooltipProvider delayDuration={500}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
-                                      <button className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
-                                        <Pencil className="w-4 h-4 text-foreground" />
-                                      </button>
-                                    </Link>
-                                  </TooltipTrigger>
-                                  <TooltipContent sideOffset={5}>
-                                    <p>Edytuj</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-
-                              <TooltipProvider delayDuration={500}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Link href={`/posts/${post.id}`} className="relative z-20" target="_blank">
-                                      <button className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
-                                        <ExternalLink className="w-4 h-4 text-foreground" />
-                                      </button>
-                                    </Link>
-                                  </TooltipTrigger>
-                                  <TooltipContent sideOffset={5}>
-                                    <p>Podgląd</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-
-                              {post.status === 'active' && (
-                                <>
-                                  <TooltipProvider delayDuration={500}>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <button
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            handleStatusChange(post.id, 'closed')
-                                          }}
-                                          className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                          disabled={isPending}
-                                        >
-                                          <PauseCircle className="w-4 h-4 text-foreground" />
-                                        </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent sideOffset={5}>
-                                        <p>Dezaktywuj</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                  <TooltipProvider delayDuration={500}>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <button
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            handleStatusChange(post.id, 'completed')
-                                          }}
-                                          className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                          disabled={isPending}
-                                        >
-                                          <CheckCircle className="w-4 h-4 text-foreground" />
-                                        </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent sideOffset={5}>
-                                        <p>Zakończ</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                </>
-                              )}
-
-                              {post.status === 'closed' && (
-                                <>
-                                  <TooltipProvider delayDuration={500}>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <button
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            handleStatusChange(post.id, 'active')
-                                          }}
-                                          className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                          disabled={isPending}
-                                        >
-                                          <PlayCircle className="w-4 h-4 text-foreground" />
-                                        </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent sideOffset={5}>
-                                        <p>Aktywuj</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                  <TooltipProvider delayDuration={500}>
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <button
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            handleStatusChange(post.id, 'completed')
-                                          }}
-                                          className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                          disabled={isPending}
-                                        >
-                                          <CheckCircle className="w-4 h-4 text-foreground" />
-                                        </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent sideOffset={5}>
-                                        <p>Zakończ</p>
-                                      </TooltipContent>
-                                    </Tooltip>
-                                  </TooltipProvider>
-                                </>
-                              )}
-
-                              {post.status === 'completed' && (
-                                <TooltipProvider delayDuration={500}>
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <button
-                                        onClick={(e) => {
-                                          e.preventDefault()
-                                          handleStatusChange(post.id, 'active')
-                                        }}
-                                        className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                        disabled={isPending}
-                                      >
-                                        <PlayCircle className="w-4 h-4 text-foreground" />
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent sideOffset={5}>
-                                      <p>Aktywuj ponownie</p>
-                                    </TooltipContent>
-                                  </Tooltip>
-                                </TooltipProvider>
-                              )}
-
-                              <TooltipProvider delayDuration={500}>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <button
-                                      onClick={(e) => {
-                                        e.preventDefault()
-                                        openDeleteDialog(post.id)
-                                      }}
-                                      className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all relative z-20"
-                                      disabled={isPending}
-                                    >
-                                      <Trash2 className="w-4 h-4 text-red-600" />
-                                    </button>
-                                  </TooltipTrigger>
-                                  <TooltipContent sideOffset={5}>
-                                    <p>Usuń</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </TooltipProvider>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  /* Grid view: image above, content below */
-                  <>
-                    {/* Image thumbnail */}
-                    {post.images && post.images.length > 0 && (
-                      <div className="relative overflow-hidden bg-muted flex-shrink-0 w-full h-48 md:h-56 rounded-t-3xl">
-                        <Image
-                          src={post.images[0]}
-                          alt={post.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    )}
-
-                    {/* Content area */}
-                    <div className="flex-1 flex flex-col min-w-0 p-4 md:p-5">
-                      {/* Status badge at top */}
-                      {(post.moderation_status === 'rejected' || isPendingModeration(post)) && (
-                        <div className="mb-3">
-                          {post.moderation_status === 'rejected' ? (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-destructive/10 border border-destructive/30 rounded-lg">
-                              <XCircle className="w-4 h-4 text-destructive" />
-                              <span className="text-sm font-semibold text-destructive">Odrzucone</span>
-                            </div>
-                          ) : isPendingModeration(post) ? (
-                            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted border border-border rounded-lg">
-                              <Clock className="w-4 h-4 text-muted-foreground" />
-                              <span className="text-sm font-semibold text-muted-foreground">Oczekuje</span>
-                            </div>
-                          ) : null}
-                        </div>
-                      )}
-
-                      {/* Title */}
-                      <h3 className="text-lg md:text-xl font-bold text-foreground mb-3 line-clamp-2">
-                        {post.title}
-                      </h3>
-
-                      {/* Rejection reason */}
-                      {post.moderation_status === 'rejected' && post.moderation_reason && (
-                        <div className="mb-3 p-3 bg-destructive/10 border border-destructive/30 rounded-xl">
-                          <p className="text-sm text-destructive">
-                            <span className="font-semibold">Powód:</span> {post.moderation_reason}
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Spacer */}
-                      <div className="flex-1"></div>
-
-                      {/* Info section */}
-                      <div className="space-y-3">
-                        {/* Location and Stats */}
-                        <div className="flex items-center justify-between text-sm text-muted-foreground pt-3 border-t border-border/50">
-                          <div className="flex items-center gap-1.5">
-                            <MapPin className="w-4 h-4 flex-shrink-0" />
-                            <span className="truncate">{post.city}{post.district && `, ${post.district}`}</span>
-                          </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            <div className="flex items-center gap-1">
-                              <Eye className="w-4 h-4" />
-                              <span>{post.views}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Phone className="w-4 h-4" />
-                              <span>{post.phone_clicks || 0}</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Price - highlighted */}
-                        {post.price && (
-                          <div className="text-center py-3 px-4 bg-brand/5 border border-brand/20 rounded-xl">
-                            <p className="text-3xl font-bold text-brand mb-1">
-                              {post.price} zł
-                            </p>
-                            {post.price_type && (
-                              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                {post.price_type === 'hourly'
-                                  ? 'za godzinę'
-                                  : post.price_type === 'fixed'
-                                  ? 'cena stała'
-                                  : 'do negocjacji'}
-                              </p>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Footer with actions - separated with border */}
-                    <div className="border-t-2 border-border bg-muted/30 rounded-b-3xl p-4">
-                      <div className="flex items-center justify-center gap-2 flex-wrap">
-                        {post.moderation_status === 'rejected' && !post.appeal_status && (
-                          <TooltipProvider delayDuration={500}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault()
-                                    openAppealDialog(post.id)
-                                  }}
-                                  className="h-10 w-10 rounded-xl bg-card border border-border hover:bg-accent flex items-center justify-center transition-all shadow-sm"
-                                >
-                                  <ShieldAlert className="w-5 h-5 text-foreground" />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={5}>
-                                <p>Odwołaj się</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        )}
-
-                        {post.appeal_status === 'pending' && (
-                          <TooltipProvider delayDuration={500}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div className="h-10 px-3 rounded-xl bg-card border border-border text-muted-foreground flex items-center justify-center gap-1.5 shadow-sm">
-                                  <Clock className="w-5 h-5" />
-                                  <span className="text-sm font-semibold">W trakcie</span>
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={5}>
-                                <p>Odwołanie oczekuje</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        )}
-
-                        <TooltipProvider delayDuration={500}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Link href={`/dashboard/my-posts/${post.id}/edit`}>
-                                <button className="h-10 w-10 rounded-xl bg-card border border-border hover:bg-accent flex items-center justify-center transition-all shadow-sm">
-                                  <Pencil className="w-5 h-5 text-foreground" />
-                                </button>
-                              </Link>
-                            </TooltipTrigger>
-                            <TooltipContent sideOffset={5}>
-                              <p>Edytuj</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-
-                        <TooltipProvider delayDuration={500}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Link href={`/posts/${post.id}`} target="_blank">
-                                <button className="h-10 w-10 rounded-xl bg-card border border-border hover:bg-accent flex items-center justify-center transition-all shadow-sm">
-                                  <ExternalLink className="w-5 h-5 text-foreground" />
-                                </button>
-                              </Link>
-                            </TooltipTrigger>
-                            <TooltipContent sideOffset={5}>
-                              <p>Podgląd</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-
-                        {post.status === 'active' && (
-                          <>
-                            <TooltipProvider delayDuration={500}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'closed')
-                                    }}
-                                    className="h-10 w-10 rounded-xl bg-card border border-border hover:bg-accent flex items-center justify-center transition-all shadow-sm"
-                                    disabled={isPending}
-                                  >
-                                    <PauseCircle className="w-5 h-5 text-foreground" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent sideOffset={5}>
-                                  <p>Dezaktywuj</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <TooltipProvider delayDuration={500}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'completed')
-                                    }}
-                                    className="h-10 w-10 rounded-xl bg-card border border-border hover:bg-accent flex items-center justify-center transition-all shadow-sm"
-                                    disabled={isPending}
-                                  >
-                                    <CheckCircle className="w-5 h-5 text-foreground" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent sideOffset={5}>
-                                  <p>Zakończ</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </>
-                        )}
-
-                        {post.status === 'closed' && (
-                          <>
-                            <TooltipProvider delayDuration={500}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'active')
-                                    }}
-                                    className="h-10 w-10 rounded-xl bg-card border border-border hover:bg-accent flex items-center justify-center transition-all shadow-sm"
-                                    disabled={isPending}
-                                  >
-                                    <PlayCircle className="w-5 h-5 text-foreground" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent sideOffset={5}>
-                                  <p>Aktywuj</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                            <TooltipProvider delayDuration={500}>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault()
-                                      handleStatusChange(post.id, 'completed')
-                                    }}
-                                    className="h-10 w-10 rounded-xl bg-card border border-border hover:bg-accent flex items-center justify-center transition-all shadow-sm"
-                                    disabled={isPending}
-                                  >
-                                    <CheckCircle className="w-5 h-5 text-foreground" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent sideOffset={5}>
-                                  <p>Zakończ</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
-                          </>
-                        )}
-
-                        {post.status === 'completed' && (
-                          <TooltipProvider delayDuration={500}>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <button
-                                  onClick={(e) => {
-                                    e.preventDefault()
-                                    handleStatusChange(post.id, 'active')
-                                  }}
-                                  className="h-10 w-10 rounded-xl bg-card border border-border hover:bg-accent flex items-center justify-center transition-all shadow-sm"
-                                  disabled={isPending}
-                                >
-                                  <PlayCircle className="w-5 h-5 text-foreground" />
-                                </button>
-                              </TooltipTrigger>
-                              <TooltipContent sideOffset={5}>
-                                <p>Aktywuj ponownie</p>
-                              </TooltipContent>
-                            </Tooltip>
-                          </TooltipProvider>
-                        )}
-
-                        <TooltipProvider delayDuration={500}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={(e) => {
-                                  e.preventDefault()
-                                  openDeleteDialog(post.id)
-                                }}
-                                className="h-10 w-10 rounded-xl bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 flex items-center justify-center transition-all shadow-sm"
-                                disabled={isPending}
-                              >
-                                <Trash2 className="w-5 h-5 text-destructive" />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent sideOffset={5}>
-                              <p>Usuń</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </CardContent>
-            </Card>
+            <PostListItem
+              key={post.id}
+              post={post}
+              isPending={isPending}
+              onStatusChange={handleStatusChange}
+              onDelete={openDeleteDialog}
+              onAppeal={openAppealDialog}
+              onExtend={handleExtendPost}
+              getDaysUntilExpiry={getDaysUntilExpiry}
+              isPendingModeration={isPendingModeration}
+              isSelected={selectedPosts.has(post.id)}
+              onToggleSelect={handleTogglePost}
+            />
           ))}
         </div>
       ) : (
@@ -1495,6 +701,40 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
               disabled={isPending || !appealMessage.trim()}
             >
               {isPending ? 'Wysyłanie...' : 'Wyślij odwołanie'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <AlertDialog open={bulkDeleteDialogOpen} onOpenChange={setBulkDeleteDialogOpen}>
+        <AlertDialogContent className="sm:max-w-md p-0 gap-0 overflow-hidden">
+          <AlertDialogHeader className="p-4 md:p-6">
+            <AlertDialogTitle className="text-2xl">
+              Usuń ogłoszenia
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base">
+              Czy na pewno chcesz usunąć {selectedPosts.size} {selectedPosts.size === 1 ? 'ogłoszenie' : selectedPosts.size < 5 ? 'ogłoszenia' : 'ogłoszeń'}? Ta akcja jest nieodwracalna.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="px-4 md:px-6">
+            <div className="border-t border-border" />
+          </div>
+
+          <AlertDialogFooter className="gap-3 p-4 md:p-6 flex-row">
+            <AlertDialogCancel
+              className="flex-1 rounded-full border border-border hover:bg-muted bg-card text-foreground"
+              disabled={isPending}
+            >
+              Anuluj
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmBulkDelete}
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0"
+              disabled={isPending}
+            >
+              {isPending ? 'Usuwanie...' : 'Usuń'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

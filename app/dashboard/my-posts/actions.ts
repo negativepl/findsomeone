@@ -106,7 +106,7 @@ export async function updatePostStatus(postId: string, status: 'active' | 'close
   // Verify the post belongs to the user
   const { data: post } = await supabase
     .from('posts')
-    .select('user_id, title, description, type, city, price, price')
+    .select('user_id')
     .eq('id', postId)
     .single()
 
