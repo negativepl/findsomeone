@@ -5,6 +5,7 @@ import { AnimatedHeroText } from '@/components/AnimatedHeroText'
 import { FullInteractiveBackground } from '@/components/FullInteractiveBackground'
 import { SpotlightCard } from '@/components/SpotlightCard'
 import { ScrollProgressIndicator } from '@/components/ScrollProgressIndicator'
+import { StructuredData } from '@/components/StructuredData'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -17,6 +18,16 @@ export const metadata: Metadata = {
     description: "Poznaj historię i misję FindSomeone - platformy łączącej ludzi lokalnie.",
     type: "website",
     locale: "pl_PL",
+    url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'}/about`,
+    images: [{
+      url: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'}/og-image.png`,
+      width: 1200,
+      height: 630,
+      alt: 'FindSomeone - O nas',
+    }],
+  },
+  alternates: {
+    canonical: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'}/about`,
   },
 }
 
@@ -26,6 +37,16 @@ export default async function AboutPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Structured Data for SEO */}
+      <StructuredData type="about-page" />
+      <StructuredData
+        type="person"
+        personName="Marcin Baszewski"
+        personJobTitle="Founder & Designer"
+        personEmail="mbaszewski@findsomeone.app"
+        personImage={`${process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'}/images/mbaszewski.webp`}
+      />
+
       <NavbarWithHide user={user} pageTitle="O nas" />
       <ScrollProgressIndicator />
 

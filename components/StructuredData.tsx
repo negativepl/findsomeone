@@ -6,15 +6,19 @@ interface BreadcrumbItem {
 }
 
 interface StructuredDataProps {
-  type: 'breadcrumb' | 'service' | 'local-business' | 'collection-page'
+  type: 'breadcrumb' | 'service' | 'local-business' | 'collection-page' | 'about-page' | 'person'
   breadcrumbs?: BreadcrumbItem[]
   serviceName?: string
   serviceDescription?: string
   city?: string
   category?: string
+  personName?: string
+  personJobTitle?: string
+  personEmail?: string
+  personImage?: string
 }
 
-export function StructuredData({ type, breadcrumbs, serviceName, serviceDescription, city, category }: StructuredDataProps) {
+export function StructuredData({ type, breadcrumbs, serviceName, serviceDescription, city, category, personName, personJobTitle, personEmail, personImage }: StructuredDataProps) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
 
   let structuredData: any = {}
@@ -88,6 +92,47 @@ export function StructuredData({ type, breadcrumbs, serviceName, serviceDescript
           name: 'FindSomeone',
           url: baseUrl,
         },
+      }
+      break
+
+    case 'about-page':
+      structuredData = {
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        name: 'O nas - FindSomeone',
+        description: serviceDescription || 'Poznaj historię FindSomeone - platformy łączącej ludzi lokalnie. Nasza misja to tworzenie pięknego i funkcjonalnego UX dla społeczności.',
+        url: `${baseUrl}/about`,
+        mainEntity: {
+          '@type': 'Organization',
+          name: 'FindSomeone',
+          url: baseUrl,
+          description: 'Darmowa platforma lokalnych ogłoszeń łącząca ludzi w mieście',
+          foundingDate: '2024',
+          founder: {
+            '@type': 'Person',
+            name: personName || 'Marcin Baszewski',
+            jobTitle: personJobTitle || 'Founder & Designer',
+          },
+        },
+      }
+      break
+
+    case 'person':
+      structuredData = {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: personName || 'Marcin Baszewski',
+        jobTitle: personJobTitle || 'Founder & Designer',
+        email: personEmail || 'mbaszewski@findsomeone.app',
+        image: personImage || `${baseUrl}/images/mbaszewski.webp`,
+        worksFor: {
+          '@type': 'Organization',
+          name: 'FindSomeone',
+          url: baseUrl,
+        },
+        sameAs: [
+          // Add social media profiles if available
+        ],
       }
       break
   }
