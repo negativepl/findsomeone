@@ -96,3 +96,12 @@ COMMENT ON FUNCTION send_push_notification_trigger() IS
    Checks user notification preferences before sending.
    Supports booking_request activity type.
    Requires supabase.service_role_key to be configured.';
+
+-- Drop existing trigger if exists
+DROP TRIGGER IF EXISTS activity_logs_push_notification ON activity_logs;
+
+-- Create trigger for sending push notifications on new activity
+CREATE TRIGGER activity_logs_push_notification
+  AFTER INSERT ON activity_logs
+  FOR EACH ROW
+  EXECUTE FUNCTION send_push_notification_trigger();
