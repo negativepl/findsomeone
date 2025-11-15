@@ -115,6 +115,15 @@ export async function PATCH(request: Request) {
       pending: 'oczekująca'
     }
 
+    // Extract data from Supabase response (handle array or object)
+    const post = bookingDetails?.post as any
+    const provider = bookingDetails?.provider as any
+    const client = bookingDetails?.client as any
+
+    const postTitle = Array.isArray(post) ? post[0]?.title : post?.title
+    const providerName = Array.isArray(provider) ? provider[0]?.full_name : provider?.full_name
+    const clientName = Array.isArray(client) ? client[0]?.full_name : client?.full_name
+
     await supabase.from('activity_logs').insert({
       user_id: recipientId,
       activity_type: 'message_received', // Using existing type for now
@@ -122,8 +131,8 @@ export async function PATCH(request: Request) {
       metadata: {
         booking_id: bookingId,
         status: statusLabels[status as keyof typeof statusLabels],
-        post_title: bookingDetails?.post?.title,
-        actor_name: isProvider ? bookingDetails?.provider?.full_name : bookingDetails?.client?.full_name
+        post_title: postTitle,
+        actor_name: isProvider ? providerName : clientName
       }
     })
 
