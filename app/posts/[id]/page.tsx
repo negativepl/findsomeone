@@ -392,7 +392,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Title */}
                 <div>
-                  <p className="text-2xl md:text-3xl font-bold text-foreground leading-tight">{post.title}</p>
+                  <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">{post.title}</h1>
                 </div>
 
                 {/* Budget */}
@@ -608,7 +608,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
                 {/* Title */}
                 <div>
-                  <p className="text-2xl md:text-3xl font-bold text-foreground leading-tight">{post.title}</p>
+                  <h1 className="text-2xl md:text-3xl font-bold text-foreground leading-tight">{post.title}</h1>
                 </div>
 
                 {/* Budget */}

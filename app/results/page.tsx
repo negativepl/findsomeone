@@ -67,13 +67,19 @@ export async function generateMetadata({
     description = `Wyniki wyszukiwania dla "${search}". Znajdź lokalną pomoc lub oferuj swoje usługi.`
   }
 
+  // Build canonical URL with query params
+  const canonicalUrl = new URL('/results', baseUrl)
+  if (city) canonicalUrl.searchParams.set('city', city)
+  if (category) canonicalUrl.searchParams.set('category', category)
+  if (search) canonicalUrl.searchParams.set('search', search)
+
   return {
     title,
     description,
     openGraph: {
       title,
       description,
-      url: `${baseUrl}/posts`,
+      url: canonicalUrl.toString(),
       siteName: 'FindSomeone',
       locale: 'pl_PL',
       type: 'website',
@@ -84,7 +90,7 @@ export async function generateMetadata({
       description,
     },
     alternates: {
-      canonical: `${baseUrl}/posts`,
+      canonical: canonicalUrl.toString(),
     },
   }
 }
@@ -409,9 +415,9 @@ export default async function PostsPage({
       {/* Main Content */}
       <main className="container mx-auto px-4 md:px-6 pt-20 md:pt-24 pb-8 flex-1">
         <div className="hidden md:block md:mb-4">
-          <h2 className="text-2xl md:text-4xl font-bold mb-3 text-foreground">
+          <h1 className="text-2xl md:text-4xl font-bold mb-3 text-foreground">
             {searchQuery || cityQuery || categoryQuery ? 'Wyniki wyszukiwania' : 'Wszystkie ogłoszenia'}
-          </h2>
+          </h1>
           <p className="text-base md:text-lg text-muted-foreground">
             {searchQuery || cityQuery || categoryQuery ? (
               <>
