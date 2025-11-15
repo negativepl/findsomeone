@@ -642,7 +642,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 <div className="relative w-full h-24 md:h-32 overflow-hidden bg-muted">
                   <Image
                     src={post.profiles.banner_url}
-                    alt=""
+                    alt={`${post.profiles.full_name} profile banner`}
                     fill
                     className="object-cover"
                     style={{

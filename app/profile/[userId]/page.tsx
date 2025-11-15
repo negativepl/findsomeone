@@ -11,6 +11,7 @@ import { PhoneNumber } from '@/app/posts/[id]/PhoneNumber'
 import { UserPostsList } from './UserPostsList'
 import { UserBadge } from '@/components/ui/user-badge'
 import { BannerSection } from './BannerSection'
+import { StructuredData } from '@/components/StructuredData'
 import { AI_BOT_USER_ID } from '@/lib/constants'
 
 export default async function ProfilePage({ params }: { params: Promise<{ userId: string }> }) {
@@ -73,6 +74,16 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {/* Structured Data for SEO */}
+      <StructuredData
+        type="profile-with-reviews"
+        personName={profile.full_name || undefined}
+        personImage={profile.avatar_url || undefined}
+        rating={profile.rating}
+        totalReviews={profile.total_reviews}
+        reviews={reviews || []}
+      />
+
       <NavbarWithHide user={user} pageTitle={profile.full_name || 'Profil'} />
 
       <div className="container mx-auto px-6 pt-20 md:pt-24 pb-8 flex-1">

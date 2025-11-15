@@ -126,8 +126,14 @@ export default async function Home() {
     '@type': 'Organization',
     name: 'FindSomeone',
     url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${baseUrl}/logo.png`,
+      width: 512,
+      height: 512,
+    },
     description: 'Darmowa platforma lokalnych ogłoszeń łącząca ludzi w mieście. Kupno, sprzedaż, wynajem, usługi i inne ogłoszenia drobne.',
+    foundingDate: '2025',
     areaServed: {
       '@type': 'Country',
       name: 'Polska',
@@ -137,6 +143,9 @@ export default async function Home() {
       contactType: 'customer service',
       availableLanguage: 'Polish',
     },
+    sameAs: [
+      // Social media profiles - dodaj jak będziesz miał
+    ],
   }
 
   // FAQ JSON-LD for AI search engines (Perplexity, ChatGPT, etc.)

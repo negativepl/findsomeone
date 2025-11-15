@@ -5,8 +5,18 @@ interface BreadcrumbItem {
   url: string
 }
 
+interface Review {
+  id: string
+  rating: number
+  comment: string
+  created_at: string
+  reviewer: {
+    full_name: string
+  } | null
+}
+
 interface StructuredDataProps {
-  type: 'breadcrumb' | 'service' | 'local-business' | 'collection-page' | 'about-page' | 'person'
+  type: 'breadcrumb' | 'service' | 'local-business' | 'collection-page' | 'about-page' | 'person' | 'profile-with-reviews'
   breadcrumbs?: BreadcrumbItem[]
   serviceName?: string
   serviceDescription?: string
@@ -16,9 +26,12 @@ interface StructuredDataProps {
   personJobTitle?: string
   personEmail?: string
   personImage?: string
+  rating?: number
+  totalReviews?: number
+  reviews?: Review[]
 }
 
-export function StructuredData({ type, breadcrumbs, serviceName, serviceDescription, city, category, personName, personJobTitle, personEmail, personImage }: StructuredDataProps) {
+export function StructuredData({ type, breadcrumbs, serviceName, serviceDescription, city, category, personName, personJobTitle, personEmail, personImage, rating, totalReviews, reviews }: StructuredDataProps) {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
 
   let structuredData: any = {}
@@ -107,7 +120,7 @@ export function StructuredData({ type, breadcrumbs, serviceName, serviceDescript
           name: 'FindSomeone',
           url: baseUrl,
           description: 'Darmowa platforma lokalnych ogłoszeń łącząca ludzi w mieście',
-          foundingDate: '2024',
+          foundingDate: '2025',
           founder: {
             '@type': 'Person',
             name: personName || 'Marcin Baszewski',
@@ -134,6 +147,47 @@ export function StructuredData({ type, breadcrumbs, serviceName, serviceDescript
           // Add social media profiles if available
         ],
       }
+      break
+
+    case 'profile-with-reviews':
+      const personData: any = {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: personName || 'User',
+        image: personImage,
+      }
+
+      // Add aggregate rating if available
+      if (rating && totalReviews && totalReviews > 0) {
+        personData.aggregateRating = {
+          '@type': 'AggregateRating',
+          ratingValue: rating.toFixed(1),
+          reviewCount: totalReviews,
+          bestRating: '5',
+          worstRating: '1',
+        }
+      }
+
+      // Add individual reviews if available
+      if (reviews && reviews.length > 0) {
+        personData.review = reviews.map((review) => ({
+          '@type': 'Review',
+          reviewRating: {
+            '@type': 'Rating',
+            ratingValue: review.rating,
+            bestRating: '5',
+            worstRating: '1',
+          },
+          reviewBody: review.comment,
+          datePublished: review.created_at,
+          author: {
+            '@type': 'Person',
+            name: review.reviewer?.full_name || 'Anonymous',
+          },
+        }))
+      }
+
+      structuredData = personData
       break
   }
 

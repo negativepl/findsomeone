@@ -38,7 +38,29 @@ export const metadata: Metadata = {
     template: "%s | FindSomeone"
   },
   description: "Lokalna platforma ogłoszeń łącząca ludzi w Twoim mieście. Sprzedawaj, kupuj, wynajmuj, oferuj usługi lub znajdź to czego szukasz. Wszelkie ogłoszenia w okolicy - za darmo.",
-  keywords: ["lokalne ogłoszenia", "sprzedaż w okolicy", "kupno rzeczy", "wynajem", "usługi w mieście", "ogłoszenia w okolicy", "ogłoszenia drobne", "OLX alternatywa", "lokalna platforma", "FindSomeone", "aplikacja PWA", "ogłoszenia za darmo"],
+  keywords: [
+    // Core keywords
+    "lokalne ogłoszenia", "sprzedaż w okolicy", "kupno rzeczy", "wynajem", "usługi w mieście",
+    "ogłoszenia w okolicy", "ogłoszenia drobne", "OLX alternatywa", "lokalna platforma",
+    "FindSomeone", "aplikacja PWA", "ogłoszenia za darmo",
+
+    // Service-specific keywords
+    "fachowcy w okolicy", "pomoc sąsiedzka", "tablica ogłoszeń", "darmowe ogłoszenia",
+    "lokalne usługi", "ogłoszenia lokalne Polska", "sprzedaż bez prowizji",
+
+    // Long-tail keywords (pytania użytkowników)
+    "gdzie sprzedać rzeczy lokalnie", "jak znaleźć fachowca w okolicy",
+    "darmowa alternatywa OLX", "lokalne ogłoszenia bez opłat",
+    "ogłoszenia sąsiedzkie", "wymiana usług lokalnie",
+
+    // Category-specific
+    "dom i ogród ogłoszenia", "motoryzacja lokalnie", "praca w okolicy",
+    "nieruchomości lokalne", "elektronika używana", "moda second hand",
+
+    // Location-based
+    "ogłoszenia Warszawa", "ogłoszenia Kraków", "ogłoszenia Wrocław",
+    "ogłoszenia Poznań", "ogłoszenia Gdańsk", "ogłoszenia Katowice",
+  ],
   authors: [{ name: "FindSomeone" }],
   creator: "FindSomeone",
   publisher: "FindSomeone",
