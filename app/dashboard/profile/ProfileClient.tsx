@@ -72,14 +72,6 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
   const [savingPrivacy, setSavingPrivacy] = useState(false)
 
-  const [notificationSettings, setNotificationSettings] = useState({
-    notify_new_messages: true,
-    notify_favorites: true,
-    notify_reviews: true,
-  })
-
-  const [savingNotifications, setSavingNotifications] = useState(false)
-
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const file = e.target.files?.[0]
@@ -284,20 +276,6 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
       toast.error(err instanceof Error ? err.message : 'Wystąpił błąd podczas aktualizacji ustawień')
     } finally {
       setSavingPrivacy(false)
-    }
-  }
-
-  const handleNotificationsSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setSavingNotifications(true)
-
-    try {
-      // TODO: W przyszłości zapisz do bazy danych
-      toast.success('Ustawienia powiadomień zostały zaktualizowane!')
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : 'Wystąpił błąd podczas aktualizacji ustawień')
-    } finally {
-      setSavingNotifications(false)
     }
   }
 
@@ -673,99 +651,6 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 {savingPrivacy ? 'Zapisywanie...' : 'Zapisz ustawienia'}
               </Button>
             </form>
-          </div>
-        </div>
-
-        {/* Notification Settings */}
-        <div>
-          <h2 className="text-xl font-bold text-foreground mb-4">Powiadomienia</h2>
-          <div className="bg-card rounded-2xl p-5">
-            <p className="text-sm text-muted-foreground mb-4">
-              Dostosuj preferencje powiadomień
-            </p>
-
-            <form onSubmit={handleNotificationsSubmit} className="space-y-4">
-              {/* New Messages */}
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
-                <div className="flex-1 pr-3">
-                  <Label htmlFor="notify_new_messages_mobile" className="text-sm font-semibold text-foreground cursor-pointer">
-                    Nowe wiadomości
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Powiadomienia o nowych wiadomościach
-                  </p>
-                </div>
-                <Switch
-                  id="notify_new_messages_mobile"
-                  checked={notificationSettings.notify_new_messages}
-                  onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, notify_new_messages: checked })}
-                  aria-label="Powiadomienia o nowych wiadomościach"
-                />
-              </div>
-
-              {/* Favorites */}
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
-                <div className="flex-1 pr-3">
-                  <Label htmlFor="notify_favorites_mobile" className="text-sm font-semibold text-foreground cursor-pointer">
-                    Dodanie do ulubionych
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Powiadomienia gdy ktoś doda Twój post do ulubionych
-                  </p>
-                </div>
-                <Switch
-                  id="notify_favorites_mobile"
-                  checked={notificationSettings.notify_favorites}
-                  onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, notify_favorites: checked })}
-                  aria-label="Powiadomienia o dodaniu do ulubionych"
-                />
-              </div>
-
-              {/* Reviews */}
-              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-xl">
-                <div className="flex-1 pr-3">
-                  <Label htmlFor="notify_reviews_mobile" className="text-sm font-semibold text-foreground cursor-pointer">
-                    Nowe opinie
-                  </Label>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    Powiadomienia o otrzymanych opiniach
-                  </p>
-                </div>
-                <Switch
-                  id="notify_reviews_mobile"
-                  checked={notificationSettings.notify_reviews}
-                  onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, notify_reviews: checked })}
-                  aria-label="Powiadomienia o nowych opiniach"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                disabled={savingNotifications}
-                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold"
-              >
-                {savingNotifications ? 'Zapisywanie...' : 'Zapisz ustawienia'}
-              </Button>
-            </form>
-          </div>
-        </div>
-
-        {/* Email Notifications - Full Width at Bottom */}
-        <div className="bg-card rounded-2xl p-5 border border-dashed border-muted-foreground/30">
-          <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-muted mb-3">
-              <svg className="w-6 h-6 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h3 className="text-base font-bold text-foreground mb-1">Powiadomienia email</h3>
-            <p className="text-sm text-muted-foreground mb-2">Otrzymuj wiadomości na email</p>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20">
-              <svg className="w-4 h-4 text-amber-600 dark:text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              <span className="text-xs font-semibold text-amber-700 dark:text-amber-400">Wkrótce</span>
-            </div>
           </div>
         </div>
       </div>
@@ -1163,110 +1048,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               </form>
             </CardContent>
           </Card>
-
-          {/* Notification Settings Card */}
-          <Card className="border border-border rounded-3xl bg-card mt-6">
-            <CardHeader>
-              <CardTitle className="text-2xl md:text-3xl font-bold text-foreground">Powiadomienia</CardTitle>
-              <CardDescription className="text-sm md:text-base text-muted-foreground">
-                Dostosuj preferencje powiadomień
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-6">
-              <form onSubmit={handleNotificationsSubmit} className="space-y-6">
-                {/* New Messages */}
-                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-2xl">
-                  <div className="flex-1 pr-4">
-                    <Label htmlFor="notify_new_messages" className="text-base font-semibold text-foreground cursor-pointer">
-                      Nowe wiadomości
-                    </Label>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Powiadomienia o nowych wiadomościach
-                    </p>
-                  </div>
-                  <Switch
-                    id="notify_new_messages"
-                    checked={notificationSettings.notify_new_messages}
-                    onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, notify_new_messages: checked })}
-                    aria-label="Powiadomienia o nowych wiadomościach"
-                  />
-                </div>
-
-                {/* Favorites */}
-                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-2xl">
-                  <div className="flex-1 pr-4">
-                    <Label htmlFor="notify_favorites" className="text-base font-semibold text-foreground cursor-pointer">
-                      Dodanie do ulubionych
-                    </Label>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Powiadomienia gdy ktoś doda Twój post do ulubionych
-                    </p>
-                  </div>
-                  <Switch
-                    id="notify_favorites"
-                    checked={notificationSettings.notify_favorites}
-                    onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, notify_favorites: checked })}
-                    aria-label="Powiadomienia o dodaniu do ulubionych"
-                  />
-                </div>
-
-                {/* Reviews */}
-                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-2xl">
-                  <div className="flex-1 pr-4">
-                    <Label htmlFor="notify_reviews" className="text-base font-semibold text-foreground cursor-pointer">
-                      Nowe opinie
-                    </Label>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      Powiadomienia o otrzymanych opiniach
-                    </p>
-                  </div>
-                  <Switch
-                    id="notify_reviews"
-                    checked={notificationSettings.notify_reviews}
-                    onCheckedChange={(checked) => setNotificationSettings({ ...notificationSettings, notify_reviews: checked })}
-                    aria-label="Powiadomienia o nowych opiniach"
-                  />
-                </div>
-
-                {/* Footer with buttons */}
-                <div className="mt-8 pt-6 border-t-2 border-border">
-                  <div className="flex justify-end">
-                    <Button
-                      type="submit"
-                      disabled={savingNotifications}
-                      className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold"
-                    >
-                      {savingNotifications ? 'Zapisywanie...' : 'Zapisz ustawienia powiadomień'}
-                    </Button>
-                  </div>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
         </div>
-      </div>
-
-      {/* Email Notifications - Full Width at Bottom (Desktop Only) */}
-      <div className="hidden lg:block mt-6">
-        <Card className="border border-dashed border-muted-foreground/30 rounded-3xl bg-card">
-          <CardContent className="p-8">
-            <div className="text-center max-w-md mx-auto">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
-                <svg className="w-8 h-8 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-foreground mb-2">Powiadomienia email</h3>
-              <p className="text-base text-muted-foreground mb-4">Otrzymuj wiadomości na email</p>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20">
-                <svg className="w-5 h-5 text-amber-600 dark:text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span className="text-sm font-semibold text-amber-700 dark:text-amber-400">Wkrótce</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
     </main>
   )
