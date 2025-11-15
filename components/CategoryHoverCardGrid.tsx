@@ -25,7 +25,7 @@ export function CategoryHoverCardGrid({ categories }: CategoryHoverCardGridProps
       {categories.map((category, index) => (
         <Link
           key={category.id}
-          href={`/search?category=${category.slug}`}
+          href={`/results?category=${category.slug}`}
           className="relative group"
           onMouseEnter={() => setHoveredId(category.id)}
           onMouseLeave={() => setHoveredId(null)}

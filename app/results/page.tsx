@@ -206,7 +206,9 @@ export default async function PostsPage({
     let countQuery = supabase
       .from('posts')
       .select('*', { count: 'exact', head: true })
-      .eq('status', 'active').eq('moderation_status', 'approved')
+      .eq('status', 'active')
+      .eq('moderation_status', 'approved')
+      .eq('is_deleted', false)
 
     let query = supabase
       .from('posts')
@@ -223,7 +225,9 @@ export default async function PostsPage({
           slug
         )
       `)
-      .eq('status', 'active').eq('moderation_status', 'approved')
+      .eq('status', 'active')
+      .eq('moderation_status', 'approved')
+      .eq('is_deleted', false)
 
     // Apply city filter
     if (cityQuery) {
@@ -233,16 +237,27 @@ export default async function PostsPage({
 
     // Apply category filter
     if (categoryQuery) {
-      // First try to find category by name
-      const { data: category } = await supabase
+      // First try to find category by slug
+      let { data: category } = await supabase
         .from('categories')
         .select('id')
-        .ilike('name', categoryQuery)
+        .ilike('slug', categoryQuery)
         .single()
 
       let categoryId = category?.id
 
-      // If not found by name, try to find by synonym
+      // If not found by slug, try by name
+      if (!categoryId) {
+        const { data: categoryByName } = await supabase
+          .from('categories')
+          .select('id')
+          .ilike('name', categoryQuery)
+          .single()
+
+        categoryId = categoryByName?.id
+      }
+
+      // If still not found, try to find by synonym
       if (!categoryId) {
         const { data: categorySynonym } = await supabase
           .from('category_synonyms')
@@ -255,15 +270,13 @@ export default async function PostsPage({
       }
 
       if (categoryId) {
-        // Check if this category has subcategories
-        const { data: subcategories } = await supabase
-          .from('categories')
-          .select('id')
-          .eq('parent_id', categoryId)
+        // Get all subcategories recursively (all levels)
+        const { data: allSubcategories } = await supabase
+          .rpc('get_all_subcategories', { parent_category_id: categoryId })
 
-        if (subcategories && subcategories.length > 0) {
-          // This is a parent category - include posts from all subcategories
-          const categoryIds = [categoryId, ...subcategories.map(sub => sub.id)]
+        if (allSubcategories && allSubcategories.length > 0) {
+          // This is a parent category - include posts from all subcategories (recursively)
+          const categoryIds = [categoryId, ...allSubcategories.map((sub: any) => sub.id)]
           query = query.in('category_id', categoryIds)
           countQuery = countQuery.in('category_id', categoryIds)
         } else {
@@ -363,7 +376,7 @@ export default async function PostsPage({
           <p className="text-base md:text-lg text-muted-foreground">
             {searchQuery || cityQuery || categoryQuery ? (
               <>
-                Znaleziono {posts?.length || 0} {posts?.length === 1 ? 'ogłoszenie' : 'ogłoszeń'}
+                Znaleziono {totalCount} {totalCount === 1 ? 'ogłoszenie' : 'ogłoszeń'}
                 {searchQuery && <> dla "{searchQuery}"</>}
                 {cityQuery && <> w "{cityQuery}"</>}
                 {categoryQuery && <> w kategorii "{categoryQuery}"</>}
@@ -415,7 +428,7 @@ export default async function PostsPage({
                     )}
                   </p>
                   {searchQuery || cityQuery || categoryQuery ? (
-                    <Link href="/search">
+                    <Link href="/results">
                       <Button className="rounded-full bg-brand hover:bg-brand/90 text-primary-foreground border border-border px-8">
                         Wyczyść filtry
                       </Button>

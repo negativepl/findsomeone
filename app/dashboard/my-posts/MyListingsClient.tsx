@@ -616,7 +616,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                           <TooltipProvider delayDuration={500}>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <Link href={`/search/${post.id}`} className="relative z-20" target="_blank">
+                                <Link href={`/posts/${post.id}`} className="relative z-20" target="_blank">
                                   <button className="h-8 w-8 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
                                     <ExternalLink className="w-3 h-3 text-foreground" />
                                   </button>
@@ -919,7 +919,7 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
                               <TooltipProvider delayDuration={500}>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <Link href={`/search/${post.id}`} className="relative z-20" target="_blank">
+                                    <Link href={`/posts/${post.id}`} className="relative z-20" target="_blank">
                                       <button className="h-10 w-10 rounded-lg bg-card border border-border hover:bg-muted flex items-center justify-center transition-all">
                                         <ExternalLink className="w-4 h-4 text-foreground" />
                                       </button>

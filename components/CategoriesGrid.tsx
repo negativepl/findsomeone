@@ -110,7 +110,7 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
                   expandedInThisRow.subcategories.map((sub) => (
                     <Link
                       key={sub.id}
-                      href={`/search?category=${encodeURIComponent(sub.name.toLowerCase())}`}
+                      href={`/results?category=${encodeURIComponent(sub.name.toLowerCase())}`}
                       className="px-4 py-3 bg-[#FAF8F3] hover:bg-[#F5F1E8] rounded-xl transition-colors text-sm font-medium text-black text-center"
                     >
                       {sub.name}
@@ -121,7 +121,7 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
                 )}
               </div>
               <Link
-                href={`/search?category=${encodeURIComponent(expandedInThisRow.name.toLowerCase())}`}
+                href={`/results?category=${encodeURIComponent(expandedInThisRow.name.toLowerCase())}`}
                 className="mt-4 inline-block text-sm font-medium text-brand hover:text-brand/90 transition-colors"
               >
                 Zobacz wszystkie w kategorii →
@@ -141,7 +141,7 @@ export function CategoriesGrid({ categories }: CategoriesGridProps) {
           {categories.map((cat) => (
             <Link
               key={cat.id}
-              href={`/search?category=${encodeURIComponent(cat.name.toLowerCase())}`}
+              href={`/results?category=${encodeURIComponent(cat.name.toLowerCase())}`}
               className="flex-shrink-0 snap-center"
               style={{ width: '200px' }}
             >

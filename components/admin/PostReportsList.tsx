@@ -373,7 +373,7 @@ export function PostReportsList({ initialReports }: PostReportsListProps) {
 
               <div>
                 <Link
-                  href={`/search/${selectedReport.post_id}`}
+                  href={`/posts/${selectedReport.post_id}`}
                   target="_blank"
                   className="inline-flex items-center gap-2 text-sm text-brand hover:text-brand/90 font-medium"
                 >

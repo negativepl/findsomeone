@@ -91,7 +91,7 @@ export function HeroSection({ user }: HeroSectionProps) {
           transition={{ duration: 0.3, delay: 0.6 }}
           className="flex flex-row gap-2 md:gap-6 justify-center items-center w-full md:w-auto"
         >
-          <Link href="/search" className="flex-1 md:flex-none md:w-auto">
+          <Link href="/results" className="flex-1 md:flex-none md:w-auto">
             <button
               className="w-full md:w-auto text-sm md:text-lg px-4 md:px-12 py-3 md:py-8 rounded-full hover:bg-accent/25 hover:backdrop-blur-sm transition-all h-[44px] md:h-[56px] md:min-w-[200px] text-foreground font-semibold inline-flex items-center justify-center"
             >

@@ -26,7 +26,7 @@ interface PostCardProps {
 export function PostCard({ post, isFavorite, priority = false }: PostCardProps) {
   return (
     <Link
-      href={`/search/${post.id}`}
+      href={`/posts/${post.id}`}
       className="flex-shrink-0 snap-center"
       style={{ width: '280px' }}
     >

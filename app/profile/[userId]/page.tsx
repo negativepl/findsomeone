@@ -243,7 +243,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ userId
                       {review.post && (
                         <div className="mb-2">
                           <Link
-                            href={`/search/${review.post_id}`}
+                            href={`/posts/${review.post_id}`}
                             className="text-sm text-muted-foreground hover:text-foreground"
                           >
                             Dotyczy: {review.post.title}

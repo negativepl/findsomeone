@@ -918,7 +918,7 @@ export function PostsManagementClient() {
                     </td>
                     <td className="px-4 py-4">
                       <div className="flex items-center justify-center gap-1">
-                        <Link href={`/search/${post.id}`} target="_blank">
+                        <Link href={`/posts/${post.id}`} target="_blank">
                           <Button
                             variant="ghost"
                             size="sm"

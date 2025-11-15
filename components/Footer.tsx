@@ -104,7 +104,7 @@ export function Footer() {
               <li><Link href="/posts?category=elektronika" className="hover:text-foreground transition-colors inline-block py-2">Elektronika</Link></li>
               <li><Link href="/posts?category=dom-i-ogrod" className="hover:text-foreground transition-colors inline-block py-2">Dom i ogród</Link></li>
               <li><Link href="/posts?category=sport-i-hobby" className="hover:text-foreground transition-colors inline-block py-2">Sport i hobby</Link></li>
-              <li><Link href="/search" className="hover:text-foreground transition-colors inline-block py-2">Zobacz wszystkie</Link></li>
+              <li><Link href="/results" className="hover:text-foreground transition-colors inline-block py-2">Zobacz wszystkie</Link></li>
             </ul>
           </div>
 
