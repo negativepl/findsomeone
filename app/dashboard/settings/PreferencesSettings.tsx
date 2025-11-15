@@ -81,7 +81,7 @@ export function PreferencesSettings({
 
   return (
     <div className="grid grid-cols-1 gap-4">
-      <div className={`flex items-center justify-between p-5 rounded-2xl ${isDisabled ? 'bg-muted/50 opacity-50' : 'bg-muted'}`}>
+      <div className={`flex items-center justify-between p-5 rounded-2xl border ${isDisabled ? 'bg-muted/50 border-border/50 opacity-50' : 'bg-muted border-border'}`}>
         <div className="flex-1 pr-4">
           <p className={`text-base font-semibold mb-1 ${isDisabled ? 'text-muted-foreground' : 'text-foreground'}`}>
             Wibracje

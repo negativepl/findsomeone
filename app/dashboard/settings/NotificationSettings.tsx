@@ -142,7 +142,7 @@ export function NotificationSettings({
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Message Notifications - Active */}
-        <div className="flex items-center justify-between p-5 rounded-2xl bg-card border border-border">
+        <div className="flex items-center justify-between p-5 rounded-2xl bg-muted border border-border">
           <div className="flex-1 pr-4">
             <p className="text-base font-semibold text-foreground mb-1">Nowe wiadomości</p>
             <p className="text-sm text-muted-foreground">Powiadomienia o nowych wiadomościach</p>
@@ -155,7 +155,7 @@ export function NotificationSettings({
         </div>
 
         {/* Favorite Notifications - Active */}
-        <div className="flex items-center justify-between p-5 rounded-2xl bg-card border border-border">
+        <div className="flex items-center justify-between p-5 rounded-2xl bg-muted border border-border">
           <div className="flex-1 pr-4">
             <p className="text-base font-semibold text-foreground mb-1">Dodanie do ulubionych</p>
             <p className="text-sm text-muted-foreground">Powiadomienia gdy ktoś doda Twój post do ulubionych</p>
@@ -168,7 +168,7 @@ export function NotificationSettings({
         </div>
 
         {/* Review Notifications - Active */}
-        <div className="flex items-center justify-between p-5 rounded-2xl bg-card border border-border">
+        <div className="flex items-center justify-between p-5 rounded-2xl bg-muted border border-border">
           <div className="flex-1 pr-4">
             <p className="text-base font-semibold text-foreground mb-1">Nowe opinie</p>
             <p className="text-sm text-muted-foreground">Powiadomienia o otrzymanych opiniach</p>
@@ -182,7 +182,7 @@ export function NotificationSettings({
 
         {/* Push Notifications */}
         {isSupported ? (
-          <div className="flex items-center justify-between p-5 rounded-2xl bg-card border border-border">
+          <div className="flex items-center justify-between p-5 rounded-2xl bg-muted border border-border">
             <div className="flex-1 pr-4">
               <p className="text-base font-semibold text-foreground mb-1">Powiadomienia push</p>
               <p className="text-sm text-muted-foreground">
