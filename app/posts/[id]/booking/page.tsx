@@ -22,7 +22,7 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
       title,
       user_id,
       is_service,
-      profiles:user_id (
+      profiles!user_id (
         full_name
       )
     `)
@@ -57,7 +57,7 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
       <div className="container mx-auto px-4 py-6 pb-20">
         <BookingCalendar
           providerId={post.user_id}
-          providerName={post.profiles?.full_name || 'użytkownika'}
+          providerName={Array.isArray(post.profiles) ? post.profiles[0]?.full_name : post.profiles?.full_name || 'użytkownika'}
           postId={post.id}
           postTitle={post.title}
           isMobilePage={true}
