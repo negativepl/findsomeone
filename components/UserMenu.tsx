@@ -127,6 +127,8 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
       '/icons/home-dark.json',
       '/icons/newspaper-light.json',
       '/icons/newspaper-dark.json',
+      '/icons/calendar-light.json',
+      '/icons/calendar-dark.json',
       '/icons/account-light.json',
       '/icons/account-dark.json',
       '/icons/settings-light.json',
@@ -282,6 +284,35 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
               onClick={() => setIsOpen(false)}
             >
               Moje ogłoszenia
+            </MenuItemWithIcon>
+
+            <MenuItemWithIcon
+              href="/dashboard/bookings"
+              iconLight="/icons/calendar-light.json"
+              iconDark="/icons/calendar-dark.json"
+              fallbackIcon={
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 25 24">
+                  <g clipPath="url(#calendarIcon)">
+                    <path stroke="currentColor" strokeLinecap="round" strokeMiterlimit="10" strokeWidth="1.5" d="M4.5 8.75h16"/>
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M8.5 2.75v2m8-2v2"/>
+                    <rect width="16.5" height="15.5" x="4.25" y="4.75" stroke="currentColor" strokeWidth="1.5" rx="1"/>
+                    <circle cx="8.5" cy="16.5" r="1" fill="currentColor"/>
+                    <circle cx="12.5" cy="16.5" r="1" fill="currentColor"/>
+                    <circle cx="16.5" cy="16.5" r="1" fill="currentColor"/>
+                    <circle cx="16.5" cy="13" r="1" fill="currentColor"/>
+                    <circle cx="12.5" cy="13" r="1" fill="currentColor"/>
+                    <circle cx="8.5" cy="13" r="1" fill="currentColor"/>
+                  </g>
+                  <defs>
+                    <clipPath id="calendarIcon">
+                      <path fill="currentColor" d="M.5 0h24v24H.5z"/>
+                    </clipPath>
+                  </defs>
+                </svg>
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              Moje rezerwacje
             </MenuItemWithIcon>
 
             <MenuItemWithIcon

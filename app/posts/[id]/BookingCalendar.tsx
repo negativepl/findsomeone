@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight, Clock } from 'lucide-react'
 import { Textarea } from '@/components/ui/textarea'
@@ -45,18 +45,45 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
 
   const { daysInMonth, startingDayOfWeek, year, month } = getDaysInMonth(currentDate)
 
-  // Fetch bookings for the selected date
-  useEffect(() => {
-    if (!selectedDate) {
-      setBookedSlots([])
-      return
+  // Generate all calendar days including previous month
+  const calendarDays = useMemo(() => {
+    const days: Array<{ date: Date; isCurrentMonth: boolean }> = []
+
+    // Days from previous month
+    const prevMonthLastDay = new Date(year, month, 0)
+    const prevMonthDays = prevMonthLastDay.getDate()
+    for (let i = startingDayOfWeek - 1; i >= 0; i--) {
+      const day = prevMonthDays - i
+      days.push({
+        date: new Date(year, month - 1, day),
+        isCurrentMonth: false
+      })
     }
 
+    // Days of current month
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push({
+        date: new Date(year, month, day),
+        isCurrentMonth: true
+      })
+    }
+
+    return days
+  }, [year, month, daysInMonth, startingDayOfWeek])
+
+  // Fetch bookings for the current month
+  useEffect(() => {
     const fetchBookings = async () => {
       setIsLoadingBookings(true)
       try {
-        const dateStr = selectedDate.toISOString().split('T')[0]
-        const response = await fetch(`/api/bookings?providerId=${providerId}&date=${dateStr}`)
+        // Get first and last day of current month
+        const firstDay = new Date(year, month, 1)
+        const lastDay = new Date(year, month + 1, 0)
+
+        const startDate = firstDay.toISOString().split('T')[0]
+        const endDate = lastDay.toISOString().split('T')[0]
+
+        const response = await fetch(`/api/bookings?providerId=${providerId}&date=${startDate}`)
 
         if (response.ok) {
           const data = await response.json()
@@ -70,7 +97,7 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
     }
 
     fetchBookings()
-  }, [selectedDate, providerId])
+  }, [providerId, year, month])
 
   // Navigate months
   const previousMonth = () => {
@@ -86,31 +113,30 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
   }
 
   // Check if date is in the past
-  const isPastDate = (day: number) => {
-    const date = new Date(year, month, day)
+  const isPastDate = (date: Date) => {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
-    return date < today
+    const checkDate = new Date(date)
+    checkDate.setHours(0, 0, 0, 0)
+    return checkDate < today
   }
 
   // Check if date is today
-  const isToday = (day: number) => {
-    const date = new Date(year, month, day)
+  const isToday = (date: Date) => {
     const today = new Date()
     return date.toDateString() === today.toDateString()
   }
 
   // Select date
-  const handleDateSelect = (day: number) => {
-    if (isPastDate(day)) return
-    const date = new Date(year, month, day)
+  const handleDateSelect = (date: Date) => {
+    if (isPastDate(date)) return
     setSelectedDate(date)
     setSelectedTime(null)
   }
 
-  // Mock available time slots (9:00 - 17:00, every hour)
+  // Mock available time slots (9:00 - 18:00, every hour)
   const availableTimeSlots = [
-    '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'
+    '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00'
   ]
 
   // Check if a time slot is booked
@@ -124,8 +150,30 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
       // Check if status is confirmed or pending (not cancelled)
       const isActiveBooking = booking.status === 'confirmed' || booking.status === 'pending'
 
-      return bookingTime === time && isActiveBooking
+      // Check if booking is on the same day as selected date
+      const isSameDay = bookingDate.toDateString() === selectedDate.toDateString()
+
+      return bookingTime === time && isActiveBooking && isSameDay
     })
+  }
+
+  // Check if a time slot is in the past
+  const isPastTimeSlot = (time: string) => {
+    if (!selectedDate) return false
+
+    const today = new Date()
+    const isSelectedToday = selectedDate.toDateString() === today.toDateString()
+
+    if (!isSelectedToday) return false
+
+    const [hours, minutes] = time.split(':').map(Number)
+    const currentHour = today.getHours()
+    const currentMinute = today.getMinutes()
+
+    if (hours < currentHour) return true
+    if (hours === currentHour && minutes <= currentMinute) return true
+
+    return false
   }
 
   // Handle booking submission
@@ -232,26 +280,21 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
 
           {/* Days */}
           <div className="grid grid-cols-7">
-            {/* Empty cells for days before month starts */}
-            {Array.from({ length: startingDayOfWeek }).map((_, i) => (
-              <div key={`empty-${i}`} className="aspect-square border-t border-r border-border" />
-            ))}
-
-            {/* Days in month */}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1
-              const isPast = isPastDate(day)
-              const isSelected = selectedDate?.getDate() === day && selectedDate?.getMonth() === month
-              const isTodayDate = isToday(day)
+            {calendarDays.map(({ date, isCurrentMonth }, index) => {
+              const isPast = isPastDate(date)
+              const isSelected = selectedDate?.toDateString() === date.toDateString()
+              const isTodayDate = isToday(date)
 
               return (
                 <button
-                  key={day}
-                  onClick={() => handleDateSelect(day)}
+                  key={index}
+                  onClick={() => handleDateSelect(date)}
                   disabled={isPast}
                   className={`
                     aspect-square border-t border-r border-border p-2 text-sm transition-colors
-                    ${isPast
+                    ${!isCurrentMonth
+                      ? 'text-muted-foreground/30 cursor-not-allowed bg-muted/10'
+                      : isPast
                       ? 'text-muted-foreground/40 cursor-not-allowed bg-muted/30'
                       : isSelected
                         ? 'bg-brand text-brand-foreground font-semibold'
@@ -261,7 +304,7 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
                     }
                   `}
                 >
-                  {day}
+                  {date.getDate()}
                 </button>
               )
             })}
@@ -285,14 +328,16 @@ export function BookingCalendar({ providerId, providerName, postId, postTitle, o
             <div className="grid grid-cols-3 md:grid-cols-5 gap-2">
               {availableTimeSlots.map((time) => {
                 const isBooked = isTimeSlotBooked(time)
+                const isPast = isPastTimeSlot(time)
+                const isDisabled = isBooked || isPast
                 return (
                   <button
                     key={time}
-                    onClick={() => !isBooked && setSelectedTime(time)}
-                    disabled={isBooked}
+                    onClick={() => !isDisabled && setSelectedTime(time)}
+                    disabled={isDisabled}
                     className={`
                       py-2 px-3 rounded-lg border transition-all text-sm font-medium
-                      ${isBooked
+                      ${isDisabled
                         ? 'bg-muted/50 text-muted-foreground border-border cursor-not-allowed opacity-50'
                         : selectedTime === time
                           ? 'bg-brand text-brand-foreground border-brand scale-105'

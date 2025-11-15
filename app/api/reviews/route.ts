@@ -14,10 +14,10 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { reviewed_id, post_id, rating, comment } = body
+    const { reviewedId, postId, bookingId, rating, comment } = body
 
     // Validation
-    if (!reviewed_id) {
+    if (!reviewedId) {
       return NextResponse.json(
         { error: 'Brak ID użytkownika do oceny' },
         { status: 400 }
@@ -32,27 +32,55 @@ export async function POST(request: Request) {
     }
 
     // Can't review yourself
-    if (user.id === reviewed_id) {
+    if (user.id === reviewedId) {
       return NextResponse.json(
         { error: 'Nie możesz wystawić opinii samemu sobie' },
         { status: 400 }
       )
     }
 
-    // Check if review already exists
-    const { data: existingReview } = await supabase
-      .from('reviews')
-      .select('id')
-      .eq('reviewer_id', user.id)
-      .eq('reviewed_id', reviewed_id)
-      .eq('post_id', post_id || null)
-      .single()
+    // If bookingId is provided, verify the booking exists and user is the client
+    if (bookingId) {
+      const { data: booking, error: bookingError } = await supabase
+        .from('bookings')
+        .select('id, client_id, provider_id, status')
+        .eq('id', bookingId)
+        .single()
 
-    if (existingReview) {
-      return NextResponse.json(
-        { error: 'Już wystawiłeś opinię dla tego użytkownika w tym ogłoszeniu' },
-        { status: 400 }
-      )
+      if (bookingError || !booking) {
+        return NextResponse.json(
+          { error: 'Rezerwacja nie została znaleziona' },
+          { status: 404 }
+        )
+      }
+
+      if (booking.client_id !== user.id) {
+        return NextResponse.json(
+          { error: 'Nie możesz wystawić opinii dla tej rezerwacji' },
+          { status: 403 }
+        )
+      }
+
+      if (booking.status !== 'completed' && booking.status !== 'reviewed') {
+        return NextResponse.json(
+          { error: 'Możesz wystawić opinię tylko dla zakończonych rezerwacji' },
+          { status: 400 }
+        )
+      }
+
+      // Check if review already exists for this booking
+      const { data: existingReview } = await supabase
+        .from('reviews')
+        .select('id')
+        .eq('booking_id', bookingId)
+        .single()
+
+      if (existingReview) {
+        return NextResponse.json(
+          { error: 'Już wystawiłeś opinię dla tej rezerwacji' },
+          { status: 400 }
+        )
+      }
     }
 
     // Insert review
@@ -60,8 +88,9 @@ export async function POST(request: Request) {
       .from('reviews')
       .insert({
         reviewer_id: user.id,
-        reviewed_id,
-        post_id: post_id || null,
+        reviewed_id: reviewedId,
+        post_id: postId || null,
+        booking_id: bookingId || null,
         rating,
         comment: comment || null,
       })
@@ -75,6 +104,25 @@ export async function POST(request: Request) {
         { status: 500 }
       )
     }
+
+    // Get reviewer name for notification
+    const { data: reviewer } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user.id)
+      .single()
+
+    // Create notification for reviewed user
+    await supabase.from('activity_logs').insert({
+      user_id: reviewedId,
+      activity_type: 'review_received',
+      post_id: postId || null,
+      metadata: {
+        reviewer_name: reviewer?.full_name || 'Użytkownik',
+        rating: rating,
+        booking_id: bookingId || null
+      }
+    })
 
     return NextResponse.json({ success: true, review })
   } catch (error) {
