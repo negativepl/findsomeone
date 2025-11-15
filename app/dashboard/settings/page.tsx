@@ -26,7 +26,7 @@ export default async function SettingsPage() {
   // Fetch user profile for preferences
   const { data: profile } = await supabase
     .from('profiles')
-    .select('email_notifications, message_notifications, favorite_notifications, review_notifications, language, theme, vibration_enabled')
+    .select('email_notifications, message_notifications, favorite_notifications, review_notifications, booking_notifications, language, theme, vibration_enabled')
     .eq('id', user.id)
     .single()
 
@@ -85,6 +85,7 @@ export default async function SettingsPage() {
                 messageNotifications={profile?.message_notifications ?? false}
                 favoriteNotifications={profile?.favorite_notifications ?? true}
                 reviewNotifications={profile?.review_notifications ?? true}
+                bookingNotifications={profile?.booking_notifications ?? true}
                 user={user}
               />
             </div>
@@ -169,6 +170,7 @@ export default async function SettingsPage() {
                 messageNotifications={profile?.message_notifications ?? false}
                 favoriteNotifications={profile?.favorite_notifications ?? true}
                 reviewNotifications={profile?.review_notifications ?? true}
+                bookingNotifications={profile?.booking_notifications ?? true}
                 user={user}
               />
             </CardContent>

@@ -101,9 +101,9 @@ export function Footer() {
                 openSection === 'categories' ? 'block mb-4' : 'hidden md:max-h-none'
               }`}
             >
-              <li><Link href="/posts?category=elektronika" className="hover:text-foreground transition-colors inline-block py-2">Elektronika</Link></li>
-              <li><Link href="/posts?category=dom-i-ogrod" className="hover:text-foreground transition-colors inline-block py-2">Dom i ogród</Link></li>
-              <li><Link href="/posts?category=sport-i-hobby" className="hover:text-foreground transition-colors inline-block py-2">Sport i hobby</Link></li>
+              <li><Link href="/results?category=elektronika" className="hover:text-foreground transition-colors inline-block py-2">Elektronika</Link></li>
+              <li><Link href="/results?category=dom-i-ogrod" className="hover:text-foreground transition-colors inline-block py-2">Dom i ogród</Link></li>
+              <li><Link href="/results?category=sport-i-hobby" className="hover:text-foreground transition-colors inline-block py-2">Sport i hobby</Link></li>
               <li><Link href="/results" className="hover:text-foreground transition-colors inline-block py-2">Zobacz wszystkie</Link></li>
             </ul>
           </div>

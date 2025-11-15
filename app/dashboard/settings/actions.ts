@@ -148,6 +148,7 @@ export async function updateNotificationPreferences(formData: FormData) {
   const messageNotifications = formData.get('messageNotifications') === 'true'
   const favoriteNotifications = formData.get('favoriteNotifications') === 'true'
   const reviewNotifications = formData.get('reviewNotifications') === 'true'
+  const bookingNotifications = formData.get('bookingNotifications') === 'true'
 
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -163,6 +164,7 @@ export async function updateNotificationPreferences(formData: FormData) {
       message_notifications: messageNotifications,
       favorite_notifications: favoriteNotifications,
       review_notifications: reviewNotifications,
+      booking_notifications: bookingNotifications,
     })
     .eq('id', user.id)
 

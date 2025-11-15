@@ -12,6 +12,7 @@ interface NotificationSettingsProps {
   messageNotifications: boolean
   favoriteNotifications: boolean
   reviewNotifications: boolean
+  bookingNotifications: boolean
   user: User
 }
 
@@ -20,12 +21,14 @@ export function NotificationSettings({
   messageNotifications: initialMessage,
   favoriteNotifications: initialFavorite,
   reviewNotifications: initialReview,
+  bookingNotifications: initialBooking,
   user
 }: NotificationSettingsProps) {
   const [emailNotifications, setEmailNotifications] = useState(initialEmail)
   const [messageNotifications, setMessageNotifications] = useState(initialMessage)
   const [favoriteNotifications, setFavoriteNotifications] = useState(initialFavorite)
   const [reviewNotifications, setReviewNotifications] = useState(initialReview)
+  const [bookingNotifications, setBookingNotifications] = useState(initialBooking)
   const [isPending, startTransition] = useTransition()
 
   const {
@@ -45,6 +48,7 @@ export function NotificationSettings({
     formData.append('messageNotifications', String(messageNotifications))
     formData.append('favoriteNotifications', String(favoriteNotifications))
     formData.append('reviewNotifications', String(reviewNotifications))
+    formData.append('bookingNotifications', String(bookingNotifications))
 
     startTransition(async () => {
       const result = await updateNotificationPreferences(formData)
@@ -65,6 +69,7 @@ export function NotificationSettings({
     formData.append('messageNotifications', String(checked))
     formData.append('favoriteNotifications', String(favoriteNotifications))
     formData.append('reviewNotifications', String(reviewNotifications))
+    formData.append('bookingNotifications', String(bookingNotifications))
 
     startTransition(async () => {
       const result = await updateNotificationPreferences(formData)
@@ -85,6 +90,7 @@ export function NotificationSettings({
     formData.append('messageNotifications', String(messageNotifications))
     formData.append('favoriteNotifications', String(checked))
     formData.append('reviewNotifications', String(reviewNotifications))
+    formData.append('bookingNotifications', String(bookingNotifications))
 
     startTransition(async () => {
       const result = await updateNotificationPreferences(formData)
@@ -105,6 +111,7 @@ export function NotificationSettings({
     formData.append('messageNotifications', String(messageNotifications))
     formData.append('favoriteNotifications', String(favoriteNotifications))
     formData.append('reviewNotifications', String(checked))
+    formData.append('bookingNotifications', String(bookingNotifications))
 
     startTransition(async () => {
       const result = await updateNotificationPreferences(formData)
@@ -112,6 +119,27 @@ export function NotificationSettings({
         toast.success('Ustawienia zapisane')
       } else {
         setReviewNotifications(!checked) // revert on error
+        toast.error(result.error)
+      }
+    })
+  }
+
+  async function handleBookingChange(checked: boolean) {
+    setBookingNotifications(checked)
+
+    const formData = new FormData()
+    formData.append('emailNotifications', String(emailNotifications))
+    formData.append('messageNotifications', String(messageNotifications))
+    formData.append('favoriteNotifications', String(favoriteNotifications))
+    formData.append('reviewNotifications', String(reviewNotifications))
+    formData.append('bookingNotifications', String(checked))
+
+    startTransition(async () => {
+      const result = await updateNotificationPreferences(formData)
+      if (result.success) {
+        toast.success('Ustawienia zapisane')
+      } else {
+        setBookingNotifications(!checked) // revert on error
         toast.error(result.error)
       }
     })
@@ -180,6 +208,19 @@ export function NotificationSettings({
           />
         </div>
 
+        {/* Booking Notifications - Active */}
+        <div className="flex items-center justify-between p-5 rounded-2xl bg-muted border border-border">
+          <div className="flex-1 pr-4">
+            <p className="text-base font-semibold text-foreground mb-1">Rezerwacje</p>
+            <p className="text-sm text-muted-foreground">Powiadomienia o nowych rezerwacjach terminów</p>
+          </div>
+          <Switch
+            checked={bookingNotifications}
+            onCheckedChange={handleBookingChange}
+            disabled={isPending}
+          />
+        </div>
+
         {/* Push Notifications */}
         {isSupported ? (
           <div className="flex items-center justify-between p-5 rounded-2xl bg-muted border border-border">
@@ -208,24 +249,24 @@ export function NotificationSettings({
             <Switch checked={false} disabled={true} />
           </div>
         )}
-      </div>
 
-      {/* Email Notifications - Coming Soon - Full Width */}
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/30 border border-border/50 opacity-60">
-        <div className="flex-1 pr-4">
-          <div className="flex items-center gap-2 mb-1">
-            <p className="text-base font-semibold text-muted-foreground">Powiadomienia email</p>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
-              Wkrótce
-            </span>
+        {/* Email Notifications - Coming Soon */}
+        <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/30 border border-border/50 opacity-60">
+          <div className="flex-1 pr-4">
+            <div className="flex items-center gap-2 mb-1">
+              <p className="text-base font-semibold text-muted-foreground">Powiadomienia email</p>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-muted text-muted-foreground font-medium">
+                Wkrótce
+              </span>
+            </div>
+            <p className="text-sm text-muted-foreground/70">Otrzymuj wiadomości na email</p>
           </div>
-          <p className="text-sm text-muted-foreground/70">Otrzymuj wiadomości na email</p>
+          <Switch
+            checked={emailNotifications}
+            onCheckedChange={handleEmailChange}
+            disabled={true}
+          />
         </div>
-        <Switch
-          checked={emailNotifications}
-          onCheckedChange={handleEmailChange}
-          disabled={true}
-        />
       </div>
     </div>
   )

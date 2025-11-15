@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Phone, MessageCircle } from 'lucide-react'
+import { Phone, MessageCircle, Calendar } from 'lucide-react'
 import { SendMessageModal } from '@/components/SendMessageModal'
 import { AI_BOT_USER_ID } from '@/lib/constants'
 
@@ -15,6 +15,7 @@ interface MobileActionDockProps {
   showMessages: boolean
   showPhone: boolean
   isOwnPost: boolean
+  isService?: boolean
 }
 
 export function MobileActionDock({
@@ -26,6 +27,7 @@ export function MobileActionDock({
   showMessages,
   showPhone,
   isOwnPost,
+  isService = false,
 }: MobileActionDockProps) {
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
@@ -107,6 +109,18 @@ export function MobileActionDock({
           </div>
         ) : (
           <>
+            {/* Booking button for services */}
+            {isService && (
+              <div className="flex-1">
+                <Button
+                  onClick={() => window.location.href = `/posts/${postId}/booking`}
+                  className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold gap-0"
+                >
+                  Zarezerwuj termin
+                </Button>
+              </div>
+            )}
+
             {/* Phone button */}
             {showPhone && phone && (
               <div className="flex-1">
@@ -119,8 +133,8 @@ export function MobileActionDock({
               </div>
             )}
 
-            {/* Message button */}
-            {showMessages && receiverId !== AI_BOT_USER_ID && (
+            {/* Message button - only if not a service (booking replaces it) */}
+            {!isService && showMessages && receiverId !== AI_BOT_USER_ID && (
               <div className="flex-1">
                 <SendMessageModal
                   postId={postId}

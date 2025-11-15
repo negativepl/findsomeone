@@ -27,6 +27,7 @@ import { UserBadge, type BadgeType } from '@/components/ui/user-badge'
 import { sanitizeHtml } from '@/lib/sanitize'
 import { OtherPostsCarousel } from './OtherPostsCarousel'
 import { SimilarPostsCarousel } from './SimilarPostsCarousel'
+import { BookingButton } from './BookingButton'
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params
@@ -352,16 +353,16 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
           <Breadcrumbs
             items={[
               { label: 'Strona główna', href: '/' },
-              { label: 'Ogłoszenia', href: '/posts' },
+              { label: 'Ogłoszenia', href: '/results' },
               // Show parent category if exists (for subcategories)
               ...(post.categories?.parent_id && post.categories?.parent ? [{
                 label: post.categories.parent.name,
-                href: `/posts?category=${post.categories.parent.slug}`
+                href: `/results?category=${post.categories.parent.slug}`
               }] : []),
               // Show current category
               {
                 label: post.categories?.name || 'Kategoria',
-                href: post.categories?.slug ? `/posts?category=${post.categories.slug}` : undefined
+                href: post.categories?.slug ? `/results?category=${post.categories.slug}` : undefined
               },
               { label: post.title }
             ]}
@@ -782,8 +783,17 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
                 {/* Contact Buttons */}
                 {user && user.id !== post.user_id ? (
                   <div className="space-y-2 md:space-y-3">
-                    {/* Desktop only: Show message button and phone */}
+                    {/* Desktop only: Show booking or message buttons */}
                     <div className="hidden md:block space-y-2 md:space-y-3">
+                      {/* Show booking button for service posts */}
+                      {post.is_service && (
+                        <BookingButton
+                          postId={post.id}
+                          providerId={post.user_id}
+                          providerName={post.profiles?.full_name || 'użytkownika'}
+                          postTitle={post.title}
+                        />
+                      )}
                       {/* Show message button only if user allows it and it's not AI bot */}
                       {post.profiles?.show_messages !== false && post.user_id !== AI_BOT_USER_ID && (
                         <SendMessageModal
@@ -919,6 +929,7 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
           showMessages={post.profiles?.show_messages !== false}
           showPhone={post.profiles?.show_phone !== false}
           isOwnPost={user.id === post.user_id}
+          isService={post.is_service}
         />
       )}
 

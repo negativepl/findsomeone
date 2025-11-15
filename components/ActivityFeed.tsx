@@ -1,18 +1,21 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
-import { Eye, MessageCircle, Heart, Star, Activity, Filter } from 'lucide-react'
+import { Eye, MessageCircle, Heart, Star, Activity, Filter, Calendar } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { pl } from 'date-fns/locale'
 
 interface ActivityItem {
   id: string
-  type: 'post_viewed' | 'message_received' | 'favorite_added' | 'review_received'
+  type: 'post_viewed' | 'message_received' | 'favorite_added' | 'review_received' | 'booking_request'
   title: string
   timestamp: Date
   metadata?: {
     post_title?: string
     sender_name?: string
+    client_name?: string
+    scheduled_date?: string
+    scheduled_time?: string
   }
 }
 
@@ -57,6 +60,8 @@ export function ActivityFeed({ activities, showFilters = false, itemsPerPage = 1
         return <Heart className="w-4 h-4 text-brand" />
       case 'review_received':
         return <Star className="w-4 h-4 text-brand" />
+      case 'booking_request':
+        return <Calendar className="w-4 h-4 text-brand" />
     }
   }
 
@@ -70,6 +75,8 @@ export function ActivityFeed({ activities, showFilters = false, itemsPerPage = 1
         return `Ktoś dodał do ulubionych: "${activity.metadata?.post_title}"`
       case 'review_received':
         return 'Otrzymałeś nową opinię'
+      case 'booking_request':
+        return `${activity.metadata?.client_name || 'Ktoś'} chce zarezerwować termin: ${activity.metadata?.scheduled_date || ''} o ${activity.metadata?.scheduled_time || ''}`
       default:
         return activity.title
     }
@@ -85,6 +92,8 @@ export function ActivityFeed({ activities, showFilters = false, itemsPerPage = 1
         return 'Polubienia'
       case 'review_received':
         return 'Opinie'
+      case 'booking_request':
+        return 'Rezerwacje'
       default:
         return type
     }
@@ -111,7 +120,7 @@ export function ActivityFeed({ activities, showFilters = false, itemsPerPage = 1
     )
   }
 
-  const filterTypes = ['all', 'message_received', 'favorite_added', 'review_received']
+  const filterTypes = ['all', 'message_received', 'favorite_added', 'review_received', 'booking_request']
 
   return (
     <div className="space-y-4">

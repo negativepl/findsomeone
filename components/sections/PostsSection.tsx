@@ -77,7 +77,7 @@ export async function PostsSection({ section, userFavorites, preloadedPostsData 
   const subtitle = section.subtitle
 
   // All posts now redirect to the same page without type filter
-  const buttonLink = '/posts'
+  const buttonLink = '/results'
 
   return (
     <section className="container mx-auto px-6 py-6 md:py-14">
