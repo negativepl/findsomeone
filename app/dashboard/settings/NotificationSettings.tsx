@@ -139,9 +139,79 @@ export function NotificationSettings({
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {/* Email Notifications - Coming Soon */}
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Message Notifications - Active */}
+        <div className="flex items-center justify-between p-5 rounded-2xl bg-card border border-border">
+          <div className="flex-1 pr-4">
+            <p className="text-base font-semibold text-foreground mb-1">Nowe wiadomości</p>
+            <p className="text-sm text-muted-foreground">Powiadomienia o nowych wiadomościach</p>
+          </div>
+          <Switch
+            checked={messageNotifications}
+            onCheckedChange={handleMessageChange}
+            disabled={isPending}
+          />
+        </div>
+
+        {/* Favorite Notifications - Active */}
+        <div className="flex items-center justify-between p-5 rounded-2xl bg-card border border-border">
+          <div className="flex-1 pr-4">
+            <p className="text-base font-semibold text-foreground mb-1">Dodanie do ulubionych</p>
+            <p className="text-sm text-muted-foreground">Powiadomienia gdy ktoś doda Twój post do ulubionych</p>
+          </div>
+          <Switch
+            checked={favoriteNotifications}
+            onCheckedChange={handleFavoriteChange}
+            disabled={isPending}
+          />
+        </div>
+
+        {/* Review Notifications - Active */}
+        <div className="flex items-center justify-between p-5 rounded-2xl bg-card border border-border">
+          <div className="flex-1 pr-4">
+            <p className="text-base font-semibold text-foreground mb-1">Nowe opinie</p>
+            <p className="text-sm text-muted-foreground">Powiadomienia o otrzymanych opiniach</p>
+          </div>
+          <Switch
+            checked={reviewNotifications}
+            onCheckedChange={handleReviewChange}
+            disabled={isPending}
+          />
+        </div>
+
+        {/* Push Notifications */}
+        {isSupported ? (
+          <div className="flex items-center justify-between p-5 rounded-2xl bg-card border border-border">
+            <div className="flex-1 pr-4">
+              <p className="text-base font-semibold text-foreground mb-1">Powiadomienia push</p>
+              <p className="text-sm text-muted-foreground">
+                {permission === 'granted'
+                  ? 'Otrzymuj powiadomienia na tym urządzeniu'
+                  : permission === 'denied'
+                  ? 'Uprawnienia zablokowane w przeglądarce'
+                  : 'Włącz powiadomienia push na tym urządzeniu'}
+              </p>
+            </div>
+            <Switch
+              checked={isSubscribed}
+              onCheckedChange={handlePushChange}
+              disabled={isLoading || permission === 'denied'}
+            />
+          </div>
+        ) : (
+          <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/30 border border-border/50 opacity-60">
+            <div className="flex-1 pr-4">
+              <p className="text-base font-semibold text-muted-foreground">Powiadomienia push</p>
+              <p className="text-sm text-muted-foreground/70">Nieobsługiwane przez tę przeglądarkę</p>
+            </div>
+            <Switch checked={false} disabled={true} />
+          </div>
+        )}
+      </div>
+
+      {/* Email Notifications - Coming Soon - Full Width */}
+      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/30 border border-border/50 opacity-60">
         <div className="flex-1 pr-4">
           <div className="flex items-center gap-2 mb-1">
             <p className="text-base font-semibold text-muted-foreground">Powiadomienia email</p>
@@ -157,74 +227,6 @@ export function NotificationSettings({
           disabled={true}
         />
       </div>
-
-      {/* Message Notifications - Active */}
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted">
-        <div className="flex-1 pr-4">
-          <p className="text-base font-semibold text-foreground mb-1">Nowe wiadomości</p>
-          <p className="text-sm text-muted-foreground">Powiadomienia o nowych wiadomościach</p>
-        </div>
-        <Switch
-          checked={messageNotifications}
-          onCheckedChange={handleMessageChange}
-          disabled={isPending}
-        />
-      </div>
-
-      {/* Favorite Notifications - Active */}
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted">
-        <div className="flex-1 pr-4">
-          <p className="text-base font-semibold text-foreground mb-1">Dodanie do ulubionych</p>
-          <p className="text-sm text-muted-foreground">Powiadomienia gdy ktoś doda Twój post do ulubionych</p>
-        </div>
-        <Switch
-          checked={favoriteNotifications}
-          onCheckedChange={handleFavoriteChange}
-          disabled={isPending}
-        />
-      </div>
-
-      {/* Review Notifications - Active */}
-      <div className="flex items-center justify-between p-5 rounded-2xl bg-muted">
-        <div className="flex-1 pr-4">
-          <p className="text-base font-semibold text-foreground mb-1">Nowe opinie</p>
-          <p className="text-sm text-muted-foreground">Powiadomienia o otrzymanych opiniach</p>
-        </div>
-        <Switch
-          checked={reviewNotifications}
-          onCheckedChange={handleReviewChange}
-          disabled={isPending}
-        />
-      </div>
-
-      {/* Push Notifications */}
-      {isSupported ? (
-        <div className="flex items-center justify-between p-5 rounded-2xl bg-muted">
-          <div className="flex-1 pr-4">
-            <p className="text-base font-semibold text-foreground mb-1">Powiadomienia push</p>
-            <p className="text-sm text-muted-foreground">
-              {permission === 'granted'
-                ? 'Otrzymuj powiadomienia na tym urządzeniu'
-                : permission === 'denied'
-                ? 'Uprawnienia zablokowane w przeglądarce'
-                : 'Włącz powiadomienia push na tym urządzeniu'}
-            </p>
-          </div>
-          <Switch
-            checked={isSubscribed}
-            onCheckedChange={handlePushChange}
-            disabled={isLoading || permission === 'denied'}
-          />
-        </div>
-      ) : (
-        <div className="flex items-center justify-between p-5 rounded-2xl bg-muted/50 opacity-50">
-          <div className="flex-1 pr-4">
-            <p className="text-base font-semibold text-muted-foreground">Powiadomienia push</p>
-            <p className="text-sm text-muted-foreground/70">Nieobsługiwane przez tę przeglądarkę</p>
-          </div>
-          <Switch checked={false} disabled={true} />
-        </div>
-      )}
     </div>
   )
 }
