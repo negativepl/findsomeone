@@ -838,6 +838,7 @@ export function NavbarSearchBar() {
           onClick={toggleLocationDropdown}
           className="flex items-center gap-2 bg-muted hover:bg-accent hover:border-foreground/20 rounded-full h-10 transition-all flex-shrink-0 px-4 border border-border"
           aria-expanded={isCityDropdownOpen}
+          aria-label={selectedCity || 'Wybierz lokalizację'}
         >
           <svg className="w-4 h-4 text-brand flex-shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">

@@ -48,7 +48,11 @@ export function BentoFeatures() {
             </p>
 
             {/* Mockup: Post Card Preview - Stacked Cards */}
-            <div className="relative h-[380px] md:h-[311px] lg:h-[327px] xl:h-[327px] cursor-pointer flex items-center scale-90 xl:scale-100 select-none" onClick={handleCardClick}>
+            <button
+              className="relative h-[380px] md:h-[311px] lg:h-[327px] xl:h-[327px] cursor-pointer flex items-center scale-90 xl:scale-100 select-none w-full text-left"
+              onClick={handleCardClick}
+              aria-label="Przełącz przykładowe ogłoszenie"
+            >
               {/* Card 1 */}
               <motion.div
                 animate={{
@@ -253,7 +257,7 @@ export function BentoFeatures() {
                   </div>
                 </div>
               </motion.div>
-            </div>
+            </button>
           </div>
 
           {/* Decorative gradient - desktop only */}
@@ -706,7 +710,7 @@ export function BentoFeatures() {
                     disabled
                   />
                 </div>
-                <button className="w-10 h-10 rounded-2xl bg-brand hover:bg-brand/90 flex items-center justify-center flex-shrink-0 transition-colors">
+                <button className="w-10 h-10 rounded-2xl bg-brand hover:bg-brand/90 flex items-center justify-center flex-shrink-0 transition-colors" aria-label="Wyślij wiadomość">
                   <Send className="w-5 h-5 text-brand-foreground" />
                 </button>
               </div>
@@ -811,7 +815,7 @@ export function BentoFeatures() {
                     disabled
                   />
                 </div>
-                <button className="w-10 h-10 rounded-2xl bg-brand hover:bg-brand/90 flex items-center justify-center flex-shrink-0 transition-colors">
+                <button className="w-10 h-10 rounded-2xl bg-brand hover:bg-brand/90 flex items-center justify-center flex-shrink-0 transition-colors" aria-label="Wyślij wiadomość">
                   <Send className="w-5 h-5 text-brand-foreground" />
                 </button>
               </div>
