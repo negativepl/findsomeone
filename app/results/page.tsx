@@ -20,21 +20,50 @@ export async function generateMetadata({
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://findsomeone.app'
 
+  // If category is provided, fetch the actual category name
+  let categoryName = category
+  if (category) {
+    const supabase = await createClient()
+
+    // Try to find category by slug first
+    let { data: categoryData } = await supabase
+      .from('categories')
+      .select('name')
+      .ilike('slug', category)
+      .single()
+
+    if (categoryData?.name) {
+      categoryName = categoryData.name
+    } else {
+      // Try by name if slug didn't work
+      const { data: categoryByName } = await supabase
+        .from('categories')
+        .select('name')
+        .ilike('name', category)
+        .single()
+
+      if (categoryByName?.name) {
+        categoryName = categoryByName.name
+      }
+    }
+  }
+
   // Build dynamic title and description
+  // Note: Layout template adds "| FindSomeone" automatically, so we don't include it here
   let title = 'Przeglądaj ogłoszenia'
   let description = 'Znajdź lokalną pomoc lub oferuj swoje usługi w FindSomeone'
 
-  if (category && city) {
-    title = `${category} - ${city} | Lokalne usługi FindSomeone`
-    description = `Szukasz usług ${category} w ${city}? Znajdź zaufanych specjalistów lub oferuj swoją pomoc. Lokalna platforma pomocy.`
-  } else if (category) {
-    title = `${category} | Usługi i pomoc lokalna FindSomeone`
-    description = `Przeglądaj ogłoszenia w kategorii ${category}. Znajdź specjalistów lub oferuj swoje usługi. Darmowa platforma lokalnej pomocy.`
+  if (categoryName && city) {
+    title = `${categoryName} ${city}`
+    description = `Szukasz usług ${categoryName} w ${city}? Znajdź zaufanych specjalistów lub oferuj swoją pomoc. Lokalna platforma pomocy.`
+  } else if (categoryName) {
+    title = categoryName
+    description = `Przeglądaj ogłoszenia w kategorii ${categoryName}. Znajdź specjalistów lub oferuj swoje usługi. Darmowa platforma lokalnej pomocy.`
   } else if (city) {
-    title = `Ogłoszenia w ${city} | FindSomeone`
+    title = `Ogłoszenia ${city}`
     description = `Lokalne usługi i pomoc w ${city}. Zakupy, remont, sprzątanie i więcej. Połącz się z ludźmi w okolicy.`
   } else if (search) {
-    title = `Szukaj: "${search}" | FindSomeone`
+    title = search
     description = `Wyniki wyszukiwania dla "${search}". Znajdź lokalną pomoc lub oferuj swoje usługi.`
   }
 
@@ -133,6 +162,7 @@ export default async function PostsPage({
   // Use FULL-TEXT SEARCH if there's a search query
   let posts: Post[] = []
   let totalCount = 0
+  let categoryName = categoryQuery // Default to query, will be replaced with actual name if found
 
   if (searchQuery && searchQuery.trim().length >= 2) {
     // Use our smart full-text search function
@@ -240,33 +270,42 @@ export default async function PostsPage({
       // First try to find category by slug
       let { data: category } = await supabase
         .from('categories')
-        .select('id')
+        .select('id, name')
         .ilike('slug', categoryQuery)
         .single()
 
       let categoryId = category?.id
+      if (category?.name) {
+        categoryName = category.name
+      }
 
       // If not found by slug, try by name
       if (!categoryId) {
         const { data: categoryByName } = await supabase
           .from('categories')
-          .select('id')
+          .select('id, name')
           .ilike('name', categoryQuery)
           .single()
 
         categoryId = categoryByName?.id
+        if (categoryByName?.name) {
+          categoryName = categoryByName.name
+        }
       }
 
       // If still not found, try to find by synonym
       if (!categoryId) {
         const { data: categorySynonym } = await supabase
           .from('category_synonyms')
-          .select('category_id')
+          .select('category_id, categories(name)')
           .ilike('synonym', categoryQuery)
           .limit(1)
           .single()
 
         categoryId = categorySynonym?.category_id
+        if (categorySynonym?.categories && 'name' in categorySynonym.categories) {
+          categoryName = (categorySynonym.categories as { name: string }).name
+        }
       }
 
       if (categoryId) {
@@ -340,7 +379,7 @@ export default async function PostsPage({
   ]
 
   if (categoryQuery) {
-    breadcrumbs.push({ name: categoryQuery, url: `${baseUrl}/posts?category=${encodeURIComponent(categoryQuery)}` })
+    breadcrumbs.push({ name: categoryName, url: `${baseUrl}/posts?category=${encodeURIComponent(categoryQuery)}` })
   }
   if (cityQuery) {
     breadcrumbs.push({ name: cityQuery, url: `${baseUrl}/posts?city=${encodeURIComponent(cityQuery)}` })
@@ -356,9 +395,9 @@ export default async function PostsPage({
       {(categoryQuery || cityQuery) && (
         <StructuredData
           type="collection-page"
-          category={categoryQuery}
+          category={categoryName}
           city={cityQuery}
-          serviceDescription={`Przeglądaj lokalne usługi ${categoryQuery ? 'w kategorii ' + categoryQuery : ''} ${cityQuery ? 'w ' + cityQuery : ''}`}
+          serviceDescription={`Przeglądaj lokalne usługi ${categoryQuery ? 'w kategorii ' + categoryName : ''} ${cityQuery ? 'w ' + cityQuery : ''}`}
         />
       )}
 
@@ -379,7 +418,7 @@ export default async function PostsPage({
                 Znaleziono {totalCount} {totalCount === 1 ? 'ogłoszenie' : 'ogłoszeń'}
                 {searchQuery && <> dla "{searchQuery}"</>}
                 {cityQuery && <> w "{cityQuery}"</>}
-                {categoryQuery && <> w kategorii "{categoryQuery}"</>}
+                {categoryQuery && <> w kategorii "{categoryName}"</>}
               </>
             ) : (
               <>Przeglądaj oferty i zapytania od użytkowników z całej Polski</>
