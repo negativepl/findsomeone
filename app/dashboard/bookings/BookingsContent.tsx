@@ -62,7 +62,7 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
     const daysInMonth = lastDay.getDate()
     const startingDayOfWeek = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1 // Monday = 0
 
-    const days: Date[] = []
+    const days: (Date | null)[] = []
 
     // Days from previous month
     const prevMonthLastDay = new Date(year, month, 0)
@@ -77,8 +77,8 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
       days.push(new Date(year, month, day))
     }
 
-    // Days from next month to fill the grid (complete weeks)
-    const remainingDays = 42 - days.length // 6 weeks * 7 days
+    // Fill remaining days from next month to complete the grid (42 days = 6 rows)
+    const remainingDays = 42 - days.length
     for (let day = 1; day <= remainingDays; day++) {
       days.push(new Date(year, month + 1, day))
     }
@@ -211,6 +211,10 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
               {/* Calendar days */}
               <div className="grid grid-cols-7 gap-2">
                 {calendarDays.map((date, index) => {
+                  if (!date) {
+                    return <div key={`empty-${index}`} className="aspect-square" />
+                  }
+
                   const dayBookings = getDayBookings(date)
                   const dayStatuses = getDayStatuses(date)
                   const isSelected = selectedDate?.toDateString() === date.toDateString()
@@ -226,16 +230,15 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
                     }
                   }
 
-                  // Get day abbreviation (Pon, Wt, Śr, etc.)
-                  const dayOfWeek = ['Nie', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob'][date.getDay()]
+                  const dayOfWeek = weekDays[date.getDay() === 0 ? 6 : date.getDay() - 1]
 
                   return (
                     <button
                       key={date.toISOString()}
                       onClick={() => setSelectedDate(date)}
-                      className={`aspect-square rounded-lg border-2 transition-all relative flex flex-col items-center justify-center py-2 ${
+                      className={`aspect-square rounded-lg border-2 transition-all relative p-1 ${
                         !isCurrentMonth
-                          ? 'border-border/50 opacity-40 hover:opacity-60'
+                          ? 'border-border/50 opacity-30 cursor-default'
                           : isSelected
                           ? 'border-brand bg-brand/10'
                           : isToday
@@ -243,42 +246,41 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
                           : 'border-border hover:border-brand/30 hover:bg-muted/50'
                       }`}
                     >
-                      {/* Day abbreviation */}
-                      <span className={`text-[10px] font-medium leading-none mb-0.5 ${
-                        !isCurrentMonth
-                          ? 'text-muted-foreground/50'
-                          : 'text-muted-foreground'
-                      }`}>
-                        {dayOfWeek}
-                      </span>
+                      {/* Date in top-left corner */}
+                      <div className="absolute top-1 left-1 flex items-baseline gap-1">
+                        <span className={`text-xs font-semibold ${
+                          !isCurrentMonth
+                            ? 'text-muted-foreground'
+                            : isSelected
+                            ? 'text-brand'
+                            : 'text-foreground'
+                        }`}>
+                          {date.getDate()}
+                        </span>
+                        <span className={`text-[9px] font-medium ${
+                          !isCurrentMonth
+                            ? 'text-muted-foreground'
+                            : isSelected
+                            ? 'text-brand/70'
+                            : 'text-muted-foreground'
+                        }`}>
+                          {dayOfWeek}
+                        </span>
+                      </div>
 
-                      {/* Date number */}
-                      <span className={`text-lg font-bold leading-none ${
-                        !isCurrentMonth
-                          ? 'text-muted-foreground'
-                          : isSelected
-                          ? 'text-brand'
-                          : isToday
-                          ? 'text-brand'
-                          : 'text-foreground'
-                      }`}>
-                        {date.getDate()}
-                      </span>
-
-                      {/* Booking indicators */}
-                      {dayBookings.length > 0 && (
-                        <div className="flex flex-col items-center gap-0.5 mt-1">
-                          <div className="flex gap-0.5 justify-center flex-wrap max-w-full px-1">
-                            {dayStatuses.slice(0, 3).map((status, idx) => (
+                      {/* Bookings indicators centered */}
+                      {isCurrentMonth && dayBookings.length > 0 && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
+                          <div className="flex gap-0.5 justify-center">
+                            {dayStatuses.slice(0, 5).map((status, idx) => (
                               <div
                                 key={idx}
-                                className={`w-2 h-2 rounded-full ${getStatusColor(status)}`}
-                                title={status}
+                                className={`w-1.5 h-1.5 rounded-full ${getStatusColor(status)}`}
                               />
                             ))}
                           </div>
-                          {dayBookings.length > 3 && (
-                            <span className="text-[10px] font-bold text-brand leading-none">+{dayBookings.length - 3}</span>
+                          {dayBookings.length > 5 && (
+                            <span className="text-[9px] font-bold text-brand leading-none">{dayBookings.length}+</span>
                           )}
                         </div>
                       )}
