@@ -23,6 +23,8 @@ import {
 } from "@/components/ui/dialog"
 import { Textarea } from "@/components/ui/textarea"
 import { Star } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useButtonFeedback } from '@/lib/hooks/useButtonFeedback'
 
 interface BookingActionsProps {
   bookingId: string
@@ -40,7 +42,12 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState('')
 
-  const updateBookingStatus = async (newStatus: string) => {
+  // Inline feedback hooks
+  const confirmFeedback = useButtonFeedback()
+  const completeFeedback = useButtonFeedback()
+  const reviewFeedback = useButtonFeedback()
+
+  const updateBookingStatus = async (newStatus: string, feedbackHook?: ReturnType<typeof useButtonFeedback>) => {
     setIsLoading(true)
     try {
       const response = await fetch('/api/bookings', {
@@ -55,13 +62,17 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         throw new Error(data.error || 'Błąd podczas aktualizacji rezerwacji')
       }
 
-      toast.success('Rezerwacja zaktualizowana', {
-        description: getSuccessMessage(newStatus)
-      })
+      // Trigger inline feedback if provided
+      if (feedbackHook) {
+        feedbackHook.triggerSuccess()
+      }
 
       onUpdate()
     } catch (error) {
       console.error('Error updating booking:', error)
+      if (feedbackHook) {
+        feedbackHook.triggerError()
+      }
       toast.error('Wystąpił błąd', {
         description: error instanceof Error ? error.message : 'Nie udało się zaktualizować rezerwacji'
       })
@@ -105,9 +116,7 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         throw new Error(data.error || 'Błąd podczas wystawiania oceny')
       }
 
-      toast.success('Ocena została wystawiona', {
-        description: 'Dziękujemy za Twoją opinię!'
-      })
+      reviewFeedback.triggerSuccess()
 
       setShowReviewDialog(false)
       setRating(5)
@@ -117,6 +126,7 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
       await updateBookingStatus('reviewed')
     } catch (error) {
       console.error('Error submitting review:', error)
+      reviewFeedback.triggerError()
       toast.error('Wystąpił błąd', {
         description: error instanceof Error ? error.message : 'Nie udało się wystawić oceny'
       })
@@ -158,14 +168,30 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <Button
-          onClick={() => updateBookingStatus('confirmed')}
+        <motion.button
+          onClick={() => updateBookingStatus('confirmed', confirmFeedback)}
           disabled={isLoading}
-          size="sm"
-          className="flex-1 bg-brand hover:bg-brand/90 text-brand-foreground rounded-full"
+          className="flex-1 bg-brand hover:bg-brand/90 text-brand-foreground rounded-full h-9 text-sm font-medium inline-flex items-center justify-center transition-all duration-200"
+          style={{
+            minWidth: confirmFeedback.state === 'success' ? '140px' : '100px',
+          }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.15 }}
         >
-          Potwierdź
-        </Button>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={confirmFeedback.state}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.15 }}
+            >
+              <span className="whitespace-nowrap">
+                {isLoading ? 'Potwierdzam...' : confirmFeedback.state === 'success' ? 'Potwierdzone!' : confirmFeedback.state === 'error' ? 'Błąd' : 'Potwierdź'}
+              </span>
+            </motion.div>
+          </AnimatePresence>
+        </motion.button>
       </div>
     )
   }
@@ -203,15 +229,30 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        <Button
-          onClick={() => updateBookingStatus('completed')}
+        <motion.button
+          onClick={() => updateBookingStatus('completed', completeFeedback)}
           disabled={isLoading}
-          size="sm"
-          variant="outline"
-          className="flex-1 rounded-full"
+          className="flex-1 rounded-full border border-border bg-muted hover:bg-accent h-9 text-sm font-medium inline-flex items-center justify-center transition-all duration-200"
+          style={{
+            minWidth: completeFeedback.state === 'success' ? '180px' : '200px',
+          }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ duration: 0.15 }}
         >
-          Oznacz jako zakończoną
-        </Button>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={completeFeedback.state}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.15 }}
+            >
+              <span className="whitespace-nowrap">
+                {isLoading ? 'Zapisywanie...' : completeFeedback.state === 'success' ? 'Zakończono!' : completeFeedback.state === 'error' ? 'Błąd' : 'Oznacz jako zakończoną'}
+              </span>
+            </motion.div>
+          </AnimatePresence>
+        </motion.button>
       </div>
     )
   }
@@ -326,13 +367,30 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
               >
                 Anuluj
               </Button>
-              <Button
+              <motion.button
                 onClick={submitReview}
                 disabled={isLoading}
-                className="flex-1 bg-brand hover:bg-brand/90 text-brand-foreground"
+                className="flex-1 bg-brand hover:bg-brand/90 text-brand-foreground rounded-md h-10 text-sm font-medium inline-flex items-center justify-center transition-all duration-200"
+                style={{
+                  minWidth: reviewFeedback.state === 'success' ? '150px' : '130px',
+                }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15 }}
               >
-                Wyślij ocenę
-              </Button>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={reviewFeedback.state}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <span className="whitespace-nowrap">
+                      {isLoading ? 'Wysyłam...' : reviewFeedback.state === 'success' ? 'Wysłano!' : reviewFeedback.state === 'error' ? 'Błąd' : 'Wyślij ocenę'}
+                    </span>
+                  </motion.div>
+                </AnimatePresence>
+              </motion.button>
             </div>
           </DialogContent>
         </Dialog>

@@ -7,6 +7,9 @@ import { createClient } from '@/lib/supabase/client'
 import { formatDistanceToNow } from 'date-fns'
 import { pl } from 'date-fns/locale'
 import { Eye, MessageCircle, Heart, Star } from 'lucide-react'
+import { useUnreadActivitiesCount, useActivities } from '@/lib/hooks/useActivities'
+import { useQueryClient } from '@tanstack/react-query'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface NotificationsIconProps {
   user: User
@@ -24,14 +27,16 @@ interface Activity {
 }
 
 export function NotificationsIcon({ user }: NotificationsIconProps) {
+  const { data: unreadCount = 0 } = useUnreadActivitiesCount(user?.id)
+  const { data: activitiesData = [] } = useActivities(user?.id)
+  const queryClient = useQueryClient()
+
   const [isOpen, setIsOpen] = useState(false)
-  const [activities, setActivities] = useState<Activity[]>([])
-  const [unreadCount, setUnreadCount] = useState(0)
   const [isFirstRender, setIsFirstRender] = useState(true)
+  const [hasChanged, setHasChanged] = useState(false)
   const [swipedId, setSwipedId] = useState<string | null>(null)
   const [swipeDistance, setSwipeDistance] = useState(0)
   const [deletingId, setDeletingId] = useState<string | null>(null)
-  const [shouldAnimate, setShouldAnimate] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const touchStartX = useRef<number>(0)
   const touchStartY = useRef<number>(0)
@@ -42,21 +47,22 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
   const deleteQueueRef = useRef<Set<string>>(new Set())
   const deleteTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Load cached count on mount and mark first render complete
+  // Mark first render as complete
   useEffect(() => {
-    // Try to get cached count from sessionStorage
-    if (typeof window !== 'undefined') {
-      const cached = sessionStorage.getItem(`notifications_count_${user.id}`)
-      if (cached) {
-        setUnreadCount(parseInt(cached, 10))
-      }
-    }
     setIsFirstRender(false)
-  }, [user.id])
+  }, [])
+
+  // Trigger animation when count changes
+  useEffect(() => {
+    if (prevCountRef.current !== unreadCount && prevCountRef.current !== 0) {
+      setHasChanged(true)
+      const timer = setTimeout(() => setHasChanged(false), 600)
+      return () => clearTimeout(timer)
+    }
+    prevCountRef.current = unreadCount
+  }, [unreadCount])
 
   useEffect(() => {
-    fetchActivities()
-
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false)
@@ -77,17 +83,10 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
           table: 'activity_logs',
           filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
-          const newActivity = payload.new as Activity
-          setActivities(prev => [newActivity, ...prev])
-          setUnreadCount(prev => {
-            const newCount = prev + 1
-            // Update cache
-            if (typeof window !== 'undefined') {
-              sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
-            }
-            return newCount
-          })
+        () => {
+          // Invalidate queries to refetch
+          queryClient.invalidateQueries({ queryKey: ['activities', 'unread', user.id] })
+          queryClient.invalidateQueries({ queryKey: ['activities', user.id] })
         }
       )
       .on(
@@ -98,21 +97,10 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
           table: 'activity_logs',
           filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
-          const updatedActivity = payload.new as Activity
-          setActivities(prev =>
-            prev.map(act => act.id === updatedActivity.id ? updatedActivity : act)
-          )
-          if (updatedActivity.read_at) {
-            setUnreadCount(prev => {
-              const newCount = Math.max(0, prev - 1)
-              // Update cache
-              if (typeof window !== 'undefined') {
-                sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
-              }
-              return newCount
-            })
-          }
+        () => {
+          // Invalidate queries to refetch
+          queryClient.invalidateQueries({ queryKey: ['activities', 'unread', user.id] })
+          queryClient.invalidateQueries({ queryKey: ['activities', user.id] })
         }
       )
       .on(
@@ -123,19 +111,10 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
           table: 'activity_logs',
           filter: `user_id=eq.${user.id}`,
         },
-        (payload) => {
-          const deletedActivity = payload.old as Activity
-          setActivities(prev => prev.filter(act => act.id !== deletedActivity.id))
-          if (!deletedActivity.read_at) {
-            setUnreadCount(prev => {
-              const newCount = Math.max(0, prev - 1)
-              // Update cache
-              if (typeof window !== 'undefined') {
-                sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
-              }
-              return newCount
-            })
-          }
+        () => {
+          // Invalidate queries to refetch
+          queryClient.invalidateQueries({ queryKey: ['activities', 'unread', user.id] })
+          queryClient.invalidateQueries({ queryKey: ['activities', user.id] })
         }
       )
       .subscribe()
@@ -149,43 +128,7 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
       }
       flushDeleteQueue()
     }
-  }, [user.id])
-
-  // Track count changes for animation
-  useEffect(() => {
-    if (prevCountRef.current > 0 && activities.length !== prevCountRef.current) {
-      setShouldAnimate(true)
-      setTimeout(() => setShouldAnimate(false), 300)
-    }
-    prevCountRef.current = activities.length
-  }, [activities.length])
-
-  const fetchActivities = async () => {
-    const supabase = createClient()
-
-    // Fetch unread count
-    const { count } = await supabase
-      .from('activity_logs')
-      .select('*', { count: 'exact', head: true })
-      .eq('user_id', user.id)
-      .is('read_at', null)
-
-    const newCount = count || 0
-    setUnreadCount(newCount)
-    // Cache the count in sessionStorage
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
-    }
-
-    // Fetch all activities (both read and unread)
-    const { data } = await supabase
-      .from('activity_logs')
-      .select('id, activity_type, created_at, metadata, read_at')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-
-    setActivities(data || [])
-  }
+  }, [user.id, queryClient])
 
   const markAllAsRead = async () => {
     const supabase = createClient()
@@ -198,18 +141,9 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
       .eq('user_id', user.id)
       .is('read_at', null)
 
-    // Update local state - mark all activities as read
-    setActivities(activities.map(activity => ({
-      ...activity,
-      read_at: activity.read_at || now
-    })))
-
-    // Update unread count to 0
-    setUnreadCount(0)
-    // Update cache
-    if (typeof window !== 'undefined') {
-      sessionStorage.setItem(`notifications_count_${user.id}`, '0')
-    }
+    // Invalidate queries to refetch
+    queryClient.invalidateQueries({ queryKey: ['activities', 'unread', user.id] })
+    queryClient.invalidateQueries({ queryKey: ['activities', user.id] })
   }
 
   const handleOpenDropdown = async () => {
@@ -361,19 +295,6 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
     setSwipeDistance(0)
     touchStartX.current = 0
 
-    // Update unread count if needed (optimistic)
-    const deletedActivity = activities.find(a => a.id === id)
-    if (deletedActivity && !deletedActivity.read_at) {
-      setUnreadCount(prev => {
-        const newCount = Math.max(0, prev - 1)
-        // Update cache
-        if (typeof window !== 'undefined') {
-          sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
-        }
-        return newCount
-      })
-    }
-
     // Add to delete queue for batching
     deleteQueueRef.current.add(id)
 
@@ -387,10 +308,11 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
       flushDeleteQueue()
     }, 500)
 
-    // Wait for animation to complete, then remove from state
+    // Wait for animation to complete, then invalidate queries
     setTimeout(() => {
-      setActivities(prev => prev.filter(activity => activity.id !== id))
       setDeletingId(null)
+      queryClient.invalidateQueries({ queryKey: ['activities', 'unread', user.id] })
+      queryClient.invalidateQueries({ queryKey: ['activities', user.id] })
     }, 300)
   }
 
@@ -406,11 +328,26 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
             <path d="M12.5 2.75v2m5.46 8.92 1.79 3.58H5.25l1.79-3.58c.14-.28.21-.58.21-.89V10a5.25 5.25 0 1 1 10.5 0v2.78c0 .31.07.62.21.89m-3.21 3.58V19c0 1.24-1.01 2.25-2.25 2.25s-2.25-1.01-2.25-2.25v-1.75"/>
           </g>
         </svg>
-        {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] md:min-w-[20px] md:h-5 px-1 md:px-1.5 bg-background text-brand text-[10px] md:text-xs font-bold rounded-full border border-brand">
-            {unreadCount > 99 ? '99+' : unreadCount}
-          </span>
-        )}
+        <AnimatePresence mode="wait">
+          {unreadCount > 0 && (
+            <motion.span
+              key={unreadCount}
+              initial={isFirstRender ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
+              animate={{
+                scale: hasChanged ? [1, 1.3, 1] : 1,
+                opacity: 1
+              }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{
+                duration: hasChanged ? 0.4 : 0.2,
+                ease: [0.34, 1.56, 0.64, 1]
+              }}
+              className="absolute -top-1 -right-1 flex items-center justify-center min-w-[18px] h-[18px] md:min-w-[20px] md:h-5 px-1 md:px-1.5 bg-background text-brand text-[10px] md:text-xs font-bold rounded-full border border-brand"
+            >
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </motion.span>
+          )}
+        </AnimatePresence>
       </button>
 
       {isOpen && (
@@ -418,25 +355,20 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
           <div className="p-4 border-b border-border">
             <h3 className="font-semibold text-foreground flex items-center gap-2">
               Powiadomienia
-              <span
-                className="inline-block"
-                style={{
-                  animation: shouldAnimate ? 'scale 0.3s ease-out' : 'none'
-                }}
-              >
-                ({deletingId && activities.length === 1 ? 0 : activities.length})
+              <span className="inline-block">
+                ({deletingId && activitiesData.length === 1 ? 0 : activitiesData.length})
               </span>
             </h3>
           </div>
 
           <div className="max-h-96 overflow-y-auto scrollbar-hide">
-            {activities.length === 0 || (activities.length === 1 && deletingId !== null) ? (
+            {activitiesData.length === 0 || (activitiesData.length === 1 && deletingId !== null) ? (
               <div className="p-8 text-center text-muted-foreground text-sm">
                 Brak powiadomień
               </div>
             ) : (
               <div>
-                {activities.map((activity) => {
+                {activitiesData.map((activity) => {
                   const isThisItemSwiped = swipedId === activity.id
                   const currentSwipeDistance = isThisItemSwiped ? swipeDistance : 0
                   const isDeleting = deletingId === activity.id
