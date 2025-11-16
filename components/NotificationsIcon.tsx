@@ -26,14 +26,8 @@ interface Activity {
 export function NotificationsIcon({ user }: NotificationsIconProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [activities, setActivities] = useState<Activity[]>([])
-  const [unreadCount, setUnreadCount] = useState(() => {
-    // Try to get cached count from sessionStorage
-    if (typeof window !== 'undefined') {
-      const cached = sessionStorage.getItem(`notifications_count_${user.id}`)
-      return cached ? parseInt(cached, 10) : 0
-    }
-    return 0
-  })
+  const [unreadCount, setUnreadCount] = useState(0)
+  const [isFirstRender, setIsFirstRender] = useState(true)
   const [swipedId, setSwipedId] = useState<string | null>(null)
   const [swipeDistance, setSwipeDistance] = useState(0)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -47,6 +41,18 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
   const prevCountRef = useRef<number>(0)
   const deleteQueueRef = useRef<Set<string>>(new Set())
   const deleteTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Load cached count on mount and mark first render complete
+  useEffect(() => {
+    // Try to get cached count from sessionStorage
+    if (typeof window !== 'undefined') {
+      const cached = sessionStorage.getItem(`notifications_count_${user.id}`)
+      if (cached) {
+        setUnreadCount(parseInt(cached, 10))
+      }
+    }
+    setIsFirstRender(false)
+  }, [user.id])
 
   useEffect(() => {
     fetchActivities()
