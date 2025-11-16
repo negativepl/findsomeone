@@ -638,118 +638,88 @@ export default async function PostDetailPage({ params }: { params: Promise<{ id:
 
             {/* Author Card */}
             <Card className="border border-border rounded-2xl md:rounded-3xl bg-card shadow-sm overflow-hidden">
-              {/* Banner */}
-              {post.profiles?.banner_url && (
-                <div className="relative w-full h-24 md:h-32 overflow-hidden bg-muted">
-                  <Image
-                    src={post.profiles.banner_url}
-                    alt={`${post.profiles.full_name} profile banner`}
-                    fill
-                    className="object-cover"
-                    style={{
-                      objectPosition: `center ${post.profiles.banner_position || 50}%`,
-                      transform: `scale(${(post.profiles.banner_scale || 100) / 100})`
-                    }}
-                  />
+              {/* Banner with Profile Info Overlay */}
+              <div className="relative">
+                {/* Banner Background */}
+                {post.profiles?.banner_url && (
+                  <div className="relative w-full h-[200px] md:h-[240px] overflow-hidden bg-muted">
+                    <Image
+                      src={post.profiles.banner_url}
+                      alt={`${post.profiles.full_name} profile banner`}
+                      fill
+                      className="object-cover"
+                      style={{
+                        objectPosition: `center ${post.profiles.banner_position ?? 50}%`,
+                        transform: `scale(${(post.profiles.banner_scale ?? 100) / 100})`
+                      }}
+                    />
+                  </div>
+                )}
+
+                {/* Blur layer - subtle, stronger at bottom */}
+                <div className="absolute bottom-0 left-0 right-0 h-1/2 pointer-events-none backdrop-blur-sm"
+                     style={{
+                       maskImage: 'linear-gradient(to top, black, transparent)',
+                       WebkitMaskImage: 'linear-gradient(to top, black, transparent)'
+                     }}
+                />
+
+                {/* Profile Info - Positioned at bottom of banner */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-3 md:p-4">
+                  <div className="flex items-end gap-3 md:gap-4">
+                    {/* Avatar */}
+                    <div className="flex-shrink-0 relative">
+                      {post.profiles?.avatar_url ? (
+                        <Image
+                          src={post.profiles.avatar_url}
+                          alt={post.profiles.full_name || 'User'}
+                          width={64}
+                          height={64}
+                          className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-white shadow-lg"
+                        />
+                      ) : (
+                        <div className="w-16 h-16 md:w-20 md:h-20 rounded-full bg-muted flex items-center justify-center border-4 border-white shadow-lg">
+                          <span className="text-2xl md:text-3xl font-semibold text-foreground">
+                            {post.profiles?.full_name?.charAt(0) || 'U'}
+                          </span>
+                        </div>
+                      )}
+                      {/* Online Status Indicator */}
+                      <div
+                        className={`absolute bottom-0 right-0 w-3 h-3 md:w-4 md:h-4 border-2 border-white rounded-full ${
+                          isOnline ? 'bg-green-500' : 'bg-gray-400'
+                        }`}
+                        title={isOnline ? 'Online' : 'Offline'}
+                      />
+                    </div>
+
+                    {/* Name and Rating */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h2 className="text-lg md:text-xl font-bold text-white leading-none drop-shadow-lg truncate">
+                          {post.profiles?.full_name || 'Anonymous'}
+                        </h2>
+                        {/* Badges */}
+                        <div className="flex gap-1 scale-75 md:scale-90">
+                          {post.profiles?.is_ai_bot && <UserBadge type="ai_bot" />}
+                          {!post.profiles?.is_ai_bot && post.profiles?.is_company && <UserBadge type="company" />}
+                          {!post.profiles?.is_ai_bot && !post.profiles?.is_company && post.profiles?.verified && <UserBadge type="verified" />}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <RatingDisplay
+                          userId={post.user_id}
+                          rating={post.profiles?.rating || 0}
+                          reviewCount={post.profiles?.total_reviews || 0}
+                          clickable={post.profiles?.show_profile_link !== false}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
+
               <CardContent className="p-4 md:p-6">
-                {/* Desktop lg only - Vertical Layout */}
-                <div className="hidden lg:flex xl:hidden lg:flex-col lg:items-center lg:text-center lg:space-y-3 mb-4 md:mb-6">
-                  {/* Avatar with online status */}
-                  <div className="relative">
-                    {post.profiles?.avatar_url ? (
-                      <Image
-                        src={post.profiles.avatar_url}
-                        alt={post.profiles.full_name || 'User'}
-                        width={80}
-                        height={80}
-                        className="rounded-full"
-                      />
-                    ) : (
-                      <div className="w-20 h-20 rounded-full bg-black/10 flex items-center justify-center">
-                        <span className="text-3xl font-semibold text-foreground">
-                          {post.profiles?.full_name?.charAt(0) || 'U'}
-                        </span>
-                      </div>
-                    )}
-                    {/* Online Status Indicator */}
-                    <div
-                      className={`absolute bottom-0 right-0 w-4 h-4 border-2 border-card rounded-full ${
-                        isOnline ? 'bg-green-500' : 'bg-gray-400'
-                      }`}
-                      title={isOnline ? 'Online' : 'Offline'}
-                    />
-                  </div>
-
-                  {/* Name */}
-                  <h2 className="text-xl font-bold text-foreground">
-                    {post.profiles?.full_name || 'Anonymous'}
-                  </h2>
-
-                  {/* Rating */}
-                  <div className="flex justify-center">
-                    <RatingDisplay
-                      userId={post.user_id}
-                      rating={post.profiles?.rating || 0}
-                      reviewCount={post.profiles?.total_reviews || 0}
-                      clickable={post.profiles?.show_profile_link !== false}
-                    />
-                  </div>
-
-                  {/* Badge */}
-                  <div>
-                    {post.profiles?.is_ai_bot && <UserBadge type="ai_bot" />}
-                    {!post.profiles?.is_ai_bot && post.profiles?.is_company && <UserBadge type="company" />}
-                    {!post.profiles?.is_ai_bot && !post.profiles?.is_company && post.profiles?.verified && <UserBadge type="verified" />}
-                  </div>
-                </div>
-
-                {/* Mobile/Tablet/xl+ - Horizontal Layout */}
-                <div className="flex xl:flex lg:hidden items-start gap-3 md:gap-4 mb-4 md:mb-6">
-                  <div className="relative flex-shrink-0">
-                    {post.profiles?.avatar_url ? (
-                      <Image
-                        src={post.profiles.avatar_url}
-                        alt={post.profiles.full_name || 'User'}
-                        width={56}
-                        height={56}
-                        className="rounded-full md:w-16 md:h-16"
-                      />
-                    ) : (
-                      <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-black/10 flex items-center justify-center">
-                        <span className="text-xl md:text-2xl font-semibold text-foreground">
-                          {post.profiles?.full_name?.charAt(0) || 'U'}
-                        </span>
-                      </div>
-                    )}
-                    {/* Online Status Indicator */}
-                    <div
-                      className={`absolute bottom-0 right-0 w-3 h-3 md:w-4 md:h-4 border-2 border-card rounded-full ${
-                        isOnline ? 'bg-green-500' : 'bg-gray-400'
-                      }`}
-                      title={isOnline ? 'Online' : 'Offline'}
-                    />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h2 className="text-xl font-bold text-foreground">
-                      {post.profiles?.full_name || 'Anonymous'}
-                    </h2>
-                    <RatingDisplay
-                      userId={post.user_id}
-                      rating={post.profiles?.rating || 0}
-                      reviewCount={post.profiles?.total_reviews || 0}
-                      clickable={post.profiles?.show_profile_link !== false}
-                    />
-                  </div>
-                  {/* Badge display logic - positioned on the right */}
-                  <div className="flex-shrink-0">
-                    {post.profiles?.is_ai_bot && <UserBadge type="ai_bot" />}
-                    {!post.profiles?.is_ai_bot && post.profiles?.is_company && <UserBadge type="company" />}
-                    {!post.profiles?.is_ai_bot && !post.profiles?.is_company && post.profiles?.verified && <UserBadge type="verified" />}
-                  </div>
-                </div>
-
                 {/* Member Since Info & Activity Status */}
                 <div className="flex flex-wrap items-center justify-center gap-2 text-xs md:text-sm text-muted-foreground mb-4 md:mb-6">
                   <span>

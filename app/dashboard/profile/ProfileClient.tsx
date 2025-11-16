@@ -14,6 +14,8 @@ import { toast } from 'sonner'
 import Link from 'next/link'
 import Image from 'next/image'
 import { Camera, Image as ImageIcon } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { useButtonFeedback } from '@/lib/hooks/useButtonFeedback'
 
 interface Profile {
   id: string
@@ -49,6 +51,10 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
   const [uploadingBanner, setUploadingBanner] = useState(false)
   const [isAvatarHovered, setIsAvatarHovered] = useState(false)
   const [isBannerHovered, setIsBannerHovered] = useState(false)
+
+  // Inline feedback hooks
+  const saveProfileFeedback = useButtonFeedback()
+  const savePrivacyFeedback = useButtonFeedback()
 
   // Debug: sprawdź wartości plakietek
   console.log('Profile badges:', {
@@ -247,8 +253,9 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
       if (updateError) throw updateError
 
-      toast.success('Profil został zaktualizowany pomyślnie!')
+      saveProfileFeedback.triggerSuccess()
     } catch (err) {
+      saveProfileFeedback.triggerError()
       toast.error(err instanceof Error ? err.message : 'Wystąpił błąd podczas aktualizacji profilu')
     } finally {
       setSaving(false)
@@ -271,8 +278,9 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
 
       if (updateError) throw updateError
 
-      toast.success('Ustawienia prywatności zostały zaktualizowane!')
+      savePrivacyFeedback.triggerSuccess()
     } catch (err) {
+      savePrivacyFeedback.triggerError()
       toast.error(err instanceof Error ? err.message : 'Wystąpił błąd podczas aktualizacji ustawień')
     } finally {
       setSavingPrivacy(false)
@@ -465,13 +473,31 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 />
               </div>
 
-              <Button
+              <motion.button
                 type="submit"
                 disabled={saving}
-                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold"
+                className="relative w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold inline-flex items-center justify-center transition-all duration-200"
+                style={{
+                  minWidth: saveProfileFeedback.state === 'success' ? '180px' : '140px',
+                }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15 }}
               >
-                {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
-              </Button>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={saveProfileFeedback.state}
+                    className="flex items-center gap-1.5"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <span className="whitespace-nowrap">
+                      {saving ? 'Zapisywanie...' : saveProfileFeedback.state === 'success' ? 'Zapisano!' : saveProfileFeedback.state === 'error' ? 'Błąd' : 'Zapisz zmiany'}
+                    </span>
+                  </motion.div>
+                </AnimatePresence>
+              </motion.button>
             </form>
           </div>
         </div>
@@ -490,8 +516,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 <div className="relative w-full rounded-2xl overflow-hidden group" style={{ aspectRatio: '3/1', minHeight: '150px' }}>
                   <div
                     style={{
-                      transform: `scale(${(profile.banner_scale || 100) / 100})`,
-                      transformOrigin: `center ${profile.banner_position || 50}%`,
+                      transform: `scale(${(profile.banner_scale ?? 100) / 100})`,
+                      transformOrigin: `center ${profile.banner_position ?? 50}%`,
                       width: '100%',
                       height: '100%',
                       position: 'absolute',
@@ -504,7 +530,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                       alt="Profile banner"
                       fill
                       className="object-cover"
-                      style={{ objectPosition: `center ${profile.banner_position || 50}%` }}
+                      style={{ objectPosition: `center ${profile.banner_position ?? 50}%` }}
                       sizes="100vw"
                       quality={90}
                       unoptimized={process.env.NODE_ENV === 'development'}
@@ -643,13 +669,31 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 />
               </div>
 
-              <Button
+              <motion.button
                 type="submit"
                 disabled={savingPrivacy}
-                className="w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold"
+                className="relative w-full rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 text-sm font-semibold inline-flex items-center justify-center transition-all duration-200"
+                style={{
+                  minWidth: savePrivacyFeedback.state === 'success' ? '200px' : '170px',
+                }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.15 }}
               >
-                {savingPrivacy ? 'Zapisywanie...' : 'Zapisz ustawienia'}
-              </Button>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={savePrivacyFeedback.state}
+                    className="flex items-center gap-1.5"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <span className="whitespace-nowrap">
+                      {savingPrivacy ? 'Zapisywanie...' : savePrivacyFeedback.state === 'success' ? 'Zapisano!' : savePrivacyFeedback.state === 'error' ? 'Błąd' : 'Zapisz ustawienia'}
+                    </span>
+                  </motion.div>
+                </AnimatePresence>
+              </motion.button>
             </form>
           </div>
         </div>
@@ -848,13 +892,31 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 {/* Footer with buttons */}
                 <div className="mt-8 pt-6 border-t-2 border-border">
                   <div className="flex justify-end">
-                    <Button
+                    <motion.button
                       type="submit"
                       disabled={saving}
-                      className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold"
+                      className="relative w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold inline-flex items-center justify-center transition-all duration-200"
+                      style={{
+                        minWidth: saveProfileFeedback.state === 'success' ? '180px' : '140px',
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
                     >
-                      {saving ? 'Zapisywanie...' : 'Zapisz zmiany'}
-                    </Button>
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={saveProfileFeedback.state}
+                          className="flex items-center gap-1.5"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          <span className="whitespace-nowrap">
+                            {saving ? 'Zapisywanie...' : saveProfileFeedback.state === 'success' ? 'Zapisano!' : saveProfileFeedback.state === 'error' ? 'Błąd' : 'Zapisz zmiany'}
+                          </span>
+                        </motion.div>
+                      </AnimatePresence>
+                    </motion.button>
                   </div>
                 </div>
               </form>
@@ -876,8 +938,8 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                   <div className="relative w-full rounded-2xl overflow-hidden group" style={{ aspectRatio: '3/1', minHeight: '200px' }}>
                     <div
                       style={{
-                        transform: `scale(${(profile.banner_scale || 100) / 100})`,
-                        transformOrigin: `center ${profile.banner_position || 50}%`,
+                        transform: `scale(${(profile.banner_scale ?? 100) / 100})`,
+                        transformOrigin: `center ${profile.banner_position ?? 50}%`,
                         width: '100%',
                         height: '100%',
                         position: 'absolute',
@@ -890,7 +952,7 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                         alt="Profile banner"
                         fill
                         className="object-cover"
-                        style={{ objectPosition: `center ${profile.banner_position || 50}%` }}
+                        style={{ objectPosition: `center ${profile.banner_position ?? 50}%` }}
                         sizes="(max-width: 768px) 100vw, 66vw"
                         quality={90}
                         unoptimized={process.env.NODE_ENV === 'development'}
@@ -1036,13 +1098,31 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
                 {/* Footer with buttons */}
                 <div className="mt-8 pt-6 border-t-2 border-border">
                   <div className="flex justify-end">
-                    <Button
+                    <motion.button
                       type="submit"
                       disabled={savingPrivacy}
-                      className="w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold"
+                      className="relative w-full md:w-auto rounded-full bg-brand hover:bg-brand/90 text-brand-foreground border-0 h-11 px-8 text-sm font-semibold inline-flex items-center justify-center transition-all duration-200"
+                      style={{
+                        minWidth: savePrivacyFeedback.state === 'success' ? '200px' : '270px',
+                      }}
+                      whileTap={{ scale: 0.98 }}
+                      transition={{ duration: 0.15 }}
                     >
-                      {savingPrivacy ? 'Zapisywanie...' : 'Zapisz ustawienia prywatności'}
-                    </Button>
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={savePrivacyFeedback.state}
+                          className="flex items-center gap-1.5"
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ duration: 0.15 }}
+                        >
+                          <span className="whitespace-nowrap">
+                            {savingPrivacy ? 'Zapisywanie...' : savePrivacyFeedback.state === 'success' ? 'Zapisano!' : savePrivacyFeedback.state === 'error' ? 'Błąd' : 'Zapisz ustawienia prywatności'}
+                          </span>
+                        </motion.div>
+                      </AnimatePresence>
+                    </motion.button>
                   </div>
                 </div>
               </form>

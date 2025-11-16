@@ -15,12 +15,12 @@ interface BannerSectionProps {
 export function BannerSection({ bannerUrl, initialPosition, initialScale, userId, isOwnProfile }: BannerSectionProps) {
   const [position, setPosition] = useState(initialPosition)
   const [scale, setScale] = useState(initialScale)
-  const [mounted, setMounted] = useState(false)
 
-  // Fix hydration mismatch by only applying transform after mount
+  // Update state when initial values change (e.g., after data fetch)
   useEffect(() => {
-    setMounted(true)
-  }, [])
+    setPosition(initialPosition)
+    setScale(initialScale)
+  }, [initialPosition, initialScale])
 
   // Convert position (0-100) to CSS object-position value
   const getObjectPosition = (pos: number) => {
@@ -28,10 +28,10 @@ export function BannerSection({ bannerUrl, initialPosition, initialScale, userId
   }
 
   return (
-    <div className="w-full relative bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden" style={{ aspectRatio: '3/1', minHeight: '200px' }}>
+    <div className="w-full relative bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden h-[280px] md:h-[360px]">
       <div
         style={{
-          transform: mounted ? `scale(${scale / 100})` : 'scale(1)',
+          transform: `scale(${scale / 100})`,
           transformOrigin: getObjectPosition(position),
           width: '100%',
           height: '100%',

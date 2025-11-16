@@ -13,29 +13,29 @@ interface FavoritesIconProps {
 export function FavoritesIcon({ user }: FavoritesIconProps) {
   const { data: favoritesCount = 0 } = useFavoritesCount(user?.id)
   const [hasChanged, setHasChanged] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
+  const [isFirstRender, setIsFirstRender] = useState(true)
   const prevCountRef = useRef(0)
 
-  // Fix hydration mismatch
+  // Mark first render as complete
   useEffect(() => {
-    setIsMounted(true)
+    setIsFirstRender(false)
   }, [])
 
   // Trigger animation when count changes
   useEffect(() => {
-    if (isMounted && prevCountRef.current !== favoritesCount && prevCountRef.current !== 0) {
+    if (prevCountRef.current !== favoritesCount && prevCountRef.current !== 0) {
       setHasChanged(true)
       const timer = setTimeout(() => setHasChanged(false), 600)
       return () => clearTimeout(timer)
     }
     prevCountRef.current = favoritesCount
-  }, [favoritesCount, isMounted])
+  }, [favoritesCount])
 
   if (!user) {
     return null
   }
 
-  const displayCount = isMounted ? favoritesCount : 0
+  const displayCount = favoritesCount
 
   return (
     <Link
@@ -47,10 +47,10 @@ export function FavoritesIcon({ user }: FavoritesIconProps) {
         <path fill="currentColor" d="M12.595 5.094a5.877 5.877 0 0 1 8.433 8.184l-7.79 7.795a1.75 1.75 0 0 1-2.475 0L2.97 13.28a1 1 0 0 1-.06-.068A5.877 5.877 0 1 1 12 5.789q.265-.366.595-.695m7.25 1.06a4.376 4.376 0 0 0-7.15 1.446.75.75 0 0 1-1.39 0 4.377 4.377 0 1 0-7.23 4.663l7.748 7.75.02.017a.25.25 0 0 0 .334-.017l7.779-7.784a4.376 4.376 0 0 0-.111-6.074"/>
       </svg>
       <AnimatePresence mode="wait">
-        {isMounted && displayCount > 0 && (
+        {displayCount > 0 && (
           <motion.span
             key={displayCount}
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={isFirstRender ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
             animate={{
               scale: hasChanged ? [1, 1.3, 1] : 1,
               opacity: 1

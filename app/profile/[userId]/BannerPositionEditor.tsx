@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import { MoveVertical, ZoomIn } from 'lucide-react'
+import { Slider } from '@/components/ui/slider'
 
 interface BannerPositionEditorProps {
   userId: string
@@ -39,15 +40,23 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
 
     setIsSaving(true)
     try {
-      const { error } = await supabase
+      console.log('Saving banner settings:', { userId, position, scale })
+      const { data, error } = await supabase
         .from('profiles')
         .update({
           banner_position: position,
           banner_scale: scale
         })
         .eq('id', userId)
+        .select()
 
-      if (error) throw error
+      console.log('Update result:', { data, error })
+
+      if (error) {
+        console.error('Supabase error details:', error)
+        throw error
+      }
+
       toast.success('Ustawienia bannera zapisane')
       setIsEditing(false)
     } catch (error) {
@@ -62,12 +71,12 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
     return (
       <button
         onClick={() => setIsEditing(true)}
-        className="absolute top-4 right-4 z-20 bg-white/90 backdrop-blur-sm hover:bg-white rounded-full p-3 shadow-lg transition-all hover:scale-110"
+        className="absolute top-4 right-4 z-20 bg-card/90 backdrop-blur-sm hover:bg-card rounded-full p-3 shadow-lg transition-all hover:scale-110"
         title="Dostosuj banner"
       >
         <div className="flex items-center gap-1">
-          <MoveVertical className="w-5 h-5 text-black" />
-          <ZoomIn className="w-5 h-5 text-black" />
+          <MoveVertical className="w-5 h-5 text-foreground" />
+          <ZoomIn className="w-5 h-5 text-foreground" />
         </div>
       </button>
     )
@@ -77,13 +86,13 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
     <div className={`absolute inset-0 z-20 flex items-center justify-center transition-all duration-200 ${
       isDragging ? 'bg-black/20 backdrop-blur-none' : 'bg-black/50 backdrop-blur-sm'
     }`}>
-      <div className={`bg-white rounded-2xl p-4 max-w-md w-full mx-4 shadow-xl transition-opacity duration-200 ${
+      <div className={`bg-card border border-border rounded-2xl p-4 max-w-md w-full mx-4 shadow-xl transition-opacity duration-200 ${
         isDragging ? 'opacity-20' : 'opacity-100'
       }`}>
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-base font-bold text-black">Dostosuj banner</h3>
+          <h3 className="text-base font-bold text-foreground">Dostosuj banner</h3>
           {isSaving && (
-            <span className="text-xs text-black/60">Zapisywanie...</span>
+            <span className="text-xs text-muted-foreground">Zapisywanie...</span>
           )}
         </div>
 
@@ -92,82 +101,68 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
           <div className="grid grid-cols-2 gap-4">
             {/* Position section - LEFT */}
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-black">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
                 <MoveVertical className="w-3.5 h-3.5" />
                 <span>Pozycja</span>
               </div>
 
               {/* Slider */}
               <div className="relative">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={position}
-                  onChange={(e) => handlePositionChange(parseInt(e.target.value))}
-                  onMouseDown={() => setIsDragging(true)}
-                  onMouseUp={() => setIsDragging(false)}
-                  onTouchStart={() => setIsDragging(true)}
-                  onTouchEnd={() => setIsDragging(false)}
-                  className="w-full h-2 bg-black/10 rounded-full appearance-none cursor-pointer slider position-slider"
-                  style={{
-                    '--slider-position': `${position}%`
-                  } as React.CSSProperties}
+                <Slider
+                  min={0}
+                  max={100}
+                  value={[position]}
+                  onValueChange={(values) => handlePositionChange(values[0])}
+                  onPointerDown={() => setIsDragging(true)}
+                  onPointerUp={() => setIsDragging(false)}
                 />
               </div>
 
               {/* Visual indicator */}
-              <div className="flex items-center justify-between text-[10px] text-black/60">
-                <span className={position <= 33 ? 'font-semibold text-black' : ''}>Góra</span>
-                <span className={position > 33 && position < 67 ? 'font-semibold text-black' : ''}>Środek</span>
-                <span className={position >= 67 ? 'font-semibold text-black' : ''}>Dół</span>
+              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                <span className={position <= 33 ? 'font-semibold text-foreground' : ''}>Góra</span>
+                <span className={position > 33 && position < 67 ? 'font-semibold text-foreground' : ''}>Środek</span>
+                <span className={position >= 67 ? 'font-semibold text-foreground' : ''}>Dół</span>
               </div>
 
               {/* Current position */}
               <div className="text-center">
-                <div className="inline-flex items-center gap-1 bg-black/5 rounded-full px-3 py-1">
-                  <span className="text-xs font-medium text-black">{position}%</span>
+                <div className="inline-flex items-center gap-1 bg-muted rounded-full px-3 py-1">
+                  <span className="text-xs font-medium text-foreground">{position}%</span>
                 </div>
               </div>
             </div>
 
             {/* Scale section - RIGHT */}
             <div className="space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-black">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
                 <ZoomIn className="w-3.5 h-3.5" />
                 <span>Powiększenie</span>
               </div>
 
               {/* Slider */}
               <div className="relative">
-                <input
-                  type="range"
-                  min="100"
-                  max="200"
-                  value={scale}
-                  onChange={(e) => handleScaleChange(parseInt(e.target.value))}
-                  onMouseDown={() => setIsDragging(true)}
-                  onMouseUp={() => setIsDragging(false)}
-                  onTouchStart={() => setIsDragging(true)}
-                  onTouchEnd={() => setIsDragging(false)}
-                  className="w-full h-2 bg-black/10 rounded-full appearance-none cursor-pointer slider scale-slider"
-                  style={{
-                    '--slider-position': `${scale - 100}%`
-                  } as React.CSSProperties}
+                <Slider
+                  min={100}
+                  max={200}
+                  value={[scale]}
+                  onValueChange={(values) => handleScaleChange(values[0])}
+                  onPointerDown={() => setIsDragging(true)}
+                  onPointerUp={() => setIsDragging(false)}
                 />
               </div>
 
               {/* Visual indicator */}
-              <div className="flex items-center justify-between text-[10px] text-black/60">
-                <span className={scale <= 133 ? 'font-semibold text-black' : ''}>100%</span>
-                <span className={scale > 133 && scale < 167 ? 'font-semibold text-black' : ''}>150%</span>
-                <span className={scale >= 167 ? 'font-semibold text-black' : ''}>200%</span>
+              <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                <span className={scale <= 133 ? 'font-semibold text-foreground' : ''}>100%</span>
+                <span className={scale > 133 && scale < 167 ? 'font-semibold text-foreground' : ''}>150%</span>
+                <span className={scale >= 167 ? 'font-semibold text-foreground' : ''}>200%</span>
               </div>
 
               {/* Current scale */}
               <div className="text-center">
-                <div className="inline-flex items-center gap-1 bg-black/5 rounded-full px-3 py-1">
-                  <span className="text-xs font-medium text-black">{scale}%</span>
+                <div className="inline-flex items-center gap-1 bg-muted rounded-full px-3 py-1">
+                  <span className="text-xs font-medium text-foreground">{scale}%</span>
                 </div>
               </div>
             </div>
@@ -183,7 +178,7 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
                 onScaleChange(initialScale)
                 setIsEditing(false)
               }}
-              className="flex-1 rounded-full border border-black/10 text-black text-sm font-semibold py-2 hover:bg-black/5 transition-colors"
+              className="flex-1 rounded-full border border-border bg-muted hover:bg-accent text-foreground text-sm font-semibold py-2 transition-colors"
               disabled={isSaving}
             >
               Anuluj
@@ -191,43 +186,13 @@ export function BannerPositionEditor({ userId, initialPosition, initialScale, on
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-white text-sm font-semibold py-2 transition-colors disabled:opacity-50"
+              className="flex-1 rounded-full bg-brand hover:bg-brand/90 text-brand-foreground text-sm font-semibold py-2 transition-colors disabled:opacity-50"
             >
               {isSaving ? 'Zapisywanie...' : 'Zapisz'}
             </button>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .position-slider {
-          background: linear-gradient(to right, hsl(var(--brand)) 0%, hsl(var(--brand)) var(--slider-position), #e5e5e5 var(--slider-position), #e5e5e5 100%);
-        }
-
-        .scale-slider {
-          background: linear-gradient(to right, hsl(var(--brand)) 0%, hsl(var(--brand)) var(--slider-position), #e5e5e5 var(--slider-position), #e5e5e5 100%);
-        }
-
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: hsl(var(--brand));
-          cursor: pointer;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .slider::-moz-range-thumb {
-          width: 20px;
-          height: 20px;
-          border-radius: 50%;
-          background: hsl(var(--brand));
-          cursor: pointer;
-          border: none;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-      `}</style>
     </div>
   )
 }

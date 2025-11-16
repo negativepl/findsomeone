@@ -19,7 +19,7 @@ export function MessagesIcon({ user }: MessagesIconProps) {
   const { data: unreadCount = 0 } = useUnreadCount(user?.id)
   const queryClient = useQueryClient()
   const [hasChanged, setHasChanged] = useState(false)
-  const [isMounted, setIsMounted] = useState(false)
+  const [isFirstRender, setIsFirstRender] = useState(true)
   const [isDarkMode, setIsDarkMode] = useState(false)
   const prevCountRef = useRef(0)
   const audioContextRef = useRef<AudioContext | null>(null)
@@ -27,9 +27,9 @@ export function MessagesIcon({ user }: MessagesIconProps) {
   const audioArrayBufferRef = useRef<ArrayBuffer | null>(null)
   const notificationAnimationRef = useRef<any>(null)
 
-  // Fix hydration mismatch and detect theme
+  // Detect theme and load resources
   useEffect(() => {
-    setIsMounted(true)
+    setIsFirstRender(false)
 
     // Detect initial theme
     const checkTheme = () => {
@@ -243,19 +243,19 @@ export function MessagesIcon({ user }: MessagesIconProps) {
 
   // Trigger animation when count changes
   useEffect(() => {
-    if (isMounted && prevCountRef.current !== unreadCount && prevCountRef.current !== 0) {
+    if (prevCountRef.current !== unreadCount && prevCountRef.current !== 0) {
       setHasChanged(true)
       const timer = setTimeout(() => setHasChanged(false), 600)
       return () => clearTimeout(timer)
     }
     prevCountRef.current = unreadCount
-  }, [unreadCount, isMounted])
+  }, [unreadCount])
 
   if (!user) {
     return null
   }
 
-  const displayCount = isMounted ? unreadCount : 0
+  const displayCount = unreadCount
 
   return (
     <Link
@@ -277,10 +277,10 @@ export function MessagesIcon({ user }: MessagesIconProps) {
         </defs>
       </svg>
       <AnimatePresence mode="wait">
-        {isMounted && displayCount > 0 && (
+        {displayCount > 0 && (
           <motion.span
             key={displayCount}
-            initial={{ scale: 0.8, opacity: 0 }}
+            initial={isFirstRender ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
             animate={{
               scale: hasChanged ? [1, 1.3, 1] : 1,
               opacity: 1

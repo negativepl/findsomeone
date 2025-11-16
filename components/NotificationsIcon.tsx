@@ -26,7 +26,14 @@ interface Activity {
 export function NotificationsIcon({ user }: NotificationsIconProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [activities, setActivities] = useState<Activity[]>([])
-  const [unreadCount, setUnreadCount] = useState(0)
+  const [unreadCount, setUnreadCount] = useState(() => {
+    // Try to get cached count from sessionStorage
+    if (typeof window !== 'undefined') {
+      const cached = sessionStorage.getItem(`notifications_count_${user.id}`)
+      return cached ? parseInt(cached, 10) : 0
+    }
+    return 0
+  })
   const [swipedId, setSwipedId] = useState<string | null>(null)
   const [swipeDistance, setSwipeDistance] = useState(0)
   const [deletingId, setDeletingId] = useState<string | null>(null)
@@ -67,7 +74,14 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
         (payload) => {
           const newActivity = payload.new as Activity
           setActivities(prev => [newActivity, ...prev])
-          setUnreadCount(prev => prev + 1)
+          setUnreadCount(prev => {
+            const newCount = prev + 1
+            // Update cache
+            if (typeof window !== 'undefined') {
+              sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
+            }
+            return newCount
+          })
         }
       )
       .on(
@@ -84,7 +98,14 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
             prev.map(act => act.id === updatedActivity.id ? updatedActivity : act)
           )
           if (updatedActivity.read_at) {
-            setUnreadCount(prev => Math.max(0, prev - 1))
+            setUnreadCount(prev => {
+              const newCount = Math.max(0, prev - 1)
+              // Update cache
+              if (typeof window !== 'undefined') {
+                sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
+              }
+              return newCount
+            })
           }
         }
       )
@@ -100,7 +121,14 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
           const deletedActivity = payload.old as Activity
           setActivities(prev => prev.filter(act => act.id !== deletedActivity.id))
           if (!deletedActivity.read_at) {
-            setUnreadCount(prev => Math.max(0, prev - 1))
+            setUnreadCount(prev => {
+              const newCount = Math.max(0, prev - 1)
+              // Update cache
+              if (typeof window !== 'undefined') {
+                sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
+              }
+              return newCount
+            })
           }
         }
       )
@@ -136,7 +164,12 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
       .eq('user_id', user.id)
       .is('read_at', null)
 
-    setUnreadCount(count || 0)
+    const newCount = count || 0
+    setUnreadCount(newCount)
+    // Cache the count in sessionStorage
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
+    }
 
     // Fetch all activities (both read and unread)
     const { data } = await supabase
@@ -167,6 +200,10 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
 
     // Update unread count to 0
     setUnreadCount(0)
+    // Update cache
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem(`notifications_count_${user.id}`, '0')
+    }
   }
 
   const handleOpenDropdown = async () => {
@@ -321,7 +358,14 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
     // Update unread count if needed (optimistic)
     const deletedActivity = activities.find(a => a.id === id)
     if (deletedActivity && !deletedActivity.read_at) {
-      setUnreadCount(prev => Math.max(0, prev - 1))
+      setUnreadCount(prev => {
+        const newCount = Math.max(0, prev - 1)
+        // Update cache
+        if (typeof window !== 'undefined') {
+          sessionStorage.setItem(`notifications_count_${user.id}`, newCount.toString())
+        }
+        return newCount
+      })
     }
 
     // Add to delete queue for batching
