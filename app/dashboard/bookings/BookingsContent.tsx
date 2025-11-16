@@ -96,6 +96,12 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
     setSelectedDate(null)
   }
 
+  const goToToday = () => {
+    const today = new Date()
+    setCurrentMonth(today)
+    setSelectedDate(today)
+  }
+
   const getDayBookings = (date: Date) => {
     const dateKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
     return bookingsByDate.get(dateKey) || []
@@ -188,6 +194,9 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
                 {currentMonth.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}
               </h2>
               <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={goToToday}>
+                  Dzisiaj
+                </Button>
                 <Button variant="outline" size="sm" onClick={prevMonth}>
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
@@ -209,10 +218,10 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
               </div>
 
               {/* Calendar days */}
-              <div className="grid grid-cols-7 gap-2">
+              <div className="grid grid-cols-7 gap-3">
                 {calendarDays.map((date, index) => {
                   if (!date) {
-                    return <div key={`empty-${index}`} className="aspect-square" />
+                    return <div key={`empty-${index}`} className="min-h-24" />
                   }
 
                   const dayBookings = getDayBookings(date)
@@ -236,7 +245,7 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
                     <button
                       key={date.toISOString()}
                       onClick={() => setSelectedDate(date)}
-                      className={`aspect-square rounded-lg border-2 transition-all relative p-1 ${
+                      className={`aspect-square min-h-24 rounded-lg border-2 transition-all relative p-2 ${
                         !isCurrentMonth
                           ? 'border-border/50 opacity-30 cursor-default'
                           : isSelected
@@ -247,8 +256,8 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
                       }`}
                     >
                       {/* Date in top-left corner */}
-                      <div className="absolute top-1 left-1 flex items-baseline gap-1">
-                        <span className={`text-xs font-semibold ${
+                      <div className="absolute top-2 left-2 flex items-baseline gap-1">
+                        <span className={`text-sm font-semibold ${
                           !isCurrentMonth
                             ? 'text-muted-foreground'
                             : isSelected
@@ -257,7 +266,7 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
                         }`}>
                           {date.getDate()}
                         </span>
-                        <span className={`text-[9px] font-medium ${
+                        <span className={`text-[10px] font-medium ${
                           !isCurrentMonth
                             ? 'text-muted-foreground'
                             : isSelected
@@ -270,17 +279,17 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
 
                       {/* Bookings indicators centered */}
                       {isCurrentMonth && dayBookings.length > 0 && (
-                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
-                          <div className="flex gap-0.5 justify-center">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                          <div className="flex gap-1 justify-center flex-wrap max-w-[80%]">
                             {dayStatuses.slice(0, 5).map((status, idx) => (
                               <div
                                 key={idx}
-                                className={`w-1.5 h-1.5 rounded-full ${getStatusColor(status)}`}
+                                className={`w-2.5 h-2.5 rounded-full ${getStatusColor(status)}`}
                               />
                             ))}
                           </div>
                           {dayBookings.length > 5 && (
-                            <span className="text-[9px] font-bold text-brand leading-none">{dayBookings.length}+</span>
+                            <span className="text-[10px] font-bold text-brand leading-none">{dayBookings.length}+</span>
                           )}
                         </div>
                       )}

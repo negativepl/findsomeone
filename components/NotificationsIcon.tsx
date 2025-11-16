@@ -6,7 +6,7 @@ import { User } from '@supabase/supabase-js'
 import { createClient } from '@/lib/supabase/client'
 import { formatDistanceToNow } from 'date-fns'
 import { pl } from 'date-fns/locale'
-import { Eye, MessageCircle, Heart, Star } from 'lucide-react'
+import { Eye, MessageCircle, Heart, Star, Calendar } from 'lucide-react'
 import { useUnreadActivitiesCount, useActivities } from '@/lib/hooks/useActivities'
 import { useQueryClient } from '@tanstack/react-query'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -23,6 +23,11 @@ interface Activity {
   metadata: {
     post_title?: string
     sender_name?: string
+    post_id?: string
+    sender_id?: string
+    client_name?: string
+    scheduled_date?: string
+    scheduled_time?: string
   }
 }
 
@@ -37,15 +42,18 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
   const [swipedId, setSwipedId] = useState<string | null>(null)
   const [swipeDistance, setSwipeDistance] = useState(0)
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [deletedIds, setDeletedIds] = useState<Set<string>>(new Set())
   const dropdownRef = useRef<HTMLDivElement>(null)
   const touchStartX = useRef<number>(0)
   const touchStartY = useRef<number>(0)
   const mouseStartX = useRef<number>(0)
   const isDragging = useRef<boolean>(false)
   const isHorizontalSwipe = useRef<boolean>(false)
+  const wasDragging = useRef<boolean>(false)
   const prevCountRef = useRef<number>(0)
   const deleteQueueRef = useRef<Set<string>>(new Set())
   const deleteTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const touchElementsRef = useRef<Map<string, HTMLElement>>(new Map())
 
   // Mark first render as complete
   useEffect(() => {
@@ -62,8 +70,27 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
     prevCountRef.current = unreadCount
   }, [unreadCount])
 
+  const setupTouchListeners = (element: HTMLElement, id: string) => {
+    const onTouchStart = (e: TouchEvent) => handleTouchStart(e, id)
+    const onTouchMove = (e: TouchEvent) => handleTouchMove(e, id)
+    const onTouchEnd = () => handleTouchEnd(id)
+
+    element.addEventListener('touchstart', onTouchStart, { passive: true })
+    element.addEventListener('touchmove', onTouchMove, { passive: false })
+    element.addEventListener('touchend', onTouchEnd, { passive: true })
+
+    return () => {
+      element.removeEventListener('touchstart', onTouchStart)
+      element.removeEventListener('touchmove', onTouchMove)
+      element.removeEventListener('touchend', onTouchEnd)
+    }
+  }
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      // Don't close if currently dragging or deleting
+      if (isDragging.current || deletingId) return
+
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false)
       }
@@ -165,6 +192,8 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
         return <Heart className="w-4 h-4 text-brand" />
       case 'review_received':
         return <Star className="w-4 h-4 text-brand" />
+      case 'booking_request':
+        return <Calendar className="w-4 h-4 text-brand" />
       default:
         return null
     }
@@ -180,12 +209,31 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
         return `Ktoś dodał do ulubionych: "${activity.metadata?.post_title}"`
       case 'review_received':
         return 'Otrzymałeś nową opinię'
+      case 'booking_request':
+        return `${activity.metadata?.client_name || 'Ktoś'} chce zarezerwować termin`
       default:
         return 'Nowa aktywność'
     }
   }
 
-  const handleTouchStart = (e: React.TouchEvent, id: string) => {
+  const getActivityLink = (activity: Activity): string => {
+    switch (activity.activity_type) {
+      case 'post_viewed':
+        return activity.metadata?.post_id ? `/posts/${activity.metadata.post_id}` : '#'
+      case 'message_received':
+        return activity.metadata?.sender_id ? `/dashboard/messages?conversation=${activity.metadata.sender_id}` : '/dashboard/messages'
+      case 'favorite_added':
+        return activity.metadata?.post_id ? `/posts/${activity.metadata.post_id}` : '#'
+      case 'review_received':
+        return '/dashboard/profile'
+      case 'booking_request':
+        return '/dashboard/bookings'
+      default:
+        return '#'
+    }
+  }
+
+  const handleTouchStart = (e: TouchEvent, id: string) => {
     touchStartX.current = e.touches[0].clientX
     touchStartY.current = e.touches[0].clientY
     isHorizontalSwipe.current = false
@@ -193,7 +241,7 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
     setSwipeDistance(0)
   }
 
-  const handleTouchMove = (e: React.TouchEvent, id: string) => {
+  const handleTouchMove = (e: TouchEvent, id: string) => {
     if (swipedId !== id) return
     const currentX = e.touches[0].clientX
     const currentY = e.touches[0].clientY
@@ -231,8 +279,11 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
   }
 
   const handleMouseDown = (e: React.MouseEvent, id: string) => {
+    e.preventDefault() // Prevent text selection
+    e.stopPropagation() // Prevent link activation
     mouseStartX.current = e.clientX
     isDragging.current = true
+    wasDragging.current = false
     setSwipedId(id)
     setSwipeDistance(0)
   }
@@ -241,6 +292,13 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
     if (!isDragging.current || swipedId !== id) return
     const currentX = e.clientX
     const diff = mouseStartX.current - currentX
+
+    // Mark as dragging if moved more than 2px
+    if (Math.abs(diff) > 2) {
+      wasDragging.current = true
+      e.preventDefault() // Prevent text selection while dragging
+      e.stopPropagation() // Prevent link activation
+    }
 
     // Update swipe distance (allow both directions but clamp to 0-80)
     const newDistance = Math.max(0, Math.min(diff, 80))
@@ -271,6 +329,19 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
     }
   }
 
+  const handleLinkClick = (activity: Activity) => {
+    if (wasDragging.current) {
+      wasDragging.current = false
+      return
+    }
+    setIsOpen(false)
+    // Navigate programmatically
+    const link = getActivityLink(activity)
+    if (link !== '#') {
+      window.location.href = link
+    }
+  }
+
   const flushDeleteQueue = async () => {
     if (deleteQueueRef.current.size === 0) return
 
@@ -289,32 +360,45 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
   }
 
   const deleteNotification = async (id: string) => {
+    // Optimistically remove from UI immediately
+    setDeletedIds(prev => new Set([...prev, id]))
+
     // Start delete animation
     setDeletingId(id)
     setSwipedId(null)
     setSwipeDistance(0)
     touchStartX.current = 0
 
-    // Add to delete queue for batching
-    deleteQueueRef.current.add(id)
+    // Wait for animation to complete
+    await new Promise(resolve => setTimeout(resolve, 300))
 
-    // Clear existing timer
-    if (deleteTimerRef.current) {
-      clearTimeout(deleteTimerRef.current)
+    // Delete from database
+    const supabase = createClient()
+    const { error } = await supabase
+      .from('activity_logs')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      console.error('Error deleting notification:', error)
+      // If delete failed, remove from deletedIds
+      setDeletedIds(prev => {
+        const newSet = new Set(prev)
+        newSet.delete(id)
+        return newSet
+      })
+      setDeletingId(null)
+      return
     }
 
-    // Set new timer to flush queue after 500ms of inactivity
-    deleteTimerRef.current = setTimeout(() => {
-      flushDeleteQueue()
-    }, 500)
-
-    // Wait for animation to complete, then invalidate queries
-    setTimeout(() => {
-      setDeletingId(null)
-      queryClient.invalidateQueries({ queryKey: ['activities', 'unread', user.id] })
-      queryClient.invalidateQueries({ queryKey: ['activities', user.id] })
-    }, 300)
+    // Invalidate queries after successful delete
+    setDeletingId(null)
+    queryClient.invalidateQueries({ queryKey: ['activities', 'unread', user.id] })
+    queryClient.invalidateQueries({ queryKey: ['activities', user.id] })
   }
+
+  // Filter out deleted activities
+  const visibleActivities = activitiesData.filter(a => !deletedIds.has(a.id))
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -356,19 +440,19 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
             <h3 className="font-semibold text-foreground flex items-center gap-2">
               Powiadomienia
               <span className="inline-block">
-                ({deletingId && activitiesData.length === 1 ? 0 : activitiesData.length})
+                ({visibleActivities.length})
               </span>
             </h3>
           </div>
 
           <div className="max-h-96 overflow-y-auto scrollbar-hide">
-            {activitiesData.length === 0 || (activitiesData.length === 1 && deletingId !== null) ? (
+            {visibleActivities.length === 0 ? (
               <div className="p-8 text-center text-muted-foreground text-sm">
                 Brak powiadomień
               </div>
             ) : (
               <div>
-                {activitiesData.map((activity) => {
+                {visibleActivities.map((activity) => {
                   const isThisItemSwiped = swipedId === activity.id
                   const currentSwipeDistance = isThisItemSwiped ? swipeDistance : 0
                   const isDeleting = deletingId === activity.id
@@ -410,34 +494,51 @@ export function NotificationsIcon({ user }: NotificationsIconProps) {
 
                       {/* Main content - swipeable */}
                       <div
-                        className="relative p-4 hover:bg-muted/50 cursor-pointer bg-card select-none"
+                        ref={(el) => {
+                          if (el) {
+                            touchElementsRef.current.set(activity.id, el)
+                            // Setup touch listeners with passive: false
+                            const cleanup = setupTouchListeners(el, activity.id)
+                            ;(el as any)._touchCleanup = cleanup
+                          } else {
+                            // Cleanup when element is removed
+                            const element = touchElementsRef.current.get(activity.id)
+                            if (element && (element as any)._touchCleanup) {
+                              (element as any)._touchCleanup()
+                            }
+                            touchElementsRef.current.delete(activity.id)
+                          }
+                        }}
+                        className="relative bg-card select-none"
                         style={{
                           transform: `translateX(-${currentSwipeDistance}px)`,
                           transition: isThisItemSwiped ? 'none' : 'transform 0.3s ease-out',
                           touchAction: 'pan-y'
                         }}
-                        onTouchStart={(e) => handleTouchStart(e, activity.id)}
-                        onTouchMove={(e) => handleTouchMove(e, activity.id)}
-                        onTouchEnd={() => handleTouchEnd(activity.id)}
                         onMouseDown={(e) => handleMouseDown(e, activity.id)}
                         onMouseMove={(e) => handleMouseMove(e, activity.id)}
                         onMouseUp={() => handleMouseUp(activity.id)}
                         onMouseLeave={handleMouseLeave}
                       >
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            {getIcon(activity.activity_type)}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm text-foreground line-clamp-2">
-                              {getActivityText(activity)}
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {formatDistanceToNow(new Date(activity.created_at), {
-                                addSuffix: true,
-                                locale: pl,
-                              })}
-                            </p>
+                        <div
+                          className="block p-4 hover:bg-muted/50 cursor-pointer"
+                          onClick={() => handleLinkClick(activity)}
+                        >
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-full bg-brand/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                              {getIcon(activity.activity_type)}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-foreground line-clamp-2">
+                                {getActivityText(activity)}
+                              </p>
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {formatDistanceToNow(new Date(activity.created_at), {
+                                  addSuffix: true,
+                                  locale: pl,
+                                })}
+                              </p>
+                            </div>
                           </div>
                         </div>
                       </div>
