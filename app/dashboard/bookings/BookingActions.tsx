@@ -37,7 +37,10 @@ interface BookingActionsProps {
 }
 
 export function BookingActions({ bookingId, status, isProvider, onUpdate, reviewedId, postId, hasReview = false }: BookingActionsProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isConfirming, setIsConfirming] = useState(false)
+  const [isCancelling, setIsCancelling] = useState(false)
+  const [isCompleting, setIsCompleting] = useState(false)
+  const [isReviewing, setIsReviewing] = useState(false)
   const [showReviewDialog, setShowReviewDialog] = useState(false)
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState('')
@@ -48,7 +51,10 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
   const reviewFeedback = useButtonFeedback()
 
   const updateBookingStatus = async (newStatus: string, feedbackHook?: ReturnType<typeof useButtonFeedback>) => {
-    setIsLoading(true)
+    // Set appropriate loading state based on action
+    if (newStatus === 'confirmed') setIsConfirming(true)
+    else if (newStatus === 'cancelled') setIsCancelling(true)
+    else if (newStatus === 'completed') setIsCompleting(true)
     try {
       const response = await fetch('/api/bookings', {
         method: 'PATCH',
@@ -67,6 +73,11 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         feedbackHook.triggerSuccess()
       }
 
+      // Show success toast
+      toast.success('Sukces', {
+        description: getSuccessMessage(newStatus)
+      })
+
       onUpdate()
     } catch (error) {
       console.error('Error updating booking:', error)
@@ -77,15 +88,19 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         description: error instanceof Error ? error.message : 'Nie udało się zaktualizować rezerwacji'
       })
     } finally {
-      setIsLoading(false)
+      // Clear appropriate loading state
+      if (newStatus === 'confirmed') setIsConfirming(false)
+      else if (newStatus === 'cancelled') setIsCancelling(false)
+      else if (newStatus === 'completed') setIsCompleting(false)
     }
   }
 
   const getSuccessMessage = (status: string) => {
     switch (status) {
       case 'confirmed': return 'Rezerwacja została potwierdzona'
-      case 'cancelled': return 'Rezerwacja została anulowana'
+      case 'cancelled': return 'Rezerwacja została odrzucona'
       case 'completed': return 'Rezerwacja została oznaczona jako zakończona'
+      case 'reviewed': return 'Dziękujemy za wystawienie oceny'
       default: return 'Status został zaktualizowany'
     }
   }
@@ -96,7 +111,7 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
       return
     }
 
-    setIsLoading(true)
+    setIsReviewing(true)
     try {
       const response = await fetch('/api/reviews', {
         method: 'POST',
@@ -118,12 +133,16 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
 
       reviewFeedback.triggerSuccess()
 
+      toast.success('Sukces', {
+        description: 'Dziękujemy za wystawienie oceny'
+      })
+
       setShowReviewDialog(false)
       setRating(5)
       setComment('')
 
-      // Update booking status to 'reviewed'
-      await updateBookingStatus('reviewed')
+      // Update booking status to 'reviewed' (without showing another toast)
+      onUpdate()
     } catch (error) {
       console.error('Error submitting review:', error)
       reviewFeedback.triggerError()
@@ -131,21 +150,21 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         description: error instanceof Error ? error.message : 'Nie udało się wystawić oceny'
       })
     } finally {
-      setIsLoading(false)
+      setIsReviewing(false)
     }
   }
 
   // Provider can confirm, cancel, or mark as completed
   if (isProvider && status === 'pending') {
     return (
-      <div className="flex gap-2 mt-3 pt-3 border-t">
+      <div className="flex gap-2 w-full">
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
-              disabled={isLoading}
+              disabled={isConfirming || isCancelling}
               size="sm"
-              variant="destructive"
-              className="flex-1 rounded-full"
+              variant="outline"
+              className="rounded-full h-8 md:h-8 px-4 text-xs flex-1 md:flex-none"
             >
               Odrzuć
             </Button>
@@ -158,23 +177,20 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>Anuluj</AlertDialogCancel>
+              <AlertDialogCancel>Nie</AlertDialogCancel>
               <AlertDialogAction
                 onClick={() => updateBookingStatus('cancelled')}
                 className="bg-destructive hover:bg-destructive/90"
               >
-                Odrzuć rezerwację
+                Tak, odrzuć
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
         <motion.button
           onClick={() => updateBookingStatus('confirmed', confirmFeedback)}
-          disabled={isLoading}
-          className="flex-1 bg-brand hover:bg-brand/90 text-brand-foreground rounded-full h-9 text-sm font-medium inline-flex items-center justify-center transition-all duration-200"
-          style={{
-            minWidth: confirmFeedback.state === 'success' ? '140px' : '100px',
-          }}
+          disabled={isConfirming || isCancelling}
+          className="bg-brand hover:bg-brand/90 text-brand-foreground rounded-full h-8 px-4 text-xs font-medium inline-flex items-center justify-center transition-all duration-200 flex-1 md:flex-none"
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.15 }}
         >
@@ -187,7 +203,7 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
               transition={{ duration: 0.15 }}
             >
               <span className="whitespace-nowrap">
-                {isLoading ? 'Potwierdzam...' : confirmFeedback.state === 'success' ? 'Potwierdzone!' : confirmFeedback.state === 'error' ? 'Błąd' : 'Potwierdź'}
+                {isConfirming ? 'Potwierdzam...' : confirmFeedback.state === 'success' ? 'Potwierdzone!' : confirmFeedback.state === 'error' ? 'Błąd' : 'Potwierdź'}
               </span>
             </motion.div>
           </AnimatePresence>
@@ -203,9 +219,9 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
-              disabled={isLoading}
+              disabled={isCompleting || isCancelling}
               size="sm"
-              variant="destructive"
+              variant="outline"
               className="rounded-full"
             >
               Anuluj
@@ -231,7 +247,7 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         </AlertDialog>
         <motion.button
           onClick={() => updateBookingStatus('completed', completeFeedback)}
-          disabled={isLoading}
+          disabled={isCompleting || isCancelling}
           className="flex-1 rounded-full border border-border bg-muted hover:bg-accent h-9 text-sm font-medium inline-flex items-center justify-center transition-all duration-200"
           style={{
             minWidth: completeFeedback.state === 'success' ? '180px' : '200px',
@@ -248,7 +264,7 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
               transition={{ duration: 0.15 }}
             >
               <span className="whitespace-nowrap">
-                {isLoading ? 'Zapisywanie...' : completeFeedback.state === 'success' ? 'Zakończono!' : completeFeedback.state === 'error' ? 'Błąd' : 'Oznacz jako zakończoną'}
+                {isCompleting ? 'Zapisywanie...' : completeFeedback.state === 'success' ? 'Zakończono!' : completeFeedback.state === 'error' ? 'Błąd' : 'Oznacz jako zakończoną'}
               </span>
             </motion.div>
           </AnimatePresence>
@@ -264,9 +280,9 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         <AlertDialog>
           <AlertDialogTrigger asChild>
             <Button
-              disabled={isLoading}
+              disabled={isCancelling}
               size="sm"
-              variant="destructive"
+              variant="outline"
               className="w-full rounded-full"
             >
               Anuluj rezerwację
@@ -301,7 +317,7 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
         <div className="mt-3 pt-3 border-t">
           <Button
             onClick={() => setShowReviewDialog(true)}
-            disabled={isLoading}
+            disabled={isReviewing}
             size="sm"
             className="w-full bg-brand hover:bg-brand/90 text-brand-foreground rounded-full"
           >
@@ -362,15 +378,15 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
               <Button
                 variant="outline"
                 onClick={() => setShowReviewDialog(false)}
-                disabled={isLoading}
-                className="flex-1"
+                disabled={isReviewing}
+                className="flex-1 rounded-full"
               >
                 Anuluj
               </Button>
               <motion.button
                 onClick={submitReview}
-                disabled={isLoading}
-                className="flex-1 bg-brand hover:bg-brand/90 text-brand-foreground rounded-md h-10 text-sm font-medium inline-flex items-center justify-center transition-all duration-200"
+                disabled={isReviewing}
+                className="flex-1 bg-brand hover:bg-brand/90 text-brand-foreground rounded-full h-10 text-sm font-medium inline-flex items-center justify-center transition-all duration-200"
                 style={{
                   minWidth: reviewFeedback.state === 'success' ? '150px' : '130px',
                 }}
@@ -386,7 +402,7 @@ export function BookingActions({ bookingId, status, isProvider, onUpdate, review
                     transition={{ duration: 0.15 }}
                   >
                     <span className="whitespace-nowrap">
-                      {isLoading ? 'Wysyłam...' : reviewFeedback.state === 'success' ? 'Wysłano!' : reviewFeedback.state === 'error' ? 'Błąd' : 'Wyślij ocenę'}
+                      {isReviewing ? 'Wysyłam...' : reviewFeedback.state === 'success' ? 'Wysłano!' : reviewFeedback.state === 'error' ? 'Błąd' : 'Wyślij ocenę'}
                     </span>
                   </motion.div>
                 </AnimatePresence>

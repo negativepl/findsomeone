@@ -100,6 +100,12 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
       requiresAuth: true
     },
     {
+      title: 'Moje rezerwacje',
+      href: '/dashboard/bookings',
+      icon: <img src="/icons/calendar.svg" alt="" className="w-6 h-6" />,
+      requiresAuth: true
+    },
+    {
       title: 'Profil',
       href: '/dashboard/profile',
       icon: <img src="/icons/profile.svg" alt="" className="w-6 h-6" />,
