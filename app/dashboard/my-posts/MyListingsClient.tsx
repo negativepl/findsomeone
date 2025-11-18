@@ -489,64 +489,68 @@ export function MyListingsClient({ posts: initialPosts }: MyListingsClientProps)
 
       {/* Floating Action Bar - Desktop & Mobile */}
       <div className={`fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-300 md:bottom-8 bottom-24 ${selectedPosts.size > 0 ? 'translate-y-0 opacity-100' : 'translate-y-32 opacity-0 pointer-events-none'}`}>
-        <div className="bg-card border border-border rounded-full shadow-2xl px-4 py-3 flex items-center gap-3">
+        <div className="flex items-center gap-3">
           {/* Counter */}
-          <div className="flex items-center justify-center min-w-[32px] h-10 px-3 rounded-full bg-brand/10">
-            <span className="text-sm font-semibold text-brand">{selectedPosts.size}</span>
+          <div className="bg-card border border-border rounded-full shadow-2xl p-3 flex items-center gap-3">
+            <div className="flex items-center justify-center w-10 h-10 rounded-full bg-brand/10">
+              <span className="text-sm font-semibold text-brand">{selectedPosts.size}</span>
+            </div>
           </div>
 
-          <div className="h-8 w-px bg-border" />
+          {/* Status Actions */}
+          <div className="bg-card border border-border rounded-full shadow-2xl px-4 py-3 flex items-center gap-3">
+            <Button
+              variant="outline"
+              onClick={() => handleBulkStatusChange('completed')}
+              disabled={isPending}
+              className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
+            >
+              <CheckCircle className="w-4 h-4" />
+              <span className="hidden md:inline text-xs font-medium">Zakończ</span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleBulkStatusChange('closed')}
+              disabled={isPending}
+              className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
+            >
+              <PauseCircle className="w-4 h-4" />
+              <span className="hidden md:inline text-xs font-medium">Dezaktywuj</span>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => handleBulkStatusChange('active')}
+              disabled={isPending}
+              className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
+            >
+              <PlayCircle className="w-4 h-4" />
+              <span className="hidden md:inline text-xs font-medium">Aktywuj</span>
+            </Button>
+          </div>
 
-          {/* Desktop: Buttons with text, Mobile: Icon only */}
-          <Button
-            variant="outline"
-            onClick={() => handleBulkStatusChange('completed')}
-            disabled={isPending}
-            className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
-          >
-            <CheckCircle className="w-4 h-4" />
-            <span className="hidden md:inline text-xs font-medium">Zakończ</span>
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => handleBulkStatusChange('closed')}
-            disabled={isPending}
-            className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
-          >
-            <PauseCircle className="w-4 h-4" />
-            <span className="hidden md:inline text-xs font-medium">Dezaktywuj</span>
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => handleBulkStatusChange('active')}
-            disabled={isPending}
-            className="h-9 rounded-xl bg-muted border-border hover:bg-accent gap-2 md:px-3 px-0 md:w-auto w-9"
-          >
-            <PlayCircle className="w-4 h-4" />
-            <span className="hidden md:inline text-xs font-medium">Aktywuj</span>
-          </Button>
+          {/* Delete */}
+          <div className="bg-card border border-border rounded-full shadow-2xl px-4 py-3 flex items-center gap-3">
+            <button
+              onClick={handleBulkDelete}
+              disabled={isPending}
+              className="h-9 rounded-xl bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 gap-2 md:px-3 px-0 md:w-auto w-9 flex items-center justify-center transition-all disabled:opacity-50"
+            >
+              <Trash2 className="w-4 h-4 text-destructive" />
+              <span className="hidden md:inline text-xs font-medium text-destructive">Usuń</span>
+            </button>
+          </div>
 
-          <div className="h-8 w-px bg-border" />
-
-          <button
-            onClick={handleBulkDelete}
-            disabled={isPending}
-            className="h-9 rounded-xl bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 gap-2 md:px-3 px-0 md:w-auto w-9 flex items-center justify-center transition-all disabled:opacity-50"
-          >
-            <Trash2 className="w-4 h-4 text-destructive" />
-            <span className="hidden md:inline text-xs font-medium text-destructive">Usuń</span>
-          </button>
-
-          <div className="h-8 w-px bg-border" />
-
-          <Button
-            variant="ghost"
-            onClick={() => setSelectedPosts(new Set())}
-            className="h-10 rounded-full hover:bg-accent gap-2 md:px-4 px-0 md:w-auto w-10"
-          >
-            <X className="w-5 h-5" />
-            <span className="hidden md:inline text-sm">Anuluj</span>
-          </Button>
+          {/* Cancel */}
+          <div className="bg-card border border-border rounded-full shadow-2xl px-4 py-3 flex items-center gap-3">
+            <Button
+              variant="ghost"
+              onClick={() => setSelectedPosts(new Set())}
+              className="h-9 rounded-full hover:bg-accent gap-2 md:px-4 px-0 md:w-auto w-9"
+            >
+              <X className="w-4 h-4" />
+              <span className="hidden md:inline text-xs font-medium">Anuluj</span>
+            </Button>
+          </div>
         </div>
       </div>
 

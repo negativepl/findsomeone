@@ -24,8 +24,13 @@ import {
   XCircle,
   RefreshCw,
   ShieldAlert,
-  ExternalLink
+  ExternalLink,
+  Copy,
+  Check,
+  X
 } from 'lucide-react'
+import { useButtonFeedback } from '@/lib/hooks/useButtonFeedback'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface Post {
   id: string
@@ -84,6 +89,8 @@ export function PostListItem({
   isSelected,
   onToggleSelect,
 }: PostListItemProps) {
+  const copyIdFeedback = useButtonFeedback()
+
   // Build full category path
   const getCategoryPath = () => {
     if (!post.categories) return null
@@ -106,6 +113,29 @@ export function PostListItem({
     return parts.join(' > ')
   }
 
+  const handleCopyId = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    try {
+      await navigator.clipboard.writeText(post.id)
+      copyIdFeedback.triggerSuccess()
+    } catch (err) {
+      console.error('Failed to copy ID:', err)
+      copyIdFeedback.triggerError()
+    }
+  }
+
+  // Ikona zmienia się w zależności od stanu
+  const CopyIcon = copyIdFeedback.state === 'success' ? Check : copyIdFeedback.state === 'error' ? X : Copy
+
+  // Tekst zmienia się w zależności od stanu
+  const getCopyText = (showHash: boolean = false) => {
+    if (copyIdFeedback.state === 'success') return 'Skopiowano!'
+    if (copyIdFeedback.state === 'error') return 'Błąd'
+    return showHash ? `#${post.id}` : post.id
+  }
+
   return (
     <Card className="border border-border hover:border-foreground/20 rounded-3xl bg-card transition-all group relative overflow-hidden">
       {/* Clickable overlay */}
@@ -123,14 +153,14 @@ export function PostListItem({
             {(post.moderation_status === 'rejected' || isPendingModeration(post)) && (
               <div className="mb-3">
                 {post.moderation_status === 'rejected' ? (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-destructive/10 border border-destructive/30 rounded-xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-2 bg-destructive/10 border border-destructive/30 rounded-xl">
                     <XCircle className="w-4 h-4 text-destructive" />
-                    <span className="text-sm font-semibold text-destructive">Odrzucone</span>
+                    <span className="text-sm sm:text-base font-semibold text-destructive">Odrzucone</span>
                   </div>
                 ) : (
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-muted border border-border rounded-xl">
+                  <div className="inline-flex items-center gap-2 px-3 py-2 bg-muted border border-border rounded-xl">
                     <Clock className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm font-semibold text-muted-foreground">Oczekuje</span>
+                    <span className="text-sm sm:text-base font-semibold text-muted-foreground">Oczekuje</span>
                   </div>
                 )}
               </div>
@@ -160,14 +190,14 @@ export function PostListItem({
               {/* Content */}
               <div className="flex-1 min-w-0">
                 {/* Title */}
-                <h3 className="text-sm sm:text-base font-bold text-foreground line-clamp-2 mb-2">
+                <h3 className="text-base sm:text-lg font-bold text-foreground line-clamp-2 mb-2">
                   {post.title}
                 </h3>
 
                 {/* Category path */}
                 {getCategoryPath() && (
                   <div className="mb-2.5">
-                    <span className="text-xs sm:text-sm text-muted-foreground">
+                    <span className="text-sm sm:text-base text-muted-foreground">
                       {getCategoryPath()}
                     </span>
                   </div>
@@ -175,23 +205,51 @@ export function PostListItem({
 
                 {/* ID */}
                 <div className="mb-2.5">
-                  <span className="text-[9px] sm:text-[10px] font-mono bg-muted text-muted-foreground px-1.5 sm:px-2 py-0.5 sm:py-1 rounded break-all leading-tight">
-                    {post.id}
-                  </span>
+                  <motion.button
+                    onClick={handleCopyId}
+                    className="inline-flex items-center gap-1 text-[10px] sm:text-xs font-mono bg-muted hover:bg-accent text-muted-foreground hover:text-foreground px-2 sm:px-2.5 py-1 rounded break-all leading-tight transition-all relative z-20 cursor-pointer"
+                    style={{
+                      minWidth: copyIdFeedback.state === 'success' ? '90px' : '80px',
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={copyIdFeedback.state}
+                        className="flex items-center gap-1"
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        <motion.div
+                          animate={{
+                            scale: copyIdFeedback.state !== 'idle' ? [1, 1.2, 1] : 1,
+                            rotate: copyIdFeedback.state === 'success' ? [0, -10, 0] : 0,
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <CopyIcon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                        </motion.div>
+                        <span className="whitespace-nowrap">{getCopyText(false)}</span>
+                      </motion.div>
+                    </AnimatePresence>
+                  </motion.button>
                 </div>
 
                 {/* Stats */}
-                <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-xs text-muted-foreground flex-wrap">
+                <div className="flex items-center gap-2.5 sm:gap-3 text-xs sm:text-sm text-muted-foreground flex-wrap">
                   <div className="flex items-center gap-1">
-                    <MapPin className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span>{post.city}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Eye className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    <Eye className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span>{post.views}</span>
                   </div>
                   <div className="flex items-center gap-1">
-                    <Phone className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                    <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     <span>{post.phone_clicks || 0}</span>
                   </div>
                 </div>
@@ -213,11 +271,11 @@ export function PostListItem({
                 {/* Price */}
                 {post.price ? (
                   <div>
-                    <p className="text-base sm:text-lg font-bold text-foreground">
+                    <p className="text-lg sm:text-xl font-bold text-foreground">
                       {post.price} zł
                     </p>
                     {post.price_type && (
-                      <p className="text-[10px] sm:text-xs text-muted-foreground">
+                      <p className="text-xs sm:text-sm text-muted-foreground">
                         {post.price_type === 'hourly'
                           ? 'za godzinę'
                           : post.price_type === 'fixed'
@@ -227,11 +285,11 @@ export function PostListItem({
                     )}
                   </div>
                 ) : (
-                  <div className="text-xs sm:text-sm text-muted-foreground">Brak ceny</div>
+                  <div className="text-sm sm:text-base text-muted-foreground">Brak ceny</div>
                 )}
 
                 {/* Date */}
-                <div className="text-[10px] sm:text-xs text-muted-foreground text-right">
+                <div className="text-xs sm:text-sm text-muted-foreground text-right">
                   {new Date(post.created_at).toLocaleDateString('pl-PL', {
                     day: 'numeric',
                     month: 'short',
@@ -245,38 +303,38 @@ export function PostListItem({
           {/* Footer - Actions only */}
           <div className="border-t-2 border-border bg-muted/30 p-3 sm:p-4">
             {/* Actions */}
-            <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+            <div className="flex items-center gap-2 sm:gap-2 flex-wrap">
               {post.moderation_status === 'rejected' && !post.appeal_status && (
                 <button
                   onClick={(e) => {
                     e.preventDefault()
                     onAppeal(post.id)
                   }}
-                  className="h-9 w-9 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
+                  className="h-10 w-10 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
                 >
                   <ShieldAlert className="w-4 h-4" />
-                  <span className="hidden sm:inline text-xs font-medium">Odwołaj się</span>
+                  <span className="hidden sm:inline text-sm font-medium">Odwołaj się</span>
                 </button>
               )}
 
               {post.appeal_status === 'pending' && (
-                <div className="h-9 px-2 sm:px-3 rounded-xl bg-accent border border-border flex items-center gap-1.5 sm:gap-2">
+                <div className="h-10 px-2 sm:px-3 rounded-xl bg-accent border border-border flex items-center gap-2">
                   <Clock className="w-4 h-4 text-muted-foreground" />
-                  <span className="hidden sm:inline text-xs font-medium text-muted-foreground">W trakcie odwołania</span>
+                  <span className="hidden sm:inline text-sm font-medium text-muted-foreground">W trakcie odwołania</span>
                 </div>
               )}
 
               <Link href={`/dashboard/my-posts/${post.id}/edit`} className="relative z-20">
-                <button className="h-9 w-9 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all">
+                <button className="h-10 w-10 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all">
                   <Pencil className="w-4 h-4" />
-                  <span className="hidden sm:inline text-xs font-medium">Edytuj</span>
+                  <span className="hidden sm:inline text-sm font-medium">Edytuj</span>
                 </button>
               </Link>
 
               <Link href={`/posts/${post.id}`} className="relative z-20" target="_blank">
-                <button className="h-9 w-9 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all">
+                <button className="h-10 w-10 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all">
                   <ExternalLink className="w-4 h-4" />
-                  <span className="hidden sm:inline text-xs font-medium">Podgląd</span>
+                  <span className="hidden sm:inline text-sm font-medium">Podgląd</span>
                 </button>
               </Link>
 
@@ -287,11 +345,11 @@ export function PostListItem({
                       e.preventDefault()
                       onStatusChange(post.id, 'closed')
                     }}
-                    className="h-9 w-9 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
+                    className="h-10 w-10 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
                     disabled={isPending}
                   >
                     <PauseCircle className="w-4 h-4" />
-                    <span className="hidden sm:inline text-xs font-medium">Dezaktywuj</span>
+                    <span className="hidden sm:inline text-sm font-medium">Dezaktywuj</span>
                   </button>
 
                   <button
@@ -299,11 +357,11 @@ export function PostListItem({
                       e.preventDefault()
                       onStatusChange(post.id, 'completed')
                     }}
-                    className="h-9 w-9 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
+                    className="h-10 w-10 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
                     disabled={isPending}
                   >
                     <CheckCircle className="w-4 h-4" />
-                    <span className="hidden sm:inline text-xs font-medium">Zakończ</span>
+                    <span className="hidden sm:inline text-sm font-medium">Zakończ</span>
                   </button>
                 </>
               )}
@@ -314,11 +372,11 @@ export function PostListItem({
                     e.preventDefault()
                     onStatusChange(post.id, 'active')
                   }}
-                  className="h-9 w-9 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
+                  className="h-10 w-10 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
                   disabled={isPending}
                 >
                   <PlayCircle className="w-4 h-4" />
-                  <span className="hidden sm:inline text-xs font-medium">Aktywuj</span>
+                  <span className="hidden sm:inline text-sm font-medium">Aktywuj</span>
                 </button>
               )}
 
@@ -328,11 +386,11 @@ export function PostListItem({
                     e.preventDefault()
                     onStatusChange(post.id, 'active')
                   }}
-                  className="h-9 w-9 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
+                  className="h-10 w-10 sm:w-auto sm:px-3 rounded-xl bg-accent border border-border hover:bg-muted flex items-center justify-center sm:gap-2 transition-all relative z-20"
                   disabled={isPending}
                 >
                   <PlayCircle className="w-4 h-4" />
-                  <span className="hidden sm:inline text-xs font-medium">Aktywuj ponownie</span>
+                  <span className="hidden sm:inline text-sm font-medium">Aktywuj ponownie</span>
                 </button>
               )}
 
@@ -341,11 +399,11 @@ export function PostListItem({
                   e.preventDefault()
                   onDelete(post.id)
                 }}
-                className="h-9 w-9 sm:w-auto sm:px-3 rounded-xl bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 flex items-center justify-center sm:gap-2 transition-all relative z-20 ml-auto"
+                className="h-10 w-10 sm:w-auto sm:px-3 rounded-xl bg-destructive/10 border border-destructive/30 hover:bg-destructive/20 flex items-center justify-center sm:gap-2 transition-all relative z-20 ml-auto"
                 disabled={isPending}
               >
                 <Trash2 className="w-4 h-4 text-destructive" />
-                <span className="hidden sm:inline text-xs font-medium text-destructive">Usuń</span>
+                <span className="hidden sm:inline text-sm font-medium text-destructive">Usuń</span>
               </button>
             </div>
           </div>
@@ -447,9 +505,37 @@ export function PostListItem({
               <div className="flex items-center justify-between gap-3 lg:gap-4 text-xs lg:text-sm text-muted-foreground flex-wrap">
                 {/* Left side - ID */}
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono bg-muted px-2 py-1 rounded break-all">
-                    #{post.id}
-                  </span>
+                  <motion.button
+                    onClick={handleCopyId}
+                    className="inline-flex items-center gap-1.5 text-xs font-mono bg-muted hover:bg-accent text-muted-foreground hover:text-foreground px-2.5 py-1.5 rounded break-all transition-all relative z-20 cursor-pointer"
+                    style={{
+                      minWidth: copyIdFeedback.state === 'success' ? '110px' : '90px',
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={copyIdFeedback.state}
+                        className="flex items-center gap-1.5"
+                        initial={{ opacity: 0, y: 5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        transition={{ duration: 0.15 }}
+                      >
+                        <motion.div
+                          animate={{
+                            scale: copyIdFeedback.state !== 'idle' ? [1, 1.2, 1] : 1,
+                            rotate: copyIdFeedback.state === 'success' ? [0, -10, 0] : 0,
+                          }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <CopyIcon className="w-3.5 h-3.5" />
+                        </motion.div>
+                        <span className="whitespace-nowrap">{getCopyText(true)}</span>
+                      </motion.div>
+                    </AnimatePresence>
+                  </motion.button>
                 </div>
 
                 {/* Right side - Stats */}

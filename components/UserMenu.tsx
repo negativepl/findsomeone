@@ -129,6 +129,8 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
       '/icons/newspaper-dark.json',
       '/icons/calendar-light.json',
       '/icons/calendar-dark.json',
+      '/icons/star-light.json',
+      '/icons/star-dark.json',
       '/icons/account-light.json',
       '/icons/account-dark.json',
       '/icons/settings-light.json',
@@ -313,6 +315,20 @@ export function UserMenu({ user, profile, isAdmin = false }: UserMenuProps) {
               onClick={() => setIsOpen(false)}
             >
               Moje rezerwacje
+            </MenuItemWithIcon>
+
+            <MenuItemWithIcon
+              href="/dashboard/reviews"
+              iconLight="/icons/star-light.json"
+              iconDark="/icons/star-dark.json"
+              fallbackIcon={
+                <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <path fill="currentColor" d="M10.383 3.084c.662-1.341 2.573-1.341 3.235 0l2.047 4.148 4.578.665c1.479.215 2.07 2.031 1.002 3.075l-3.31 3.234.78 4.563c.252 1.474-1.295 2.597-2.618 1.9L12 18.516 7.904 20.67c-1.323.696-2.87-.427-2.618-1.9l.78-4.564-3.31-3.234c-1.07-1.044-.478-2.86 1-3.075l4.578-.665zm1.89.664a.304.304 0 0 0-.545 0L9.506 8.25a.75.75 0 0 1-.566.41l-4.967.722a.304.304 0 0 0-.17.518l3.593 3.508a.75.75 0 0 1 .214.663l-.845 4.951a.304.304 0 0 0 .441.32l4.445-2.338.083-.038a.75.75 0 0 1 .616.038l4.445 2.339a.304.304 0 0 0 .441-.32l-.846-4.952a.75.75 0 0 1 .215-.663L20.197 9.9a.304.304 0 0 0-.168-.518L15.06 8.66a.75.75 0 0 1-.565-.41z"/>
+                </svg>
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              Moje oceny
             </MenuItemWithIcon>
 
             <MenuItemWithIcon

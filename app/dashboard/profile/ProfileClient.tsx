@@ -379,24 +379,24 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
             <p className="text-sm text-muted-foreground mb-4">{initialUser?.email}</p>
 
             {/* Stats */}
-            <div className="bg-muted/50 rounded-2xl p-4 mb-4 flex items-center justify-between text-left">
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24">
+            <div className="bg-muted/50 rounded-2xl p-5 lg:p-4 mb-4 flex items-center justify-between text-left">
+              <div className="flex items-center gap-2.5 lg:gap-2">
+                <svg className="w-5 h-5 lg:w-4 lg:h-4 text-brand" fill="none" viewBox="0 0 24 24">
                   <path fill="currentColor" d="M10.383 3.084c.662-1.341 2.573-1.341 3.235 0l2.047 4.148 4.578.665c1.479.215 2.07 2.031 1.002 3.075l-3.31 3.234.78 4.563c.252 1.474-1.295 2.597-2.618 1.9L12 18.516 7.904 20.67c-1.323.696-2.87-.427-2.618-1.9l.78-4.564-3.31-3.234c-1.07-1.044-.478-2.86 1-3.075l4.578-.665zm1.89.664a.304.304 0 0 0-.545 0L9.506 8.25a.75.75 0 0 1-.566.41l-4.967.722a.304.304 0 0 0-.17.518l3.593 3.508a.75.75 0 0 1 .214.663l-.845 4.951a.304.304 0 0 0 .441.32l4.445-2.338.083-.038a.75.75 0 0 1 .616.038l4.445 2.339a.304.304 0 0 0 .441-.32l-.846-4.952a.75.75 0 0 1 .215-.663L20.197 9.9a.304.304 0 0 0-.168-.518L15.06 8.66a.75.75 0 0 1-.565-.41z"/>
                 </svg>
-                <span className="text-sm text-muted-foreground">Ocena</span>
-                <span className="font-semibold text-foreground">
+                <span className="text-base lg:text-sm text-muted-foreground">Ocena</span>
+                <span className="font-semibold text-base lg:text-base text-foreground">
                   {profile?.rating?.toFixed(1) || '0.0'}
                 </span>
               </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24">
+              <div className="flex items-center gap-2.5 lg:gap-2">
+                <svg className="w-5 h-5 lg:w-4 lg:h-4 text-brand" fill="none" viewBox="0 0 24 24">
                   <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
                     <path d="M21.25 4.75v5.42m-3 .079-2 3.5h-.22a1.5 1.5 0 0 1-1.5-1.5v-2h-1.784a1 1 0 0 1-.986-1.168l.598-3.5a1 1 0 0 1 .986-.832h4.906zM2.75 19.25v-5.42m3-.08 2-3.5h.22a1.5 1.5 0 0 1 1.5 1.5v2h1.784a1 1 0 0 1 .986 1.168l-.598 3.5a1 1 0 0 1-.986.832H5.75z"/>
                   </g>
                 </svg>
-                <span className="text-sm text-muted-foreground">Opinie</span>
-                <span className="font-semibold text-foreground">{profile?.total_reviews || 0}</span>
+                <span className="text-base lg:text-sm text-muted-foreground">Opinie</span>
+                <span className="font-semibold text-base lg:text-base text-foreground">{profile?.total_reviews || 0}</span>
               </div>
             </div>
 
@@ -783,24 +783,24 @@ export function ProfileClient({ initialUser, initialProfile }: ProfileClientProp
               <p className="text-sm text-muted-foreground mb-4">{initialUser?.email}</p>
 
               {/* Stats */}
-              <div className="bg-muted/50 rounded-2xl p-4 mb-4 flex items-center justify-between text-left">
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24">
+              <div className="bg-muted/50 rounded-2xl p-5 lg:p-4 mb-4 flex items-center justify-between text-left">
+                <div className="flex items-center gap-2.5 lg:gap-2">
+                  <svg className="w-5 h-5 lg:w-4 lg:h-4 text-brand" fill="none" viewBox="0 0 24 24">
                     <path fill="currentColor" d="M10.383 3.084c.662-1.341 2.573-1.341 3.235 0l2.047 4.148 4.578.665c1.479.215 2.07 2.031 1.002 3.075l-3.31 3.234.78 4.563c.252 1.474-1.295 2.597-2.618 1.9L12 18.516 7.904 20.67c-1.323.696-2.87-.427-2.618-1.9l.78-4.564-3.31-3.234c-1.07-1.044-.478-2.86 1-3.075l4.578-.665zm1.89.664a.304.304 0 0 0-.545 0L9.506 8.25a.75.75 0 0 1-.566.41l-4.967.722a.304.304 0 0 0-.17.518l3.593 3.508a.75.75 0 0 1 .214.663l-.845 4.951a.304.304 0 0 0 .441.32l4.445-2.338.083-.038a.75.75 0 0 1 .616.038l4.445 2.339a.304.304 0 0 0 .441-.32l-.846-4.952a.75.75 0 0 1 .215-.663L20.197 9.9a.304.304 0 0 0-.168-.518L15.06 8.66a.75.75 0 0 1-.565-.41z"/>
                   </svg>
-                  <span className="text-sm text-muted-foreground">Ocena</span>
-                  <span className="font-semibold text-foreground">
+                  <span className="text-base lg:text-sm text-muted-foreground">Ocena</span>
+                  <span className="font-semibold text-base lg:text-base text-foreground">
                     {profile?.rating?.toFixed(1) || '0.0'}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <svg className="w-4 h-4 text-brand" fill="none" viewBox="0 0 24 24">
+                <div className="flex items-center gap-2.5 lg:gap-2">
+                  <svg className="w-5 h-5 lg:w-4 lg:h-4 text-brand" fill="none" viewBox="0 0 24 24">
                     <g stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5">
                       <path d="M21.25 4.75v5.42m-3 .079-2 3.5h-.22a1.5 1.5 0 0 1-1.5-1.5v-2h-1.784a1 1 0 0 1-.986-1.168l.598-3.5a1 1 0 0 1 .986-.832h4.906zM2.75 19.25v-5.42m3-.08 2-3.5h.22a1.5 1.5 0 0 1 1.5 1.5v2h1.784a1 1 0 0 1 .986 1.168l-.598 3.5a1 1 0 0 1-.986.832H5.75z"/>
                     </g>
                   </svg>
-                  <span className="text-sm text-muted-foreground">Opinie</span>
-                  <span className="font-semibold text-foreground">{profile?.total_reviews || 0}</span>
+                  <span className="text-base lg:text-sm text-muted-foreground">Opinie</span>
+                  <span className="font-semibold text-base lg:text-base text-foreground">{profile?.total_reviews || 0}</span>
                 </div>
               </div>
 

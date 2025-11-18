@@ -25,6 +25,7 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
   const [selectedBookings, setSelectedBookings] = useState<Set<string>>(new Set())
   const [isBulkConfirming, setIsBulkConfirming] = useState(false)
   const [isBulkRejecting, setIsBulkRejecting] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
 
   // Filter out cancelled bookings
   const providerBookings = initialProviderBookings?.filter(b => b.status !== 'cancelled') || []
@@ -146,19 +147,31 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
   }, [currentMonth])
 
   const nextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))
-    setSelectedDate(null)
+    setIsAnimating(true)
+    setTimeout(() => {
+      setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1))
+      setSelectedDate(null)
+      setTimeout(() => setIsAnimating(false), 100)
+    }, 150)
   }
 
   const prevMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))
-    setSelectedDate(null)
+    setIsAnimating(true)
+    setTimeout(() => {
+      setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1))
+      setSelectedDate(null)
+      setTimeout(() => setIsAnimating(false), 100)
+    }, 150)
   }
 
   const goToToday = () => {
-    const today = new Date()
-    setCurrentMonth(today)
-    setSelectedDate(today)
+    setIsAnimating(true)
+    setTimeout(() => {
+      const today = new Date()
+      setCurrentMonth(today)
+      setSelectedDate(today)
+      setTimeout(() => setIsAnimating(false), 100)
+    }, 150)
   }
 
   const getDayBookings = (date: Date) => {
@@ -430,11 +443,11 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
         <div className="lg:col-span-3">
           <Card className="p-3 md:p-6">
             {/* Month Navigation */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-3 md:mb-6 gap-2 md:gap-0">
+            <div className="flex items-center justify-between mb-3 md:mb-6 gap-2">
               <h2 className="text-base md:text-xl font-bold">
                 {currentMonth.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}
               </h2>
-              <div className="flex gap-1 md:gap-2 self-end md:self-auto">
+              <div className="flex gap-1 md:gap-2">
                 <Button variant="outline" size="sm" onClick={goToToday} className="text-xs md:text-sm px-2 md:px-3 h-8">
                   Dzisiaj
                 </Button>
@@ -448,7 +461,10 @@ export function BookingsContent({ userId, providerBookings: initialProviderBooki
             </div>
 
             {/* Calendar Grid */}
-            <div>
+            <div
+              key={`${currentMonth.getFullYear()}-${currentMonth.getMonth()}`}
+              className={`transition-all duration-300 ${isAnimating ? 'blur-sm opacity-0 scale-95' : 'blur-0 opacity-100 scale-100'}`}
+            >
               {/* Week days header */}
               <div className="grid grid-cols-7 gap-1 md:gap-2 mb-1 md:mb-2">
                 {weekDays.map(day => (

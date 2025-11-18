@@ -106,6 +106,12 @@ const getMenuItems = (isLoggedIn: boolean, isAdmin: boolean = false) => {
       requiresAuth: true
     },
     {
+      title: 'Moje oceny',
+      href: '/dashboard/reviews',
+      icon: <img src="/icons/star.svg" alt="" className="w-6 h-6" />,
+      requiresAuth: true
+    },
+    {
       title: 'Profil',
       href: '/dashboard/profile',
       icon: <img src="/icons/profile.svg" alt="" className="w-6 h-6" />,

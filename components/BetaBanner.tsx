@@ -38,7 +38,7 @@ export function BetaBanner() {
           className="fixed top-16 left-0 right-0 z-[9998] bg-card border-b border-border rounded-b-3xl"
         >
           <div className="container mx-auto px-6 py-3">
-            <div className="flex items-center justify-center gap-4 text-sm md:text-base">
+            <div className="flex items-center justify-center gap-4 text-xs md:text-base">
               <div className="flex items-center gap-3">
                 <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-full bg-brand/20 text-brand font-semibold text-xs">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
@@ -47,7 +47,8 @@ export function BetaBanner() {
                   BETA
                 </div>
                 <p className="text-foreground">
-                  Projekt w fazie beta. Masz uwagi lub sugestie?{' '}
+                  <span className="hidden md:inline">Projekt w fazie beta. Masz uwagi lub sugestie?{' '}</span>
+                  <span className="md:hidden">Wersja beta. Masz uwagi? {' '}</span>
                   <a
                     href="mailto:mbaszewski@findsomeone.app"
                     className="font-semibold text-brand hover:text-brand/80 transition-colors underline decoration-brand/30 hover:decoration-brand/60"

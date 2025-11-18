@@ -316,7 +316,7 @@ export function ActivityFeed({ activities, showFilters = false, itemsPerPage = 1
       case 'favorite_added':
         return activity.metadata?.post_id ? `/posts/${activity.metadata.post_id}` : '#'
       case 'review_received':
-        return '/dashboard/profile'
+        return '/dashboard/reviews'
       case 'booking_request':
         return '/dashboard/bookings'
       default:
